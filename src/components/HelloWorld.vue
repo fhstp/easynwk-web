@@ -4,9 +4,16 @@
       <div id="title">
         <h1 style="display:inline">Ich</h1>
         <h1 style="display:inline" v-if="ego.name !== ''">:&nbsp;{{ego.name}}</h1>
+        <img
+          style="float:right"
+          src="../assets/Vector.png"
+          alt="Editieren"
+          v-if="egoSubmitted"
+          @click="editEgo()"
+        />
       </div>
 
-      <div id="egoFields" v-if="!condition">
+      <div id="egoFields" v-if="!egoSubmitted">
         <h1>Ich</h1>
         <p>Name:</p>
         <input type="text" v-model="ego.name" />
@@ -20,7 +27,7 @@
           <button @click="submit()">Bestätigen</button>
         </div>
       </div>
-      <div id="alterFields" v-else-if="condition">
+      <div id="alterFields" v-else-if="egoSubmitted">
         <h2>Kontakte:</h2>
         <ul>
           <li></li>
@@ -52,7 +59,7 @@ interface Contact {
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private ego!: Ego;
-  @Prop(Boolean) private condition?: boolean = false;
+  @Prop(Boolean) private egoSubmitted?: boolean = false;
   @Prop(Array) private contacts!: Array<object>;
 
   constructor() {
@@ -92,7 +99,10 @@ export default class HelloWorld extends Vue {
   }
 
   submit() {
-    this.condition = true;
+    this.egoSubmitted = true;
+  }
+  editEgo() {
+    this.egoSubmitted = false;
   }
 }
 </script>
