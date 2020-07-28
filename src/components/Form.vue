@@ -8,7 +8,7 @@
       </div>
       <Ego v-if="!addAlterPageVisible" v-on:submit="submit()" />
 
-      <div id="alterFields" v-if="egoSubmitted && !addAlterPageVisible">
+      <!-- <div id="alterFields" v-if="egoSubmitted && !addAlterPageVisible">
         <div id="alterListTitle">
           <h2 id="contactListTitleHeading" class="inlineElement textLeft alterListFont">Kontakte:</h2>
           <img
@@ -28,7 +28,7 @@
             </li>
           </ul>
         </div>
-      </div>
+      </div> -->
       <div v-if="addAlterPageVisible">
         <img
           class="iconLeft"
