@@ -8,24 +8,19 @@
 			<circle class="horizon" cx="0" cy="0" r="66.67" />
 			<circle class="horizon" cx="0" cy="0" r="33.33" />
 
-			<circle
-				v-for="mark in alteriMarks"
-				:key="mark.d.id"
-				:r="2"
-				:cx="mark.x"
-				:cy="mark.y"
-			></circle>
-			<text
-				v-for="mark in alteriMarks"
-				:key="'l' + mark.d.id"
-				:x="mark.x"
-				:y="mark.y"
-				:text-anchor="mark.x < 0 ? 'end' : 'start'"
-				:dx="mark.x < 0 ? -3 : 3"
-				:dy="mark.y < 0 ? -1 : 4"
-			>
-				{{ mark.d.name }}
-			</text>
+			<g v-for="mark in alteriMarks" :key="mark.d.id">
+				<line x1="0" y1="0" :x2="mark.x" :y2="mark.y" />
+				<circle :r="2" :cx="mark.x" :cy="mark.y" />
+				<text
+					:x="mark.x"
+					:y="mark.y"
+					:text-anchor="mark.x < 0 ? 'end' : 'start'"
+					:dx="mark.x < 0 ? -3 : 3"
+					:dy="mark.y < 0 ? -1 : 4"
+				>
+					{{ mark.d.name }}
+				</text>
+			</g>
 		</g>
 	</svg>
 </template>
@@ -65,7 +60,8 @@ export default class NetworkMap extends Vue {
 				y: -1 * el.distance * Math.sin((el.angle * Math.PI) / 180),
 			});
 		});
-		return buffer;
+		// first draw marks further away from center to avoid overplotting
+		return buffer.sort((a, b) => b.d.distance - a.d.distance);
 	}
 }
 </script>
@@ -82,5 +78,9 @@ circle.horizon {
 line.axis {
 	stroke: lightgray;
 	stroke-width: 1;
+}
+line {
+	stroke: lightgray;
+	stroke-width: 0.5;
 }
 </style>
