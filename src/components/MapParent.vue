@@ -1,47 +1,46 @@
 <template>
 	<div>
 		<ul>
-			<li v-for="cur in contacts" :key="cur.id">
-				<b>{{ cur.id }}</b> {{ cur.angle }}, {{ cur.distance }}
+			<li v-for="cur in alteri" :key="cur.id">
+				<b>{{ cur.name }}</b> {{ cur.angle }}, {{ cur.distance }}
 			</li>
 			<button @click="addRandomContact()">Add contact</button>
 		</ul>
-		<svg width="600" height="600">
-			<circle r="5" cx="23" cy="7" />
-		</svg>
+        <NetworkMap v-bind:alteri=alteri />
 	</div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import NetworkMap from "@/components/NetworkMap.vue";
 
-interface Contact {
-	id: string;
-	angle: number;
-	distance: number;
-}
+import { Alter2 } from '@/data/Alter.ts';
 
-@Component
+@Component({
+  components: {
+    NetworkMap
+  }
+})
 export default class MapParent extends Vue {
 	private ego: string;
-	private contacts: Array<Contact>;
+	private alteri: Array<Alter2>;
 
 	constructor() {
 		super();
 		this.ego = "Alex";
-		this.contacts = [
-			{ id: "Max", angle: 30, distance: 20 },
-			{ id: "Klaus", angle: 150, distance: 90 },
-			{ id: "Julia", angle: 350, distance: 50 },
+		this.alteri = [
+            new Alter2("Max", 30, 20),
+			new Alter2("Klaus", 150, 90),
+			new Alter2("Julia", 350, 50)
 		];
 	}
 
 	addRandomContact() {
-		this.contacts.push({
-			id: "Neu",
-			angle: Math.round(Math.random() * 360),
-			distance: Math.round(Math.random() * 100),
-		});
+		this.alteri.push(
+            new Alter2("Neu",
+			Math.round(Math.random() * 360),
+            Math.round(Math.random() * 100)
+        ));
 	}
 }
 </script>
