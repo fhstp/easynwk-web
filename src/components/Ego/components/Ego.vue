@@ -76,7 +76,7 @@ export default class EgoTitle extends Vue {
       age: "",
       gender: this.gender,
       currentGender: "",
-      note: "",
+      note: ""
     };
   }
   get Name() {

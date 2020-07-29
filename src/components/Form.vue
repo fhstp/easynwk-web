@@ -42,7 +42,8 @@
         <p>Beziehungstyp:</p>
         <v-select v-model="unsavedAlter.role" v-bind:options="roles"></v-select>
         <p>Geschlecht:</p>
-        <v-select v-model="unsavedAlter.currentGender" v-bind:options="gender"></v-select>
+        <v-select v-model="unsavedAlter.currentGender"
+          v-bind:options="gender"></v-select>
         <p>Alter:</p>
         <input type="text" v-model="unsavedAlter.age" />
         <p>Notiz:</p>
