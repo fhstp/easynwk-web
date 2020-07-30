@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link>
+      <!-- <router-link to="/">Home</router-link> -->
       <!-- <router-link to="/about">About</router-link> -->
     </div>
     <router-view />
@@ -38,6 +38,7 @@ button {
 ul {
   list-style-type: none;
   padding: 0;
+  margin: 0;
 }
 li {
   display: inline-block;
@@ -104,6 +105,6 @@ h1 {
 }
 .iconRight {
   float: right;
-  margin: 5px;
+  padding: 10px;
 }
 </style>
