@@ -4,7 +4,6 @@
       <div id="egoTitle">
         <h1 class="inlineElement">Ich</h1>
         <h1 class="inlineElement" v-if="ego.name !== ''">:&nbsp;{{ ego.name }}</h1>
-        <!-- The v-if is missing -->
         <img
           v-if="egoSubmitted"
           class="iconRight"
@@ -59,34 +58,6 @@ export default class EgoTitle extends Vue {
   @Prop(Array) private gender!: Array<string>;
   @Prop(Boolean) private egoSubmitted?: boolean = false;
 
-  @Watch("ego.name")
-  onNameChange(newName: string) {
-    if (this.ego) {
-      localStorage.name = newName;
-    }
-  }
-
-  @Watch("ego.age")
-  onAgeChange(newAge: string) {
-    if (this.ego) {
-      localStorage.age = newAge;
-    }
-  }
-  @Watch("ego.currentGender")
-  onCurrentGenderChange(newCurrentGender: string) {
-    if (this.ego) {
-      if (newCurrentGender in this.ego.gender) {
-        localStorage.currentGender = newCurrentGender;
-      }
-    }
-  }
-  @Watch("ego.note")
-  onNoteChange(newNote: string) {
-    if (this.ego) {
-      localStorage.note = newNote;
-    }
-  }
-
   constructor() {
     super();
 
@@ -98,19 +69,49 @@ export default class EgoTitle extends Vue {
       currentGender: "",
       note: ""
     };
-    if (localStorage.name) {
-      this.ego.name = localStorage.name;
+    if (localStorage.egoName) {
+      this.ego.name = localStorage.egoName;
     }
-    if (localStorage.age) {
-      this.ego.age = localStorage.age;
+    if (localStorage.egoAge) {
+      this.ego.age = localStorage.egoAge;
     }
-    if (localStorage.currentGender) {
-      this.ego.currentGender = localStorage.currentGender;
+    if (localStorage.egoCurrentGender) {
+      this.ego.currentGender = localStorage.egoCurrentGender;
     }
-    if (localStorage.note) {
-      this.ego.note = localStorage.note;
+    if (localStorage.egoNote) {
+      this.ego.note = localStorage.egoNote;
     }
   }
+
+  @Watch("ego.name")
+  onNameChange(newName: string) {
+    if (this.ego) {
+      localStorage.egoName = newName;
+    }
+  }
+
+  @Watch("ego.age")
+  onAgeChange(newAge: string) {
+    if (this.ego) {
+      localStorage.egoAge = newAge;
+    }
+  }
+  @Watch("ego.currentGender")
+  onCurrentGenderChange(newCurrentGender: string) {
+    if (this.ego) {
+      localStorage.egoCurrentGender = newCurrentGender;
+      if (localStorage.egoCurrentGender === "null") {
+        localStorage.egoCurrentGender = "";
+      }
+    }
+  }
+  @Watch("ego.note")
+  onNoteChange(newNote: string) {
+    if (this.ego) {
+      localStorage.egoNote = newNote;
+    }
+  }
+
   get Name() {
     return this.ego && this.ego.name;
   }
