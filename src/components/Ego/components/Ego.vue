@@ -75,7 +75,9 @@ export default class EgoTitle extends Vue {
   @Watch("ego.currentGender")
   onCurrentGenderChange(newCurrentGender: string) {
     if (this.ego) {
-      localStorage.currentGender = newCurrentGender;
+      if (newCurrentGender in this.ego.gender) {
+        localStorage.currentGender = newCurrentGender;
+      }
     }
   }
   @Watch("ego.note")
@@ -156,7 +158,7 @@ export default class EgoTitle extends Vue {
 <style scoped>
 #egoTitle {
   color: white;
-  background-color: rgba(37, 40, 121, 0.7);
+  background-color: #ff8a00;
   padding: 5px;
   padding-top: 5px;
   padding-left: 15px;
