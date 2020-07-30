@@ -1,6 +1,6 @@
 <template>
-  <div id="alterFields">
-    <div id="alterFields" v-if="!addAlterPageVisible">
+  <div>
+    <!-- <div id="alterFields" v-if="addAlterPageVisible">
       <h2 id="contactListTitleHeading" class="inlineElement textLeft alterListFont">Kontakte:</h2>
       <img
         id="addAlterIcon"
@@ -9,20 +9,40 @@
         alt="Kontakt hinzufügen"
         @click="addAlter()"
       />
-    </div>
-    <div id="listOfAlter">
-      <ul>
-        <li v-bind:key="alterN.id" v-for="alterN in alter">
-          <div>
-            <h2 class="alterListFont">{{ alterN.name }}/{{ alterN.role }}</h2>
-          </div>
-        </li>
-      </ul>
+      <div id="listOfAlter">
+        <ul>
+          <li v-bind:key="alterN.id" v-for="alterN in alter">
+            <div>
+              <h2 class="alterListFont">{{ alterN.name }}/{{ alterN.role }}</h2>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>-->
+    <div v-if="!addAlterPageVisible">
+      <!-- <img
+        class="iconLeft"
+        src="../assets/closeCreateNewAlter.svg"
+        alt="Schließen"
+        @click="closeCreateNewAlter()"
+      />-->
+      <p>Name:</p>
+      <input type="text" v-model="unsavedAlter.name" />
+      <!-- <p>Beziehungstyp:</p>
+      <v-select v-model="unsavedAlter.role" v-bind:options="roles"></v-select>
+      <p>Geschlecht:</p>
+      <v-select v-model="unsavedAlter.currentGender" v-bind:options="gender"></v-select>
+      <p>Alter:</p>
+      <input type="text" v-model="unsavedAlter.age" />
+      <p>Notiz:</p>
+      <input type="text" class="note" v-model="unsavedAlter.note" />-->
+
+      <button @click="func">Fertig</button>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import AlterInterface from "./AlterInterface.vue";
 import { v4 as uuid } from "uuid";
 
@@ -32,14 +52,25 @@ export default class Alter extends Vue {
   @Prop(Array) private roles!: Array<string>;
   @Prop() private unsavedAlter!: AlterInterface;
   @Prop(Array) private amountOfEdges!: Array<number>;
-  @Prop(Boolean) private addAlterPageVisible?: boolean = false;
+  @Prop(Boolean) private addAlterPageVisible!: boolean;
 
   constructor() {
     super();
-
+    this.addAlterPageVisible = false;
     this.roles = ["Fr", "Fa", "Ko", "He"];
-
+    this.gender = ["männlich", "weiblich", "divers"];
     this.amountOfEdges = [0, 1, 2];
+    this.unsavedAlter = {
+      id: uuid(),
+      name: "",
+      gender: this.gender,
+      role: "",
+      note: "",
+      amountOfEdges: 0
+    };
+    if (localStorage.newAlterName) {
+      this.unsavedAlter = localStorage.newAlterName;
+    }
     this.alter = [
       {
         id: uuid(),
@@ -67,17 +98,15 @@ export default class Alter extends Vue {
       }
     ];
   }
+  @Watch("unsavedAlter")
+  onNameChange(newName: string) {
+    if (this.alter) {
+      localStorage.newAlterName = newName;
+    }
+  }
 
   addAlter() {
     this.addAlterPageVisible = true;
-    this.unsavedAlter = {
-      id: uuid(),
-      name: "",
-      gender: this.gender,
-      role: "",
-      note: "",
-      amountOfEdges: 0
-    };
   }
 
   closeCreateNewAlter() {
