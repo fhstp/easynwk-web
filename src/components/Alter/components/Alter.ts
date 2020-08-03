@@ -1,8 +1,8 @@
 export default interface Alter {
-    id: string;
-    name: string;
-    gender: Array<string>;
-    role: string;
-    note: string;
-    amountOfEdges: number;
-  }
+  id: string;
+  name: string;
+  role: string;
+  currentGender: string;
+  note: string;
+  edgeWeight: number;
+}
