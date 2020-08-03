@@ -17,7 +17,7 @@
       />
       <div id="listOfAlter">
         <ul>
-          <li v-bind:key="alterN.id" v-for="alterN in alter">
+          <li v-bind:key="alterN.id" v-for="alterN in alterarray">
             <div>
               <h2 class="alterListFont">{{ alterN.name }}/{{ alterN.role }}</h2>
             </div>
@@ -29,11 +29,13 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import AlterInterface from "./AlterInterface.vue";
+import Alter from "./Alter";
 import { v4 as uuid } from "uuid";
 
+@Component
 export default class AlterList extends Vue {
-  @Prop(Array) private alter!: Array<AlterInterface>;
+  @Prop(Array) private alter!: Array<Alter>;
+  @Prop(Array) private alterarray!: Array<Alter>;
   @Prop() private gender!: Array<string>;
   @Prop(Array) private roles!: Array<string>;
 

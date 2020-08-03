@@ -15,8 +15,9 @@
       <AlterList
         v-on:openAddAlterPage="openAddAlterPage"
         v-if="egoSubmitted && !addAlterPageVisible"
+        v-bind:alterarray="alter"
       />
-      <AddAlter v-if="egoSubmitted && addAlterPageVisible" />
+      <AddAlter v-if="egoSubmitted && addAlterPageVisible" @add-alter="a =>  alter.push(a)" />
     </div>
   </div>
 </template>
@@ -28,19 +29,22 @@ import "vue-select/dist/vue-select.css";
 import Ego from "./Ego/components/Ego.vue";
 import AlterList from "./Alter/components/AlterList.vue";
 import AddAlter from "./Alter/components/AddAlter.vue";
+import Alter from "@/components/Alter/components/Alter";
 
 Vue.component("v-select", vSelect);
 
 Vue.component("Ego", Ego);
 Vue.component("AlterList", AlterList);
-// Vue.component("AddAlter", AddAlter);
+Vue.component("AddAlter", AddAlter);
 
 @Component
 export default class Form extends Vue {
-  @Prop(Boolean) private egoSubmitted!: boolean;
-  @Prop() private egoKey!: number;
-  @Prop() private alterListKey!: number;
-  @Prop(Boolean) private addAlterPageVisible?: boolean = false;
+  private egoSubmitted!: boolean;
+  private egoKey!: number;
+  // private alterListKey!: number;
+  private addAlterPageVisible?: boolean = false;
+
+  private alter = [] as Alter[];
 
   constructor() {
     super();
@@ -48,6 +52,14 @@ export default class Form extends Vue {
 
     this.egoSubmitted = false;
   }
+
+  // lifecycle hook
+  created() {
+    this.alter = [];
+    const a1 = {id: 'string', name: "Maximilian", gender: [], role: "M", note: "lorem",  amountOfEdges: 1} as Alter;
+    this.alter.push(a1);
+  }
+
   submit() {
     this.egoSubmitted = true;
   }
