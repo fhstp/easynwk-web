@@ -4,7 +4,7 @@
       class="iconLeft"
       src="../assets/addNewAlter.svg"
       alt="Schließen"
-      @click="addAlter()"
+      @click="openAlterListPage()"
     />
     <p>Name:</p>
     <input type="text" v-model="unsavedAlter.name" />
@@ -27,43 +27,42 @@
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import Alter from "./Alter";
 import { v4 as uuid } from "uuid";
-
+import { Gender } from "@/components/Gender.ts";
+import { Roles } from "./Roles";
 @Component
 export default class AddAlter extends Vue {
   private unsavedAlter!: Alter;
-
-  @Prop() private gender!: Array<string>;
+  private gender!: typeof Gender;
+  private roles!: typeof Roles;
 
   constructor() {
     super();
-    // this.unsavedAlter = {
-    //   id: uuid(),
-    //   name: "",
-    //   gender: this.gender,
-    //   role: "",
-    //   note: "",
-    //   amountOfEdges: 0
-    // };
+    this.gender = Gender;
+    this.roles = Roles;
   }
 
   data() {
     return {
-      unsavedAlter : {
+      unsavedAlter: {
         id: uuid(),
         name: "",
-        gender: this.gender,
         role: "",
         note: "",
-        amountOfEdges: 0
-      }
-    }
+        currentGender: "",
+        amountOfEdges: 0,
+      },
+    };
   }
 
   addAlter() {
     // this.alter[this.alter.length] = this.unsavedAlter;
     // localStorage.setItem("alter", JSON.stringify(this.alter));
     console.log("addAlter");
-    this.$emit('add-alter', this.unsavedAlter);
+    this.$emit("add-alter", this.unsavedAlter);
+    this.openAlterListPage();
+  }
+  openAlterListPage() {
+    this.$emit("openAlterListPage");
   }
 }
 </script>
