@@ -1,7 +1,7 @@
 <template>
 	<svg width="800" height="800">
 		<!-- transform coordinate system to be scale independent -->
-		<g transform="translate(400, 400) scale(3.8,3.8)">
+		<g id="coords" transform="translate(400, 400) scale(3.8,3.8)">
 			<line class="axis" x1="0" y1="-100" x2="0" y2="100" />
 			<line class="axis" x1="100" y1="0" x2="-100" y2="0" />
 			<circle class="horizon" cx="0" cy="0" r="100" />
@@ -21,12 +21,17 @@
 					{{ mark.d.name }}
 				</text>
 			</g>
+			<!-- a background rect is necessary so that the whole display is clickable -->
+			<rect id="position" x="-110" y="-110" width="220" height="220" />
 		</g>
 	</svg>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+
+import * as d3 from "d3";
+import { ContainerElement } from 'd3';
 
 import { Alter2 } from "@/data/Alter.ts";
 
@@ -48,6 +53,18 @@ export default class NetworkMap extends Vue {
 	// x(distance: number, angle: number): number {
 	//     return distance * Math.cos(angle * Math.PI/180)
 	// }
+
+
+	mounted() {
+		// d3.mouse only works if the event is registered using D3 .on
+		const g = d3.select('g#coords');
+		g.on("click", () => {
+			const coords = d3.mouse(g.node() as ContainerElement);
+			console.log(coords);
+
+			this.$emit('map-click', coords);
+		})
+	}
 
 	get alteriMarks(): Array<AlteriMark> {
 		console.log("in computed alteri marks");
@@ -82,5 +99,10 @@ line.axis {
 line {
 	stroke: lightgray;
 	stroke-width: 0.5;
+}
+
+#position {
+	fill: aquamarine;
+	fill-opacity: 0.2;
 }
 </style>

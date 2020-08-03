@@ -6,7 +6,7 @@
 			</li>
 			<button @click="addRandomContact()">Add contact</button>
 		</ul>
-        <NetworkMap v-bind:alteri=alteri />
+        <NetworkMap v-bind:alteri=alteri @map-click=mapclick />
 	</div>
 </template>
 
@@ -41,6 +41,10 @@ export default class MapParent extends Vue {
 			Math.round(Math.random() * 360),
             Math.round(Math.random() * 100)
         ));
+	}
+
+	mapclick(coords: number[]) {
+		console.log("map click in parent comp: " + coords);
 	}
 }
 </script>
