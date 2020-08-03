@@ -31,20 +31,21 @@ export default class MapParent extends Vue {
 		this.alteri = [
             new Alter2("Max", 30, 20),
 			new Alter2("Klaus", 150, 90),
-			new Alter2("Julia", 350, 50)
+			new Alter2("Julia", -10, 50)
 		];
 	}
 
 	addRandomContact() {
 		this.alteri.push(
             new Alter2("Neu",
-			Math.round(Math.random() * 360),
+			Math.round(Math.random() * 360 - 180),
             Math.round(Math.random() * 100)
         ));
 	}
 
-	mapclick(coords: number[]) {
-		console.log("map click in parent comp: " + coords);
+	mapclick(coords: {distance: number, angle: number}) {
+		console.log("map click in parent comp: ");
+		console.log(coords);
 	}
 }
 </script>

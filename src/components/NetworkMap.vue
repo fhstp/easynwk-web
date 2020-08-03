@@ -62,7 +62,11 @@ export default class NetworkMap extends Vue {
 			const coords = d3.mouse(g.node() as ContainerElement);
 			console.log(coords);
 
-			this.$emit('map-click', coords);
+			// cp. https://stackoverflow.com/a/33043899/1140589
+			const distance = Math.sqrt(coords[0]*coords[0] + coords[1]*coords[1]);
+			const angle =  Math.atan2(-1 * coords[1], coords[0]) * (180/Math.PI);
+
+			this.$emit('map-click', { distance, angle} );
 		})
 	}
 
@@ -103,6 +107,6 @@ line {
 
 #position {
 	fill: aquamarine;
-	fill-opacity: 0.2;
+	fill-opacity: 0.01;
 }
 </style>
