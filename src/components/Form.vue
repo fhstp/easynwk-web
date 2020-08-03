@@ -6,8 +6,9 @@
           <h2>Neuer Kontakt: Erstellen</h2>
         </div>
       </div>
+      <!-- Through binding this dynamic class you can avoid having the vue-component reload itself and avoid having its variables be resetted -->
       <Ego
-        v-if="!addAlterPageVisible"
+        v-bind:class="{ noDisplay: addAlterPageVisible }"
         v-on:submit="submit()"
         v-on:editEgo="editEgo"
         v-bind:key="egoKey"
@@ -17,13 +18,17 @@
         v-if="egoSubmitted && !addAlterPageVisible"
         v-bind:alterarray="alter"
       />
-      <AddAlter v-if="egoSubmitted && addAlterPageVisible" @add-alter="a =>  alter.push(a)" />
+      <AddAlter
+        v-if="egoSubmitted && addAlterPageVisible"
+        @add-alter="(a) => alter.push(a)"
+        v-on:openAlterListPage="openAlterListPage"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Watch, Component, Prop, Vue } from "vue-property-decorator";
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
 import Ego from "./Ego/components/Ego.vue";
@@ -43,21 +48,23 @@ export default class Form extends Vue {
   private egoKey!: number;
   // private alterListKey!: number;
   private addAlterPageVisible?: boolean = false;
+  private egoTitleV2Activated?: boolean = false;
 
   private alter = [] as Alter[];
 
+  @Watch("alter")
+  onAlterChange(newAlter: any) {
+    localStorage.alter = JSON.stringify(newAlter);
+  }
+
   constructor() {
     super();
+    if (localStorage.alter) {
+      this.alter = JSON.parse(localStorage.alter);
+    }
     this.egoKey = 0;
 
     this.egoSubmitted = false;
-  }
-
-  // lifecycle hook
-  created() {
-    this.alter = [];
-    const a1 = {id: 'string', name: "Maximilian", gender: [], role: "M", note: "lorem",  amountOfEdges: 1} as Alter;
-    this.alter.push(a1);
   }
 
   submit() {
@@ -70,6 +77,9 @@ export default class Form extends Vue {
   }
   openAddAlterPage() {
     this.addAlterPageVisible = true;
+  }
+  openAlterListPage() {
+    this.addAlterPageVisible = false;
   }
 }
 </script>
@@ -99,5 +109,8 @@ export default class Form extends Vue {
 
 #alterListTitle {
   padding: 5px;
+}
+.noDisplay {
+  display: none;
 }
 </style>
