@@ -3,7 +3,9 @@
     <div id="title">
       <div id="egoTitle">
         <h1 class="inlineElement">Ich</h1>
-        <h1 class="inlineElement" v-if="ego.name !== ''">:&nbsp;{{ ego.name }}</h1>
+        <h1 class="inlineElement" v-if="ego.name !== ''">
+          :&nbsp;{{ ego.name }}
+        </h1>
         <img
           v-if="egoSubmitted"
           class="iconRight"
@@ -18,7 +20,12 @@
       <div class="egoSubDiv">
         <p class="textLeft">Name:</p>
         <br />
-        <input type="text" class="inputOrDropdownRight" maxlength="16" v-model="ego.name" />
+        <input
+          type="text"
+          class="inputOrDropdownRight"
+          maxlength="16"
+          v-model="ego.name"
+        />
       </div>
       <div class="egoSubDiv">
         <p class="textLeft">Alter:</p>
@@ -39,7 +46,11 @@
       <div class="egoSubDiv">
         <p class="textLeft">Notiz:</p>
         <br />
-        <textarea class="inputOrDropdownRight note" type="text" v-model="ego.note" />
+        <textarea
+          class="inputOrDropdownRight note"
+          type="text"
+          v-model="ego.note"
+        />
       </div>
 
       <div>
@@ -51,23 +62,24 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import Ego from "./EgoInterface.vue";
+import { Gender } from "@/components/Gender.ts";
 
 @Component
 export default class EgoTitle extends Vue {
-  @Prop() private ego!: Ego;
-  @Prop(Array) private gender!: Array<string>;
-  @Prop(Boolean) private egoSubmitted?: boolean = false;
+  private ego!: Ego;
+  private gender!: typeof Gender;
+  private egoSubmitted?: boolean = false;
 
   constructor() {
     super();
 
-    this.gender = ["männlich", "weiblich", "divers"];
+    this.gender = Gender;
     this.ego = {
       name: "",
       age: "",
       gender: this.gender,
       currentGender: "",
-      note: ""
+      note: "",
     };
     if (localStorage.egoName) {
       this.ego.name = localStorage.egoName;
