@@ -31,21 +31,18 @@
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import Alter from "./Alter";
 import { v4 as uuid } from "uuid";
+import { Gender } from "@/components/Gender.ts";
 
 @Component
 export default class AlterList extends Vue {
   @Prop(Array) private alter!: Array<Alter>;
   @Prop(Array) private alterarray!: Array<Alter>;
-  @Prop() private gender!: Array<string>;
-  @Prop(Array) private roles!: Array<string>;
 
-  @Prop(Array) private amountOfEdges!: Array<number>;
+  @Prop(Array) private edgeWeight!: Array<number>;
 
   constructor() {
     super();
-    this.roles = ["Fr", "Fa", "Ko", "He"];
-    this.gender = ["männlich", "weiblich", "divers"];
-    this.amountOfEdges = [0, 1, 2];
+    this.edgeWeight = [0, 1, 2];
 
     this.alter = [];
     if (localStorage.alter) {
