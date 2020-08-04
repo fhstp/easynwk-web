@@ -61,7 +61,7 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import Ego from "./EgoInterface.vue";
+import Ego from "./EgoInterface";
 import { Gender } from "@/components/Gender.ts";
 
 @Component
