@@ -6,16 +6,16 @@
         <h1 class="inlineElement" v-if="ego.name !== ''">
           :&nbsp;{{ ego.name }}
         </h1>
-        <!-- The v-if is missing -->
         <img
+          v-if="egoSubmitted"
           class="iconRight"
           src="../assets/editEgo.svg"
           alt="Editieren"
-          @click="$emit('editEgo')"
+          @click="editEgo()"
         />
       </div>
     </div>
-    <div id="egoFields" v-if="!egoSubmitted">
+    <div id="egoFields" v-show="!egoSubmitted">
       <h1>Ich</h1>
       <div class="egoSubDiv">
         <p class="textLeft">Name:</p>
@@ -60,27 +60,72 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import Ego from "./EgoInterface.vue";
+import { Gender } from "@/components/Gender.ts";
 
 @Component
 export default class EgoTitle extends Vue {
-  @Prop() private ego!: Ego;
-  @Prop(Array) private gender!: Array<string>;
-  @Prop() private egoSubmitted?: boolean = false;
+  private ego!: Ego;
+  private gender!: typeof Gender;
+  private egoSubmitted?: boolean = false;
+
   constructor() {
     super();
-    this.gender = ["männlich", "weiblich", "divers"];
+
+    this.gender = Gender;
     this.ego = {
       name: "",
       age: "",
       gender: this.gender,
       currentGender: "",
-      note: ""
+      note: "",
     };
+    if (localStorage.egoName) {
+      this.ego.name = localStorage.egoName;
+    }
+    if (localStorage.egoAge) {
+      this.ego.age = localStorage.egoAge;
+    }
+    if (localStorage.egoCurrentGender) {
+      this.ego.currentGender = localStorage.egoCurrentGender;
+    }
+    if (localStorage.egoNote) {
+      this.ego.note = localStorage.egoNote;
+    }
   }
+
+  @Watch("ego.name")
+  onNameChange(newName: string) {
+    if (this.ego) {
+      localStorage.egoName = newName;
+    }
+  }
+
+  @Watch("ego.age")
+  onAgeChange(newAge: string) {
+    if (this.ego) {
+      localStorage.egoAge = newAge;
+    }
+  }
+  @Watch("ego.currentGender")
+  onCurrentGenderChange(newCurrentGender: string) {
+    if (this.ego) {
+      localStorage.egoCurrentGender = newCurrentGender;
+      if (localStorage.egoCurrentGender === "null") {
+        localStorage.egoCurrentGender = "";
+      }
+    }
+  }
+  @Watch("ego.note")
+  onNoteChange(newNote: string) {
+    if (this.ego) {
+      localStorage.egoNote = newNote;
+    }
+  }
+
   get Name() {
-    return this.ego.name;
+    return this.ego && this.ego.name;
   }
   get Age() {
     return this.ego.age;
@@ -104,16 +149,29 @@ export default class EgoTitle extends Vue {
   set Note(note: string) {
     this.ego.note = note;
   }
+  parentSubmit() {
+    this.$emit("submit");
+  }
   submit() {
     this.egoSubmitted = true;
-    this.$emit("submit");
+    // this.setTimeout is needed to let vue re-create the properties it needs to access
+    setTimeout(this.parentSubmit, 0);
+  }
+
+  parentEditEgo() {
+    this.$emit("editEgo");
+  }
+  editEgo() {
+    this.egoSubmitted = false;
+    // this.setTimeout is needed to let vue re-create the properties it needs to access
+    setTimeout(this.parentEditEgo, 0);
   }
 }
 </script>
 <style scoped>
 #egoTitle {
   color: white;
-  background-color: rgba(37, 40, 121, 0.7);
+  background-color: #ff8a00;
   padding: 5px;
   padding-top: 5px;
   padding-left: 15px;
