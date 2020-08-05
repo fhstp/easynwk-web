@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link>
+      <!-- <router-link to="/">Home</router-link> -->
       <!-- <router-link to="/about">About</router-link> -->
     </div>
     <router-view />
@@ -28,6 +28,12 @@
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+nav {
+  overflow: hidden;
+  overflow-y: scroll;
+  height: 508px;
+  width: 548px;
+}
 button {
   font-size: 36px;
   margin: 10px;
@@ -38,6 +44,7 @@ button {
 ul {
   list-style-type: none;
   padding: 0;
+  margin: 0;
 }
 li {
   display: inline-block;
@@ -104,6 +111,6 @@ h1 {
 }
 .iconRight {
   float: right;
-  margin: 5px;
+  padding: 10px;
 }
 </style>

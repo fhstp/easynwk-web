@@ -1,8 +1,12 @@
 <template>
   <div>
     <div id="alterFields">
-      <h2 id="contactListTitleHeading" class="inlineElement textLeft alterListFont">Kontakte:</h2>
-
+      <h2
+        id="contactListTitleHeading"
+        class="inlineElement textLeft alterListFont"
+      >
+        Kontakte:
+      </h2>
       <img
         id="addAlterIcon"
         class="iconRight"
@@ -11,6 +15,7 @@
         @click="openAddAlterPage()"
       />
       <div id="listOfAlter">
+      <nav>
         <ul>
           <li v-bind:key="alterN.id" v-for="alterN in alterarray">
             <div>
@@ -18,13 +23,14 @@
             </div>
           </li>
         </ul>
+        </nav>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import Alter from "./Alter";
+import {Alter} from "./Alter";
 import { v4 as uuid } from "uuid";
 import { Gender } from "@/components/Gender.ts";
 
@@ -66,8 +72,5 @@ export default class AlterList extends Vue {
 #addAlterIcon {
   padding: 15px;
   padding-right: 17px;
-}
-ul {
-  width: 100%;
 }
 </style>

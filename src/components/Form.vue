@@ -34,7 +34,7 @@ import "vue-select/dist/vue-select.css";
 import Ego from "./Ego/components/Ego.vue";
 import AlterList from "./Alter/components/AlterList.vue";
 import AddAlter from "./Alter/components/AddAlter.vue";
-import Alter from "@/components/Alter/components/Alter";
+import {Alter} from "@/components/Alter/components/Alter";
 
 Vue.component("v-select", vSelect);
 
