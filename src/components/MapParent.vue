@@ -14,8 +14,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import NetworkMap from "@/components/NetworkMap.vue";
-
-import { Alter2 } from "@/data/Alter.ts";
+import { Alter } from "@/components/Alter/components/Alter";
 
 @Component({
   components: {
@@ -24,21 +23,21 @@ import { Alter2 } from "@/data/Alter.ts";
 })
 export default class MapParent extends Vue {
   private ego: string;
-  private alteri: Array<Alter2>;
+  private alteri: Array<Alter>;
 
   constructor() {
     super();
     this.ego = "Alex";
     this.alteri = [
-      new Alter2("Max", 30, 20),
-      new Alter2("Klaus", 150, 90),
-      new Alter2("Julia", -10, 50),
+      new Alter("Max", 30, 20),
+      new Alter("Klaus", 150, 90),
+      new Alter("Julia", -10, 50),
     ];
   }
 
   addRandomContact() {
     this.alteri.push(
-      new Alter2(
+      new Alter(
         "Neu",
         Math.round(Math.random() * 360 - 180),
         Math.round(Math.random() * 100)
@@ -48,7 +47,7 @@ export default class MapParent extends Vue {
 
   mapclick(coords: { distance: number; angle: number }) {
     console.log("map click in parent comp: ");
-    this.alteri.push(new Alter2("heya", coords.angle, coords.distance));
+    this.alteri.push(new Alter("heya", coords.angle, coords.distance));
     console.log(coords);
   }
 }
