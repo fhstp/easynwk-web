@@ -9,7 +9,7 @@
       <!-- Through binding this dynamic class you can avoid having the vue-component reload itself and avoid having its variables be resetted -->
       <Ego
         v-bind:class="{ noDisplay: addAlterPageVisible }"
-        v-on:submit="submit()"
+        v-on:submit="submitEgo()"
         v-on:editEgo="editEgo"
         v-bind:key="egoKey"
       />
@@ -66,10 +66,16 @@ export default class Form extends Vue {
     if (localStorage.alter) {
       this.alter = JSON.parse(localStorage.alter);
     }
+    if (localStorage.egoSubmitted) {
+      this.egoSubmitted = localStorage.egoSubmitted;
+    }
+    if (localStorage.addAlterPageVisible) {
+      this.addAlterPageVisible = localStorage.addAlterPageVisible;
+    }
     this.egoKey = 0;
   }
 
-  submit() {
+  submitEgo() {
     this.egoSubmitted = true;
   }
   editEgo() {
