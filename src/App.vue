@@ -28,6 +28,12 @@
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+nav {
+  overflow: hidden;
+  overflow-y: scroll;
+  height: 508px;
+  width: 548px;
+}
 button {
   font-size: 36px;
   margin: 10px;
