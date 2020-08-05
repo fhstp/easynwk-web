@@ -7,8 +7,8 @@ export class Alter {
   currentGender?: string = "";
   note?: string = "";
   edgeWeight?: number = 0;
-  angle? = 0;
-  distance? = 0;
+  angle = 0;
+  distance = 0;
 
   constructor(name: string, $angle: number, $distance: number) {
     this._id = uuid();
