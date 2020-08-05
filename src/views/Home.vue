@@ -14,7 +14,7 @@ export default {
   name: "Home",
   components: {
     Form,
-    MapParent,
-  },
+    MapParent
+  }
 };
 </script>

@@ -7,7 +7,6 @@
       >
         Kontakte:
       </h2>
-
       <img
         id="addAlterIcon"
         class="iconRight"
