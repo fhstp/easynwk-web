@@ -16,6 +16,7 @@
         @click="openAddAlterPage()"
       />
       <div id="listOfAlter">
+      <nav>
         <ul>
           <li v-bind:key="alterN.id" v-for="alterN in alterarray">
             <div>
@@ -23,6 +24,7 @@
             </div>
           </li>
         </ul>
+        </nav>
       </div>
     </div>
   </div>
