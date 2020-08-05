@@ -1,12 +1,5 @@
 <template>
   <div>
-    <ul>
-      <li v-for="cur in alteri" :key="cur.id">
-        <b>{{ cur.name }}</b>
-        {{ cur.angle }}, {{ cur.distance }}
-      </li>
-      <button @click="addRandomContact()">Add contact</button>
-    </ul>
     <NetworkMap v-bind:alteri="alteri" @map-click="mapclick" />
   </div>
 </template>
@@ -22,33 +15,23 @@ import { Alter } from "@/components/Alter/components/Alter";
   },
 })
 export default class MapParent extends Vue {
-  private ego: string;
+  // private ego: string;
   private alteri: Array<Alter>;
 
   constructor() {
     super();
-    this.ego = "Alex";
-    this.alteri = [
-      new Alter("Max", 30, 20),
-      new Alter("Klaus", 150, 90),
-      new Alter("Julia", -10, 50),
-    ];
-  }
-
-  addRandomContact() {
-    this.alteri.push(
-      new Alter(
-        "Neu",
-        Math.round(Math.random() * 360 - 180),
-        Math.round(Math.random() * 100)
-      )
-    );
+    // this.ego = "Alex";
+    this.alteri = [];
   }
 
   mapclick(coords: { distance: number; angle: number }) {
     console.log("map click in parent comp: ");
-    this.alteri.push(new Alter("heya", coords.angle, coords.distance));
-    console.log(coords);
+    localStorage.unsavedAlter = JSON.stringify(
+      new Alter("", coords.angle, coords.distance)
+    );
+    localStorage.egoSubmitted = true;
+    localStorage.addAlterPageVisible = true;
+    this.$emit("reloadForm");
   }
 }
 </script>
