@@ -25,7 +25,7 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import {Alter} from "./Alter";
+import { Alter } from "./Alter";
 import { v4 as uuid } from "uuid";
 import { Gender } from "@/components/Gender.ts";
 import { Roles } from "./Roles";
@@ -37,21 +37,11 @@ export default class AddAlter extends Vue {
 
   constructor() {
     super();
+    if (localStorage.unsavedAlter) {
+      this.unsavedAlter = JSON.parse(localStorage.unsavedAlter);
+    }
     this.gender = Gender;
     this.roles = Roles;
-  }
-
-  data() {
-    return {
-      unsavedAlter: {
-        id: uuid(),
-        name: "",
-        role: "",
-        note: "",
-        currentGender: "",
-        amountOfEdges: 0,
-      },
-    };
   }
 
   addAlter() {
