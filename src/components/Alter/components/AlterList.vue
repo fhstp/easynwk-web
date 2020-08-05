@@ -29,7 +29,7 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import Alter from "./Alter";
+import {Alter} from "./Alter";
 import { v4 as uuid } from "uuid";
 import { Gender } from "@/components/Gender.ts";
 
