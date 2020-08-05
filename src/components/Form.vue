@@ -34,7 +34,8 @@ import "vue-select/dist/vue-select.css";
 import Ego from "./Ego/components/Ego.vue";
 import AlterList from "./Alter/components/AlterList.vue";
 import AddAlter from "./Alter/components/AddAlter.vue";
-import {Alter} from "@/components/Alter/components/Alter";
+import { Alter } from "@/components/Alter/components/Alter";
+import { local } from "d3";
 
 Vue.component("v-select", vSelect);
 
@@ -44,7 +45,7 @@ Vue.component("AddAlter", AddAlter);
 
 @Component
 export default class Form extends Vue {
-  private egoSubmitted!: boolean;
+  private egoSubmitted?: boolean = false;
   private egoKey!: number;
   // private alterListKey!: number;
   private addAlterPageVisible?: boolean = false;
@@ -59,12 +60,13 @@ export default class Form extends Vue {
 
   constructor() {
     super();
+    if (localStorage.egoInitiallyDisplayed === "false") {
+      this.egoSubmitted = true;
+    }
     if (localStorage.alter) {
       this.alter = JSON.parse(localStorage.alter);
     }
     this.egoKey = 0;
-
-    this.egoSubmitted = false;
   }
 
   submit() {

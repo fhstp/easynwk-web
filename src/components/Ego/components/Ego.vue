@@ -15,7 +15,7 @@
         />
       </div>
     </div>
-    <div id="egoFields" v-show="!egoSubmitted">
+    <div id="egoFields" v-if="!egoSubmitted">
       <h1>Ich</h1>
       <div class="egoSubDiv">
         <p class="textLeft">Name:</p>
@@ -72,7 +72,9 @@ export default class EgoTitle extends Vue {
 
   constructor() {
     super();
-
+    if (localStorage.egoInitiallyDisplayed === "false") {
+      this.egoSubmitted = true;
+    }
     this.gender = Gender;
     this.ego = {
       name: "",
@@ -151,6 +153,7 @@ export default class EgoTitle extends Vue {
   }
   parentSubmit() {
     this.$emit("submit");
+    localStorage.egoInitiallyDisplayed = false;
   }
   submit() {
     this.egoSubmitted = true;
@@ -163,6 +166,7 @@ export default class EgoTitle extends Vue {
   }
   editEgo() {
     this.egoSubmitted = false;
+    localStorage.egoInitiallyDisplayed = true;
     // this.setTimeout is needed to let vue re-create the properties it needs to access
     setTimeout(this.parentEditEgo, 0);
   }
