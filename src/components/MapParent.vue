@@ -54,7 +54,7 @@ export default class MapParent extends Vue {
 }
 </script>
 
-<style>
+<style scoped>
 ul {
   width: 200px;
 }
