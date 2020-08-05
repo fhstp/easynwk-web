@@ -1,4 +1,3 @@
-<script lang="ts">
 export default interface Ego {
   name: string;
   age: string;
@@ -6,4 +5,4 @@ export default interface Ego {
   currentGender: string;
   note: string;
 }
-</script>
+
