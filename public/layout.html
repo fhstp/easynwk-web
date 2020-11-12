@@ -89,6 +89,10 @@
             float: right;
         }
 
+        .panel-block.alteri-form {
+            display: block;
+        }
+
         @media (min-width: 168vh) {
             #main {
                 width: 70vmin;
@@ -205,9 +209,105 @@
                     <a class="panel-block is-active">
                       Lara / Fr
                     </a>
-                    <a class="panel-block">
+                    <p class="panel-block">
                       Susanne / M
-                    </a>
+                    </p>
+                    <div class="panel-block alteri-form  is-active">
+
+                      <div class="field is-horizontal">
+                        <div class="field-label is-normal">
+                          <label class="label">Name</label>
+                        </div>
+                        <div class="field-body">
+                          <div class="field">
+                            <div class="control">
+                              <input class="input" type="text" placeholder="Vorname oder Spitzname">
+                            </div>
+                            <p class="help">Pflichtfeld</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="field is-horizontal">
+                        <div class="field-label is-normal">
+                          <label class="label">Rolle</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="control">
+                              <div class="select is-fullwidth">
+                                <select>
+                                  <option>Mutter</option>
+                                  <option>Vater</option>
+                                  <option>FreundIn</option>
+                                </select>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field is-horizontal">
+                        <div class="field-label is-normal">
+
+                          </div>
+                          <div class="field-body">
+                            <label class="checkbox">
+                                <input type="checkbox">
+                                Kontakt der Partnerin/des Partners
+                              </label>
+                            </div>
+                        </div>
+
+
+                      <div class="field is-horizontal">
+                        <div class="field-label is-normal">
+                          <label class="label">Geschlecht</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="control">
+                              <div class="select is-fullwidth">
+                                <select>
+                                  <option>nicht festgelegt</option>
+                                  <option>weiblich</option>
+                                  <option>männlich</option>
+                                  <option>divers</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+
+                        <div class="field is-horizontal">
+                          <div class="field-label is-normal">
+                            <label class="label">Alter</label>
+                          </div>
+                          <div class="field-body">
+                            <div class="field">
+                              <div class="control">
+                                <input class="input" type="text">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                         <div class="field">
+                            <div class="control">
+                              <textarea class="textarea is-small" placeholder="Notizen zum Kontakt"></textarea>
+                            </div>
+                          </div>
+
+                          <div class="field is-grouped is-grouped-centered">
+                            <p class="control">
+                              <a class="button is-primary">
+                                Speichern
+                              </a>
+                            </p>
+                            <p class="control">
+                              <a class="button is-light">
+                                Abbrechen
+                              </a>
+                            </p>
+                          </div>
+
+                    </div>
                     <a class="panel-block">
                       Karl / Fr
                     </a>
