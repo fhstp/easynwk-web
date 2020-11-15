@@ -1,0 +1,22 @@
+// Customizations Here (Optional)
+
+// Set your brand colors
+$nwkorange: hsl(32, 100%, 50%);
+
+// Update some of Bulma's component variables
+// $body-background-color: aliceblue;
+$panel-item-border: 1px solid #dbdbdb;
+
+// Bulma Import
+@import '~bulma';
+
+// Import only what you need from Bulma
+// @import "../node_modules/bulma/sass/utilities/_all.sass";
+// @import "../node_modules/bulma/sass/base/_all.sass";
+// @import "../node_modules/bulma/sass/elements/button.sass";
+// @import "../node_modules/bulma/sass/elements/container.sass";
+// @import "../node_modules/bulma/sass/elements/title.sass";
+// @import "../node_modules/bulma/sass/form/_all.sass";
+// @import "../node_modules/bulma/sass/components/navbar.sass";
+// @import "../node_modules/bulma/sass/layout/hero.sass";
+// @import "../node_modules/bulma/sass/layout/section.sass";
