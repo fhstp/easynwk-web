@@ -1,7 +1,7 @@
 <template>
-  <svg width="800" height="800">
+  <svg id="nwkmap" width="100%" height="100%" viewBox="-105 -105 210 210">
     <!-- transform coordinate system to be scale independent -->
-    <g id="coords" transform="translate(400, 400) scale(3.8,3.8)">
+    <g id="coords">
       <line class="axis" x1="0" y1="-100" x2="0" y2="100" />
       <line class="axis" x1="100" y1="0" x2="-100" y2="0" />
       <circle class="horizon" cx="0" cy="0" r="100" />
@@ -71,12 +71,12 @@ export default class NetworkMap extends Vue {
   get alteriMarks(): Array<AlteriMark> {
     console.log("in computed alteri marks");
     const buffer: Array<AlteriMark> = [];
-    this.alteri.forEach((el) => {
+    this.alteri.forEach(el => {
       console.log("alter: " + el.name);
       buffer.push({
         d: el,
         x: el.distance * Math.cos((el.angle * Math.PI) / 180),
-        y: -1 * el.distance * Math.sin((el.angle * Math.PI) / 180),
+        y: -1 * el.distance * Math.sin((el.angle * Math.PI) / 180)
       });
     });
     // first draw marks further away from center to avoid overplotting
@@ -104,7 +104,7 @@ line {
 }
 
 #position {
-  fill: aquamarine;
+  fill: white;
   fill-opacity: 0.01;
 }
 </style>

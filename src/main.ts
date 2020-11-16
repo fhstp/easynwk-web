@@ -9,8 +9,24 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 // NB: import & add each used icon here
-import { faExchangeAlt, faCheck } from "@fortawesome/free-solid-svg-icons";
-library.add(faExchangeAlt, faCheck);
+import {
+  faBars,
+  faPencilAlt,
+  faUserPlus,
+  faMapPin,
+  faUserMinus,
+  faExchangeAlt,
+  faCheck
+} from "@fortawesome/free-solid-svg-icons";
+library.add(
+  faBars,
+  faPencilAlt,
+  faUserPlus,
+  faMapPin,
+  faUserMinus,
+  faExchangeAlt,
+  faCheck
+);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
