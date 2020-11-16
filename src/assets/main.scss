@@ -1,11 +1,12 @@
 // Customizations Here (Optional)
 
 // Set your brand colors
-$nwkorange: hsl(32, 100%, 50%);
+// @import "@/assets/variables.scss"; // via vue.config.js
 
 // Update some of Bulma's component variables
 // $body-background-color: aliceblue;
-$panel-item-border: 1px solid #dbdbdb;
+$primary: $color-secondary-2-0;
+$info: $color-primary-0;
 
 // Bulma Import
 @import '~bulma';

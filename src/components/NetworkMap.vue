@@ -10,7 +10,12 @@
 
       <g v-for="mark in alteriMarks" :key="mark.d.id">
         <line x1="0" y1="0" :x2="mark.x" :y2="mark.y" />
-        <circle :r="2" :cx="mark.x" :cy="mark.y" />
+        <circle
+          :r="1.5"
+          :cx="mark.x"
+          :cy="mark.y"
+          :class="{ selected: mark.d.isSelected }"
+        />
         <text
           :x="mark.x"
           :y="mark.y"
@@ -21,6 +26,8 @@
           {{ mark.d.name }}
         </text>
       </g>
+      <circle id="ego" cx="0" cy="0" r="1.5" />
+
       <!-- a background rect is necessary so that the whole display is clickable -->
       <rect id="position" x="-110" y="-110" width="220" height="220" />
     </g>
@@ -32,7 +39,8 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 
 import * as d3 from "d3";
 import { ContainerElement } from "d3";
-import { Alter } from "@/components/Alter/components/Alter";
+import { Alter } from "@/data/Alter";
+import { AlteriList } from "@/data/AlteriList";
 
 interface AlteriMark {
   d: Alter;
@@ -43,7 +51,7 @@ interface AlteriMark {
 @Component
 export default class NetworkMap extends Vue {
   // @Prop(Array) private alteri!: Array<Alter>;
-  @Prop(Array) private alteri!: Array<Alter>;
+  @Prop(AlteriList) private alteri!: AlteriList;
 
   constructor() {
     super();
@@ -71,7 +79,7 @@ export default class NetworkMap extends Vue {
   get alteriMarks(): Array<AlteriMark> {
     console.log("in computed alteri marks");
     const buffer: Array<AlteriMark> = [];
-    this.alteri.forEach(el => {
+    this.alteri.getAlteri().forEach(el => {
       console.log("alter: " + el.name);
       buffer.push({
         d: el,
@@ -85,7 +93,7 @@ export default class NetworkMap extends Vue {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 text {
   font-size: 5px;
 }
@@ -106,5 +114,13 @@ line {
 #position {
   fill: white;
   fill-opacity: 0.01;
+}
+
+#ego {
+  fill: $color-primary-0;
+}
+
+.selected {
+  fill: $color-secondary-1-0;
 }
 </style>

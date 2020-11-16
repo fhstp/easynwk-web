@@ -2,7 +2,7 @@
   <div id="container">
     <div id="main">
       <div class="scrollwrapper">
-        <div id="titlebar">
+        <div id="titlebar" class="has-text-black">
           <button
             data-behavior="menu-open"
             class="button is-burger"
@@ -32,8 +32,10 @@
           <a href="#">Über die easyNWK</a>
         </div>
         <div id="forms">
+          <AlteriPanel v-bind:alteri="alteri" />
+
           <ul>
-            <li v-for="cur in alteri" :key="cur.id">
+            <li v-for="cur in alteri.getAlteri()" :key="cur.id">
               <b>{{ cur.name }}</b>
               {{ cur.angle }}, {{ cur.distance }}
             </li>
@@ -80,30 +82,29 @@
 
 import { Component, Vue } from "vue-property-decorator"; // Prop,
 
+import AlteriPanel from "@/components/AlteriPanel.vue";
 import NetworkMap from "@/components/NetworkMap.vue";
-import { Alter } from "@/components/Alter/components/Alter";
+import { Alter } from "@/data/Alter";
+import { AlteriList } from "@/data/AlteriList";
 
 @Component({
   components: {
+    AlteriPanel,
     NetworkMap
   }
 })
 export default class Home extends Vue {
   private ego: string;
-  private alteri: Array<Alter>;
+  private alteri: AlteriList;
 
   constructor() {
     super();
     this.ego = "Alex";
-    this.alteri = [
-      new Alter("Max", 30, 20),
-      new Alter("Klaus", 150, 90),
-      new Alter("Julia", -10, 50)
-    ];
+    this.alteri = new AlteriList();
   }
 
   addRandomContact() {
-    this.alteri.push(
+    this.alteri.addAlter(
       new Alter(
         "Neu",
         Math.round(Math.random() * 360 - 180),
@@ -114,13 +115,13 @@ export default class Home extends Vue {
 
   mapclick(coords: { distance: number; angle: number }) {
     console.log("map click in parent comp: ");
-    this.alteri.push(new Alter("heya", coords.angle, coords.distance));
+    this.alteri.addAlter(new Alter("heya", coords.angle, coords.distance));
     console.log(coords);
   }
 }
 </script>
 
-<style>
+<style lang="scss">
 #container {
   background: white;
   margin: 0;
@@ -154,7 +155,7 @@ export default class Home extends Vue {
 
 #titlebar {
   font-size: 180%;
-  background: hsl(32, 100%, 50%); /* $light; */
+  background: $color-primary-1; /* hsl(32, 100%, 50%); /* $light; */
   padding: 1vmin 1vmin 1vmin 1vmin;
   flex-shrink: 0;
 

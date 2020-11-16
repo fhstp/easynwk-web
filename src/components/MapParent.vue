@@ -14,7 +14,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import NetworkMap from "@/components/NetworkMap.vue";
-import { Alter } from "@/components/Alter/components/Alter";
+import { Alter } from "@/data/Alter";
 
 @Component({
   components: {

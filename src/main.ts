@@ -16,6 +16,7 @@ import {
   faMapPin,
   faUserMinus,
   faExchangeAlt,
+  faProjectDiagram,
   faCheck
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
@@ -25,6 +26,7 @@ library.add(
   faMapPin,
   faUserMinus,
   faExchangeAlt,
+  faProjectDiagram,
   faCheck
 );
 

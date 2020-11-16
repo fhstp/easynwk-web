@@ -25,10 +25,10 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import {Alter} from "./Alter";
+import {Alter} from "@/data/Alter";
 import { v4 as uuid } from "uuid";
-import { Gender } from "@/components/Gender.ts";
-import { Roles } from "./Roles";
+import { Gender } from "@/data/Gender.ts";
+import { Roles } from "@/data/Roles";
 @Component
 export default class AddAlter extends Vue {
   private unsavedAlter!: Alter;
