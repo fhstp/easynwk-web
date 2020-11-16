@@ -6,9 +6,12 @@
     </div>
     <div class="field">
       <p class="control has-icons-left">
-        <input class="input" type="email" placeholder="Email">
+        <input class="input" type="email" placeholder="Email" />
         <span class="icon is-small is-left">
-          <font-awesome-icon icon="exchange-alt" data-fa-transform="rotate-90" />
+          <font-awesome-icon
+            icon="exchange-alt"
+            data-fa-transform="rotate-90"
+          />
         </span>
       </p>
     </div>
@@ -16,5 +19,4 @@
   </div>
 </template>
 
-<style>
-</style>
+<style></style>
