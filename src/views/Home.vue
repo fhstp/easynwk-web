@@ -1,5 +1,6 @@
 <template>
   <div id="container">
+    <!-- TODO use slots to separate layout from logic https://vuejs.org/v2/guide/components.html#Content-Distribution-with-Slots -->
     <div id="main">
       <div class="scrollwrapper">
         <div id="titlebar" class="has-text-black">
@@ -95,10 +96,12 @@ export default class Home extends Vue {
   // }
 
   editClicked(newEditAlter: Alter) {
+    if (this.editedAlter != null) this.alteri.persistAlteri();
     this.editedAlter = newEditAlter;
   }
 
   editFinished() {
+    this.alteri.persistAlteri();
     this.editedAlter = null;
   }
 

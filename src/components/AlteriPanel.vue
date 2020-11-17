@@ -29,7 +29,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import AlteriPanelEntry from "@/components/AlteriPanelEntry.vue";
-import { Alter } from "@/data/Alter";
+import { Alter, initAlter } from "@/data/Alter";
 import { AlteriList } from "@/data/AlteriList";
 
 @Component({
@@ -39,14 +39,14 @@ import { AlteriList } from "@/data/AlteriList";
 })
 export default class AlteriPanel extends Vue {
   @Prop(AlteriList) private alteri!: AlteriList;
-  @Prop(Alter) private editedAlter!: Alter | null;
+  @Prop(Object) private editedAlter!: Alter | null;
 
   constructor() {
     super();
   }
 
   addAlter() {
-    const newAlter = new Alter("", 0, 0);
+    const newAlter = initAlter();
     this.alteri.addAlter(newAlter);
     this.$emit("edit", newAlter);
   }

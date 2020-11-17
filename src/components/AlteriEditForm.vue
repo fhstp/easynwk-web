@@ -119,7 +119,7 @@ import { Gender } from "@/data/Gender.ts";
 
 @Component
 export default class AlteriEditForm extends Vue {
-  @Prop(Alter) private alter!: Alter;
+  @Prop(Object) private alter!: Alter;
   private genderOptions = Gender;
 
   constructor() {

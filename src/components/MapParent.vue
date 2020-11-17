@@ -29,25 +29,23 @@ export default class MapParent extends Vue {
     super();
     this.ego = "Alex";
     this.alteri = [
-      new Alter("Max", 30, 20),
-      new Alter("Klaus", 150, 90),
-      new Alter("Julia", -10, 50),
+      // new Alter("Max", 30, 20),
+      // new Alter("Klaus", 150, 90),
+      // new Alter("Julia", -10, 50),
     ];
   }
 
   addRandomContact() {
-    this.alteri.push(
-      new Alter(
-        "Neu",
-        Math.round(Math.random() * 360 - 180),
-        Math.round(Math.random() * 100)
-      )
-    );
+    // const newAlter = initAlter() as Alter;
+    // newAlter.name = "Neu";
+    // newAlter.distance = Math.round(Math.random() * 100);
+    // newAlter.angle = Math.round(Math.random() * 360 - 180,
+    // this.alteri.push(newAlter);
   }
 
   mapclick(coords: { distance: number; angle: number }) {
     console.log("map click in parent comp: ");
-    this.alteri.push(new Alter("heya", coords.angle, coords.distance));
+    // this.alteri.push(new Alter("heya", coords.angle, coords.distance));
     console.log(coords);
   }
 }

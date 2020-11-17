@@ -44,8 +44,8 @@ import { Alter } from "@/data/Alter";
   }
 })
 export default class AlteriPanelEntry extends Vue {
-  @Prop(Alter) private alter!: Alter;
-  @Prop(Alter) private editedAlter!: Alter | null;
+  @Prop(Object) private alter!: Alter;
+  @Prop(Object) private editedAlter!: Alter | null;
 
   constructor() {
     super();

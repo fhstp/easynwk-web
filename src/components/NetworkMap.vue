@@ -56,7 +56,7 @@ interface AlteriMark {
 @Component
 export default class NetworkMap extends Vue {
   @Prop(AlteriList) private alteri!: AlteriList;
-  @Prop(Alter) private editedAlter!: Alter | null;
+  @Prop(Object) private editedAlter!: Alter | null;
 
   constructor() {
     super();
