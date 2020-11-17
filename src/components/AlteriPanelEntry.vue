@@ -7,8 +7,8 @@
     <span v-if="isEditMode">Kontakt bearbeiten</span>
     <span v-else>{{ alter.name }} / {{ alter.role }}</span>
 
-    <span class="buttons are-small" v-if="alter.isSelected && ! isEditMode">
-      <button class="button is-small" v-on:click.stop="isEditMode = true">
+    <span class="buttons are-small" v-if="alter.isSelected && !isEditMode">
+      <button class="button is-small" v-on:click.stop="$emit('edit', alter)">
         <span class="icon is-small">
           <font-awesome-icon icon="pencil-alt" />
         </span>
@@ -28,7 +28,7 @@
     <AlteriEditForm
       v-if="isEditMode"
       v-bind:alter="alter"
-      @cancel="isEditMode = false"
+      @edit-finished="$emit('edit-finished')"
     ></AlteriEditForm>
   </p>
 </template>
@@ -45,16 +45,19 @@ import { Alter } from "@/data/Alter";
 })
 export default class AlteriPanelEntry extends Vue {
   @Prop(Alter) private alter!: Alter;
-  private isEditMode = false;
+  @Prop(Alter) private editedAlter!: Alter | null;
 
   constructor() {
     super();
-    this.isEditMode = false;
+  }
+
+  get isEditMode() {
+    return this.editedAlter != null && this.editedAlter.id === this.alter.id;
   }
 
   toggleSelection() {
-    if (! this.isEditMode) {
-      this.alter.isSelected = !this.alter.isSelected
+    if (!this.isEditMode) {
+      this.alter.isSelected = !this.alter.isSelected;
     }
   }
 }
@@ -70,11 +73,10 @@ export default class AlteriPanelEntry extends Vue {
 }
 
 .panel-block.selected {
-  background: rgba($color-secondary-1-0, .25);;
+  background: rgba($color-secondary-1-0, 0.25);
 }
 
 .panel-block.selected > span {
   font-weight: bold;
 }
-
 </style>

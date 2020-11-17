@@ -32,37 +32,12 @@
           <a href="#">Über die easyNWK</a>
         </div>
         <div id="forms">
-          <AlteriPanel v-bind:alteri="alteri" />
-
-          <ul>
-            <li v-for="cur in alteri.getAlteri()" :key="cur.id">
-              <b>{{ cur.name }}</b>
-              {{ cur.angle }}, {{ cur.distance }}
-            </li>
-            <button @click="addRandomContact()">Add contact</button>
-          </ul>
-
-          <div class="field">
-            <p class="control has-icons-left">
-              <input class="input" type="email" placeholder="Email" />
-              <span class="icon is-small is-left">
-                <font-awesome-icon icon="exchange-alt" rotation="90" />
-              </span>
-            </p>
-          </div>
-
-          <p>
-            Hallo. Ich bin ein kleiner Blindtext. Und zwar schon so lange ich
-            denken kann. Es war nicht leicht zu verstehen, was es bedeutet, ein
-            blinder Text zu sein: Man ergibt keinen Sinn. Wirklich keinen Sinn.
-            Man wird zusammenhangslos eingeschoben und rumgedreht – und oftmals
-            gar nicht erst gelesen. Aber bin ich allein deshalb ein schlechterer
-            Text als andere? Na gut, ich werde nie in den Bestsellerlisten
-            stehen. Aber andere Texte schaffen das auch nicht. Und darum stört
-            es mich nicht besonders blind zu sein. Und sollten Sie diese Zeilen
-            noch immer lesen, so habe ich als kleiner Blindtext etwas geschafft,
-            wovon all die richtigen und wichtigen Texte meist nur träumen.
-          </p>
+          <AlteriPanel
+            v-bind:alteri="alteri"
+            v-bind:editedAlter="editedAlter"
+            @edit="editClicked"
+            @edit-finished="editFinished"
+          />
         </div>
         <!-- <div>
             Über die easyNWK &nbsp; &nbsp; &nbsp; Impressum
@@ -70,7 +45,11 @@
       </div>
     </div>
     <div id="chart">
-      <NetworkMap v-bind:alteri="alteri" @map-click="mapclick" />
+      <NetworkMap
+        v-bind:alteri="alteri"
+        v-bind:editedAlter="editedAlter"
+        @map-click="mapclick"
+      />
     </div>
   </div>
 </template>
@@ -96,27 +75,35 @@ import { AlteriList } from "@/data/AlteriList";
 export default class Home extends Vue {
   private ego: string;
   private alteri: AlteriList;
+  private editedAlter: Alter | null;
 
   constructor() {
     super();
     this.ego = "Alex";
     this.alteri = new AlteriList();
+    this.editedAlter = null;
   }
 
-  addRandomContact() {
-    this.alteri.addAlter(
-      new Alter(
-        "Neu",
-        Math.round(Math.random() * 360 - 180),
-        Math.round(Math.random() * 100)
-      )
-    );
+  // addRandomContact() {
+  //   this.alteri.addAlter(
+  //     new Alter(
+  //       "Neu",
+  //       Math.round(Math.random() * 360 - 180),
+  //       Math.round(Math.random() * 100)
+  //     )
+  //   );
+  // }
+
+  editClicked(newEditAlter: Alter) {
+    this.editedAlter = newEditAlter;
+  }
+
+  editFinished() {
+    this.editedAlter = null;
   }
 
   mapclick(coords: { distance: number; angle: number }) {
-    console.log("map click in parent comp: ");
-    this.alteri.addAlter(new Alter("heya", coords.angle, coords.distance));
-    console.log(coords);
+    console.log("map click at (" + coords.angle + ", " + coords.distance + ")");
   }
 }
 </script>

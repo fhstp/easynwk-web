@@ -3,7 +3,7 @@
     <p class="panel-heading">
       <span>Kontakte</span>
       <span class="buttons are-small">
-        <button class="button">
+        <button class="button" v-on:click.stop="addAlter">
           <span class="icon is-small">
             <font-awesome-icon icon="user-plus" />
           </span>
@@ -19,6 +19,9 @@
       v-for="alter in alteri.getAlteri()"
       :key="alter.id"
       v-bind:alter="alter"
+      v-bind:editedAlter="editedAlter"
+      @edit="$emit('edit', alter)"
+      @edit-finished="$emit('edit-finished')"
     ></AlteriPanelEntry>
   </nav>
 </template>
@@ -26,7 +29,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import AlteriPanelEntry from "@/components/AlteriPanelEntry.vue";
-// import { Alter } from "@/data/Alter";
+import { Alter } from "@/data/Alter";
 import { AlteriList } from "@/data/AlteriList";
 
 @Component({
@@ -36,9 +39,16 @@ import { AlteriList } from "@/data/AlteriList";
 })
 export default class AlteriPanel extends Vue {
   @Prop(AlteriList) private alteri!: AlteriList;
+  @Prop(Alter) private editedAlter!: Alter | null;
 
   constructor() {
     super();
+  }
+
+  addAlter() {
+    const newAlter = new Alter("", 0, 0);
+    this.alteri.addAlter(newAlter);
+    this.$emit("edit", newAlter);
   }
 }
 </script>

@@ -1,4 +1,4 @@
-import { Gender } from '@/data/Gender';
+import { Gender } from "@/data/Gender";
 import { v4 as uuid } from "uuid";
 
 export class Alter {
@@ -19,6 +19,10 @@ export class Alter {
     this._name = name;
     this.angle = $angle;
     this.distance = $distance;
+  }
+
+  public get id(): string {
+    return this._id;
   }
 
   /**

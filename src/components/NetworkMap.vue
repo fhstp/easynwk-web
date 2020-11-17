@@ -8,6 +8,11 @@
       <circle class="horizon" cx="0" cy="0" r="66.67" />
       <circle class="horizon" cx="0" cy="0" r="33.33" />
 
+      <text v-if="editedAlter != null" text-anchor="middle" class="edithint">
+        <tspan x="0" y="-1em">Klicke in die Karte, um</tspan>
+        <tspan x="0" dy="2em">die Position festzulegen</tspan>
+      </text>
+
       <g v-for="mark in alteriMarks" :key="mark.d.id">
         <line x1="0" y1="0" :x2="mark.x" :y2="mark.y" />
         <circle
@@ -50,8 +55,8 @@ interface AlteriMark {
 
 @Component
 export default class NetworkMap extends Vue {
-  // @Prop(Array) private alteri!: Array<Alter>;
   @Prop(AlteriList) private alteri!: AlteriList;
+  @Prop(Alter) private editedAlter!: Alter | null;
 
   constructor() {
     super();
@@ -66,11 +71,15 @@ export default class NetworkMap extends Vue {
     const g = d3.select("g#coords");
     g.on("click", () => {
       const coords = d3.mouse(g.node() as ContainerElement);
-      console.log(coords);
 
       // cp. https://stackoverflow.com/a/33043899/1140589
       const distance = Math.sqrt(coords[0] * coords[0] + coords[1] * coords[1]);
       const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
+
+      if (this.editedAlter != null) {
+        this.editedAlter.distance = distance;
+        this.editedAlter.angle = angle;
+      }
 
       this.$emit("map-click", { distance, angle });
     });
@@ -122,5 +131,11 @@ line {
 
 .selected {
   fill: $color-secondary-1-0;
+}
+
+.edithint {
+  fill: rgba(lightgray, 0.5);
+  font-size: 1em;
+  font-weight: bold;
 }
 </style>

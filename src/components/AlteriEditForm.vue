@@ -1,5 +1,15 @@
 <template>
   <div class="form">
+    <div
+      class="field has-text-danger"
+      v-if="alter.distance == 0 || alter.angle == 0"
+    >
+      <span class="icon is-small">
+        <font-awesome-icon icon="exclamation-triangle" />
+      </span>
+      Die Position in der Karte muss noch festgelegt werden.
+    </div>
+
     <div class="field is-horizontal">
       <div class="field-label is-normal">
         <label class="label">Name</label>
@@ -9,6 +19,7 @@
           <div class="control">
             <input
               class="input"
+              :class="{ 'is-danger': alter.name === '' }"
               v-model="alter.name"
               type="text"
               placeholder="Vorname oder Spitzname"
@@ -92,7 +103,7 @@
             Speichern
           </a>
         </p> -->
-      <p class="control" v-on:click.stop="$emit('cancel')">
+      <p class="control" v-on:click.stop="$emit('edit-finished')">
         <a class="button is-light">
           Fertig
         </a>

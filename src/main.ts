@@ -17,6 +17,7 @@ import {
   faUserMinus,
   faExchangeAlt,
   faProjectDiagram,
+  faExclamationTriangle,
   faCheck
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
@@ -27,6 +28,7 @@ library.add(
   faUserMinus,
   faExchangeAlt,
   faProjectDiagram,
+  faExclamationTriangle,
   faCheck
 );
 
