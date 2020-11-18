@@ -18,6 +18,10 @@ import {
   faExchangeAlt,
   faProjectDiagram,
   faExclamationTriangle,
+  faTimes,
+  faFolderOpen,
+  faFile,
+  faSave,
   faCheck
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
@@ -29,6 +33,10 @@ library.add(
   faExchangeAlt,
   faProjectDiagram,
   faExclamationTriangle,
+  faTimes,
+  faFolderOpen,
+  faFile,
+  faSave,
   faCheck
 );
 
