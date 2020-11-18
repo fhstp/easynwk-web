@@ -18,7 +18,10 @@
           <font-awesome-icon icon="project-diagram" />
         </span>
       </button>
-      <button class="button is-small">
+      <button
+        class="button is-small"
+        v-on:click.stop="$emit('remove-alter', alter)"
+      >
         <span class="icon is-small">
           <font-awesome-icon icon="user-minus" />
         </span>

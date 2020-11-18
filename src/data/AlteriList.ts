@@ -31,6 +31,13 @@ export class AlteriList {
     this.alteri.unshift(addedAlter);
   }
 
+  removeAlter(alterToRemove: Alter) {
+    // TODO "Papierkorb" zum Wiederherstellen von Alteri?
+    this.alteri = this.alteri.filter(item => item.id !== alterToRemove.id);
+
+    this.persistAlteri();
+  }
+
   getAlteri(): Array<Alter> {
     return this.alteri;
   }
