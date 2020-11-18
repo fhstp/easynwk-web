@@ -21,7 +21,7 @@
       </button>
 
       <div class="buttons">
-        <button class="button">
+        <button class="button" @click="newNWK">
           <span class="icon">
             <font-awesome-icon icon="file" />
           </span>
@@ -30,7 +30,7 @@
 
         <div class="file">
           <label class="file-label">
-            <input class="file-input" type="file" />
+            <input class="file-input" type="file" @change="open" />
             <span class="file-cta">
               <span class="file-icon">
                 <font-awesome-icon icon="folder-open" />
@@ -42,7 +42,7 @@
           </label>
         </div>
 
-        <button class="button">
+        <button class="button" @click="save">
           <span class="icon">
             <font-awesome-icon icon="save" />
           </span>
@@ -73,6 +73,30 @@ export default class SideMenu extends Vue {
   constructor() {
     super();
     this.menuOpen = false;
+  }
+
+  newNWK() {
+    this.nwkdata.clear();
+  }
+
+  open(event: any) {
+    // based on https://stackoverflow.com/a/36198572/1140589
+    const files = event.target.files;
+
+    if (files.length <= 0) {
+      return false;
+    }
+
+    const fr = new FileReader();
+    fr.onload = (e: any) => {
+      const result = JSON.parse(e.target.result);
+      this.nwkdata.upload(result);
+    };
+    fr.readAsText(files.item(0));
+  }
+
+  save() {
+    this.nwkdata.download();
   }
 }
 </script>

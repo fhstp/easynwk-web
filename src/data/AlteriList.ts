@@ -1,4 +1,5 @@
 // import * as localforage from "localforage";
+import { download } from "@/assets/utils";
 import { Alter } from "@/data/Alter";
 
 export class AlteriList {
@@ -48,5 +49,27 @@ export class AlteriList {
 
   persistAlteri() {
     localStorage.setItem("alteri", JSON.stringify(this.alteri));
+  }
+
+  clear() {
+    this.alteri = [];
+    this.persistAlteri();
+  }
+
+  download() {
+    const nwk = {
+      ego: { name: "Rosalie Müller" },
+      alteri: this.alteri,
+      relations: []
+    };
+
+    download("Rosalie Müller.json", JSON.stringify(nwk));
+  }
+
+  upload(savedNWK: any) {
+    if (savedNWK.alteri && savedNWK.alteri instanceof Array) {
+      this.alteri = savedNWK.alteri;
+    }
+    this.persistAlteri();
   }
 }

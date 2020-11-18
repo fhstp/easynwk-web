@@ -103,10 +103,13 @@
             Speichern
           </a>
         </p> -->
-      <p class="control" v-on:click.stop="$emit('edit-finished')">
-        <a class="button is-light">
+      <p class="control">
+        <button
+          class="button is-light"
+          v-on:click.stop="$emit('edit-finished')"
+        >
           Fertig
-        </a>
+        </button>
       </p>
     </div>
   </div>
