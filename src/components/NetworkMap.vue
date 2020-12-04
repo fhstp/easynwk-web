@@ -1,5 +1,34 @@
 <template>
   <svg id="nwkmap" width="100%" height="100%" viewBox="-105 -105 210 210">
+    <defs>
+      <symbol id="square" viewBox="-1.5 -1.5 3 3">
+        <rect x="-0.886" y="-0.886" width="1.772" height="1.772" />
+      </symbol>
+      <symbol id="circle" viewBox="-1.5 -1.5 3 3">
+        <circle cx="0" cy="0" r="1" />
+      </symbol>
+      <symbol id="triangle" viewBox="-1.5 -1.5 3 3">
+        <path d="M -1.347,0.778 1.347,0.778 0,-1.555 Z" />
+      </symbol>
+      <!--
+    const R = 1.1495;
+    const r = 0.93;
+    const a = 1.3513;
+    const d= 2.1864;
+    const y = Math.sqrt(a*a - Math.pow((d-a)/2, 2)) - r;
+    console.log(`M ${a/-2},${r} ${a/2},${r} ${d/2},${-1*y} ${0},${-1*R} ${d/-2},${-1*y} Z`);
+-->
+      <symbol id="pentagram" viewBox="-1.5 -1.5 3 3">
+        <path
+          d="M -0.67565,0.93 0.67565,0.93 1.0932,-0.3551706841894581 0,-1.1495 -1.0932,-0.3551706841894581 Z"
+        />
+      </symbol>
+      <symbol id="star" viewBox="-1.5 -1.5 3 3">
+        <path
+          d="M 0.69236155,1.054307 0.00345969,0.69533821 -0.68279921,1.0593342 -0.55428199,0.29322216 -1.1125284,-0.24696789 l 0.76832984,-0.11451451 0.34124363,-0.6978518 0.34633676,0.69533819 0.76914657,0.1088939 -0.55428196,0.54425715 z"
+        />
+      </symbol>
+    </defs>
     <!-- transform coordinate system to be scale independent -->
     <g id="coords">
       <line class="axis" x1="0" y1="-100" x2="0" y2="100" />
@@ -15,11 +44,15 @@
 
       <g v-for="mark in alteriMarks" :key="mark.d.id">
         <line x1="0" y1="0" :x2="mark.x" :y2="mark.y" />
-        <circle
-          :r="1.5"
-          :cx="mark.x"
-          :cy="mark.y"
+        <use
+          :href="'#' + mark.shape"
+          :x="mark.x"
+          :y="mark.y"
           :class="{ selected: mark.d.isSelected }"
+          class="mark"
+          width="4"
+          height="4"
+          transform="translate(-2,-2)"
         />
         <text
           :x="mark.x"
@@ -46,9 +79,11 @@ import * as d3 from "d3";
 import { ContainerElement } from "d3";
 import { Alter } from "@/data/Alter";
 import { AlteriList } from "@/data/AlteriList";
+import { Gender, shapeByGender } from "@/data/Gender";
 
 interface AlteriMark {
   d: Alter;
+  shape: string;
   x: number;
   y: number;
 }
@@ -92,6 +127,7 @@ export default class NetworkMap extends Vue {
       console.log("alter: " + el.name);
       buffer.push({
         d: el,
+        shape: shapeByGender(el.currentGender),
         x: el.distance * Math.cos((el.angle * Math.PI) / 180),
         y: -1 * el.distance * Math.sin((el.angle * Math.PI) / 180)
       });
