@@ -37,11 +37,26 @@
       <circle class="horizon" cx="0" cy="0" r="66.67" />
       <circle class="horizon" cx="0" cy="0" r="33.33" />
 
-      <text v-if="editedAlter != null" text-anchor="middle" class="edithint">
-        <tspan x="0" y="-1em">Klicke in die Karte, um</tspan>
-        <tspan x="0" dy="2em">die Position festzulegen</tspan>
+      <text x="100" y="-100" text-anchor="end">
+        Familie
       </text>
+      <text x="-100" y="-100" text-anchor="start">
+        Freunde/Bekannte
+      </text>
+      <text x="-100" y="100" text-anchor="start">
+        Kolleg*innen
+      </text>
+      <text x="100" y="100" text-anchor="end">
+        prof. Helfer*innen
+      </text>
+    </g>
 
+    <text v-if="editedAlter != null" text-anchor="middle" class="edithint">
+      <tspan x="0" y="-1em">Klicke in die Karte, um</tspan>
+      <tspan x="0" dy="2em">die Position festzulegen</tspan>
+    </text>
+
+    <g id="marks">
       <g v-for="mark in alteriMarks" :key="mark.d.id">
         <line x1="0" y1="0" :x2="mark.x" :y2="mark.y" />
         <use
@@ -65,10 +80,11 @@
         </text>
       </g>
       <circle id="ego" cx="0" cy="0" r="1.5" />
-
-      <!-- a background rect is necessary so that the whole display is clickable -->
-      <rect id="position" x="-110" y="-110" width="220" height="220" />
     </g>
+
+    <!-- a foreground rect is necessary so that the whole display is clickable -->
+    <!-- a foreground rect is useful to prevent text selection -->
+    <rect id="position" x="-110" y="-110" width="220" height="220" />
   </svg>
 </template>
 
@@ -79,7 +95,7 @@ import * as d3 from "d3";
 import { ContainerElement } from "d3";
 import { Alter } from "@/data/Alter";
 import { AlteriList } from "@/data/AlteriList";
-import { Gender, shapeByGender } from "@/data/Gender";
+import { shapeByGender } from "@/data/Gender";
 
 interface AlteriMark {
   d: Alter;
@@ -103,7 +119,7 @@ export default class NetworkMap extends Vue {
 
   mounted() {
     // d3.mouse only works if the event is registered using D3 .on
-    const g = d3.select("g#coords");
+    const g = d3.select("#nwkmap");
     g.on("click", () => {
       const coords = d3.mouse(g.node() as ContainerElement);
 
@@ -165,8 +181,17 @@ line {
   fill: $color-primary-0;
 }
 
-.selected {
+.mark {
+  fill: rgb(54, 54, 54);
+}
+
+.mark.selected {
   fill: $color-secondary-1-0;
+}
+
+#coords text {
+  font-weight: bold;
+  fill: gray;
 }
 
 .edithint {

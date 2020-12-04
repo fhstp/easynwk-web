@@ -36,12 +36,11 @@
       </div>
       <div class="field-body">
         <div class="control">
-          <!-- TODO bind alteri roles -->
           <div class="select is-fullwidth">
-            <select>
-              <option>Mutter</option>
-              <option>Vater</option>
-              <option>FreundIn</option>
+            <select v-model="alter.role">
+              <option v-for="value in roleOptions" :key="value">{{
+                value
+              }}</option>
             </select>
           </div>
         </div>
@@ -119,11 +118,13 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Alter } from "@/data/Alter";
 import { Gender } from "@/data/Gender.ts";
+import { Roles } from "@/data/Roles";
 
 @Component
 export default class AlteriEditForm extends Vue {
   @Prop(Object) private alter!: Alter;
   private genderOptions = Gender;
+  private roleOptions = Roles;
 
   constructor() {
     super();
