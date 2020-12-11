@@ -77,8 +77,10 @@ export default class SideMenu extends Vue {
 
   newNWK() {
     this.nwkdata.clear();
+    this.$emit("new-nwk");
   }
 
+  // eslint-disable-next-line
   open(event: any) {
     // based on https://stackoverflow.com/a/36198572/1140589
     const files = event.target.files;
@@ -88,6 +90,7 @@ export default class SideMenu extends Vue {
     }
 
     const fr = new FileReader();
+    // eslint-disable-next-line
     fr.onload = (e: any) => {
       const result = JSON.parse(e.target.result);
       this.nwkdata.upload(result);

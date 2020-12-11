@@ -3,25 +3,25 @@
     <!-- TODO use slots to separate layout from logic https://vuejs.org/v2/guide/components.html#Content-Distribution-with-Slots -->
     <div id="main">
       <div class="scrollwrapper">
-        <div id="titlebar" class="has-text-black">
-          <SideMenu :nwkdata="alteri" />
+        <div id="titlebar" class="box has-text-black">
+          <SideMenu :nwkdata="alteri" @new-nwk="egoEditMode = true" />
           <div id="brand">NWK</div>
-          <div id="ego">
-            Rosa Braunsteigl-Müller &nbsp;
-            <button class="button is-small">
-              <span class="icon">
-                <font-awesome-icon icon="pencil-alt" />
-              </span>
-            </button>
-          </div>
+          <EgoHeader :ego="alteri.ego" @edit="egoEditMode = true" />
         </div>
 
         <div id="forms">
+          <EgoEditForm
+            v-if="egoEditMode"
+            :ego="alteri.ego"
+            @edit-finished="editEgoFinished"
+          />
+
           <AlteriPanel
+            v-if="!egoEditMode"
             v-bind:alteri="alteri"
             v-bind:editedAlter="editedAlter"
-            @edit="editClicked"
-            @edit-finished="editFinished"
+            @edit="editAlterClicked"
+            @edit-finished="editAlterFinished"
           />
         </div>
         <!-- <div>
@@ -46,6 +46,8 @@
 
 import { Component, Vue } from "vue-property-decorator"; // Prop,
 
+import EgoHeader from "@/components/EgoHeader.vue";
+import EgoEditForm from "@/components/EgoEditForm.vue";
 import AlteriPanel from "@/components/AlteriPanel.vue";
 import NetworkMap from "@/components/NetworkMap.vue";
 import SideMenu from "@/components/SideMenu.vue";
@@ -54,6 +56,8 @@ import { AlteriList } from "@/data/AlteriList";
 
 @Component({
   components: {
+    EgoHeader,
+    EgoEditForm,
     AlteriPanel,
     NetworkMap,
     SideMenu
@@ -62,11 +66,15 @@ import { AlteriList } from "@/data/AlteriList";
 export default class Home extends Vue {
   private alteri: AlteriList;
   private editedAlter: Alter | null;
+  private egoEditMode: boolean;
 
   constructor() {
     super();
     this.alteri = new AlteriList();
     this.editedAlter = null;
+
+    // if Ego Name is empty --> start in Ego edit mode
+    this.egoEditMode = this.alteri.getEgo().name.length == 0;
   }
 
   // addRandomContact() {
@@ -79,14 +87,21 @@ export default class Home extends Vue {
   //   );
   // }
 
-  editClicked(newEditAlter: Alter) {
+  editAlterClicked(newEditAlter: Alter) {
+    // if another alter is currently being edited
     if (this.editedAlter != null) this.alteri.persistAlteri();
+
     this.editedAlter = newEditAlter;
   }
 
-  editFinished() {
+  editAlterFinished() {
     this.alteri.persistAlteri();
     this.editedAlter = null;
+  }
+
+  editEgoFinished() {
+    this.alteri.persistEgo();
+    this.egoEditMode = false;
   }
 
   mapclick(coords: { distance: number; angle: number }) {
@@ -141,15 +156,6 @@ export default class Home extends Vue {
 #brand {
   margin: 0 0.8em;
   font-weight: bold;
-}
-
-#titlebar > #ego {
-  display: flex;
-  align-items: center;
-}
-
-#ego > :last-child {
-  margin-left: 0.8em;
 }
 
 #forms {
