@@ -81,6 +81,7 @@ export class AlteriList {
     download(this.ego.name + ".json", JSON.stringify(nwk));
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   upload(savedNWK: any) {
     // TODO format checks & error messages
     if (savedNWK.alteri && savedNWK.alteri instanceof Array) {

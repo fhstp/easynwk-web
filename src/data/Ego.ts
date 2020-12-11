@@ -16,6 +16,7 @@ export function initEgo(): Ego {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isEgo(arg: any): arg is Ego {
   return (
     arg &&
