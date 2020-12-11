@@ -5,7 +5,7 @@
       <div class="scrollwrapper">
         <div id="titlebar" class="box has-text-black">
           <SideMenu :nwkdata="alteri" @new-nwk="egoEditMode = true" />
-          <div id="brand">NWK</div>
+          <div id="brand"><i>easy</i>NWK</div>
           <EgoHeader :ego="alteri.ego" @edit="egoEditMode = true" />
         </div>
 
@@ -146,6 +146,7 @@ export default class Home extends Vue {
   font-size: 180%;
   background: $color-primary-1; /* hsl(32, 100%, 50%); /* $light; */
   padding: 1vmin 1vmin 1vmin 1vmin;
+  margin: 0.5rem 1px 1rem 1px;
   flex-shrink: 0;
 
   flex-direction: row;
@@ -154,12 +155,18 @@ export default class Home extends Vue {
 }
 
 #brand {
-  margin: 0 0.8em;
+  margin: 0 0.5em;
   font-weight: bold;
 }
 
+#brand i {
+  font-family: "Times New Roman", Times, serif;
+  font-style: italic;
+  font-size: 80%;
+}
+
 #forms {
-  padding: 1vmin 1vmin 1vmin 1vmin;
+  padding: 1px;
   /*            font-size: 120%; */
   flex-grow: 1;
 }
