@@ -80,7 +80,7 @@ export default class SideMenu extends Vue {
     this.$emit("new-nwk");
   }
 
-  // eslint-disable-next-line
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   open(event: any) {
     // based on https://stackoverflow.com/a/36198572/1140589
     const files = event.target.files;
