@@ -10,7 +10,7 @@
       </span>
     </button>
 
-    <div id="sidepanel" :style="menuOpen ? 'width: 250px' : 'width: 0px'">
+    <div id="sidepanel" :class="{ shown: menuOpen }">
       <button
         class="button is-burger closebtn"
         v-on:click.stop="menuOpen = false"
@@ -126,7 +126,15 @@ export default class SideMenu extends Vue {
   font-size: 1rem;
   overflow-x: hidden; /* Disable horizontal scroll */
   padding-top: 60px; /* Place content 60px from the top */
-  transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
+  transition: width 1s, visibility 0s 1s; /* 1 second transition effect to slide in the sidepanel, then hide */
+  visibility: hidden;
+  width: 0px;
+}
+
+#sidepanel.shown {
+  transition: visibility 0s, width 1s; /* 1 second transition effect to slide in the sidepanel */
+  visibility: visible;
+  width: 250px;
 }
 
 /* The sidepanel links */
