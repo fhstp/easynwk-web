@@ -137,10 +137,10 @@ export default class NetworkMap extends Vue {
   }
 
   get alteriMarks(): Array<AlteriMark> {
-    console.log("in computed alteri marks");
+    // console.log("in computed alteri marks");
     const buffer: Array<AlteriMark> = [];
     this.alteri.getAlteri().forEach(el => {
-      console.log("alter: " + el.name);
+      // console.log("alter: " + el.name);
       buffer.push({
         d: el,
         shape: shapeByGender(el.currentGender),

@@ -1,9 +1,6 @@
 <template>
-  <div class="form">
-    <div
-      class="field has-text-danger"
-      v-if="alter.distance == 0 || alter.angle == 0"
-    >
+  <form class="form" @submit.prevent="editAlterFinished">
+    <div class="field has-text-danger" v-if="invalidPosition">
       <span class="icon is-small">
         <font-awesome-icon icon="exclamation-triangle" />
       </span>
@@ -19,7 +16,8 @@
           <div class="control">
             <input
               class="input"
-              :class="{ 'is-danger': alter.name === '' }"
+              :class="{ 'is-danger': invalidName }"
+              ref="altername"
               v-model="alter.name"
               type="text"
               placeholder="Vorname oder Spitzname"
@@ -103,19 +101,16 @@
           </a>
         </p> -->
       <p class="control">
-        <button
-          class="button is-light"
-          v-on:click.stop="$emit('edit-finished')"
-        >
+        <button class="button is-primary" :disabled="invalidName">
           Fertig
         </button>
       </p>
     </div>
-  </div>
+  </form>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { Alter } from "@/data/Alter";
 import { Gender } from "@/data/Gender.ts";
 import { Roles } from "@/data/Roles";
@@ -128,6 +123,29 @@ export default class AlteriEditForm extends Vue {
 
   constructor() {
     super();
+  }
+
+  mounted() {
+    (this.$refs.altername as HTMLInputElement).focus();
+  }
+
+  @Watch("alter.distance")
+  onDistanceChanged(value: number, oldValue: number) {
+    (this.$refs.altername as HTMLInputElement).focus();
+  }
+
+  get invalidPosition() {
+    return this.alter.distance <= 0;
+  }
+
+  get invalidName() {
+    return this.alter.name.trim().length === 0;
+  }
+
+  editAlterFinished() {
+    if (!this.invalidPosition && !this.invalidName) {
+      this.$emit("edit-finished");
+    }
   }
 }
 </script>

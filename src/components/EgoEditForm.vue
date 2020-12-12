@@ -3,7 +3,7 @@
     <p class="panel-heading">
       <span>Ankerperson</span>
     </p>
-    <div class="panel-block form">
+    <form class="panel-block form" @submit.prevent="editEgoFinished">
       <div class="field is-horizontal">
         <div class="field-label is-normal">
           <label class="label">Name</label>
@@ -13,10 +13,11 @@
             <div class="control">
               <input
                 class="input"
-                :class="{ 'is-danger': validEgoName }"
+                :class="{ 'is-danger': invalidName }"
+                ref="egoname"
                 v-model="egoName"
                 type="text"
-                placeholder="Vorname oder Spitzname"
+                placeholder="Wer steht im Zentrum der NWK?"
               />
             </div>
             <p class="help">Pflichtfeld</p>
@@ -66,16 +67,12 @@
 
       <div class="field is-grouped is-grouped-centered">
         <p class="control">
-          <button
-            class="button is-primary"
-            :disabled="validEgoName"
-            v-on:click.stop="editEgoFinished"
-          >
+          <button class="button is-primary" :disabled="invalidName">
             Fertig
           </button>
         </p>
       </div>
-    </div>
+    </form>
   </nav>
 </template>
 
@@ -102,13 +99,21 @@ export default class EgoEditForm extends Vue {
     };
   }
 
-  get validEgoName() {
+  mounted() {
+    (this.$refs.egoname as HTMLInputElement).focus();
+  }
+
+  get invalidName() {
     return this.egoName.trim().length === 0;
   }
 
   editEgoFinished() {
-    this.ego.name = this.egoName.trim();
-    this.$emit("edit-finished");
+    if (!this.invalidName) {
+      this.ego.name = this.egoName.trim();
+      this.$emit("edit-finished");
+    } else {
+      (this.$refs.egoname as HTMLInputElement).focus();
+    }
   }
 }
 </script>
