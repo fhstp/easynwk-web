@@ -130,6 +130,7 @@ export default class AlteriEditForm extends Vue {
   }
 
   @Watch("alter.distance")
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onDistanceChanged(value: number, oldValue: number) {
     (this.$refs.altername as HTMLInputElement).focus();
   }

@@ -1,0 +1,102 @@
+{
+  "ego": {
+    "name": "Rosa Braunsteigl-Müller",
+    "currentGender": "weiblich",
+    "age": "45",
+    "note": "lorem ipsum"
+  },
+  "alteri": [
+    {
+      "id": "8e8881f3-5ce4-43d9-a288-44ebfdef9966",
+      "name": "Susi",
+      "role": "Studienkolleg*in",
+      "contactOfPartner": false,
+      "currentGender": "weiblich",
+      "age": "",
+      "note": "",
+      "edgeWeight": 0,
+      "angle": -131.1060924804431,
+      "distance": 42.31366368839073,
+      "isSelected": false
+    },
+    {
+      "id": "bd2c57ee-2857-4159-9b3f-a75e3ae5be3b",
+      "name": "Dr. Maier",
+      "role": "Ärzt*in",
+      "contactOfPartner": false,
+      "currentGender": "nicht festgelegt",
+      "age": "",
+      "note": "",
+      "edgeWeight": 0,
+      "angle": -50.92234207573893,
+      "distance": 93.73453583270009,
+      "isSelected": false
+    },
+    {
+      "id": "37116dbd-871b-4656-91ba-0e6fa39d29a7",
+      "name": "Hubert",
+      "role": "Vater",
+      "contactOfPartner": false,
+      "currentGender": "männlich",
+      "age": "",
+      "note": "",
+      "edgeWeight": 0,
+      "angle": 76.13437315775695,
+      "distance": 79.1868110958055,
+      "isSelected": false
+    },
+    {
+      "id": "6dfdcd17-450a-4e2e-a8e0-fe685580aa39",
+      "name": "Lara",
+      "role": "Freund*in",
+      "contactOfPartner": false,
+      "currentGender": "divers",
+      "age": "",
+      "note": "",
+      "edgeWeight": 0,
+      "angle": 137.52753497925326,
+      "distance": 75.01518991342189,
+      "isSelected": false
+    },
+    {
+      "id": "15700b1a-ca33-425e-93e1-854ad00952e6",
+      "name": "Max",
+      "role": "Studienkolleg*in",
+      "contactOfPartner": false,
+      "currentGender": "nicht festgelegt",
+      "age": "",
+      "note": "",
+      "edgeWeight": 0,
+      "angle": -114.86833156298106,
+      "distance": 71.90407620902847,
+      "isSelected": false
+    },
+    {
+      "id": "ae162c11-dc2c-44cb-862b-593d6312ff27",
+      "name": "Richard",
+      "role": "Lebensgefährt*in",
+      "contactOfPartner": false,
+      "currentGender": "männlich",
+      "age": "",
+      "note": "",
+      "edgeWeight": 0,
+      "angle": 15.195768445698295,
+      "distance": 19.709025754817713,
+      "isSelected": true
+    },
+    {
+      "id": "a0013ade-440b-4ef7-869c-d49f41244c69",
+      "name": "Maria",
+      "role": "Mutter",
+      "contactOfPartner": false,
+      "currentGender": "weiblich",
+      "age": "",
+      "note": "",
+      "edgeWeight": 0,
+      "angle": 30.051411748698495,
+      "distance": 27.853551485665644,
+      "isSelected": false
+    }
+  ],
+  "relations": []
+}

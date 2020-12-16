@@ -48,6 +48,13 @@
           </span>
           <span>Speichern</span>
         </button>
+
+        <button class="button" @click="openDemoData">
+          <!-- <span class="icon">
+            <font-awesome-icon icon="save" />
+          </span> -->
+          <span>Demo laden</span>
+        </button>
       </div>
 
       <a href="http://www.easynwk.com/" target="_blank">Über die easyNWK</a>
@@ -100,6 +107,18 @@ export default class SideMenu extends Vue {
 
   save() {
     this.nwkdata.download();
+  }
+
+  openDemoData() {
+    const DEMO_URL = "Rosa_Braunsteigl-Mueller.json";
+    fetch(DEMO_URL)
+      .then(res => res.json())
+      .then(nwkObj => {
+        this.nwkdata.upload(nwkObj);
+      })
+      .catch(err => {
+        throw err;
+      });
   }
 }
 </script>
