@@ -4,7 +4,11 @@
     <div id="main">
       <div class="scrollwrapper">
         <div id="titlebar" class="box has-text-black">
-          <SideMenu :nwkdata="alteri" @new-nwk="egoEditMode = true" />
+          <SideMenu
+            :nwkdata="alteri"
+            @new-nwk="egoEditMode = true"
+            @open-nwk="editEgoFinished"
+          />
           <div id="brand"><i>easy</i>NWK</div>
           <EgoHeader :ego="alteri.ego" @edit="egoEditMode = true" />
         </div>

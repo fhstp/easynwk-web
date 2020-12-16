@@ -101,6 +101,7 @@ export default class SideMenu extends Vue {
     fr.onload = (e: any) => {
       const result = JSON.parse(e.target.result);
       this.nwkdata.upload(result);
+      this.$emit("open-nwk");
     };
     fr.readAsText(files.item(0));
   }
@@ -115,6 +116,7 @@ export default class SideMenu extends Vue {
       .then(res => res.json())
       .then(nwkObj => {
         this.nwkdata.upload(nwkObj);
+        this.$emit("open-nwk");
       })
       .catch(err => {
         throw err;
