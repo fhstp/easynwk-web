@@ -33,8 +33,21 @@
       "isSelected": false
     },
     {
+      "id": "1de8112a-843e-4796-a20b-bbce7909f39c",
+      "name": "Strolchi",
+      "role": "",
+      "contactOfPartner": false,
+      "currentGender": "kein Mensch",
+      "age": "",
+      "note": "",
+      "edgeWeight": 0,
+      "angle": 61.96572175097271,
+      "distance": 21.509343722623814,
+      "isSelected": false
+    },
+    {
       "id": "37116dbd-871b-4656-91ba-0e6fa39d29a7",
-      "name": "Hubert",
+      "name": "+Hubert",
       "role": "Vater",
       "contactOfPartner": false,
       "currentGender": "männlich",
@@ -42,7 +55,7 @@
       "note": "",
       "edgeWeight": 0,
       "angle": 76.13437315775695,
-      "distance": 79.1868110958055,
+      "distance": 103,
       "isSelected": false
     },
     {
