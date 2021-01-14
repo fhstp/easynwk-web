@@ -2,7 +2,11 @@
   <div id="ego">
     {{ displayName }}
     &nbsp;
-    <button class="button is-small" v-on:click="$emit('edit')">
+    <button
+      class="button is-small"
+      title="Ankerperson bearbeiten"
+      v-on:click="$emit('edit')"
+    >
       <span class="icon">
         <font-awesome-icon icon="pencil-alt" />
       </span>

@@ -1,26 +1,53 @@
 <template>
-  <p
+  <div
     class="panel-block"
     v-bind:class="{ selected: alter.isSelected, alteriform: isEditMode }"
     v-on:click="toggleSelection()"
   >
+    <div class="modal" :class="{ 'is-active': confirmRemove }">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p>
+            Soll der Kontakt <b>{{ alter.name }}</b> wirklich entfernt werden?
+          </p>
+        </header>
+        <footer class="modal-card-foot">
+          <button
+            class="button is-primary"
+            v-on:click.stop="$emit('remove-alter', alter)"
+          >
+            Entfernen
+          </button>
+          <button class="button" v-on:click.stop="setShowConfirmDialog(false)">
+            Abbrechen
+          </button>
+        </footer>
+      </div>
+    </div>
+
     <span v-if="isEditMode">Kontakt bearbeiten</span>
     <span v-else>{{ alter.name }} / {{ alter.role }}</span>
 
     <span class="buttons are-small" v-if="alter.isSelected && !isEditMode">
-      <button class="button is-small" v-on:click.stop="$emit('edit', alter)">
+      <button
+        class="button is-small"
+        title="Kontakt bearbeiten"
+        v-on:click.stop="$emit('edit', alter)"
+      >
         <span class="icon is-small">
           <font-awesome-icon icon="pencil-alt" />
         </span>
       </button>
-      <button class="button is-small">
+      <!--      <button class="button is-small" title="Beziehungen des Kontakts bearbeiten (nicht nicht verfügbar)">
         <span class="icon is-small">
           <font-awesome-icon icon="project-diagram" />
         </span>
-      </button>
+      </button> -->
       <button
         class="button is-small"
-        v-on:click.stop="$emit('remove-alter', alter)"
+        title="Kontakt entfernen"
+        v-on:click.stop="setShowConfirmDialog(true)"
       >
         <span class="icon is-small">
           <font-awesome-icon icon="user-minus" />
@@ -33,7 +60,7 @@
       v-bind:alter="alter"
       @edit-finished="$emit('edit-finished')"
     ></AlteriEditForm>
-  </p>
+  </div>
 </template>
 
 <script lang="ts">
@@ -49,6 +76,7 @@ import { Alter } from "@/data/Alter";
 export default class AlteriPanelEntry extends Vue {
   @Prop(Object) private alter!: Alter;
   @Prop(Object) private editedAlter!: Alter | null;
+  private confirmRemove = false;
 
   constructor() {
     super();
@@ -62,6 +90,11 @@ export default class AlteriPanelEntry extends Vue {
     if (!this.isEditMode) {
       this.alter.isSelected = !this.alter.isSelected;
     }
+  }
+
+  setShowConfirmDialog(show: boolean) {
+    console.log("here");
+    this.confirmRemove = show;
   }
 }
 </script>

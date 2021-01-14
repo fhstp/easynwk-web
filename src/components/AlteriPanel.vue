@@ -3,16 +3,20 @@
     <p class="panel-heading">
       <span>Kontakte</span>
       <span class="buttons are-small">
-        <button class="button" v-on:click.stop="addAlter">
+        <button
+          class="button"
+          title="Kontakt hinzufügen"
+          v-on:click.stop="addAlter"
+        >
           <span class="icon is-small">
             <font-awesome-icon icon="user-plus" />
           </span>
         </button>
-        <button class="button">
+        <!-- <button class="button">
           <span class="icon is-small">
             <font-awesome-icon icon="exchange-alt" rotation="90" />
           </span>
-        </button>
+        </button> -->
       </span>
     </p>
     <p
