@@ -19,7 +19,7 @@
           >
             Entfernen
           </button>
-          <button class="button" v-on:click.stop="setShowConfirmDialog(false)">
+          <button class="button" v-on:click.stop="confirmRemove = false">
             Abbrechen
           </button>
         </footer>
@@ -47,7 +47,7 @@
       <button
         class="button is-small"
         title="Kontakt entfernen"
-        v-on:click.stop="setShowConfirmDialog(true)"
+        v-on:click.stop="confirmRemove = true"
       >
         <span class="icon is-small">
           <font-awesome-icon icon="user-minus" />
@@ -90,11 +90,6 @@ export default class AlteriPanelEntry extends Vue {
     if (!this.isEditMode) {
       this.alter.isSelected = !this.alter.isSelected;
     }
-  }
-
-  setShowConfirmDialog(show: boolean) {
-    console.log("here");
-    this.confirmRemove = show;
   }
 }
 </script>

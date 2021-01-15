@@ -10,7 +10,11 @@
       </span>
     </button>
 
-    <div id="sidepanel" :class="{ shown: menuOpen }">
+    <div
+      id="sidepanel"
+      :class="{ shown: menuOpen }"
+      v-on:click="menuOpen = false"
+    >
       <button
         class="button is-burger closebtn"
         v-on:click.stop="menuOpen = false"

@@ -27,6 +27,6 @@ export function initAlter(): Alter {
     edgeWeight: 0,
     angle: 0,
     distance: 0,
-    isSelected: false
+    isSelected: true
   };
 }
