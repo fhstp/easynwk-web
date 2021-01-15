@@ -28,6 +28,10 @@
           d="M 0.69236155,1.054307 0.00345969,0.69533821 -0.68279921,1.0593342 -0.55428199,0.29322216 -1.1125284,-0.24696789 l 0.76832984,-0.11451451 0.34124363,-0.6978518 0.34633676,0.69533819 0.76914657,0.1088939 -0.55428196,0.54425715 z"
         />
       </symbol>
+      <radialGradient id="selected-gradient">
+        <stop offset="60%" stop-color="rgb(18, 64, 171)" stop-opacity="0.25" />
+        <stop offset="100%" stop-color="rgb(18, 64, 171)" stop-opacity="0" />
+      </radialGradient>
     </defs>
     <!-- transform coordinate system to be scale independent -->
     <g id="coords">
@@ -57,13 +61,21 @@
     </text>
 
     <g id="marks">
+      <circle
+        v-for="mark in selectedAlteriMarks"
+        :key="'shadow' + mark.d.id"
+        :cx="mark.x"
+        :cy="mark.y"
+        r="4"
+        fill="url('#selected-gradient')"
+      />
+
       <g v-for="mark in alteriMarks" :key="mark.d.id">
         <line x1="0" y1="0" :x2="mark.x" :y2="mark.y" />
         <use
           :href="'#' + mark.shape"
           :x="mark.x"
           :y="mark.y"
-          :class="{ selected: mark.d.isSelected }"
           class="mark"
           width="4"
           height="4"
@@ -151,6 +163,10 @@ export default class NetworkMap extends Vue {
     // first draw marks further away from center to avoid overplotting
     return buffer.sort((a, b) => b.d.distance - a.d.distance);
   }
+
+  get selectedAlteriMarks(): Array<AlteriMark> {
+    return this.alteriMarks.filter(m => m.d.isSelected);
+  }
 }
 </script>
 
@@ -183,10 +199,6 @@ line {
 
 .mark {
   fill: rgb(54, 54, 54);
-}
-
-.mark.selected {
-  fill: $color-secondary-1-0;
 }
 
 #coords text {
