@@ -22,6 +22,7 @@ import {
   faFolderOpen,
   faFile,
   faSave,
+  // faChevronDown,
   faCheck
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
@@ -37,6 +38,7 @@ library.add(
   faFolderOpen,
   faFile,
   faSave,
+  // faChevronDown,
   faCheck
 );
 

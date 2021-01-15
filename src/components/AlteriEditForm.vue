@@ -34,13 +34,18 @@
       </div>
       <div class="field-body">
         <div class="control">
-          <div class="select is-fullwidth">
-            <select v-model="alter.role">
-              <option v-for="value in roleOptions" :key="value">{{
-                value
-              }}</option>
-            </select>
-          </div>
+          <input
+            class="input"
+            type="text"
+            v-model="alter.role"
+            list="predefined-roles"
+          />
+          <!-- <span class="icon is-small is-right has-text-link">
+            <font-awesome-icon icon="chevron-down" />
+          </span> -->
+          <datalist id="predefined-roles">
+            <option v-for="value in roleOptions" :key="value" :value="value" />
+          </datalist>
         </div>
       </div>
     </div>
@@ -154,5 +159,10 @@ export default class AlteriEditForm extends Vue {
 <style scoped lang="scss">
 div.form {
   margin-top: 0.5em;
+}
+
+/* to hide datalist arrow in webkit (https://codepen.io/airen/pen/arGXvz) */
+input::-webkit-calendar-picker-indicator {
+  display: none;
 }
 </style>
