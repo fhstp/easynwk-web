@@ -45,7 +45,7 @@
         Familie
       </text>
       <text x="-100" y="-100" text-anchor="start">
-        Freunde/Bekannte
+        Freund*innen/Bekannte
       </text>
       <text x="-100" y="100" text-anchor="start">
         Kolleg*innen
