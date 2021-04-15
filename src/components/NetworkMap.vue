@@ -28,9 +28,17 @@
           d="M 0.69236155,1.054307 0.00345969,0.69533821 -0.68279921,1.0593342 -0.55428199,0.29322216 -1.1125284,-0.24696789 l 0.76832984,-0.11451451 0.34124363,-0.6978518 0.34633676,0.69533819 0.76914657,0.1088939 -0.55428196,0.54425715 z"
         />
       </symbol>
-      <radialGradient id="horizon-gradient">
-        <stop offset="85%" stop-color="rgb(211, 211, 211)" stop-opacity="0" />
-        <stop offset="100%" stop-color="rgb(211, 211, 211)" stop-opacity="1" />
+      <radialGradient id="horizon-gradient100">
+        <stop offset="92%" stop-opacity="0" />
+        <stop offset="100%" stop-opacity="0.25" />
+      </radialGradient>
+      <radialGradient id="horizon-gradient67">
+        <stop offset="88%" stop-opacity="0" />
+        <stop offset="100%" stop-opacity="0.25" />
+      </radialGradient>
+      <radialGradient id="horizon-gradient33">
+        <stop offset="76%" stop-opacity="0" />
+        <stop offset="100%" stop-opacity="0.25" />
       </radialGradient>
       <radialGradient id="selected-gradient">
         <stop offset="60%" stop-color="rgb(18, 64, 171)" stop-opacity="0.25" />
@@ -39,9 +47,9 @@
     </defs>
     <!-- transform coordinate system to be scale independent -->
     <g id="coords">
-      <circle cx="0" cy="0" r="100" fill="url('#horizon-gradient')" />
-      <circle cx="0" cy="0" r="66.67" fill="url('#horizon-gradient')" />
-      <circle cx="0" cy="0" r="33.33" fill="url('#horizon-gradient')" />
+      <circle cx="0" cy="0" r="100" fill="url('#horizon-gradient100')" />
+      <circle cx="0" cy="0" r="66.67" fill="url('#horizon-gradient67')" />
+      <circle cx="0" cy="0" r="33.33" fill="url('#horizon-gradient33')" />
       <line class="axis" x1="0" y1="-100" x2="0" y2="100" />
       <line class="axis" x1="100" y1="0" x2="-100" y2="0" />
 
