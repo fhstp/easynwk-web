@@ -20,13 +20,13 @@
             @edit-finished="editEgoFinished"
           />
 
-          <AlteriPanel
+          <!-- <AlteriPanel
             v-if="!egoEditMode"
             v-bind:alteri="alteri"
             v-bind:editedAlter="editedAlter"
             @edit="editAlterClicked"
             @edit-finished="editAlterFinished"
-          />
+          /> -->
         </div>
         <!-- <div>
             Über die easyNWK &nbsp; &nbsp; &nbsp; Impressum
@@ -34,84 +34,72 @@
       </div>
     </div>
     <div id="chart">
-      <NetworkMap
+      <!-- <NetworkMap
         v-bind:alteri="alteri"
         v-bind:editedAlter="editedAlter"
         @map-click="mapclick"
-      />
+      /> -->
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import { defineComponent, ref } from "vue";
+
 // @ is an alias to /src
-// import Form from "@/components/Form.vue";
-// import MapParent from "@/components/MapParent.vue";
-
-import { Options, Vue } from "vue-class-component";
-
 import EgoHeader from "@/components/EgoHeader.vue";
 import EgoEditForm from "@/components/EgoEditForm.vue";
-import AlteriPanel from "@/components/AlteriPanel.vue";
-import NetworkMap from "@/components/NetworkMap.vue";
 import SideMenu from "@/components/SideMenu.vue";
 import { Alter } from "@/data/Alter";
 import { AlteriList } from "@/data/AlteriList";
 
-@Options({
-  components: {
-    EgoHeader,
-    EgoEditForm,
-    AlteriPanel,
-    NetworkMap,
-    SideMenu
-  }
-})
-export default class Home extends Vue {
-  private alteri: AlteriList;
-  private editedAlter: Alter | null;
-  private egoEditMode: boolean;
+export default defineComponent({
+  components: { EgoHeader, EgoEditForm, SideMenu },
+  // components: { EgoHeader, EgoEditForm, AlteriPanel, NetworkMap, SideMenu },
 
-  constructor() {
-    super();
-    this.alteri = new AlteriList();
-    this.editedAlter = null;
+  setup(props) {
+    const alteri = ref(new AlteriList());
+
+    // managing the currently open Alter
+    const editedAlter = ref<Alter | null>(null);
+
+    const editAlterClicked = (newEditAlter: Alter) => {
+      // if another alter is currently being edited
+      if (editedAlter.value != null) alteri.value.persistAlteri();
+
+      editedAlter.value = newEditAlter;
+    };
+
+    const editAlterFinished = () => {
+      alteri.value.persistAlteri();
+      editedAlter.value = null;
+    };
 
     // if Ego Name is empty --> start in Ego edit mode
-    this.egoEditMode = this.alteri.getEgo().name.length == 0;
+    const egoEditMode = ref(alteri.value.getEgo().name.length == 0);
+
+    const editEgoFinished = () => {
+      alteri.value.persistEgo();
+      egoEditMode.value = false;
+    };
+
+    const mapclick = (coords: { distance: number; angle: number }) => {
+      console.log(
+        "map click at (" + coords.angle + ", " + coords.distance + ")"
+      );
+    };
+
+    return {
+      alteri,
+      editedAlter,
+      editAlterClicked,
+      egoEditMode,
+      editAlterFinished,
+      editEgoFinished,
+      mapclick
+    };
   }
-
-  // addRandomContact() {
-  //   this.alteri.addAlter(
-  //     new Alter(
-  //       "Neu",
-  //       Math.round(Math.random() * 360 - 180),
-  //       Math.round(Math.random() * 100)
-  //     )
-  //   );
-  // }
-
-  editAlterClicked(newEditAlter: Alter) {
-    // if another alter is currently being edited
-    if (this.editedAlter != null) this.alteri.persistAlteri();
-
-    this.editedAlter = newEditAlter;
-  }
-
-  editAlterFinished() {
-    this.alteri.persistAlteri();
-    this.editedAlter = null;
-  }
-
-  editEgoFinished() {
-    this.alteri.persistEgo();
-    this.egoEditMode = false;
-  }
-
-  mapclick(coords: { distance: number; angle: number }) {
-    console.log("map click at (" + coords.angle + ", " + coords.distance + ")");
-  }
-}
+});
 </script>
 
 <style lang="scss">

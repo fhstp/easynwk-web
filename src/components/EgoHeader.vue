@@ -15,27 +15,28 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-// import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent, computed } from "vue";
 import { Ego } from "@/data/Ego";
 
-@Options({
+export default defineComponent({
   props: {
-    ego: Object,
+    ego: {
+      type: Object,
+      required: true
+    }
   },
-})
-export default class EgoHeader extends Vue {
-  private ego!: Ego;
 
-  constructor() {
-    super();
-  }
+  setup(props, {emit}) {
+    const displayName = computed(() => {
+      const egoTrimmed = props.ego.name.trim();
+      return egoTrimmed.length > 0 ? egoTrimmed : "<Neue Ankerperson>";
+    });
 
-  get displayName() {
-    const egoTrimmed = this.ego.name.trim();
-    return egoTrimmed.length > 0 ? egoTrimmed : "<Neue Ankerperson>";
+    return {
+      displayName
+    }
   }
-}
+});
 </script>
 
 <style scoped>

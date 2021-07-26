@@ -14,7 +14,7 @@
               <input
                 class="input"
                 :class="{ 'is-danger': invalidName }"
-                ref="egoname"
+                ref="egofield"
                 v-model="egoName"
                 type="text"
                 placeholder="Wer steht im Zentrum der NWK?"
@@ -32,7 +32,7 @@
         <div class="field-body">
           <div class="control">
             <div class="select is-fullwidth">
-              <select v-model="ego.currentGender">
+              <select v-model="currentGender">
                 <option v-for="value in genderOptions" :key="value">{{
                   value
                 }}</option>
@@ -49,7 +49,7 @@
         <div class="field-body">
           <div class="field">
             <div class="control">
-              <input class="input" v-model="ego.age" type="text" />
+              <input class="input" v-bind="ego.age" type="text" />
             </div>
           </div>
         </div>
@@ -59,7 +59,7 @@
         <div class="control">
           <textarea
             class="textarea is-small"
-            v-model="ego.note"
+            v-bind="ego.note"
             placeholder="Notizen zum Kontakt"
           ></textarea>
         </div>
@@ -77,50 +77,64 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-// import { Component, Prop, Vue } from "vue-property-decorator";
-import { Ego } from "@/data/Ego";
+import { defineComponent, ref, computed, onMounted } from "vue";
+// import { Ego } from "@/data/Ego";
 import { Gender } from "@/data/Gender";
 
-@Options({
+export default defineComponent({
   props: {
-    ego: Object,
+    ego: {
+      type: Object,
+      required: true
+    }
   },
-})
-export default class EgoEditForm extends Vue {
-  private ego!: Ego;
-  private genderOptions = Gender;
-  private egoName = "";
 
-  constructor() {
-    super();
-  }
+  setup(props, {emit}) {
+    // const genderOptions = Gender;
+    const egoName = ref(props.ego.name);
+    const currentGender = ref(props.ego.currentGender);
 
-  data(): {
-    egoName: string;
-  } {
+    const egofield = ref<InstanceType<typeof HTMLInputElement>>();
+
+    const genderOptions = ref(Gender);
+
+    // const genderOptions = computed(() => {
+    //   return Gender;
+    // });
+
+
+
+    const invalidName = computed(() => {
+      return egoName.value.trim().length === 0;
+    });
+
+    const editEgoFinished = () => {
+      if (!invalidName.value) {
+        console.log("would now set egoname to " + egoName.value.trim());
+        // props.ego.name = egoName.value.trim();
+        emit("edit-finished");
+      } else {
+        console.log("WHY HERE " + egoName.value + " " + invalidName.value);
+        egofield.value?.focus();
+        // (this.$refs.egoname as HTMLInputElement).focus();
+      }
+    }
+
+    onMounted(() => {
+      // the DOM element will be assigned to the ref after initial render
+      egofield.value?.focus();
+    })
+
     return {
-      egoName: this.ego.name
-    };
-  }
-
-  mounted() {
-    (this.$refs.egoname as HTMLInputElement).focus();
-  }
-
-  get invalidName() {
-    return this.egoName.trim().length === 0;
-  }
-
-  editEgoFinished() {
-    if (!this.invalidName) {
-      this.ego.name = this.egoName.trim();
-      this.$emit("edit-finished");
-    } else {
-      (this.$refs.egoname as HTMLInputElement).focus();
+      genderOptions,
+      egoName,
+      currentGender,
+      egofield,
+      invalidName,
+      editEgoFinished
     }
   }
-}
+});
 </script>
 
 <style scoped>

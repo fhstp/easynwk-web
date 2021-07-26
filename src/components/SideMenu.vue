@@ -67,71 +67,72 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, ref } from "vue";
+
 // @ is an alias to /src
-// import Form from "@/components/Form.vue";
-// import MapParent from "@/components/MapParent.vue";
-
-import { Options, Vue } from "vue-class-component";
-// import { Component, Vue, Prop } from "vue-property-decorator"; // Prop,
-
 import { AlteriList } from "@/data/AlteriList";
 
-@Options({
+export default defineComponent({
   props: {
-    nwkdata: AlteriList,
+    nwkdata: {
+      type: AlteriList,
+      required: true
+    }
   },
-})
-export default class SideMenu extends Vue {
-  private nwkdata!: AlteriList;
 
-  private menuOpen: boolean;
+  setup(props, {emit}) {
+    const menuOpen = ref(false);
 
-  constructor() {
-    super();
-    this.menuOpen = false;
-  }
-
-  newNWK() {
-    this.nwkdata.clear();
-    this.$emit("new-nwk");
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  open(event: any) {
-    // based on https://stackoverflow.com/a/36198572/1140589
-    const files = event.target.files;
-
-    if (files.length <= 0) {
-      return false;
+    const newNWK = () => {
+      props.nwkdata.clear();
+      emit("new-nwk");
     }
 
-    const fr = new FileReader();
-    // eslint-disable-next-line
-    fr.onload = (e: any) => {
-      const result = JSON.parse(e.target.result);
-      this.nwkdata.upload(result);
-      this.$emit("open-nwk");
-    };
-    fr.readAsText(files.item(0));
-  }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const open = (event: any) => {
+      // based on https://stackoverflow.com/a/36198572/1140589
+      const files = event.target.files;
 
-  save() {
-    this.nwkdata.download();
-  }
+      if (files.length <= 0) {
+        return false;
+      }
 
-  openDemoData() {
-    const DEMO_URL = "Rosa_Braunsteigl-Mueller.json";
-    fetch(DEMO_URL)
-      .then(res => res.json())
-      .then(nwkObj => {
-        this.nwkdata.upload(nwkObj);
-        this.$emit("open-nwk");
-      })
-      .catch(err => {
-        throw err;
-      });
+      const fr = new FileReader();
+      // eslint-disable-next-line
+      fr.onload = (e: any) => {
+        const result = JSON.parse(e.target.result);
+        props.nwkdata.upload(result);
+        emit("open-nwk");
+      };
+      fr.readAsText(files.item(0));
+    }
+
+    const save = () => {
+      props.nwkdata.download();
+    }
+
+    const openDemoData = () => {
+      const DEMO_URL = "Rosa_Braunsteigl-Mueller.json";
+      fetch(DEMO_URL)
+        .then(res => res.json())
+        .then(nwkObj => {
+          props.nwkdata.upload(nwkObj);
+          emit("open-nwk");
+        })
+        .catch(err => {
+          throw err;
+        });
+    }
+
+    return {
+      menuOpen,
+      newNWK,
+      open,
+      save,
+      openDemoData
+    }
   }
-}
+});
 </script>
 
 <style lang="scss">
