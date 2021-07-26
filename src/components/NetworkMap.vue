@@ -113,7 +113,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Options, Vue } from "vue-class-component";
+// import { Component, Prop, Vue } from "vue-property-decorator";
 
 import * as d3 from "d3";
 import { ContainerElement } from "d3";
@@ -128,10 +129,15 @@ interface AlteriMark {
   y: number;
 }
 
-@Component
+@Options({
+  props: {
+    alteri: AlteriList,
+    editedAlter: Object
+  },
+})
 export default class NetworkMap extends Vue {
-  @Prop(AlteriList) private alteri!: AlteriList;
-  @Prop(Object) private editedAlter!: Alter | null;
+  private alteri!: AlteriList;
+  private editedAlter!: Alter | null;
 
   constructor() {
     super();
@@ -144,8 +150,8 @@ export default class NetworkMap extends Vue {
   mounted() {
     // d3.mouse only works if the event is registered using D3 .on
     const g = d3.select("#nwkmap");
-    g.on("click", () => {
-      const coords = d3.mouse(g.node() as ContainerElement);
+    g.on("click", (event: any) => {
+      const coords = d3.pointer(event);
 
       // cp. https://stackoverflow.com/a/33043899/1140589
       const distance = Math.sqrt(coords[0] * coords[0] + coords[1] * coords[1]);

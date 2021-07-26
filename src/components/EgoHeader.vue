@@ -15,12 +15,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Options, Vue } from "vue-class-component";
+// import { Component, Prop, Vue } from "vue-property-decorator";
 import { Ego } from "@/data/Ego";
 
-@Component
+@Options({
+  props: {
+    ego: Object,
+  },
+})
 export default class EgoHeader extends Vue {
-  @Prop(Object) private ego!: Ego;
+  private ego!: Ego;
 
   constructor() {
     super();

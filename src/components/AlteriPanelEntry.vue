@@ -64,18 +64,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Options, Vue } from "vue-class-component";
+// import { Component, Prop, Vue } from "vue-property-decorator";
 import AlteriEditForm from "@/components/AlteriEditForm.vue";
 import { Alter } from "@/data/Alter";
 
-@Component({
+@Options({
   components: {
     AlteriEditForm
+  },
+  props: {
+    alter: Object,
+    editedAlter: Object
   }
 })
 export default class AlteriPanelEntry extends Vue {
-  @Prop(Object) private alter!: Alter;
-  @Prop(Object) private editedAlter!: Alter | null;
+  private alter!: Alter;
+  private editedAlter!: Alter | null;
   private confirmRemove = false;
 
   constructor() {

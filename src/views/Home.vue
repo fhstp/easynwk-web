@@ -48,7 +48,7 @@
 // import Form from "@/components/Form.vue";
 // import MapParent from "@/components/MapParent.vue";
 
-import { Component, Vue } from "vue-property-decorator"; // Prop,
+import { Options, Vue } from "vue-class-component";
 
 import EgoHeader from "@/components/EgoHeader.vue";
 import EgoEditForm from "@/components/EgoEditForm.vue";
@@ -58,7 +58,7 @@ import SideMenu from "@/components/SideMenu.vue";
 import { Alter } from "@/data/Alter";
 import { AlteriList } from "@/data/AlteriList";
 
-@Component({
+@Options({
   components: {
     EgoHeader,
     EgoEditForm,

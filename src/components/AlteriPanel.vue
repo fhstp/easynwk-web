@@ -45,19 +45,24 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Options, Vue } from "vue-class-component";
+// import { Component, Prop, Vue } from "vue-property-decorator";
 import AlteriPanelEntry from "@/components/AlteriPanelEntry.vue";
 import { Alter, initAlter } from "@/data/Alter";
 import { AlteriList } from "@/data/AlteriList";
 
-@Component({
+@Options({
   components: {
     AlteriPanelEntry
-  }
+  },
+  props: {
+    alteri: AlteriList,
+    editedAlter: Object
+  },
 })
 export default class AlteriPanel extends Vue {
-  @Prop(AlteriList) private alteri!: AlteriList;
-  @Prop(Object) private editedAlter!: Alter | null;
+  private alteri!: AlteriList;
+  private editedAlter!: Alter | null;
 
   constructor() {
     super();

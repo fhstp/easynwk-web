@@ -71,13 +71,18 @@
 // import Form from "@/components/Form.vue";
 // import MapParent from "@/components/MapParent.vue";
 
-import { Component, Vue, Prop } from "vue-property-decorator"; // Prop,
+import { Options, Vue } from "vue-class-component";
+// import { Component, Vue, Prop } from "vue-property-decorator"; // Prop,
 
 import { AlteriList } from "@/data/AlteriList";
 
-@Component
+@Options({
+  props: {
+    nwkdata: AlteriList,
+  },
+})
 export default class SideMenu extends Vue {
-  @Prop(AlteriList) private nwkdata!: AlteriList;
+  private nwkdata!: AlteriList;
 
   private menuOpen: boolean;
 

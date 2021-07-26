@@ -77,13 +77,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Options, Vue } from "vue-class-component";
+// import { Component, Prop, Vue } from "vue-property-decorator";
 import { Ego } from "@/data/Ego";
-import { Gender } from "@/data/Gender.ts";
+import { Gender } from "@/data/Gender";
 
-@Component
+@Options({
+  props: {
+    ego: Object,
+  },
+})
 export default class EgoEditForm extends Vue {
-  @Prop(Object) private ego!: Ego;
+  private ego!: Ego;
   private genderOptions = Gender;
   private egoName = "";
 

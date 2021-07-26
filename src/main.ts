@@ -1,4 +1,4 @@
-import Vue from "vue";
+import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 
@@ -42,16 +42,14 @@ library.add(
   faCheck
 );
 
-Vue.component("font-awesome-icon", FontAwesomeIcon);
+// Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 // NB: activate, if icons should also be added the traditional way with i tags
 // import { dom } from '@fortawesome/fontawesome-svg-core'
 // dom.watch() // This will kick of the initial replacement of i to svg tags and configure a MutationObserver
 // END fontawesome
 
-Vue.config.productionTip = false;
-
-new Vue({
-  router,
-  render: h => h(App)
-}).$mount("#app");
+createApp(App)
+  .component("font-awesome-icon", FontAwesomeIcon)
+  .use(router)
+  .mount("#app");

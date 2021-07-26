@@ -115,14 +115,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+import { Options, Vue } from "vue-class-component";
+// import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { Alter } from "@/data/Alter";
-import { Gender } from "@/data/Gender.ts";
+import { Gender } from "@/data/Gender";
 import { Roles } from "@/data/Roles";
 
-@Component
+@Options({
+  props: {
+    alter: Object,
+  },
+  // watch: {
+  //   alter.distance: value, oldValue => {
+  //     (this.$refs.altername as HTMLInputElement).focus();
+  //   }
+  // }
+
+})
 export default class AlteriEditForm extends Vue {
-  @Prop(Object) private alter!: Alter;
+  private alter!: Alter;
   private genderOptions = Gender;
   private roleOptions = Roles;
 
@@ -134,11 +145,11 @@ export default class AlteriEditForm extends Vue {
     (this.$refs.altername as HTMLInputElement).focus();
   }
 
-  @Watch("alter.distance")
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onDistanceChanged(value: number, oldValue: number) {
-    (this.$refs.altername as HTMLInputElement).focus();
-  }
+  // @Watch("alter.distance")
+  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // onDistanceChanged(value: number, oldValue: number) {
+  //   (this.$refs.altername as HTMLInputElement).focus();
+  // }
 
   get invalidPosition() {
     return this.alter.distance <= 0;
