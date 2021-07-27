@@ -16,26 +16,22 @@
 
 <script lang="ts">
 import { defineComponent, computed } from "vue";
-import { Ego } from "@/data/Ego";
+import { useStore } from "@/store";
+// import { Ego } from "@/data/Ego";
 
 export default defineComponent({
-  props: {
-    ego: {
-      type: Object,
-      required: true
-    }
-  },
+  setup() {
+    const store = useStore();
 
-  setup(props, {emit}) {
     const displayName = computed(() => {
-      const egoTrimmed = props.ego.name.trim();
+      const egoTrimmed = store.state.ego.name.trim();
       return egoTrimmed.length > 0 ? egoTrimmed : "<Neue Ankerperson>";
     });
 
     return {
-      displayName
-    }
-  }
+      displayName,
+    };
+  },
 });
 </script>
 

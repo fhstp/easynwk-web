@@ -16,6 +16,8 @@
                 :class="{ 'is-danger': invalidName }"
                 ref="egofield"
                 v-model="egoName"
+                @blur="commitEdit($event, 'name')"
+                @keyup.esc="cancelEdit($event, 'name')"
                 type="text"
                 placeholder="Wer steht im Zentrum der NWK?"
               />
@@ -32,10 +34,10 @@
         <div class="field-body">
           <div class="control">
             <div class="select is-fullwidth">
-              <select v-model="currentGender">
-                <option v-for="value in genderOptions" :key="value">{{
-                  value
-                }}</option>
+              <select v-model="egoGender">
+                <option v-for="value in genderOptions" :key="value">
+                  {{ value }}
+                </option>
               </select>
             </div>
           </div>
@@ -49,7 +51,13 @@
         <div class="field-body">
           <div class="field">
             <div class="control">
-              <input class="input" v-bind="ego.age" type="text" />
+              <input
+                class="input"
+                :value="$store.state.ego.age"
+                @blur="commitEdit($event, 'age')"
+                @keyup.esc="cancelEdit($event, 'age')"
+                type="text"
+              />
             </div>
           </div>
         </div>
@@ -59,7 +67,9 @@
         <div class="control">
           <textarea
             class="textarea is-small"
-            v-bind="ego.note"
+            :value="$store.state.ego.note"
+            @blur="commitEdit($event, 'note')"
+            @keyup.esc="cancelEdit($event, 'note')"
             placeholder="Notizen zum Kontakt"
           ></textarea>
         </div>
@@ -78,62 +88,78 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted } from "vue";
-// import { Ego } from "@/data/Ego";
+import { useStore } from "@/store";
+
+import { Ego } from "@/data/Ego";
 import { Gender } from "@/data/Gender";
 
+type InputType = HTMLInputElement | HTMLTextAreaElement;
+
 export default defineComponent({
-  props: {
-    ego: {
-      type: Object,
-      required: true
-    }
-  },
+  setup(props, { emit }) {
+    // new vuex way
+    const store = useStore();
 
-  setup(props, {emit}) {
-    // const genderOptions = Gender;
-    const egoName = ref(props.ego.name);
-    const currentGender = ref(props.ego.currentGender);
-
-    const egofield = ref<InstanceType<typeof HTMLInputElement>>();
-
-    const genderOptions = ref(Gender);
-
-    // const genderOptions = computed(() => {
-    //   return Gender;
-    // });
-
-
+    // name field is special because it must not be empty
+    // the data item is only used for validity check & never stored
+    const egoName = ref(store.state.ego.name);
 
     const invalidName = computed(() => {
       return egoName.value.trim().length === 0;
     });
 
+    // getter & setter for select dropdown
+    const egoGender = computed({
+      get() {
+        return store.state.ego.currentGender;
+      },
+      set(value: string) {
+        store.commit("editEgo", { currentGender: value });
+      },
+    });
+
+    // generic event handlers from form to vuex
+    const commitEdit = (evt: InputEvent, field: keyof Ego) => {
+      const value = (evt.target as InputType).value.trim();
+      const payload = { [field]: value };
+      store.commit("editEgo", payload);
+    };
+
+    const cancelEdit = (evt: InputEvent, field: keyof Ego) => {
+      (evt.target as InputType).value = store.state.ego[field];
+    };
+
+    // apparently v-for needs this to be a data item
+    const genderOptions = ref(Gender);
+
+    // we need a DOM ref in order to focus
+    const egofield = ref<InstanceType<typeof HTMLInputElement>>();
+
     const editEgoFinished = () => {
-      if (!invalidName.value) {
-        console.log("would now set egoname to " + egoName.value.trim());
-        // props.ego.name = egoName.value.trim();
-        emit("edit-finished");
-      } else {
-        console.log("WHY HERE " + egoName.value + " " + invalidName.value);
+      if (invalidName.value) {
+        // moving mouse cursor does not work
+        // apparently editEgoFinished is not even called in the invalid state
         egofield.value?.focus();
-        // (this.$refs.egoname as HTMLInputElement).focus();
+      } else {
+        emit("edit-finished");
       }
-    }
+    };
 
     onMounted(() => {
       // the DOM element will be assigned to the ref after initial render
       egofield.value?.focus();
-    })
+    });
 
     return {
-      genderOptions,
       egoName,
-      currentGender,
-      egofield,
       invalidName,
-      editEgoFinished
-    }
-  }
+      egoGender,
+      commitEdit,
+      cancelEdit,
+      genderOptions,
+      editEgoFinished,
+    };
+  },
 });
 </script>
 

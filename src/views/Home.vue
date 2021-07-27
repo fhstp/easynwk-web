@@ -10,15 +10,11 @@
             @open-nwk="editEgoFinished"
           />
           <div id="brand"><i>easy</i>NWK</div>
-          <EgoHeader :ego="alteri.ego" @edit="egoEditMode = true" />
+          <EgoHeader @edit="egoEditMode = true" />
         </div>
 
         <div id="forms">
-          <EgoEditForm
-            v-if="egoEditMode"
-            :ego="alteri.ego"
-            @edit-finished="editEgoFinished"
-          />
+          <EgoEditForm v-if="egoEditMode" @edit-finished="editEgoFinished" />
 
           <!-- <AlteriPanel
             v-if="!egoEditMode"
@@ -79,7 +75,7 @@ export default defineComponent({
     const egoEditMode = ref(alteri.value.getEgo().name.length == 0);
 
     const editEgoFinished = () => {
-      alteri.value.persistEgo();
+      // alteri.value.persistEgo();
       egoEditMode.value = false;
     };
 
