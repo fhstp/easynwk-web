@@ -53,7 +53,7 @@ export default defineComponent({
   components: { EgoHeader, EgoEditForm, SideMenu },
   // components: { EgoHeader, EgoEditForm, AlteriPanel, NetworkMap, SideMenu },
 
-  setup(props) {
+  setup() {
     const alteri = ref(new AlteriList());
 
     // managing the currently open Alter
@@ -92,9 +92,9 @@ export default defineComponent({
       egoEditMode,
       editAlterFinished,
       editEgoFinished,
-      mapclick
+      mapclick,
     };
-  }
+  },
 });
 </script>
 

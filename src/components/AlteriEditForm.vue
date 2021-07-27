@@ -67,9 +67,9 @@
         <div class="control">
           <div class="select is-fullwidth">
             <select v-model="alter.currentGender">
-              <option v-for="value in genderOptions" :key="value">{{
-                value
-              }}</option>
+              <option v-for="value in genderOptions" :key="value">
+                {{ value }}
+              </option>
             </select>
           </div>
         </div>
@@ -130,7 +130,6 @@ import { Roles } from "@/data/Roles";
   //     (this.$refs.altername as HTMLInputElement).focus();
   //   }
   // }
-
 })
 export default class AlteriEditForm extends Vue {
   private alter!: Alter;

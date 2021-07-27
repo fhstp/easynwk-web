@@ -24,7 +24,7 @@ import {
   faFile,
   faSave,
   // faChevronDown,
-  faCheck
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
   faBars,

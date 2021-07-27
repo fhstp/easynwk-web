@@ -21,7 +21,7 @@
     </p>
     <p
       class="panel-block"
-      style="display:block"
+      style="display: block"
       v-if="alteri.getAlteri().length < 1"
     >
       Noch keine Kontakte vorhanden.<br />
@@ -53,11 +53,11 @@ import { AlteriList } from "@/data/AlteriList";
 
 @Options({
   components: {
-    AlteriPanelEntry
+    AlteriPanelEntry,
   },
   props: {
     alteri: AlteriList,
-    editedAlter: Object
+    editedAlter: Object,
   },
 })
 export default class AlteriPanel extends Vue {

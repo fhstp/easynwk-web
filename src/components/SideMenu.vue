@@ -39,9 +39,7 @@
               <span class="file-icon">
                 <font-awesome-icon icon="folder-open" />
               </span>
-              <span class="file-label">
-                Öffnen
-              </span>
+              <span class="file-label"> Öffnen </span>
             </span>
           </label>
         </div>
@@ -76,17 +74,17 @@ export default defineComponent({
   props: {
     nwkdata: {
       type: AlteriList,
-      required: true
-    }
+      required: true,
+    },
   },
 
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     const menuOpen = ref(false);
 
     const newNWK = () => {
       props.nwkdata.clear();
       emit("new-nwk");
-    }
+    };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const open = (event: any) => {
@@ -105,33 +103,33 @@ export default defineComponent({
         emit("open-nwk");
       };
       fr.readAsText(files.item(0));
-    }
+    };
 
     const save = () => {
       props.nwkdata.download();
-    }
+    };
 
     const openDemoData = () => {
       const DEMO_URL = "Rosa_Braunsteigl-Mueller.json";
       fetch(DEMO_URL)
-        .then(res => res.json())
-        .then(nwkObj => {
+        .then((res) => res.json())
+        .then((nwkObj) => {
           props.nwkdata.upload(nwkObj);
           emit("open-nwk");
         })
-        .catch(err => {
+        .catch((err) => {
           throw err;
         });
-    }
+    };
 
     return {
       menuOpen,
       newNWK,
       open,
       save,
-      openDemoData
-    }
-  }
+      openDemoData,
+    };
+  },
 });
 </script>
 

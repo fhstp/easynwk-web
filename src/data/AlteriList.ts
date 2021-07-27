@@ -33,13 +33,13 @@ export class AlteriList {
   //   ]);
   // }
 
-  addAlter(addedAlter: Alter) {
+  addAlter(addedAlter: Alter): void {
     this.alteri.unshift(addedAlter);
   }
 
-  removeAlter(alterToRemove: Alter) {
+  removeAlter(alterToRemove: Alter): void {
     // TODO "Papierkorb" zum Wiederherstellen von Alteri?
-    this.alteri = this.alteri.filter(item => item.id !== alterToRemove.id);
+    this.alteri = this.alteri.filter((item) => item.id !== alterToRemove.id);
 
     this.persistAlteri();
   }
@@ -56,33 +56,33 @@ export class AlteriList {
   //   localStorage.setItem("alter-" + alter.id, JSON.stringify(alter));
   // }
 
-  persistAlteri() {
+  persistAlteri(): void {
     localStorage.setItem("alteri", JSON.stringify(this.alteri));
   }
 
-  persistEgo() {
+  persistEgo(): void {
     localStorage.setItem("ego", JSON.stringify(this.ego));
   }
 
-  clear() {
+  clear(): void {
     this.alteri = [];
     this.persistAlteri();
     this.ego = initEgo();
     this.persistEgo();
   }
 
-  download() {
+  download(): void {
     const nwk = {
       ego: this.ego,
       alteri: this.alteri,
-      relations: []
+      relations: [],
     };
 
     download(this.ego.name + ".json", JSON.stringify(nwk));
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  upload(savedNWK: any) {
+  // eslint-disable-next-line
+  upload(savedNWK: any): void {
     // TODO format checks & error messages
     if (savedNWK.alteri && savedNWK.alteri instanceof Array) {
       this.alteri = savedNWK.alteri;

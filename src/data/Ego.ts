@@ -12,11 +12,11 @@ export function initEgo(): Ego {
     name: "",
     currentGender: Gender[0],
     age: "",
-    note: ""
+    note: "",
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line
 export function isEgo(arg: any): arg is Ego {
   return (
     arg &&

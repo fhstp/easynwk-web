@@ -67,5 +67,5 @@ export const Roles = [
   "Berater*in / Betreuer*in",
   "Pfarrer*in",
   "Physiotherapeut*in",
-  "Ergotherapeut*in"
+  "Ergotherapeut*in",
 ];

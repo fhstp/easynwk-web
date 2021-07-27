@@ -53,18 +53,10 @@
       <line class="axis" x1="0" y1="-100" x2="0" y2="100" />
       <line class="axis" x1="100" y1="0" x2="-100" y2="0" />
 
-      <text x="100" y="-100" text-anchor="end">
-        Familie
-      </text>
-      <text x="-100" y="-100" text-anchor="start">
-        Freund*innen/Bekannte
-      </text>
-      <text x="-100" y="100" text-anchor="start">
-        Kolleg*innen
-      </text>
-      <text x="100" y="100" text-anchor="end">
-        prof. Helfer*innen
-      </text>
+      <text x="100" y="-100" text-anchor="end">Familie</text>
+      <text x="-100" y="-100" text-anchor="start">Freund*innen/Bekannte</text>
+      <text x="-100" y="100" text-anchor="start">Kolleg*innen</text>
+      <text x="100" y="100" text-anchor="end">prof. Helfer*innen</text>
     </g>
 
     <text v-if="editedAlter != null" text-anchor="middle" class="edithint">
@@ -132,7 +124,7 @@ interface AlteriMark {
 @Options({
   props: {
     alteri: AlteriList,
-    editedAlter: Object
+    editedAlter: Object,
   },
 })
 export default class NetworkMap extends Vue {
@@ -169,13 +161,13 @@ export default class NetworkMap extends Vue {
   get alteriMarks(): Array<AlteriMark> {
     // console.log("in computed alteri marks");
     const buffer: Array<AlteriMark> = [];
-    this.alteri.getAlteri().forEach(el => {
+    this.alteri.getAlteri().forEach((el) => {
       // console.log("alter: " + el.name);
       buffer.push({
         d: el,
         shape: shapeByGender(el.currentGender),
         x: el.distance * Math.cos((el.angle * Math.PI) / 180),
-        y: -1 * el.distance * Math.sin((el.angle * Math.PI) / 180)
+        y: -1 * el.distance * Math.sin((el.angle * Math.PI) / 180),
       });
     });
     // first draw marks further away from center to avoid overplotting
@@ -183,7 +175,7 @@ export default class NetworkMap extends Vue {
   }
 
   get selectedAlteriMarks(): Array<AlteriMark> {
-    return this.alteriMarks.filter(m => m.d.isSelected);
+    return this.alteriMarks.filter((m) => m.d.isSelected);
   }
 }
 </script>

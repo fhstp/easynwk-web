@@ -71,12 +71,12 @@ import { Alter } from "@/data/Alter";
 
 @Options({
   components: {
-    AlteriEditForm
+    AlteriEditForm,
   },
   props: {
     alter: Object,
-    editedAlter: Object
-  }
+    editedAlter: Object,
+  },
 })
 export default class AlteriPanelEntry extends Vue {
   private alter!: Alter;
