@@ -1,8 +1,14 @@
 import { InjectionKey } from "vue";
-import { createStore, useStore as baseUseStore, Store } from "vuex";
+import {
+  createLogger,
+  createStore,
+  useStore as baseUseStore,
+  Store,
+} from "vuex";
 
 import { Alter } from "@/data/Alter";
-import { Ego, initEgo } from "@/data/Ego";
+import { Ego } from "@/data/Ego";
+import { initStateFromStore, localStoragePlugin } from "./localStoragePlugin";
 
 // define your typings for the store state
 export interface State {
@@ -12,10 +18,7 @@ export interface State {
 
 // root state object.
 // each Vuex instance is just a single state tree.
-const state = {
-  ego: initEgo(),
-  alteri: [],
-};
+const state = initStateFromStore();
 
 // mutations are operations that actually mutate the state.
 // each mutation handler gets the entire state tree as the
@@ -23,10 +26,6 @@ const state = {
 // mutations must be synchronous and can be recorded by plugins
 // for debugging purposes.
 const mutations = {
-  increment(state: State) {
-    state.ego.name = "Rudi";
-  },
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editEgo(state: State, payload: any) {
     // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
@@ -34,10 +33,16 @@ const mutations = {
   },
 };
 
+const plugins =
+  process.env.NODE_ENV !== "production"
+    ? [createLogger(), localStoragePlugin]
+    : [localStoragePlugin];
+
 export const store = createStore<State>({
   strict: process.env.NODE_ENV !== "production",
   state,
   mutations,
+  plugins,
 });
 
 // TypeScript support <https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function>
