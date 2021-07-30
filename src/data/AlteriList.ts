@@ -3,6 +3,9 @@ import { download } from "@/assets/utils";
 import { Alter } from "@/data/Alter";
 import { Ego, initEgo, isEgo } from "./Ego";
 
+/**
+ * @deprecated to be replaced by vuex store and NWK.ts
+ */
 export class AlteriList {
   private ego: Ego;
   private alteri: Array<Alter>;

@@ -66,23 +66,18 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-
 // @ is an alias to /src
-import { AlteriList } from "@/data/AlteriList";
+import { useStore } from "@/store";
+import { download } from "@/assets/utils";
 
 export default defineComponent({
-  props: {
-    nwkdata: {
-      type: AlteriList,
-      required: true,
-    },
-  },
-
   setup(props, { emit }) {
     const menuOpen = ref(false);
 
+    const store = useStore();
+
     const newNWK = () => {
-      props.nwkdata.clear();
+      store.commit("newNWK");
       emit("new-nwk");
     };
 
@@ -99,14 +94,17 @@ export default defineComponent({
       // eslint-disable-next-line
       fr.onload = (e: any) => {
         const result = JSON.parse(e.target.result);
-        props.nwkdata.upload(result);
+        // TODO format checks & error messages
+        // if (savedNWK.alteri && savedNWK.alteri instanceof Array) {
+        // if (savedNWK.ego && isEgo(savedNWK.ego)) {
+        store.commit("loadNWK", result);
         emit("open-nwk");
       };
       fr.readAsText(files.item(0));
     };
 
     const save = () => {
-      props.nwkdata.download();
+      download(store.state.ego.name + ".json", JSON.stringify(store.state));
     };
 
     const openDemoData = () => {
@@ -114,7 +112,7 @@ export default defineComponent({
       fetch(DEMO_URL)
         .then((res) => res.json())
         .then((nwkObj) => {
-          props.nwkdata.upload(nwkObj);
+          store.commit("loadNWK", nwkObj);
           emit("open-nwk");
         })
         .catch((err) => {

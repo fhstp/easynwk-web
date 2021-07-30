@@ -87,7 +87,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted } from "vue";
+import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useStore } from "@/store";
 
 import { Ego } from "@/data/Ego";
@@ -103,6 +103,15 @@ export default defineComponent({
     // name field is special because it must not be empty
     // the data item is only used for validity check & never stored
     const egoName = ref(store.state.ego.name);
+
+    const egoNameInStore = computed(() => {
+      return store.state.ego.name;
+    });
+
+    // it must be kept in sync (e.g. when loading a NWK)
+    watch(egoNameInStore, (newValue) => {
+      egoName.value = newValue; // store.state.ego.name;
+    });
 
     const invalidName = computed(() => {
       return egoName.value.trim().length === 0;
@@ -133,13 +142,15 @@ export default defineComponent({
     const genderOptions = ref(Gender);
 
     // we need a DOM ref in order to focus
-    const egofield = ref<InstanceType<typeof HTMLInputElement>>();
+    const egofield = ref<InstanceType<typeof HTMLInputElement> | null>(null);
 
     const editEgoFinished = () => {
       if (invalidName.value) {
         // moving mouse cursor does not work
         // apparently editEgoFinished is not even called in the invalid state
-        egofield.value?.focus();
+        if (egofield.value != null) {
+          (egofield.value as HTMLInputElement).focus();
+        }
       } else {
         emit("edit-finished");
       }
@@ -147,7 +158,9 @@ export default defineComponent({
 
     onMounted(() => {
       // the DOM element will be assigned to the ref after initial render
-      egofield.value?.focus();
+      if (egofield.value != null) {
+        (egofield.value as HTMLInputElement).focus();
+      }
     });
 
     return {
@@ -158,6 +171,7 @@ export default defineComponent({
       cancelEdit,
       genderOptions,
       editEgoFinished,
+      egofield,
     };
   },
 });
