@@ -97,7 +97,6 @@ type InputType = HTMLInputElement | HTMLTextAreaElement;
 
 export default defineComponent({
   setup(props, { emit }) {
-    // new vuex way
     const store = useStore();
 
     // name field is special because it must not be empty

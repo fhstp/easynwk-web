@@ -1,3 +1,4 @@
+import { Alter } from "@/data/Alter";
 import { NWK, initNWK, loadNWK } from "@/data/NWK";
 import { InjectionKey } from "vue";
 import {
@@ -31,6 +32,30 @@ const mutations = {
 
   loadNWK(state: NWK, payload: NWK) {
     loadNWK(state, payload);
+  },
+
+  addAlter(state: NWK, newAlter: Alter) {
+    state.alteri.unshift(newAlter);
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  editAlter(state: NWK, payload: { alter: Alter; changes: any }) {
+    // based oen vuex\examples\composition\todomvc\store\mutations.js
+    const index = state.alteri.indexOf(payload.alter);
+    // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
+    const changedAlter = {
+      ...payload.alter,
+      ...payload.changes,
+    };
+    state.alteri.splice(index, 1, changedAlter);
+  },
+
+  removeAlter(state: NWK, removableAlter: Alter) {
+    // old cold
+    // this.alteri = this.alteri.filter((item) => item.id !== alterToRemove.id);
+
+    // based oen vuex\examples\composition\todomvc\store\mutations.js
+    state.alteri.splice(state.alteri.indexOf(removableAlter), 1);
   },
 };
 

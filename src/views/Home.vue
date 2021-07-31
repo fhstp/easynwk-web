@@ -4,11 +4,7 @@
     <div id="main">
       <div class="scrollwrapper">
         <div id="titlebar" class="box has-text-black">
-          <SideMenu
-            :nwkdata="alteri"
-            @new-nwk="egoEditMode = true"
-            @open-nwk="editEgoFinished"
-          />
+          <SideMenu @new-nwk="egoEditMode = true" @open-nwk="editEgoFinished" />
           <div id="brand"><i>easy</i>NWK</div>
           <EgoHeader @edit="egoEditMode = true" />
         </div>
@@ -16,13 +12,12 @@
         <div id="forms">
           <EgoEditForm v-if="egoEditMode" @edit-finished="editEgoFinished" />
 
-          <!-- <AlteriPanel
+          <AlteriPanel
             v-if="!egoEditMode"
-            v-bind:alteri="alteri"
-            v-bind:editedAlter="editedAlter"
+            :editedAlter="editedAlter"
             @edit="editAlterClicked"
             @edit-finished="editAlterFinished"
-          /> -->
+          />
         </div>
         <!-- <div>
             Über die easyNWK &nbsp; &nbsp; &nbsp; Impressum
@@ -43,6 +38,7 @@
 import { defineComponent, ref } from "vue";
 
 // @ is an alias to /src
+import AlteriPanel from "@/components/AlteriPanel.vue";
 import EgoHeader from "@/components/EgoHeader.vue";
 import EgoEditForm from "@/components/EgoEditForm.vue";
 import SideMenu from "@/components/SideMenu.vue";
@@ -50,7 +46,7 @@ import { Alter } from "@/data/Alter";
 import { AlteriList } from "@/data/AlteriList";
 
 export default defineComponent({
-  components: { EgoHeader, EgoEditForm, SideMenu },
+  components: { EgoHeader, EgoEditForm, SideMenu, AlteriPanel },
   // components: { EgoHeader, EgoEditForm, AlteriPanel, NetworkMap, SideMenu },
 
   setup() {
@@ -67,7 +63,6 @@ export default defineComponent({
     };
 
     const editAlterFinished = () => {
-      alteri.value.persistAlteri();
       editedAlter.value = null;
     };
 

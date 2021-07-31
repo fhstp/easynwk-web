@@ -13,10 +13,7 @@
           </p>
         </header>
         <footer class="modal-card-foot">
-          <button
-            class="button is-primary"
-            v-on:click.stop="$emit('remove-alter', alter)"
-          >
+          <button class="button is-primary" v-on:click.stop="removeAlter">
             Entfernen
           </button>
           <button class="button" v-on:click.stop="confirmRemove = false">
@@ -55,48 +52,67 @@
       </button>
     </span>
 
-    <AlteriEditForm
+    <!-- <AlteriEditForm
       v-if="isEditMode"
       v-bind:alter="alter"
       @edit-finished="$emit('edit-finished')"
-    ></AlteriEditForm>
+    ></AlteriEditForm> -->
   </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-// import { Component, Prop, Vue } from "vue-property-decorator";
-import AlteriEditForm from "@/components/AlteriEditForm.vue";
+import { defineComponent, ref, computed } from "vue";
+import { useStore } from "@/store";
+// import AlteriEditForm from "@/components/AlteriEditForm.vue";
 import { Alter } from "@/data/Alter";
 
-@Options({
-  components: {
-    AlteriEditForm,
-  },
+export default defineComponent({
+  // components: { AlteriEditForm },
   props: {
+    // gets Alter as prop cp. ToDo demo
     alter: Object,
     editedAlter: Object,
   },
-})
-export default class AlteriPanelEntry extends Vue {
-  private alter!: Alter;
-  private editedAlter!: Alter | null;
-  private confirmRemove = false;
+  setup(props) {
+    const store = useStore();
 
-  constructor() {
-    super();
-  }
+    // TODO confirm dialog not needed if undo available
+    const confirmRemove = ref(false);
 
-  get isEditMode() {
-    return this.editedAlter != null && this.editedAlter.id === this.alter.id;
-  }
+    const removeAlter = () => {
+      store.commit("removeAlter", props.alter);
+    };
 
-  toggleSelection() {
-    if (!this.isEditMode) {
-      this.alter.isSelected = !this.alter.isSelected;
-    }
-  }
-}
+    // handles isEditMode
+    const isEditMode = computed(() => {
+      return (
+        props.editedAlter &&
+        props.editedAlter.id &&
+        props.alter &&
+        props.alter.id &&
+        props.editedAlter.id === props.alter.id
+      );
+    });
+
+    // handles isSelected
+    // TODO move selection out of NWK state?
+    const toggleSelection = () => {
+      if (!isEditMode.value) {
+        const alter2 = props.alter as Alter;
+        const changes = { isSelected: !alter2.isSelected };
+        const payload = { alter: alter2, changes };
+        store.commit("editAlter", payload);
+      }
+    };
+
+    return {
+      confirmRemove,
+      removeAlter,
+      isEditMode,
+      toggleSelection,
+    };
+  },
+});
 </script>
 
 <style scoped lang="scss">

@@ -6,7 +6,7 @@
         <button
           class="button"
           title="Kontakt hinzufügen"
-          v-on:click.stop="addAlter"
+          @click.stop="addAlter"
         >
           <span class="icon is-small">
             <font-awesome-icon icon="user-plus" />
@@ -19,11 +19,7 @@
         </button> -->
       </span>
     </p>
-    <p
-      class="panel-block"
-      style="display: block"
-      v-if="alteri.getAlteri().length < 1"
-    >
+    <p class="panel-block" style="display: block" v-if="alteri.length < 1">
       Noch keine Kontakte vorhanden.<br />
       Klicken Sie auf den Button mit dem
       <span class="icon is-small">
@@ -33,52 +29,51 @@
     </p>
 
     <AlteriPanelEntry
-      v-for="alter in alteri.getAlteri()"
+      v-for="alter in alteri"
       :key="alter.id"
-      v-bind:alter="alter"
-      v-bind:editedAlter="editedAlter"
+      :alter="alter"
+      :editedAlter="editedAlter"
       @edit="$emit('edit', alter)"
       @edit-finished="$emit('edit-finished')"
-      @remove-alter="removeAlter"
     ></AlteriPanelEntry>
   </nav>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-// import { Component, Prop, Vue } from "vue-property-decorator";
-import AlteriPanelEntry from "@/components/AlteriPanelEntry.vue";
-import { Alter, initAlter } from "@/data/Alter";
-import { AlteriList } from "@/data/AlteriList";
+import { defineComponent, computed } from "vue";
+import { useStore } from "@/store";
 
-@Options({
-  components: {
-    AlteriPanelEntry,
-  },
+import AlteriPanelEntry from "@/components/AlteriPanelEntry.vue";
+import { initAlter } from "@/data/Alter";
+
+// handle from below: edit, edit-finished, <del>remove-alter</del>
+// manages the edited-alter (from above or by itself)
+
+export default defineComponent({
+  components: { AlteriPanelEntry },
   props: {
-    alteri: AlteriList,
     editedAlter: Object,
   },
-})
-export default class AlteriPanel extends Vue {
-  private alteri!: AlteriList;
-  private editedAlter!: Alter | null;
+  setup(props, { emit }) {
+    const store = useStore();
 
-  constructor() {
-    super();
-  }
+    // knows list of Alter from vuex
+    const alteri = computed(() => store.state.alteri);
 
-  addAlter() {
-    const newAlter = initAlter();
-    this.alteri.addAlter(newAlter);
-    this.$emit("edit", newAlter);
-  }
+    // button to add Alter
+    const addAlter = () => {
+      const newAlter = initAlter();
+      store.commit("addAlter", newAlter);
+      // TODO replace by a watch
+      emit("edit", newAlter);
+    };
 
-  removeAlter(alterToRemove: Alter) {
-    // TODO modal dialog to confirm removal?
-    this.alteri.removeAlter(alterToRemove);
-  }
-}
+    return {
+      alteri,
+      addAlter,
+    };
+  },
+});
 </script>
 
 <style scoped>
