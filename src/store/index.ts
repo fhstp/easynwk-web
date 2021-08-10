@@ -41,12 +41,16 @@ const mutations = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editAlter(state: NWK, payload: { alter: Alter; changes: any }) {
     // based oen vuex\examples\composition\todomvc\store\mutations.js
+    console.log(payload.alter);
+    // TODO lookup does not work for 2 parallel mutations (form change & map click)
     const index = state.alteri.indexOf(payload.alter);
+    console.log("found at index:" + index);
     // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
     const changedAlter = {
       ...payload.alter,
       ...payload.changes,
     };
+    console.log(changedAlter);
     state.alteri.splice(index, 1, changedAlter);
   },
 

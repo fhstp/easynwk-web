@@ -129,8 +129,10 @@ export default defineComponent({
     // generic event handlers from form to vuex
     const commitEdit = (evt: InputEvent, field: keyof Ego) => {
       const value = (evt.target as InputType).value.trim();
-      const payload = { [field]: value };
-      store.commit("editEgo", payload);
+      if (value !== store.state.ego[field]) {
+        const payload = { [field]: value };
+        store.commit("editEgo", payload);
+      }
     };
 
     const cancelEdit = (evt: InputEvent, field: keyof Ego) => {

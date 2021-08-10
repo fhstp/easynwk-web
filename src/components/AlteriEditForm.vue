@@ -18,7 +18,9 @@
               class="input"
               :class="{ 'is-danger': invalidName }"
               ref="altername"
-              v-model="alter.name"
+              v-model="alterNameInUI"
+              @blur="commitEdit($event, 'name')"
+              @keyup.esc="cancelEdit($event, 'name')"
               type="text"
               placeholder="Vorname oder Spitzname"
             />
@@ -37,7 +39,7 @@
           <input
             class="input"
             type="text"
-            v-model="alter.role"
+            v-model="alterRole"
             list="predefined-roles"
           />
           <!-- <span class="icon is-small is-right has-text-link">
@@ -53,7 +55,7 @@
       <div class="field-label is-normal"></div>
       <div class="field-body">
         <label class="checkbox">
-          <input type="checkbox" v-model="alter.contactOfPartner" />
+          <input type="checkbox" v-model="alterContactOfPartner" />
           Kontakt der Partnerin/des Partners
         </label>
       </div>
@@ -66,7 +68,7 @@
       <div class="field-body">
         <div class="control">
           <div class="select is-fullwidth">
-            <select v-model="alter.currentGender">
+            <select v-model="alterGender">
               <option v-for="value in genderOptions" :key="value">
                 {{ value }}
               </option>
@@ -83,7 +85,13 @@
       <div class="field-body">
         <div class="field">
           <div class="control">
-            <input class="input" v-model="alter.age" type="text" />
+            <input
+              class="input"
+              :value="alter.age"
+              @blur="commitEdit($event, 'age')"
+              @keyup.esc="cancelEdit($event, 'age')"
+              type="text"
+            />
           </div>
         </div>
       </div>
@@ -93,7 +101,9 @@
       <div class="control">
         <textarea
           class="textarea is-small"
-          v-model="alter.note"
+          :value="alter.note"
+          @blur="commitEdit($event, 'note')"
+          @keyup.esc="cancelEdit($event, 'note')"
           placeholder="Notizen zum Kontakt"
         ></textarea>
       </div>
@@ -115,55 +125,157 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-// import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+import { defineComponent, ref, computed, onMounted, watch } from "vue";
+import { useStore } from "@/store";
+
 import { Alter } from "@/data/Alter";
 import { Gender } from "@/data/Gender";
 import { Roles } from "@/data/Roles";
+type InputType = HTMLInputElement | HTMLTextAreaElement;
 
-@Options({
+// gender & role options
+// focus name input
+// prohibit invalid name
+// prohibit invalid position
+// emit edit-finished
+
+export default defineComponent({
   props: {
+    // gets Alter as prop cp. ToDo demo
     alter: Object,
   },
-  // watch: {
-  //   alter.distance: value, oldValue => {
-  //     (this.$refs.altername as HTMLInputElement).focus();
-  //   }
-  // }
-})
-export default class AlteriEditForm extends Vue {
-  private alter!: Alter;
-  private genderOptions = Gender;
-  private roleOptions = Roles;
+  setup(props, { emit }) {
+    const store = useStore();
 
-  constructor() {
-    super();
-  }
+    // name field is special because it must not be empty
+    // the data item is only used for validity check & never stored
+    const alterNameInUI = ref(props.alter?.name);
 
-  mounted() {
-    (this.$refs.altername as HTMLInputElement).focus();
-  }
+    const alterNameInStore = computed(() => {
+      return props.alter?.name;
+    });
 
-  // @Watch("alter.distance")
-  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // onDistanceChanged(value: number, oldValue: number) {
-  //   (this.$refs.altername as HTMLInputElement).focus();
-  // }
+    // it must be kept in sync (e.g. when loading a NWK)
+    watch(alterNameInStore, (newValue) => {
+      alterNameInUI.value = newValue;
+    });
 
-  get invalidPosition() {
-    return this.alter.distance <= 0;
-  }
+    const invalidName = computed(() => {
+      return alterNameInUI.value.trim().length === 0;
+    });
 
-  get invalidName() {
-    return this.alter.name.trim().length === 0;
-  }
+    const invalidPosition = computed(() => {
+      return props.alter?.distance <= 0;
+    });
 
-  editAlterFinished() {
-    if (!this.invalidPosition && !this.invalidName) {
-      this.$emit("edit-finished");
-    }
-  }
-}
+    // getter & setter for select dropdown
+    const alterGender = computed({
+      get() {
+        return props.alter?.currentGender;
+      },
+      set(value: string) {
+        const payload = {
+          alter: props.alter,
+          changes: { currentGender: value },
+        };
+        store.commit("editAlter", payload);
+      },
+    });
+
+    const alterRole = computed({
+      get() {
+        return props.alter?.role;
+      },
+      set(value: string) {
+        const payload = {
+          alter: props.alter,
+          changes: { role: value },
+        };
+        store.commit("editAlter", payload);
+      },
+    });
+
+    const alterContactOfPartner = computed({
+      get() {
+        return props.alter?.contactOfPartner;
+      },
+      set(value: string) {
+        const payload = {
+          alter: props.alter,
+          changes: { contactOfPartner: value },
+        };
+        store.commit("editAlter", payload);
+      },
+    });
+
+    // generic event handlers from form to vuex
+    const commitEdit = (evt: InputEvent, field: keyof Alter) => {
+      const value = (evt.target as InputType).value.trim();
+      if (props.alter && value !== props.alter[field]) {
+        const changes = { [field]: value };
+        const payload = { alter: props.alter, changes };
+        store.commit("editAlter", payload);
+      }
+    };
+
+    const cancelEdit = (evt: InputEvent, field: keyof Alter) => {
+      (evt.target as InputType).value = (props.alter as Alter)[
+        field
+      ].toString();
+    };
+
+    // apparently v-for needs this to be a data item
+    const genderOptions = ref(Gender);
+    const roleOptions = ref(Roles);
+
+    // we need a DOM ref in order to focus
+    const altername = ref<InstanceType<typeof HTMLInputElement> | null>(null);
+
+    watch(
+      () => props.alter?.distance,
+      () => {
+        if (altername.value != null) {
+          (altername.value as HTMLInputElement).focus();
+        }
+      }
+    );
+
+    const editAlterFinished = () => {
+      // TODO     if (!this.invalidPosition && !this.invalidName) {
+      if (invalidName.value) {
+        // moving mouse cursor does not work
+        // apparently editEgoFinished is not even called in the invalid state
+        if (altername.value != null) {
+          (altername.value as HTMLInputElement).focus();
+        }
+      } else {
+        emit("edit-finished");
+      }
+    };
+
+    onMounted(() => {
+      // the DOM element will be assigned to the ref after initial render
+      if (altername.value != null) {
+        (altername.value as HTMLInputElement).focus();
+      }
+    });
+
+    return {
+      alterNameInUI,
+      invalidName,
+      invalidPosition,
+      alterGender,
+      alterRole,
+      alterContactOfPartner,
+      commitEdit,
+      cancelEdit,
+      genderOptions,
+      roleOptions,
+      editAlterFinished,
+      altername,
+    };
+  },
+});
 </script>
 
 <style scoped lang="scss">

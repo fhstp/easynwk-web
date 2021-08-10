@@ -105,13 +105,12 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-// import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent, computed, onMounted } from "vue";
+import { useStore } from "@/store";
 
 import * as d3 from "d3";
-import { ContainerElement } from "d3";
+// import { ContainerElement } from "d3";
 import { Alter } from "@/data/Alter";
-import { AlteriList } from "@/data/AlteriList";
 import { shapeByGender } from "@/data/Gender";
 
 interface AlteriMark {
@@ -121,63 +120,75 @@ interface AlteriMark {
   y: number;
 }
 
-@Options({
+// knows list of Alter from vuex
+// knows editedAlter
+// emit "map-click"
+
+export default defineComponent({
   props: {
-    alteri: AlteriList,
     editedAlter: Object,
   },
-})
-export default class NetworkMap extends Vue {
-  private alteri!: AlteriList;
-  private editedAlter!: Alter | null;
+  setup(props, { emit }) {
+    const store = useStore();
 
-  constructor() {
-    super();
-  }
+    // knows list of Alter from vuex
+    const alteri = computed(() => store.state.alteri);
 
-  // x(distance: number, angle: number): number {
-  //     return distance * Math.cos(angle * Math.PI/180)
-  // }
+    onMounted(() => {
+      // d3.mouse only works if the event is registered using D3 .on
+      const g = d3.select("#nwkmap");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      g.on("click", (event: any) => {
+        const coords = d3.pointer(event);
 
-  mounted() {
-    // d3.mouse only works if the event is registered using D3 .on
-    const g = d3.select("#nwkmap");
-    g.on("click", (event: any) => {
-      const coords = d3.pointer(event);
+        // cp. https://stackoverflow.com/a/33043899/1140589
+        const distance = Math.sqrt(
+          coords[0] * coords[0] + coords[1] * coords[1]
+        );
+        const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
 
-      // cp. https://stackoverflow.com/a/33043899/1140589
-      const distance = Math.sqrt(coords[0] * coords[0] + coords[1] * coords[1]);
-      const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
+        if (props.editedAlter != null) {
+          const payload = {
+            alter: props.editedAlter,
+            changes: { distance: distance, angle: angle },
+          };
+          store.commit("editAlter", payload);
+        }
 
-      if (this.editedAlter != null) {
-        this.editedAlter.distance = distance;
-        this.editedAlter.angle = angle;
-      }
-
-      this.$emit("map-click", { distance, angle });
-    });
-  }
-
-  get alteriMarks(): Array<AlteriMark> {
-    // console.log("in computed alteri marks");
-    const buffer: Array<AlteriMark> = [];
-    this.alteri.getAlteri().forEach((el) => {
-      // console.log("alter: " + el.name);
-      buffer.push({
-        d: el,
-        shape: shapeByGender(el.currentGender),
-        x: el.distance * Math.cos((el.angle * Math.PI) / 180),
-        y: -1 * el.distance * Math.sin((el.angle * Math.PI) / 180),
+        emit("map-click", { distance, angle });
       });
     });
-    // first draw marks further away from center to avoid overplotting
-    return buffer.sort((a, b) => b.d.distance - a.d.distance);
-  }
 
-  get selectedAlteriMarks(): Array<AlteriMark> {
-    return this.alteriMarks.filter((m) => m.d.isSelected);
-  }
-}
+    const alteriMarks = computed((): Array<AlteriMark> => {
+      // console.log("in computed alteri marks");
+      const buffer: Array<AlteriMark> = [];
+      store.state.alteri.forEach((el) => {
+        // console.log("alter: " + el.name);
+        buffer.push({
+          d: el,
+          shape: shapeByGender(el.currentGender),
+          x: el.distance * Math.cos((el.angle * Math.PI) / 180),
+          y: -1 * el.distance * Math.sin((el.angle * Math.PI) / 180),
+        });
+      });
+      // first draw marks further away from center to avoid overplotting
+      return buffer.sort((a, b) => b.d.distance - a.d.distance);
+    });
+
+    const selectedAlteriMarks = computed((): Array<AlteriMark> => {
+      return alteriMarks.value.filter((m) => m.d.isSelected);
+    });
+
+    return {
+      alteri,
+      alteriMarks,
+      selectedAlteriMarks,
+    };
+  },
+});
+// x(distance: number, angle: number): number {
+//     return distance * Math.cos(angle * Math.PI/180)
+// }
 </script>
 
 <style scoped lang="scss">

@@ -25,40 +25,31 @@
       </div>
     </div>
     <div id="chart">
-      <!-- <NetworkMap
-        v-bind:alteri="alteri"
-        v-bind:editedAlter="editedAlter"
-        @map-click="mapclick"
-      /> -->
+      <NetworkMap v-bind:editedAlter="editedAlter" @map-click="mapclick" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { useStore } from "@/store";
 
 // @ is an alias to /src
 import AlteriPanel from "@/components/AlteriPanel.vue";
 import EgoHeader from "@/components/EgoHeader.vue";
 import EgoEditForm from "@/components/EgoEditForm.vue";
 import SideMenu from "@/components/SideMenu.vue";
+import NetworkMap from "@/components/NetworkMap.vue";
 import { Alter } from "@/data/Alter";
-import { AlteriList } from "@/data/AlteriList";
 
 export default defineComponent({
-  components: { EgoHeader, EgoEditForm, SideMenu, AlteriPanel },
-  // components: { EgoHeader, EgoEditForm, AlteriPanel, NetworkMap, SideMenu },
+  components: { EgoHeader, EgoEditForm, AlteriPanel, NetworkMap, SideMenu },
 
   setup() {
-    const alteri = ref(new AlteriList());
-
     // managing the currently open Alter
     const editedAlter = ref<Alter | null>(null);
 
     const editAlterClicked = (newEditAlter: Alter) => {
-      // if another alter is currently being edited
-      if (editedAlter.value != null) alteri.value.persistAlteri();
-
       editedAlter.value = newEditAlter;
     };
 
@@ -66,8 +57,10 @@ export default defineComponent({
       editedAlter.value = null;
     };
 
+    const store = useStore();
+
     // if Ego Name is empty --> start in Ego edit mode
-    const egoEditMode = ref(alteri.value.getEgo().name.length == 0);
+    const egoEditMode = ref(store.state.ego.name.length == 0);
 
     const editEgoFinished = () => {
       // alteri.value.persistEgo();
@@ -81,7 +74,6 @@ export default defineComponent({
     };
 
     return {
-      alteri,
       editedAlter,
       editAlterClicked,
       egoEditMode,

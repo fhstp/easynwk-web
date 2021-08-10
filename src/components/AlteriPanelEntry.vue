@@ -52,22 +52,22 @@
       </button>
     </span>
 
-    <!-- <AlteriEditForm
+    <AlteriEditForm
       v-if="isEditMode"
       v-bind:alter="alter"
       @edit-finished="$emit('edit-finished')"
-    ></AlteriEditForm> -->
+    ></AlteriEditForm>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
-// import AlteriEditForm from "@/components/AlteriEditForm.vue";
+import AlteriEditForm from "@/components/AlteriEditForm.vue";
 import { Alter } from "@/data/Alter";
 
 export default defineComponent({
-  // components: { AlteriEditForm },
+  components: { AlteriEditForm },
   props: {
     // gets Alter as prop cp. ToDo demo
     alter: Object,
