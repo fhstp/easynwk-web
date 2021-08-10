@@ -30,7 +30,7 @@
       <button
         class="button is-small"
         title="Kontakt bearbeiten"
-        v-on:click.stop="$emit('edit', alter)"
+        v-on:click.stop="edit()"
       >
         <span class="icon is-small">
           <font-awesome-icon icon="pencil-alt" />
@@ -52,11 +52,7 @@
       </button>
     </span>
 
-    <AlteriEditForm
-      v-if="isEditMode"
-      v-bind:alter="alter"
-      @edit-finished="$emit('edit-finished')"
-    ></AlteriEditForm>
+    <AlteriEditForm v-if="isEditMode" :alter="alter"></AlteriEditForm>
   </div>
 </template>
 
@@ -71,7 +67,7 @@ export default defineComponent({
   props: {
     // gets Alter as prop cp. ToDo demo
     alter: Object,
-    editedAlter: Object,
+    alterIndex: Number,
   },
   setup(props) {
     const store = useStore();
@@ -80,18 +76,16 @@ export default defineComponent({
     const confirmRemove = ref(false);
 
     const removeAlter = () => {
-      store.commit("removeAlter", props.alter);
+      store.commit("removeAlter", props.alterIndex);
+    };
+
+    const edit = () => {
+      store.commit("openAlterForm", props.alterIndex);
     };
 
     // handles isEditMode
     const isEditMode = computed(() => {
-      return (
-        props.editedAlter &&
-        props.editedAlter.id &&
-        props.alter &&
-        props.alter.id &&
-        props.editedAlter.id === props.alter.id
-      );
+      return store.state.editIndex === props.alterIndex;
     });
 
     // handles isSelected
@@ -100,7 +94,7 @@ export default defineComponent({
       if (!isEditMode.value) {
         const alter2 = props.alter as Alter;
         const changes = { isSelected: !alter2.isSelected };
-        const payload = { alter: alter2, changes };
+        const payload = { index: props.alterIndex, changes };
         store.commit("editAlter", payload);
       }
     };
@@ -108,6 +102,7 @@ export default defineComponent({
     return {
       confirmRemove,
       removeAlter,
+      edit,
       isEditMode,
       toggleSelection,
     };

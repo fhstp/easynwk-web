@@ -29,12 +29,10 @@
     </p>
 
     <AlteriPanelEntry
-      v-for="alter in alteri"
+      v-for="(alter, i) in alteri"
       :key="alter.id"
       :alter="alter"
-      :editedAlter="editedAlter"
-      @edit="$emit('edit', alter)"
-      @edit-finished="$emit('edit-finished')"
+      :alterIndex="i"
     ></AlteriPanelEntry>
   </nav>
 </template>
@@ -44,17 +42,13 @@ import { defineComponent, computed } from "vue";
 import { useStore } from "@/store";
 
 import AlteriPanelEntry from "@/components/AlteriPanelEntry.vue";
-import { initAlter } from "@/data/Alter";
 
-// handle from below: edit, edit-finished, <del>remove-alter</del>
-// manages the edited-alter (from above or by itself)
+// handle from below: edit, edit-finished, <del>remove-alter</del> --> vuex store
+// manages the edited-alter (from above or by itself) --> vuex store
 
 export default defineComponent({
   components: { AlteriPanelEntry },
-  props: {
-    editedAlter: Object,
-  },
-  setup(props, { emit }) {
+  setup() {
     const store = useStore();
 
     // knows list of Alter from vuex
@@ -62,10 +56,7 @@ export default defineComponent({
 
     // button to add Alter
     const addAlter = () => {
-      const newAlter = initAlter();
-      store.commit("addAlter", newAlter);
-      // TODO replace by a watch
-      emit("edit", newAlter);
+      store.commit("addAlter");
     };
 
     return {

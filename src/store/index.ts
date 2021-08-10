@@ -1,4 +1,4 @@
-import { Alter } from "@/data/Alter";
+import { initAlter } from "@/data/Alter";
 import { NWK, initNWK, loadNWK } from "@/data/NWK";
 import { InjectionKey } from "vue";
 import {
@@ -34,32 +34,44 @@ const mutations = {
     loadNWK(state, payload);
   },
 
-  addAlter(state: NWK, newAlter: Alter) {
+  addAlter(state: NWK) {
+    const newAlter = initAlter();
     state.alteri.unshift(newAlter);
+    state.editIndex = 0;
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  editAlter(state: NWK, payload: { alter: Alter; changes: any }) {
+  editAlter(state: NWK, payload: { index: number; changes: any }) {
     // based oen vuex\examples\composition\todomvc\store\mutations.js
-    console.log(payload.alter);
-    // TODO lookup does not work for 2 parallel mutations (form change & map click)
-    const index = state.alteri.indexOf(payload.alter);
-    console.log("found at index:" + index);
-    // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
-    const changedAlter = {
-      ...payload.alter,
-      ...payload.changes,
-    };
-    console.log(changedAlter);
-    state.alteri.splice(index, 1, changedAlter);
+    // const index = state.alteri.indexOf(payload.alter);
+
+    // lookup does not work for 2 parallel mutations (form change & map click)
+    if (payload.index >= 0 && payload.index < state.alteri.length) {
+      // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
+      const changedAlter = {
+        ...state.alteri[payload.index],
+        ...payload.changes,
+      };
+      state.alteri.splice(payload.index, 1, changedAlter);
+    } else {
+      console.warn("alter index out of bounds: " + payload.index);
+    }
   },
 
-  removeAlter(state: NWK, removableAlter: Alter) {
-    // old cold
+  removeAlter(state: NWK, alterIndex: number) {
+    // old code
     // this.alteri = this.alteri.filter((item) => item.id !== alterToRemove.id);
 
     // based oen vuex\examples\composition\todomvc\store\mutations.js
-    state.alteri.splice(state.alteri.indexOf(removableAlter), 1);
+    state.alteri.splice(alterIndex, 1);
+  },
+
+  openAlterForm(state: NWK, alterIndex: number) {
+    state.editIndex = alterIndex;
+  },
+
+  closeAlterForm(state: NWK) {
+    state.editIndex = null;
   },
 };
 

@@ -144,7 +144,7 @@ export default defineComponent({
     // gets Alter as prop cp. ToDo demo
     alter: Object,
   },
-  setup(props, { emit }) {
+  setup(props) {
     const store = useStore();
 
     // name field is special because it must not be empty
@@ -175,7 +175,7 @@ export default defineComponent({
       },
       set(value: string) {
         const payload = {
-          alter: props.alter,
+          index: store.state.editIndex,
           changes: { currentGender: value },
         };
         store.commit("editAlter", payload);
@@ -188,7 +188,7 @@ export default defineComponent({
       },
       set(value: string) {
         const payload = {
-          alter: props.alter,
+          index: store.state.editIndex,
           changes: { role: value },
         };
         store.commit("editAlter", payload);
@@ -201,7 +201,7 @@ export default defineComponent({
       },
       set(value: string) {
         const payload = {
-          alter: props.alter,
+          index: store.state.editIndex,
           changes: { contactOfPartner: value },
         };
         store.commit("editAlter", payload);
@@ -213,7 +213,7 @@ export default defineComponent({
       const value = (evt.target as InputType).value.trim();
       if (props.alter && value !== props.alter[field]) {
         const changes = { [field]: value };
-        const payload = { alter: props.alter, changes };
+        const payload = { index: store.state.editIndex, changes };
         store.commit("editAlter", payload);
       }
     };
@@ -249,7 +249,7 @@ export default defineComponent({
           (altername.value as HTMLInputElement).focus();
         }
       } else {
-        emit("edit-finished");
+        store.commit("closeAlterForm");
       }
     };
 

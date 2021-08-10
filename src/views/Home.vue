@@ -12,20 +12,15 @@
         <div id="forms">
           <EgoEditForm v-if="egoEditMode" @edit-finished="editEgoFinished" />
 
-          <AlteriPanel
-            v-if="!egoEditMode"
-            :editedAlter="editedAlter"
-            @edit="editAlterClicked"
-            @edit-finished="editAlterFinished"
-          />
+          <AlteriPanel v-if="!egoEditMode" />
         </div>
-        <!-- <div>
+        <!-- TODO <div>
             Über die easyNWK &nbsp; &nbsp; &nbsp; Impressum
         </div> -->
       </div>
     </div>
     <div id="chart">
-      <NetworkMap v-bind:editedAlter="editedAlter" @map-click="mapclick" />
+      <NetworkMap @map-click="mapclick" />
     </div>
   </div>
 </template>
@@ -40,22 +35,12 @@ import EgoHeader from "@/components/EgoHeader.vue";
 import EgoEditForm from "@/components/EgoEditForm.vue";
 import SideMenu from "@/components/SideMenu.vue";
 import NetworkMap from "@/components/NetworkMap.vue";
-import { Alter } from "@/data/Alter";
 
 export default defineComponent({
   components: { EgoHeader, EgoEditForm, AlteriPanel, NetworkMap, SideMenu },
 
   setup() {
-    // managing the currently open Alter
-    const editedAlter = ref<Alter | null>(null);
-
-    const editAlterClicked = (newEditAlter: Alter) => {
-      editedAlter.value = newEditAlter;
-    };
-
-    const editAlterFinished = () => {
-      editedAlter.value = null;
-    };
+    // managing the currently open Alter --> moved to store
 
     const store = useStore();
 
@@ -74,10 +59,7 @@ export default defineComponent({
     };
 
     return {
-      editedAlter,
-      editAlterClicked,
       egoEditMode,
-      editAlterFinished,
       editEgoFinished,
       mapclick,
     };

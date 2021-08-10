@@ -59,7 +59,7 @@
       <text x="100" y="100" text-anchor="end">prof. Helfer*innen</text>
     </g>
 
-    <text v-if="editedAlter != null" text-anchor="middle" class="edithint">
+    <text v-if="isEditMode" text-anchor="middle" class="edithint">
       <tspan x="0" y="-1em">Klicke in die Karte, um</tspan>
       <tspan x="0" dy="2em">die Position festzulegen</tspan>
     </text>
@@ -122,17 +122,15 @@ interface AlteriMark {
 
 // knows list of Alter from vuex
 // knows editedAlter
-// emit "map-click"
+// emit "map-click" (which is not currently used)
 
 export default defineComponent({
-  props: {
-    editedAlter: Object,
-  },
   setup(props, { emit }) {
     const store = useStore();
 
-    // knows list of Alter from vuex
-    const alteri = computed(() => store.state.alteri);
+    const isEditMode = computed(() => {
+      return store.state.editIndex != null;
+    });
 
     onMounted(() => {
       // d3.mouse only works if the event is registered using D3 .on
@@ -147,9 +145,9 @@ export default defineComponent({
         );
         const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
 
-        if (props.editedAlter != null) {
+        if (isEditMode.value) {
           const payload = {
-            alter: props.editedAlter,
+            index: store.state.editIndex,
             changes: { distance: distance, angle: angle },
           };
           store.commit("editAlter", payload);
@@ -180,7 +178,7 @@ export default defineComponent({
     });
 
     return {
-      alteri,
+      isEditMode,
       alteriMarks,
       selectedAlteriMarks,
     };
