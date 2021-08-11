@@ -53,7 +53,7 @@
             <div class="control">
               <input
                 class="input"
-                :value="$store.state.ego.age"
+                :value="$store.state.nwk.ego.age"
                 @blur="commitEdit($event, 'age')"
                 @keyup.esc="cancelEdit($event, 'age')"
                 type="text"
@@ -67,7 +67,7 @@
         <div class="control">
           <textarea
             class="textarea is-small"
-            :value="$store.state.ego.note"
+            :value="$store.state.nwk.ego.note"
             @blur="commitEdit($event, 'note')"
             @keyup.esc="cancelEdit($event, 'note')"
             placeholder="Notizen zum Kontakt"
