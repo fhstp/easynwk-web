@@ -7,6 +7,7 @@
           <SideMenu @new-nwk="egoEditMode = true" @open-nwk="editEgoFinished" />
           <div id="brand"><i>easy</i>NWK</div>
           <EgoHeader @edit="egoEditMode = true" />
+          <UndoRedo />
         </div>
 
         <div id="forms">
@@ -35,9 +36,17 @@ import EgoHeader from "@/components/EgoHeader.vue";
 import EgoEditForm from "@/components/EgoEditForm.vue";
 import SideMenu from "@/components/SideMenu.vue";
 import NetworkMap from "@/components/NetworkMap.vue";
+import UndoRedo from "@/components/UndoRedo.vue";
 
 export default defineComponent({
-  components: { EgoHeader, EgoEditForm, AlteriPanel, NetworkMap, SideMenu },
+  components: {
+    EgoHeader,
+    EgoEditForm,
+    AlteriPanel,
+    NetworkMap,
+    SideMenu,
+    UndoRedo,
+  },
 
   setup() {
     // managing the currently open Alter --> moved to store
@@ -45,7 +54,7 @@ export default defineComponent({
     const store = useStore();
 
     // if Ego Name is empty --> start in Ego edit mode
-    const egoEditMode = ref(store.state.ego.name.length == 0);
+    const egoEditMode = ref(store.state.nwk.ego &&store.state.nwk.ego.name && store.state.nwk.ego.name.length == 0);
 
     const editEgoFinished = () => {
       // alteri.value.persistEgo();

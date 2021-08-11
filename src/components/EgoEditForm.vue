@@ -101,10 +101,10 @@ export default defineComponent({
 
     // name field is special because it must not be empty
     // the data item is only used for validity check & never stored
-    const egoName = ref(store.state.ego.name);
+    const egoName = ref(store.state.nwk.ego.name);
 
     const egoNameInStore = computed(() => {
-      return store.state.ego.name;
+      return store.state.nwk.ego.name;
     });
 
     // it must be kept in sync (e.g. when loading a NWK)
@@ -119,7 +119,7 @@ export default defineComponent({
     // getter & setter for select dropdown
     const egoGender = computed({
       get() {
-        return store.state.ego.currentGender;
+        return store.state.nwk.ego.currentGender;
       },
       set(value: string) {
         store.commit("editEgo", { currentGender: value });
@@ -129,14 +129,14 @@ export default defineComponent({
     // generic event handlers from form to vuex
     const commitEdit = (evt: InputEvent, field: keyof Ego) => {
       const value = (evt.target as InputType).value.trim();
-      if (value !== store.state.ego[field]) {
+      if (value !== store.state.nwk.ego[field]) {
         const payload = { [field]: value };
         store.commit("editEgo", payload);
       }
     };
 
     const cancelEdit = (evt: InputEvent, field: keyof Ego) => {
-      (evt.target as InputType).value = store.state.ego[field];
+      (evt.target as InputType).value = store.state.nwk.ego[field];
     };
 
     // apparently v-for needs this to be a data item

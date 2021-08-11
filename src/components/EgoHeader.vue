@@ -24,7 +24,7 @@ export default defineComponent({
     const store = useStore();
 
     const displayName = computed(() => {
-      const egoTrimmed = store.state.ego.name.trim();
+      const egoTrimmed = store.state.nwk.ego.name.trim();
       return egoTrimmed.length > 0 ? egoTrimmed : "<Neue Ankerperson>";
     });
 

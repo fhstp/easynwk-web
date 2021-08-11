@@ -24,6 +24,10 @@ import {
   faFile,
   faSave,
   // faChevronDown,
+  // faUndoAlt,
+  // faRedoAlt,
+  faUndo,
+  faRedo,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
@@ -40,6 +44,10 @@ library.add(
   faFile,
   faSave,
   // faChevronDown,
+  // faUndoAlt,
+  // faRedoAlt,
+  faUndo,
+  faRedo,
   faCheck
 );
 

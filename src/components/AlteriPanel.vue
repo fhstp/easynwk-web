@@ -52,7 +52,7 @@ export default defineComponent({
     const store = useStore();
 
     // knows list of Alter from vuex
-    const alteri = computed(() => store.state.alteri);
+    const alteri = computed(() => store.state.nwk.alteri);
 
     // button to add Alter
     const addAlter = () => {

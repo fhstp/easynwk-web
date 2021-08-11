@@ -85,7 +85,7 @@ export default defineComponent({
 
     // handles isEditMode
     const isEditMode = computed(() => {
-      return store.state.editIndex === props.alterIndex;
+      return store.state.nwk.editIndex === props.alterIndex;
     });
 
     // handles isSelected

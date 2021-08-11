@@ -175,7 +175,7 @@ export default defineComponent({
       },
       set(value: string) {
         const payload = {
-          index: store.state.editIndex,
+          index: store.state.nwk.editIndex,
           changes: { currentGender: value },
         };
         store.commit("editAlter", payload);
@@ -188,7 +188,7 @@ export default defineComponent({
       },
       set(value: string) {
         const payload = {
-          index: store.state.editIndex,
+          index: store.state.nwk.editIndex,
           changes: { role: value },
         };
         store.commit("editAlter", payload);
@@ -201,7 +201,7 @@ export default defineComponent({
       },
       set(value: string) {
         const payload = {
-          index: store.state.editIndex,
+          index: store.state.nwk.editIndex,
           changes: { contactOfPartner: value },
         };
         store.commit("editAlter", payload);
@@ -213,7 +213,7 @@ export default defineComponent({
       const value = (evt.target as InputType).value.trim();
       if (props.alter && value !== props.alter[field]) {
         const changes = { [field]: value };
-        const payload = { index: store.state.editIndex, changes };
+        const payload = { index: store.state.nwk.editIndex, changes };
         store.commit("editAlter", payload);
       }
     };

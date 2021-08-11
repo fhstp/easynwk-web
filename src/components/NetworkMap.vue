@@ -129,7 +129,7 @@ export default defineComponent({
     const store = useStore();
 
     const isEditMode = computed(() => {
-      return store.state.editIndex != null;
+      return store.state.nwk.editIndex != null;
     });
 
     onMounted(() => {
@@ -147,7 +147,7 @@ export default defineComponent({
 
         if (isEditMode.value) {
           const payload = {
-            index: store.state.editIndex,
+            index: store.state.nwk.editIndex,
             changes: { distance: distance, angle: angle },
           };
           store.commit("editAlter", payload);
@@ -160,7 +160,7 @@ export default defineComponent({
     const alteriMarks = computed((): Array<AlteriMark> => {
       // console.log("in computed alteri marks");
       const buffer: Array<AlteriMark> = [];
-      store.state.alteri.forEach((el) => {
+      store.state.nwk.alteri.forEach((el) => {
         // console.log("alter: " + el.name);
         buffer.push({
           d: el,
