@@ -36,9 +36,7 @@ export default defineComponent({
     });
 
     const canRedo = computed(() => {
-      return true;
-      //    TODO const stack = store.state.unredo.undone;
-      //   return stack && stack.length > 0;
+      return store.state.unredo && store.state.unredo.redoCount > 0;
     });
 
     return {
