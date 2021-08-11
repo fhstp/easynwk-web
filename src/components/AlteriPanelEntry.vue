@@ -4,10 +4,10 @@
     v-bind:class="{ selected: alter.isSelected, alteriform: isEditMode }"
     v-on:click="toggleSelection()"
   >
-    <span v-if="isEditMode">Kontakt bearbeiten</span>
-    <span v-else>{{ alter.name }} / {{ alter.role }}</span>
+    <span v-if="isEditMode" class="label">Kontakt bearbeiten</span>
+    <span v-else class="contact">{{ alter.name }} / {{ alter.role }}</span>
 
-    <span class="buttons are-small" v-if="alter.isSelected && !isEditMode">
+    <span class="buttons are-small" v-if="!isEditMode">
       <button
         class="button is-small"
         title="Kontakt bearbeiten"
@@ -102,5 +102,18 @@ export default defineComponent({
 
 .panel-block.selected > span {
   font-weight: bold;
+}
+
+/* show buttons only when mouseover */
+.panel-block > .buttons {
+  display: none;
+}
+.panel-block:hover > .buttons {
+  display: inline;
+}
+
+/* make text label as high as buttons to avoid height change */
+.contact {
+  padding: 3px 0px;
 }
 </style>
