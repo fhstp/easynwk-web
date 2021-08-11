@@ -4,25 +4,6 @@
     v-bind:class="{ selected: alter.isSelected, alteriform: isEditMode }"
     v-on:click="toggleSelection()"
   >
-    <div class="modal" :class="{ 'is-active': confirmRemove }">
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p>
-            Soll der Kontakt <b>{{ alter.name }}</b> wirklich entfernt werden?
-          </p>
-        </header>
-        <footer class="modal-card-foot">
-          <button class="button is-primary" v-on:click.stop="removeAlter">
-            Entfernen
-          </button>
-          <button class="button" v-on:click.stop="confirmRemove = false">
-            Abbrechen
-          </button>
-        </footer>
-      </div>
-    </div>
-
     <span v-if="isEditMode">Kontakt bearbeiten</span>
     <span v-else>{{ alter.name }} / {{ alter.role }}</span>
 
@@ -44,7 +25,7 @@
       <button
         class="button is-small"
         title="Kontakt entfernen"
-        v-on:click.stop="confirmRemove = true"
+        v-on:click.stop="removeAlter"
       >
         <span class="icon is-small">
           <font-awesome-icon icon="user-minus" />
@@ -57,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, computed } from "vue";
 import { useStore } from "@/store";
 import AlteriEditForm from "@/components/AlteriEditForm.vue";
 import { Alter } from "@/data/Alter";
@@ -71,9 +52,6 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-
-    // TODO confirm dialog not needed if undo available
-    const confirmRemove = ref(false);
 
     const removeAlter = () => {
       store.commit("removeAlter", props.alterIndex);
@@ -100,7 +78,6 @@ export default defineComponent({
     };
 
     return {
-      confirmRemove,
       removeAlter,
       edit,
       isEditMode,
