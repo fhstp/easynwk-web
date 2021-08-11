@@ -54,7 +54,11 @@ export default defineComponent({
     const store = useStore();
 
     // if Ego Name is empty --> start in Ego edit mode
-    const egoEditMode = ref(store.state.nwk.ego &&store.state.nwk.ego.name && store.state.nwk.ego.name.length == 0);
+    const egoEditMode = ref(
+      store.state.nwk.ego &&
+        store.state.nwk.ego.name &&
+        store.state.nwk.ego.name.length == 0
+    );
 
     const editEgoFinished = () => {
       // alteri.value.persistEgo();

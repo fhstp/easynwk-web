@@ -1,5 +1,4 @@
-import { initAlter } from "@/data/Alter";
-import { NWK, initNWK, loadNWK } from "@/data/NWK";
+import { NWK } from "@/data/NWK";
 import { InjectionKey } from "vue";
 import {
   createLogger,
@@ -8,12 +7,7 @@ import {
   Store,
 } from "vuex";
 
-import {
-  initStateFromStore,
-  IUnReDoState,
-  localStoragePlugin,
-  ReUnDoModule,
-} from "./localStoragePlugin";
+import { IUnReDoState, localStoragePlugin } from "./localStoragePlugin";
 import { nwkModule } from "./nwkModule";
 
 export interface IStoreState {
@@ -102,7 +96,7 @@ export const store = createStore<IStoreState>({
   // mutations,
   modules: {
     nwk: nwkModule,
-    unredo: ReUnDoModule,
+    // unredo: ReUnDoModule,
   },
   plugins,
 });

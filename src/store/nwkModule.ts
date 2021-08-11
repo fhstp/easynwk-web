@@ -5,7 +5,7 @@ import { initStateFromStore } from "./localStoragePlugin";
 
 // root state object.
 // each Vuex instance is just a single state tree.
-const state = initStateFromStore(initNWK);
+const state = initStateFromStore();
 
 // mutations are operations that actually mutate the state.
 // each mutation handler gets the entire state tree as the
@@ -69,7 +69,7 @@ const mutations = {
 };
 
 export const nwkModule = {
-  namespaced: true,
+  // namespaced: true,
   state,
   mutations,
 };

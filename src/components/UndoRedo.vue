@@ -32,13 +32,13 @@ export default defineComponent({
     const store = useStore();
 
     const canUndo = computed(() => {
-      const stack = store.state.unredo.done;
-      return stack && stack.length == 0;
+      return store.state.unredo && store.state.unredo.undoCount > 0;
     });
 
     const canRedo = computed(() => {
-      const stack = store.state.unredo.undone;
-      return stack && stack.length > 0;
+      return true;
+      //    TODO const stack = store.state.unredo.undone;
+      //   return stack && stack.length > 0;
     });
 
     return {
