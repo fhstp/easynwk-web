@@ -157,16 +157,36 @@ export default defineComponent({
       });
     });
 
+    /**
+     * map of cartesian coords by alter.id (not the array index!)
+     */
+    const alteriCoords = computed(
+      (): Map<number, { x: number; y: number }> => {
+        const buffer = new Map();
+
+        store.state.nwk.alteri.forEach((alter) => {
+          const x = alter.distance * Math.cos((alter.angle * Math.PI) / 180);
+          const y =
+            -1 * alter.distance * Math.sin((alter.angle * Math.PI) / 180);
+
+          buffer.set(alter.id, { x, y });
+        });
+
+        return buffer;
+      }
+    );
+
     const alteriMarks = computed((): Array<AlterMark> => {
       // console.log("in computed alteri marks");
       const buffer: Array<AlterMark> = [];
-      store.state.nwk.alteri.forEach((el, index) => {
+      store.state.nwk.alteri.forEach((el) => {
         // console.log("alter: " + el.name);
+        const coords = alteriCoords.value.get(el.id);
         buffer.push({
           d: el,
           shape: shapeByGender(el.currentGender),
-          x: store.getters.alterPositions[index].x,
-          y: store.getters.alterPositions[index].y,
+          x: coords ? coords.x : 0,
+          y: coords ? coords.y : 0,
         });
       });
       // first draw marks further away from center to avoid overplotting

@@ -17,15 +17,6 @@ const getters = {
       return true;
     }
   },
-
-  alterPositions(state: NWK): Array<{ x: number; y: number }> {
-    return state.alteri.map((alter) => {
-      const x = alter.distance * Math.cos((alter.angle * Math.PI) / 180);
-      const y = -1 * alter.distance * Math.sin((alter.angle * Math.PI) / 180);
-
-      return { x, y };
-    });
-  },
 };
 
 // mutations are operations that actually mutate the state.
