@@ -1,4 +1,5 @@
 <template>
+  <p class="label">Beziehungen von {{ alter.name }}</p>
   <form class="form" @submit.prevent="editAlterFinished">
     <div class="columns">
       <div class="column">

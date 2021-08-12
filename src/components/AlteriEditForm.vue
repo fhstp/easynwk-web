@@ -1,4 +1,5 @@
 <template>
+  <p class="label">Kontakt bearbeiten</p>
   <form class="form" @submit.prevent="editAlterFinished">
     <div class="field has-text-danger" v-if="invalidPosition">
       <span class="icon is-small">

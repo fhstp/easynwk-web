@@ -4,8 +4,9 @@
     v-bind:class="{ selected: alter.isSelected, alteriform: isEditMode }"
     v-on:click="toggleSelection()"
   >
-    <span v-if="isEditMode" class="label">Kontakt bearbeiten</span>
-    <span v-else class="contact">{{ alter.name }} / {{ alter.role }}</span>
+    <span v-if="!isEditMode" class="contact"
+      >{{ alter.name }} / {{ alter.role }}</span
+    >
 
     <span class="buttons are-small" v-if="!isEditMode && isAlterOpsAllowed">
       <button
