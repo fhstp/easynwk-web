@@ -1,5 +1,6 @@
 import { Alter } from "@/data/Alter";
 import { Ego, initEgo } from "@/data/Ego";
+import { Connection } from "./Connection";
 
 // define your typings for the store state
 export interface NWK {
@@ -9,6 +10,7 @@ export interface NWK {
   ego: Ego;
   alteri: Array<Alter>;
   editIndex: number | null;
+  connections: Array<Connection>;
 }
 
 export function initNWKasJSON(): string {
@@ -16,13 +18,16 @@ export function initNWKasJSON(): string {
     ego: initEgo(),
     alteri: [],
     editIndex: null,
+    connections: [],
   });
 }
 
 export function loadNWK(state: NWK, loadedText: string): void {
   const loaded = JSON.parse(loadedText);
-  console.log(loaded.alteri);
   state.ego = loaded.ego;
   state.alteri = loaded.alteri;
+  state.connections = loaded.connections;
+
+  // aspects of state to be reseted
   state.editIndex = null;
 }

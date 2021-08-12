@@ -7,7 +7,7 @@
   },
   "alteri": [
     {
-      "id": "0",
+      "id": 8,
       "name": "Susi",
       "role": "Studienkolleg*in",
       "contactOfPartner": false,
@@ -20,7 +20,7 @@
       "isSelected": false
     },
     {
-      "id": "1",
+      "id": 7,
       "name": "Dr. Maier",
       "role": "Ärzt*in",
       "contactOfPartner": false,
@@ -33,7 +33,7 @@
       "isSelected": false
     },
     {
-      "id": "2",
+      "id": 6,
       "name": "Strolchi",
       "role": "",
       "contactOfPartner": false,
@@ -46,7 +46,7 @@
       "isSelected": false
     },
     {
-      "id": "3",
+      "id": 5,
       "name": "+Hubert",
       "role": "Vater",
       "contactOfPartner": false,
@@ -59,7 +59,7 @@
       "isSelected": false
     },
     {
-      "id": "4",
+      "id": 4,
       "name": "Lara",
       "role": "Freund*in",
       "contactOfPartner": false,
@@ -72,7 +72,7 @@
       "isSelected": false
     },
     {
-      "id": "5",
+      "id": 3,
       "name": "Max",
       "role": "Studienkolleg*in",
       "contactOfPartner": false,
@@ -85,7 +85,7 @@
       "isSelected": false
     },
     {
-      "id": "6",
+      "id": 2,
       "name": "Richard",
       "role": "Lebensgefährt*in",
       "contactOfPartner": false,
@@ -98,7 +98,7 @@
       "isSelected": true
     },
     {
-      "id": "7",
+      "id": 1,
       "name": "Maria",
       "role": "Mutter",
       "contactOfPartner": false,
@@ -111,5 +111,8 @@
       "isSelected": false
     }
   ],
-  "relations": []
+  "connections": [
+    { "id1": 1, "id2": 4 },
+    { "id1": 1, "id2": 6 }
+  ]
 }

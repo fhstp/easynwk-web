@@ -76,6 +76,8 @@ const mutations = {
 
     // based oen vuex\examples\composition\todomvc\store\mutations.js
     state.alteri.splice(alterIndex, 1);
+
+    // TODO remove connections to/from alter
   },
 
   openAlterForm(state: NWK, alterIndex: number): void {

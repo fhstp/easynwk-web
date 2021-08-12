@@ -65,6 +65,15 @@
     </text>
 
     <g id="marks">
+      <line
+        v-for="(mark, index) in connectionMarks"
+        :key="'conn' + index"
+        :x1="mark.x1"
+        :y1="mark.y1"
+        :x2="mark.x2"
+        :y2="mark.y2"
+      />
+
       <circle
         v-for="mark in selectedAlteriMarks"
         :key="'shadow' + mark.d.id"
@@ -120,6 +129,13 @@ interface AlterMark {
   y: number;
 }
 
+interface ConnectionMark {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}
+
 // knows list of Alter from vuex
 // knows editedAlter
 // emit "map-click" (which is not currently used)
@@ -160,21 +176,18 @@ export default defineComponent({
     /**
      * map of cartesian coords by alter.id (not the array index!)
      */
-    const alteriCoords = computed(
-      (): Map<number, { x: number; y: number }> => {
-        const buffer = new Map();
+    const alteriCoords = computed((): Map<number, { x: number; y: number }> => {
+      const buffer = new Map();
 
-        store.state.nwk.alteri.forEach((alter) => {
-          const x = alter.distance * Math.cos((alter.angle * Math.PI) / 180);
-          const y =
-            -1 * alter.distance * Math.sin((alter.angle * Math.PI) / 180);
+      store.state.nwk.alteri.forEach((alter) => {
+        const x = alter.distance * Math.cos((alter.angle * Math.PI) / 180);
+        const y = -1 * alter.distance * Math.sin((alter.angle * Math.PI) / 180);
 
-          buffer.set(alter.id, { x, y });
-        });
+        buffer.set(alter.id, { x, y });
+      });
 
-        return buffer;
-      }
-    );
+      return buffer;
+    });
 
     const alteriMarks = computed((): Array<AlterMark> => {
       // console.log("in computed alteri marks");
@@ -197,10 +210,25 @@ export default defineComponent({
       return alteriMarks.value.filter((m) => m.d.isSelected);
     });
 
+    const connectionMarks = computed((): Array<ConnectionMark> => {
+      return store.state.nwk.connections.map((conn) => {
+        const coords1 = alteriCoords.value.get(conn.id1);
+        const coords2 = alteriCoords.value.get(conn.id2);
+
+        return {
+          x1: coords1 ? coords1.x : 0,
+          y1: coords1 ? coords1.y : 0,
+          x2: coords2 ? coords2.x : 0,
+          y2: coords2 ? coords2.y : 0,
+        };
+      });
+    });
+
     return {
       isEditMode,
       alteriMarks,
       selectedAlteriMarks,
+      connectionMarks,
     };
   },
 });
