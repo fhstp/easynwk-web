@@ -1,5 +1,5 @@
 import { initAlter } from "@/data/Alter";
-import { NWK, initNWKasJSON, loadNWK } from "@/data/NWK";
+import { NWK, initNWKasJSON, loadNWK, TAB_BASE } from "@/data/NWK";
 
 import { loadStateFromStore } from "./localStoragePlugin";
 
@@ -80,8 +80,12 @@ const mutations = {
     // TODO remove connections to/from alter
   },
 
-  openAlterForm(state: NWK, alterIndex: number): void {
-    state.editIndex = alterIndex;
+  openAlterForm(
+    state: NWK,
+    payload: { alterIndex: number; tab?: string }
+  ): void {
+    state.editIndex = payload.alterIndex;
+    state.editTab = payload.tab ? payload.tab : TAB_BASE;
   },
 
   closeAlterForm(state: NWK): void {

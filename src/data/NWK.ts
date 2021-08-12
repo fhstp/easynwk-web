@@ -2,6 +2,9 @@ import { Alter } from "@/data/Alter";
 import { Ego, initEgo } from "@/data/Ego";
 import { Connection } from "./Connection";
 
+export const TAB_BASE = "base";
+export const TAB_CONNECTIONS = "connections";
+
 // define your typings for the store state
 export interface NWK {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -9,16 +12,20 @@ export interface NWK {
 
   ego: Ego;
   alteri: Array<Alter>;
-  editIndex: number | null;
   connections: Array<Connection>;
+
+  editIndex: number | null;
+  editTab: string;
 }
 
 export function initNWKasJSON(): string {
   return JSON.stringify({
     ego: initEgo(),
     alteri: [],
-    editIndex: null,
     connections: [],
+
+    editIndex: null,
+    editTab: TAB_BASE,
   });
 }
 
@@ -30,4 +37,5 @@ export function loadNWK(state: NWK, loadedText: string): void {
 
   // aspects of state to be reseted
   state.editIndex = null;
+  state.editTab = TAB_BASE;
 }

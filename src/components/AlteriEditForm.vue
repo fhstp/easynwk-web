@@ -142,7 +142,10 @@ type InputType = HTMLInputElement | HTMLTextAreaElement;
 export default defineComponent({
   props: {
     // gets Alter as prop cp. ToDo demo
-    alter: Object,
+    alter: {
+      type: Object,
+      required: true,
+    },
   },
   setup(props) {
     const store = useStore();
