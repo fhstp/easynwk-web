@@ -7,6 +7,7 @@
           class="button"
           title="Kontakt hinzufügen"
           @click.stop="addAlter"
+          :disabled="!isAlterOpsAllowed"
         >
           <span class="icon is-small">
             <font-awesome-icon icon="user-plus" />
@@ -62,6 +63,7 @@ export default defineComponent({
     return {
       alteri,
       addAlter,
+      isAlterOpsAllowed: computed(() => store.getters.editedAlterValid),
     };
   },
 });

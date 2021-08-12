@@ -7,7 +7,7 @@
     <span v-if="isEditMode" class="label">Kontakt bearbeiten</span>
     <span v-else class="contact">{{ alter.name }} / {{ alter.role }}</span>
 
-    <span class="buttons are-small" v-if="!isEditMode">
+    <span class="buttons are-small" v-if="!isEditMode && isAlterOpsAllowed">
       <button
         class="button is-small"
         title="Kontakt bearbeiten"
@@ -81,6 +81,7 @@ export default defineComponent({
       removeAlter,
       edit,
       isEditMode,
+      isAlterOpsAllowed: computed(() => store.getters.editedAlterValid),
       toggleSelection,
     };
   },

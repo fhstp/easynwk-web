@@ -7,6 +7,18 @@ import { loadStateFromStore } from "./localStoragePlugin";
 // each Vuex instance is just a single state tree.
 const state = JSON.parse(loadStateFromStore());
 
+const getters = {
+  editedAlterValid(state: NWK): boolean {
+    if (state.editIndex != null) {
+      const alter = state.alteri[state.editIndex];
+      return alter.distance > 0 && alter.name.trim().length > 0;
+    } else {
+      // no alter open to edit --> always valid
+      return true;
+    }
+  },
+};
+
 // mutations are operations that actually mutate the state.
 // each mutation handler gets the entire state tree as the
 // first argument, followed by additional payload arguments.
@@ -71,5 +83,6 @@ const mutations = {
 export const nwkModule = {
   // namespaced: true,
   state,
+  getters,
   mutations,
 };
