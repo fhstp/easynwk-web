@@ -113,7 +113,7 @@ import * as d3 from "d3";
 import { Alter } from "@/data/Alter";
 import { shapeByGender } from "@/data/Gender";
 
-interface AlteriMark {
+interface AlterMark {
   d: Alter;
   shape: string;
   x: number;
@@ -157,23 +157,23 @@ export default defineComponent({
       });
     });
 
-    const alteriMarks = computed((): Array<AlteriMark> => {
+    const alteriMarks = computed((): Array<AlterMark> => {
       // console.log("in computed alteri marks");
-      const buffer: Array<AlteriMark> = [];
-      store.state.nwk.alteri.forEach((el) => {
+      const buffer: Array<AlterMark> = [];
+      store.state.nwk.alteri.forEach((el, index) => {
         // console.log("alter: " + el.name);
         buffer.push({
           d: el,
           shape: shapeByGender(el.currentGender),
-          x: el.distance * Math.cos((el.angle * Math.PI) / 180),
-          y: -1 * el.distance * Math.sin((el.angle * Math.PI) / 180),
+          x: store.getters.alterPositions[index].x,
+          y: store.getters.alterPositions[index].y,
         });
       });
       // first draw marks further away from center to avoid overplotting
       return buffer.sort((a, b) => b.d.distance - a.d.distance);
     });
 
-    const selectedAlteriMarks = computed((): Array<AlteriMark> => {
+    const selectedAlteriMarks = computed((): Array<AlterMark> => {
       return alteriMarks.value.filter((m) => m.d.isSelected);
     });
 
