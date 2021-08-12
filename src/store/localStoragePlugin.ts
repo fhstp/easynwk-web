@@ -1,4 +1,4 @@
-import { NWK, initNWK } from "@/data/NWK";
+import { initNWKasJSON } from "@/data/NWK";
 import { MutationPayload, Store } from "vuex";
 import { IStoreState } from ".";
 
@@ -10,19 +10,19 @@ export interface IUnReDoState {
   redoCount: number;
 }
 
-export function initStateFromStore(): NWK {
+export function loadStateFromStore(): string {
   const storedNWK = localStorage.getItem(STORAGE_KEY);
   if (storedNWK != null) {
-    return JSON.parse(storedNWK);
+    return storedNWK;
   } else {
-    return initNWK();
+    return initNWKasJSON();
   }
 }
 
 export const localStoragePlugin = (store: Store<IStoreState>): void => {
   // keep track of undo history as local (non-reactive) vars
   const history = {
-    initialState: JSON.stringify(initStateFromStore()),
+    initialState: loadStateFromStore(),
     done: [] as Array<MutationPayload>,
     undone: [] as Array<MutationPayload>,
     replaying: false,
@@ -49,7 +49,7 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         // make subscribers aware that we are replaying
         history.replaying = true;
         // reset to initial state
-        store.commit("loadNWK", JSON.parse(history.initialState));
+        store.commit("loadNWK", history.initialState);
         // replay all mutations (but last)
         for (const c of history.done) {
           store.commit(c.type, c.payload);
@@ -58,6 +58,7 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
 
         // console.log("ok,   done length is " + history.done.length);
       },
+
       redo(state: IUnReDoState) {
         // handle state modified by user before redo
         if (state.redoCount == 0) {

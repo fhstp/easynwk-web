@@ -1,11 +1,11 @@
 import { initAlter } from "@/data/Alter";
-import { NWK, initNWK, loadNWK } from "@/data/NWK";
+import { NWK, initNWKasJSON, loadNWK } from "@/data/NWK";
 
-import { initStateFromStore } from "./localStoragePlugin";
+import { loadStateFromStore } from "./localStoragePlugin";
 
 // root state object.
 // each Vuex instance is just a single state tree.
-const state = initStateFromStore();
+const state = JSON.parse(loadStateFromStore());
 
 // mutations are operations that actually mutate the state.
 // each mutation handler gets the entire state tree as the
@@ -20,10 +20,10 @@ const mutations = {
   },
 
   newNWK(state: NWK): void {
-    loadNWK(state, initNWK());
+    loadNWK(state, initNWKasJSON());
   },
 
-  loadNWK(state: NWK, payload: NWK): void {
+  loadNWK(state: NWK, payload: string): void {
     loadNWK(state, payload);
   },
 

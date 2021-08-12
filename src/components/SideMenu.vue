@@ -93,11 +93,11 @@ export default defineComponent({
       const fr = new FileReader();
       // eslint-disable-next-line
       fr.onload = (e: any) => {
-        const result = JSON.parse(e.target.result);
+        const nwkText = e.target.result;
         // TODO format checks & error messages
         // if (savedNWK.alteri && savedNWK.alteri instanceof Array) {
         // if (savedNWK.ego && isEgo(savedNWK.ego)) {
-        store.commit("loadNWK", result);
+        store.commit("loadNWK", nwkText);
         emit("open-nwk");
       };
       fr.readAsText(files.item(0));
@@ -110,9 +110,9 @@ export default defineComponent({
     const openDemoData = () => {
       const DEMO_URL = "Rosa_Braunsteigl-Mueller.json";
       fetch(DEMO_URL)
-        .then((res) => res.json())
-        .then((nwkObj) => {
-          store.commit("loadNWK", nwkObj);
+        .then((res) => res.text())
+        .then((nwkText) => {
+          store.commit("loadNWK", nwkText);
           emit("open-nwk");
         })
         .catch((err) => {

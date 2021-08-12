@@ -11,15 +11,17 @@ export interface NWK {
   editIndex: number | null;
 }
 
-export function initNWK(): NWK {
-  return {
+export function initNWKasJSON(): string {
+  return JSON.stringify({
     ego: initEgo(),
     alteri: [],
     editIndex: null,
-  };
+  });
 }
 
-export function loadNWK(state: NWK, loaded: NWK): void {
+export function loadNWK(state: NWK, loadedText: string): void {
+  const loaded = JSON.parse(loadedText);
+  console.log(loaded.alteri);
   state.ego = loaded.ego;
   state.alteri = loaded.alteri;
   state.editIndex = null;
