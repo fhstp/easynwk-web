@@ -1,8 +1,7 @@
 import { Gender } from "@/data/Gender";
-import { v4 as uuid } from "uuid";
 
 export interface Alter {
-  id: string;
+  id: number;
   name: string;
   role: string;
   contactOfPartner: boolean;
@@ -17,7 +16,7 @@ export interface Alter {
 
 export function initAlter(): Alter {
   return {
-    id: uuid(),
+    id: -1,
     name: "",
     role: "",
     contactOfPartner: false,

@@ -41,6 +41,13 @@ const mutations = {
 
   addAlter(state: NWK): void {
     const newAlter = initAlter();
+    // set id depending on alteri in list
+    newAlter.id =
+      state.alteri.length > 0
+        ? Math.max(...state.alteri.map((v) => v.id)) + 1
+        : 0;
+
+    // new alter is always added on top of list
     state.alteri.unshift(newAlter);
     state.editIndex = 0;
   },
