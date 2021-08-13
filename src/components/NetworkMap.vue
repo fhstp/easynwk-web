@@ -46,7 +46,7 @@
       </radialGradient>
     </defs>
     <!-- transform coordinate system to be scale independent -->
-    <g id="coords">
+    <g id="coords" v-if="horizons">
       <circle cx="0" cy="0" r="100" fill="url('#horizon-gradient100')" />
       <circle cx="0" cy="0" r="66.67" fill="url('#horizon-gradient67')" />
       <circle cx="0" cy="0" r="33.33" fill="url('#horizon-gradient33')" />
@@ -233,6 +233,7 @@ export default defineComponent({
       alteriMarks,
       selectedAlteriMarks,
       connectionMarks,
+      horizons: computed(() => store.state.view.horizons),
     };
   },
 });

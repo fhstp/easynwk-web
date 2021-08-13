@@ -23,6 +23,7 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
   // keep track of undo history as local (non-reactive) vars
   const history = {
     initialState: loadStateFromStore(),
+    initialViewState: JSON.stringify(store.state.view),
     done: [] as Array<MutationPayload>,
     undone: [] as Array<MutationPayload>,
     replaying: false,
@@ -50,6 +51,7 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         history.replaying = true;
         // reset to initial state
         store.commit("loadNWK", history.initialState);
+        store.state.view = JSON.parse(history.initialViewState);
         // replay all mutations (but last)
         for (const c of history.done) {
           store.commit(c.type, c.payload);
@@ -84,6 +86,7 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
     },
   });
 
+  // track mutation in undo history
   store.subscribe((mutation) => {
     if (!mutation.type.startsWith(UNREDO_MODULE)) {
       if (!history.replaying) {
@@ -93,12 +96,16 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
     }
   });
 
+  // persist change to NWK in localStorage
   store.subscribe((mutation, stateAfter: IStoreState) => {
     // skip replayed mutations, but persist after undo mutation itself
     // skip internal update counts mutation
     if (
-      !history.replaying ||
-      mutation.type === UNREDO_MODULE + "/usermutation"
+      !(
+        history.replaying ||
+        mutation.type === UNREDO_MODULE + "/usermutation" ||
+        mutation.type.startsWith("view/")
+      )
     ) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stateAfter.nwk));
     }

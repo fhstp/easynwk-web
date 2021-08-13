@@ -9,9 +9,11 @@ import {
 
 import { IUnReDoState, localStoragePlugin } from "./localStoragePlugin";
 import { nwkModule } from "./nwkModule";
+import { viewOptionsModule, ViewOptionsState } from "./viewOptionsModule";
 
 export interface IStoreState {
   nwk: NWK;
+  view: ViewOptionsState;
   unredo: IUnReDoState;
 }
 
@@ -24,6 +26,7 @@ export const store = createStore<IStoreState>({
   strict: process.env.NODE_ENV !== "production",
   modules: {
     nwk: nwkModule,
+    view: viewOptionsModule,
   },
   plugins,
 });

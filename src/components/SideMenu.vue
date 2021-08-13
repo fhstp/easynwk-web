@@ -57,6 +57,16 @@
           </span> -->
           <span>Demo laden</span>
         </button>
+
+        <p><br /></p>
+
+        <button class="button" @click.stop="toggleHorizons">
+          <span class="icon">
+            <font-awesome-icon icon="rss" />
+          </span>
+          <span v-if="horizons">Horizonte aus</span>
+          <span v-else>Horizons ein</span>
+        </button>
       </div>
 
       <a href="http://www.easynwk.com/" target="_blank">Über die easyNWK</a>
@@ -65,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 // @ is an alias to /src
 import { useStore } from "@/store";
 import { download } from "@/assets/utils";
@@ -123,12 +133,21 @@ export default defineComponent({
         });
     };
 
+    const horizons = computed(() => store.state.view.horizons);
+
+    const toggleHorizons = () => {
+      if (horizons.value) store.commit("view/disable", "horizons");
+      else store.commit("view/enable", "horizons");
+    };
+
     return {
       menuOpen,
       newNWK,
       open,
       save,
       openDemoData,
+      horizons,
+      toggleHorizons,
     };
   },
 });

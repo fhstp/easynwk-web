@@ -29,6 +29,8 @@ import {
   // faRedoAlt,
   faUndo,
   faRedo,
+  faChartBar,
+  faRss,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
@@ -50,6 +52,8 @@ library.add(
   // faRedoAlt,
   faUndo,
   faRedo,
+  faChartBar,
+  faRss,
   faCheck
 );
 
