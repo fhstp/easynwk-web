@@ -50,6 +50,7 @@ const mutations = {
     // new alter is always added on top of list
     state.alteri.unshift(newAlter);
     state.editIndex = 0;
+    state.editTab = TAB_BASE;
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
