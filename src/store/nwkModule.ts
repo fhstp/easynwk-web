@@ -1,5 +1,5 @@
 import { initAlter } from "@/data/Alter";
-import { NWK, initNWKasJSON, loadNWK } from "@/data/NWK";
+import { NWK, initNWKasJSON, loadNWK, TAB_BASE } from "@/data/NWK";
 
 import { loadStateFromStore } from "./localStoragePlugin";
 
@@ -41,8 +41,16 @@ const mutations = {
 
   addAlter(state: NWK): void {
     const newAlter = initAlter();
+    // set id depending on alteri in list
+    newAlter.id =
+      state.alteri.length > 0
+        ? Math.max(...state.alteri.map((v) => v.id)) + 1
+        : 0;
+
+    // new alter is always added on top of list
     state.alteri.unshift(newAlter);
     state.editIndex = 0;
+    state.editTab = TAB_BASE;
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,6 +72,12 @@ const mutations = {
   },
 
   removeAlter(state: NWK, alterIndex: number): void {
+    // remove connections to/from alter
+    const id = state.alteri[alterIndex].id;
+    state.connections = state.connections.filter(
+      (c) => c.id1 != id && c.id2 != id
+    );
+
     // old code
     // this.alteri = this.alteri.filter((item) => item.id !== alterToRemove.id);
 
@@ -71,8 +85,25 @@ const mutations = {
     state.alteri.splice(alterIndex, 1);
   },
 
-  openAlterForm(state: NWK, alterIndex: number): void {
-    state.editIndex = alterIndex;
+  addConnection(state: NWK, payload: { id1: number; id2: number }): void {
+    state.connections.push(payload);
+  },
+
+  removeConnection(state: NWK, payload: { id1: number; id2: number }): void {
+    state.connections = state.connections.filter(
+      (c) => c.id1 != payload.id1 || c.id2 != payload.id2
+    );
+    state.connections = state.connections.filter(
+      (c) => c.id1 != payload.id2 || c.id2 != payload.id1
+    );
+  },
+
+  openAlterForm(
+    state: NWK,
+    payload: { alterIndex: number; tab?: string }
+  ): void {
+    state.editIndex = payload.alterIndex;
+    state.editTab = payload.tab ? payload.tab : TAB_BASE;
   },
 
   closeAlterForm(state: NWK): void {

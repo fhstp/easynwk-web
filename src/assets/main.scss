@@ -8,8 +8,21 @@
 $primary: $color-secondary-2-0;
 $info: $color-primary-0;
 
+// box and panel should have no shadow
+$box-shadow: none;
+$panel-shadow: none;
+
 // Bulma Import
 @import '~bulma';
+
+// override bulma's panel globally to add a simple border (instead of shadow)
+.panel-block,
+.panel-heading,
+.panel-tabs {
+  border-bottom: 1px solid #dbdbdb;
+  border-left: 1px solid #dbdbdb;
+  border-right: 1px solid #dbdbdb;
+}
 
 // Import only what you need from Bulma
 // @import "../node_modules/bulma/sass/utilities/_all.sass";

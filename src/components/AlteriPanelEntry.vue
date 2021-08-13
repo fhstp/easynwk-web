@@ -4,24 +4,29 @@
     v-bind:class="{ selected: alter.isSelected, alteriform: isEditMode }"
     v-on:click="toggleSelection()"
   >
-    <span v-if="isEditMode" class="label">Kontakt bearbeiten</span>
-    <span v-else class="contact">{{ alter.name }} / {{ alter.role }}</span>
+    <span v-if="!isEditMode" class="contact"
+      >{{ alter.name }} / {{ alter.role }}</span
+    >
 
     <span class="buttons are-small" v-if="!isEditMode && isAlterOpsAllowed">
       <button
         class="button is-small"
         title="Kontakt bearbeiten"
-        v-on:click.stop="edit()"
+        @click.stop="edit()"
       >
         <span class="icon is-small">
           <font-awesome-icon icon="pencil-alt" />
         </span>
       </button>
-      <!--      <button class="button is-small" title="Beziehungen des Kontakts bearbeiten (nicht nicht verfügbar)">
+      <button
+        class="button is-small"
+        title="Beziehungen des Kontakts bearbeiten"
+        @click.stop="editConnections()"
+      >
         <span class="icon is-small">
           <font-awesome-icon icon="project-diagram" />
         </span>
-      </button> -->
+      </button>
       <button
         class="button is-small"
         title="Kontakt entfernen"
@@ -33,7 +38,11 @@
       </button>
     </span>
 
-    <AlteriEditForm v-if="isEditMode" :alter="alter"></AlteriEditForm>
+    <AlteriEditForm v-if="isBaseForm" :alter="alter"></AlteriEditForm>
+    <AlteriConnectionList
+      v-if="isConnectionForm"
+      :alter="alter"
+    ></AlteriConnectionList>
   </div>
 </template>
 
@@ -41,14 +50,22 @@
 import { defineComponent, computed } from "vue";
 import { useStore } from "@/store";
 import AlteriEditForm from "@/components/AlteriEditForm.vue";
+import AlteriConnectionList from "@/components/AlteriConnectionList.vue";
 import { Alter } from "@/data/Alter";
+import { TAB_BASE, TAB_CONNECTIONS } from "@/data/NWK";
 
 export default defineComponent({
-  components: { AlteriEditForm },
+  components: { AlteriEditForm, AlteriConnectionList },
   props: {
     // gets Alter as prop cp. ToDo demo
-    alter: Object,
-    alterIndex: Number,
+    alter: {
+      type: Object,
+      required: true,
+    },
+    alterIndex: {
+      type: Number,
+      required: true,
+    },
   },
   setup(props) {
     const store = useStore();
@@ -58,7 +75,7 @@ export default defineComponent({
     };
 
     const edit = () => {
-      store.commit("openAlterForm", props.alterIndex);
+      store.commit("openAlterForm", { alterIndex: props.alterIndex });
     };
 
     // handles isEditMode
@@ -80,8 +97,20 @@ export default defineComponent({
     return {
       removeAlter,
       edit,
+      editConnections: () => {
+        store.commit("openAlterForm", {
+          alterIndex: props.alterIndex,
+          tab: TAB_CONNECTIONS,
+        });
+      },
       isEditMode,
       isAlterOpsAllowed: computed(() => store.getters.editedAlterValid),
+      isBaseForm: computed(
+        () => isEditMode.value && store.state.nwk.editTab === TAB_BASE
+      ),
+      isConnectionForm: computed(
+        () => isEditMode.value && store.state.nwk.editTab === TAB_CONNECTIONS
+      ),
       toggleSelection,
     };
   },

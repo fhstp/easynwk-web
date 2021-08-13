@@ -1,4 +1,5 @@
 <template>
+  <p class="label">Kontakt bearbeiten</p>
   <form class="form" @submit.prevent="editAlterFinished">
     <div class="field has-text-danger" v-if="invalidPosition">
       <span class="icon is-small">
@@ -116,7 +117,10 @@
           </a>
         </p> -->
       <p class="control">
-        <button class="button is-primary" :disabled="invalidName">
+        <button
+          class="button is-primary"
+          :disabled="invalidName || invalidPosition"
+        >
           Fertig
         </button>
       </p>
@@ -142,7 +146,10 @@ type InputType = HTMLInputElement | HTMLTextAreaElement;
 export default defineComponent({
   props: {
     // gets Alter as prop cp. ToDo demo
-    alter: Object,
+    alter: {
+      type: Object,
+      required: true,
+    },
   },
   setup(props) {
     const store = useStore();

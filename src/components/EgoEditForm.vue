@@ -179,7 +179,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.panel-block.form {
+.panel-block {
   display: block;
 }
 </style>

@@ -73,12 +73,4 @@ export default defineComponent({
 .panel-heading .buttons {
   float: right;
 }
-
-.panel-block,
-.panel-heading,
-.panel-tabs {
-  border-bottom: 1px solid #dbdbdb;
-  border-left: 1px solid #dbdbdb;
-  border-right: 1px solid #dbdbdb;
-}
 </style>

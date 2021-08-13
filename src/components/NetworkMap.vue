@@ -65,6 +65,15 @@
     </text>
 
     <g id="marks">
+      <line
+        v-for="(mark, index) in connectionMarks"
+        :key="'conn' + index"
+        :x1="mark.x1"
+        :y1="mark.y1"
+        :x2="mark.x2"
+        :y2="mark.y2"
+      />
+
       <circle
         v-for="mark in selectedAlteriMarks"
         :key="'shadow' + mark.d.id"
@@ -112,12 +121,20 @@ import * as d3 from "d3";
 // import { ContainerElement } from "d3";
 import { Alter } from "@/data/Alter";
 import { shapeByGender } from "@/data/Gender";
+import { TAB_BASE } from "@/data/NWK";
 
-interface AlteriMark {
+interface AlterMark {
   d: Alter;
   shape: string;
   x: number;
   y: number;
+}
+
+interface ConnectionMark {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
 }
 
 // knows list of Alter from vuex
@@ -129,7 +146,10 @@ export default defineComponent({
     const store = useStore();
 
     const isEditMode = computed(() => {
-      return store.state.nwk.editIndex != null;
+      return (
+        store.state.nwk.editIndex != null &&
+        store.state.nwk.editTab === TAB_BASE
+      );
     });
 
     onMounted(() => {
@@ -157,30 +177,62 @@ export default defineComponent({
       });
     });
 
-    const alteriMarks = computed((): Array<AlteriMark> => {
+    /**
+     * map of cartesian coords by alter.id (not the array index!)
+     */
+    const alteriCoords = computed((): Map<number, { x: number; y: number }> => {
+      const buffer = new Map();
+
+      store.state.nwk.alteri.forEach((alter) => {
+        const x = alter.distance * Math.cos((alter.angle * Math.PI) / 180);
+        const y = -1 * alter.distance * Math.sin((alter.angle * Math.PI) / 180);
+
+        buffer.set(alter.id, { x, y });
+      });
+
+      return buffer;
+    });
+
+    const alteriMarks = computed((): Array<AlterMark> => {
       // console.log("in computed alteri marks");
-      const buffer: Array<AlteriMark> = [];
+      const buffer: Array<AlterMark> = [];
       store.state.nwk.alteri.forEach((el) => {
         // console.log("alter: " + el.name);
+        const coords = alteriCoords.value.get(el.id);
         buffer.push({
           d: el,
           shape: shapeByGender(el.currentGender),
-          x: el.distance * Math.cos((el.angle * Math.PI) / 180),
-          y: -1 * el.distance * Math.sin((el.angle * Math.PI) / 180),
+          x: coords ? coords.x : 0,
+          y: coords ? coords.y : 0,
         });
       });
       // first draw marks further away from center to avoid overplotting
       return buffer.sort((a, b) => b.d.distance - a.d.distance);
     });
 
-    const selectedAlteriMarks = computed((): Array<AlteriMark> => {
+    const selectedAlteriMarks = computed((): Array<AlterMark> => {
       return alteriMarks.value.filter((m) => m.d.isSelected);
+    });
+
+    const connectionMarks = computed((): Array<ConnectionMark> => {
+      return store.state.nwk.connections.map((conn) => {
+        const coords1 = alteriCoords.value.get(conn.id1);
+        const coords2 = alteriCoords.value.get(conn.id2);
+
+        return {
+          x1: coords1 ? coords1.x : 0,
+          y1: coords1 ? coords1.y : 0,
+          x2: coords2 ? coords2.x : 0,
+          y2: coords2 ? coords2.y : 0,
+        };
+      });
     });
 
     return {
       isEditMode,
       alteriMarks,
       selectedAlteriMarks,
+      connectionMarks,
     };
   },
 });
