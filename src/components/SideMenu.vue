@@ -60,6 +60,13 @@
 
         <p><br /></p>
 
+        <button class="button" @click="showStatistics">
+          <span class="icon">
+            <font-awesome-icon icon="chart-bar" />
+          </span>
+          <span>Kennzahlen</span>
+        </button>
+
         <button class="button" @click.stop="toggleHorizons">
           <span class="icon">
             <font-awesome-icon icon="rss" />
@@ -157,6 +164,9 @@ export default defineComponent({
       save,
       openDemoData,
 
+      showStatistics: () => {
+        store.commit("view/enable", "statistics");
+      },
       horizons,
       toggleHorizons,
       connections,

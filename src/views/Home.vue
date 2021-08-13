@@ -14,6 +14,7 @@
           <EgoEditForm v-if="egoEditMode" @edit-finished="editEgoFinished" />
 
           <AlteriPanel v-if="!egoEditMode" />
+          <StatisticsPanel v-if="$store.state.view.statistics" />
         </div>
         <!-- TODO <div>
             Über die easyNWK &nbsp; &nbsp; &nbsp; Impressum
@@ -37,6 +38,7 @@ import EgoEditForm from "@/components/EgoEditForm.vue";
 import SideMenu from "@/components/SideMenu.vue";
 import NetworkMap from "@/components/NetworkMap.vue";
 import UndoRedo from "@/components/UndoRedo.vue";
+import StatisticsPanel from "@/components/StatisticsPanel.vue";
 
 export default defineComponent({
   components: {
@@ -46,6 +48,7 @@ export default defineComponent({
     NetworkMap,
     SideMenu,
     UndoRedo,
+    StatisticsPanel,
   },
 
   setup() {
