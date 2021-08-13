@@ -1,6 +1,7 @@
 export interface ViewOptionsState {
   anonymized: boolean;
   horizons: boolean;
+  connections: boolean;
   statistics: boolean;
 }
 
@@ -8,6 +9,7 @@ export function initViewOptionsState(): ViewOptionsState {
   return {
     anonymized: false,
     horizons: true,
+    connections: true,
     statistics: false,
   };
 }

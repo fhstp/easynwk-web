@@ -65,14 +65,16 @@
     </text>
 
     <g id="marks">
-      <line
-        v-for="(mark, index) in connectionMarks"
-        :key="'conn' + index"
-        :x1="mark.x1"
-        :y1="mark.y1"
-        :x2="mark.x2"
-        :y2="mark.y2"
-      />
+      <g v-if="connections">
+        <line
+          v-for="(mark, index) in connectionMarks"
+          :key="'conn' + index"
+          :x1="mark.x1"
+          :y1="mark.y1"
+          :x2="mark.x2"
+          :y2="mark.y2"
+        />
+      </g>
 
       <circle
         v-for="mark in selectedAlteriMarks"
@@ -84,7 +86,7 @@
       />
 
       <g v-for="mark in alteriMarks" :key="mark.d.id">
-        <line x1="0" y1="0" :x2="mark.x" :y2="mark.y" />
+        <line v-if="connections" x1="0" y1="0" :x2="mark.x" :y2="mark.y" />
         <use
           :href="'#' + mark.shape"
           :x="mark.x"
@@ -234,6 +236,7 @@ export default defineComponent({
       selectedAlteriMarks,
       connectionMarks,
       horizons: computed(() => store.state.view.horizons),
+      connections: computed(() => store.state.view.connections),
     };
   },
 });
