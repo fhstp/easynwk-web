@@ -117,7 +117,10 @@
           </a>
         </p> -->
       <p class="control">
-        <button class="button is-primary" :disabled="invalidName">
+        <button
+          class="button is-primary"
+          :disabled="invalidName || invalidPosition"
+        >
           Fertig
         </button>
       </p>
