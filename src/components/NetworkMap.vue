@@ -121,6 +121,7 @@ import * as d3 from "d3";
 // import { ContainerElement } from "d3";
 import { Alter } from "@/data/Alter";
 import { shapeByGender } from "@/data/Gender";
+import { TAB_BASE } from "@/data/NWK";
 
 interface AlterMark {
   d: Alter;
@@ -145,7 +146,10 @@ export default defineComponent({
     const store = useStore();
 
     const isEditMode = computed(() => {
-      return store.state.nwk.editIndex != null;
+      return (
+        store.state.nwk.editIndex != null &&
+        store.state.nwk.editTab === TAB_BASE
+      );
     });
 
     onMounted(() => {
