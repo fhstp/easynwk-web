@@ -71,13 +71,30 @@ const mutations = {
   },
 
   removeAlter(state: NWK, alterIndex: number): void {
+    // remove connections to/from alter
+    const id = state.alteri[alterIndex].id;
+    state.connections = state.connections.filter(
+      (c) => c.id1 != id && c.id2 != id
+    );
+
     // old code
     // this.alteri = this.alteri.filter((item) => item.id !== alterToRemove.id);
 
     // based oen vuex\examples\composition\todomvc\store\mutations.js
     state.alteri.splice(alterIndex, 1);
+  },
 
-    // TODO remove connections to/from alter
+  addConnection(state: NWK, payload: { id1: number; id2: number }): void {
+    state.connections.push(payload);
+  },
+
+  removeConnection(state: NWK, payload: { id1: number; id2: number }): void {
+    state.connections = state.connections.filter(
+      (c) => c.id1 != payload.id1 || c.id2 != payload.id2
+    );
+    state.connections = state.connections.filter(
+      (c) => c.id1 != payload.id2 || c.id2 != payload.id1
+    );
   },
 
   openAlterForm(

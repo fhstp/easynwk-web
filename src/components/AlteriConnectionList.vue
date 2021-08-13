@@ -1,49 +1,42 @@
 <template>
   <p class="label">Beziehungen von {{ alter.name }}</p>
-  <form class="form" @submit.prevent="editAlterFinished">
-    <div class="columns">
-      <div class="column">
-        <div
-          class="field is-horizontal"
-          v-for="alter in relationsPart1"
-          :key="alter.id"
-        >
-          <label class="checkbox">
-            <input type="checkbox" />
-            {{ alter.name }}
-          </label>
-        </div>
-      </div>
-      <div class="column">
-        <div
-          class="field is-horizontal"
-          v-for="alter in relationsPart2"
-          :key="alter.id"
-        >
-          <label class="checkbox">
-            <input type="checkbox" />
-            {{ alter.name }}
-          </label>
-        </div>
-      </div>
-    </div>
+  <p class="help">
+    Klicke auf einen Kontakt um diesen mit {{ alter.name }} zu verbinden bzw.
+    die Verbindung zu lösen.
+  </p>
 
-    <div class="field is-horizontal">
-      <div class="field-label is-normal"></div>
-      <div class="field-body"></div>
+  <div class="columns">
+    <div class="column">
+      <p class="label">Mögliche Kontakte</p>
+      <button
+        v-for="other in altersNotConnected"
+        :key="other.id"
+        @click.stop="addConnection(other.id)"
+        class="button is-fullwidth"
+      >
+        {{ other.name }}
+      </button>
     </div>
+    <div class="column">
+      <p class="label">Verbundene Kontakte</p>
+      <button
+        v-for="other in altersConnected"
+        :key="other.id"
+        @click.stop="removeConnection(other.id)"
+        class="button is-fullwidth"
+      >
+        {{ other.name }}
+      </button>
+    </div>
+  </div>
 
-    <div class="field is-grouped is-grouped-centered">
-      <!-- <p class="control">
-          <a class="button is-primary">
-            Speichern
-          </a>
-        </p> -->
-      <p class="control">
-        <button class="button is-primary">Fertig</button>
-      </p>
-    </div>
-  </form>
+  <div class="field is-grouped is-grouped-centered">
+    <p class="control">
+      <button @click.stop="editAlterFinished()" class="button is-primary">
+        Fertig
+      </button>
+    </p>
+  </div>
 </template>
 
 <script lang="ts">
@@ -52,7 +45,6 @@ import { useStore } from "@/store";
 
 export default defineComponent({
   props: {
-    // gets Alter as prop cp. ToDo demo
     alter: {
       type: Object,
       required: true,
@@ -61,29 +53,45 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
 
-    const possibleRelations = computed(() =>
-      store.state.nwk.alteri.filter((d) => d.id != props.alter.id)
-    );
-
-    const relationsPart1 = computed(() => {
-      const others = possibleRelations.value;
-      return others.slice(0, (others.length + 1) / 2);
+    const connectedAlterIds = computed(() => {
+      const myId = props.alter.id;
+      const id1s = store.state.nwk.connections
+        .filter((d) => d.id2 == myId)
+        .map((d) => d.id1);
+      const id2s = store.state.nwk.connections
+        .filter((d) => d.id1 == myId)
+        .map((d) => d.id2);
+      return [...id1s, ...id2s];
     });
 
-    const relationsPart2 = computed(() => {
-      const others = possibleRelations.value;
-      return others.slice((others.length + 1) / 2, others.length);
+    // lists of alters are sorted in same order as in the main list
+    const altersConnected = computed(() => {
+      return store.state.nwk.alteri.filter((d) =>
+        connectedAlterIds.value.includes(d.id)
+      );
     });
 
-    const editAlterFinished = () => {
-      store.commit("closeAlterForm");
-    };
+    const altersNotConnected = computed(() => {
+      return store.state.nwk.alteri.filter(
+        (d) => !connectedAlterIds.value.includes(d.id) && d.id != props.alter.id
+      );
+    });
 
     return {
-      possibleRelations,
-      relationsPart1,
-      relationsPart2,
-      editAlterFinished,
+      altersConnected,
+      altersNotConnected,
+
+      // events --> mutations
+      addConnection: (otherId: number) => {
+        store.commit("addConnection", { id1: props.alter.id, id2: otherId });
+      },
+      removeConnection: (otherId: number) => {
+        store.commit("removeConnection", {
+          id1: props.alter.id,
+          id2: otherId,
+        });
+      },
+      editAlterFinished: () => store.commit("closeAlterForm"),
     };
   },
 });
