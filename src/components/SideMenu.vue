@@ -104,7 +104,10 @@ export default defineComponent({
     };
 
     const save = () => {
-      download(store.state.nwk.ego.name + ".json", JSON.stringify(store.state));
+      download(
+        store.state.nwk.ego.name + ".json",
+        JSON.stringify(store.state.nwk)
+      );
     };
 
     const openDemoData = () => {
