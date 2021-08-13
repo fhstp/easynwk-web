@@ -24,7 +24,7 @@
         @click.stop="editConnections()"
       >
         <span class="icon is-small">
-          <font-awesome-icon icon="project-diagram" />
+          <font-awesome-icon icon="people-arrows" />
         </span>
       </button>
       <button
