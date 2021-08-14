@@ -53,10 +53,10 @@
       <line class="axis" x1="0" y1="-100" x2="0" y2="100" />
       <line class="axis" x1="100" y1="0" x2="-100" y2="0" />
 
-      <text x="100" y="-100" text-anchor="end">Familie</text>
-      <text x="-100" y="-100" text-anchor="start">Freund*innen/Bekannte</text>
-      <text x="-100" y="100" text-anchor="start">Kolleg*innen</text>
-      <text x="100" y="100" text-anchor="end">prof. Helfer*innen</text>
+      <text x="100" y="-100" text-anchor="end">{{ Sectors[0] }}</text>
+      <text x="-100" y="-100" text-anchor="start">{{ Sectors[1] }}</text>
+      <text x="-100" y="100" text-anchor="start">{{ Sectors[2] }}</text>
+      <text x="100" y="100" text-anchor="end">{{ Sectors[3] }}</text>
     </g>
 
     <text v-if="isEditMode" text-anchor="middle" class="edithint">
@@ -122,6 +122,7 @@ import { useStore } from "@/store";
 import * as d3 from "d3";
 // import { ContainerElement } from "d3";
 import { Alter } from "@/data/Alter";
+import { Sectors } from "@/data/Sectors";
 import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE } from "@/data/NWK";
 
@@ -237,6 +238,7 @@ export default defineComponent({
       connectionMarks,
       horizons: computed(() => store.state.view.horizons),
       connections: computed(() => store.state.view.connections),
+      Sectors,
     };
   },
 });
