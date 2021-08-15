@@ -1,4 +1,5 @@
 import { initAlter } from "@/data/Alter";
+import { analyseNWK, NetworkAnalysis } from "@/data/NetworkAnalysis";
 import { NWK, initNWKasJSON, loadNWK, TAB_BASE } from "@/data/NWK";
 
 import { loadStateFromStore } from "./localStoragePlugin";
@@ -16,6 +17,10 @@ const getters = {
       // no alter open to edit --> always valid
       return true;
     }
+  },
+
+  networkAnalysis(state: NWK): NetworkAnalysis {
+    return analyseNWK(state);
   },
 };
 
