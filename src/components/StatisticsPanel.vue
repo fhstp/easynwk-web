@@ -35,19 +35,26 @@
           </tr>
           <tr>
             <th>Dichte gesamt</th>
-            <td>{{ density }}</td>
+            <td>{{ density.toFixed(3) }}</td>
+          </tr>
+          <tr>
+            <th>Star(s)</th>
+            <td>{{ stars }}</td>
+          </tr>
+          <tr>
+            <th>Brücken</th>
+            <td>{{ bridgesCount }}</td>
+          </tr>
+          <tr>
+            <th>Brueckenperson(en)</th>
+            <td>{{ bridgePersons }}</td>
+          </tr>
+          <tr>
+            <th>Isolierte</th>
+            <td>{{ isolated }}</td>
           </tr>
         </tbody>
       </table>
-
-      <!-- Bruecken: 1<br />
-
-      Brueckenpersonen: 2<br />
-      - Emil<br />
-      - Eva<br />
-
-      Star: Maria Isolierte: 1<br />
-      - Lara<br /> -->
     </div>
     <!-- <p class="panel-block" style="display: block">
       <br />
@@ -58,6 +65,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted } from "vue";
 import { useStore } from "@/store";
+import { NetworkAnalysis } from "@/data/NetworkAnalysis";
 
 export default defineComponent({
   setup() {
@@ -82,12 +90,41 @@ export default defineComponent({
     /*
      * Based on Java class NetworkAnalysis by Nikolaus Kelis (v. 1.4.2)
      */
-    const density = computed(() => {
+    const density = computed((): number => {
       if (networkSize.value < 2) {
         return 0.0;
       } else {
         const i = (networkSize.value * (networkSize.value - 1.0)) / 2.0;
         return store.state.nwk.connections.length / i;
+      }
+    });
+
+    const networkAnalysis = computed((): NetworkAnalysis => {
+      return store.getters.networkAnalysis;
+    });
+
+    const bridgePersons = computed(() => {
+      const alteri = networkAnalysis.value.bridgePersons;
+      if (alteri.length > 0) {
+        return (
+          alteri.length + " (" + alteri.map((a) => a.name).join(", ") + ")"
+        );
+      } else {
+        return "0";
+      }
+    });
+
+    const stars = computed(() => {
+      const alteri = networkAnalysis.value.stars;
+      if (alteri.length > 0) {
+        return (
+          alteri.map((a) => a.name).join(", ") +
+          " (" +
+          networkAnalysis.value.maxDegree +
+          " Verbindungen)"
+        );
+      } else {
+        return "keine";
       }
     });
 
@@ -99,6 +136,12 @@ export default defineComponent({
       networkSize,
       naehenSum,
       density,
+      stars,
+      isolated: computed(() =>
+        networkAnalysis.value.isolated.map((a) => a.name).join(", ")
+      ),
+      bridgePersons,
+      bridgesCount: computed(() => networkAnalysis.value.bridges.length),
       hideStatistics: () => {
         store.commit("view/disable", "statistics");
       },

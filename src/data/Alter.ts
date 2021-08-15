@@ -9,7 +9,11 @@ export interface Alter {
   age: string;
   note: string;
   edgeWeight: number;
+
+  /** angle from x-axis between -180° and +180° */
   angle: number;
+
+  /** distance from center normalized to 100 for the outer horizont.  */
   distance: number;
   isSelected: boolean;
 }
