@@ -30,7 +30,7 @@
             <td>{{ networkSize }}</td>
           </tr>
           <tr>
-            <th>Nähensumme</th>
+            <th>Beziehungsgewicht</th>
             <td>{{ naehenSum }}</td>
           </tr>
           <tr>
@@ -50,7 +50,7 @@
             <td>{{ bridgePersons }}</td>
           </tr>
           <tr>
-            <th>Isolierte</th>
+            <th>Personen ohne Beziehungen</th>
             <td>{{ isolated }}</td>
           </tr>
         </tbody>
@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted } from "vue";
+import { computed, defineComponent } from "vue";
 import { useStore } from "@/store";
 import { NetworkAnalysis } from "@/data/NetworkAnalysis";
 
@@ -116,30 +116,39 @@ export default defineComponent({
 
     const stars = computed(() => {
       const alteri = networkAnalysis.value.stars;
-      if (alteri.length > 0) {
+      if (alteri.length > 0 && networkAnalysis.value.maxDegree > 0) {
         return (
           alteri.map((a) => a.name).join(", ") +
           " (" +
           networkAnalysis.value.maxDegree +
-          " Verbindungen)"
+          " Beziehungen)"
         );
       } else {
         return "keine";
       }
     });
 
-    onMounted(() => {
-      console.log("hello");
+    const isolated = computed(() => {
+      const alteri = networkAnalysis.value.isolated;
+      if (alteri.length > 0) {
+        return (
+          alteri.length + " (" + alteri.map((a) => a.name).join(", ") + ")"
+        );
+      } else {
+        return "0";
+      }
     });
+
+    // onMounted(() => {
+    //   console.log("hello");
+    // });
 
     return {
       networkSize,
       naehenSum,
       density,
       stars,
-      isolated: computed(() =>
-        networkAnalysis.value.isolated.map((a) => a.name).join(", ")
-      ),
+      isolated,
       bridgePersons,
       bridgesCount: computed(() => networkAnalysis.value.bridges.length),
       hideStatistics: () => {
