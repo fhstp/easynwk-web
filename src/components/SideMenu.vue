@@ -72,7 +72,7 @@
             <font-awesome-icon icon="rss" />
           </span>
           <span v-if="horizons">Horizonte aus</span>
-          <span v-else>Horizons ein</span>
+          <span v-else>Horizonte ein</span>
         </button>
 
         <button class="button" @click.stop="toggleConnections">
