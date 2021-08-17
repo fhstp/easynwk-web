@@ -31,7 +31,7 @@ function initNetworkAnalysis(): NetworkAnalysis {
   };
 }
 
-function getOrInit(
+export function getOrInit(
   map: Map<string, NetworkAnalysis>,
   key: string
 ): NetworkAnalysis {
@@ -231,6 +231,19 @@ export function calculateDensity(
     return 0.0;
   } else {
     const i = (alterCount * (alterCount - 1.0)) / 2.0;
+    return connectionsCount / i;
+  }
+}
+
+export function calculateExternalDensity(
+  alterCount: number,
+  externalAlterCount: number,
+  connectionsCount: number
+): number {
+  if (alterCount < 1 || externalAlterCount < 1) {
+    return 0.0;
+  } else {
+    const i = alterCount * externalAlterCount;
     return connectionsCount / i;
   }
 }

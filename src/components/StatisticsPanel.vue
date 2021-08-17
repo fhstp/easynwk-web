@@ -10,124 +10,50 @@
         <font-awesome-icon icon="times" size="1x" />
       </span>
     </p>
-    <!-- <p class="panel-tabs">
-      <a class="is-active">Überblick</a>
-      <a>Sektoren</a>
-      <a>Horizonte</a>
-      <a>Geschlecht</a>
-    </p> -->
-    <div class="panel-block" style="display: block">
-      <table class="table">
-        <!-- <thead>
-    <tr>
-      <th><abbr title="Position">Pos</abbr></th>
-      <th>Team</th>
-    </tr>
-  </thead> -->
-        <tbody>
-          <tr>
-            <th>Netzwerkgröße</th>
-            <td>{{ networkSize }}</td>
-          </tr>
-          <tr>
-            <th>Beziehungsgewicht</th>
-            <td>{{ naehenSum }}</td>
-          </tr>
-          <tr>
-            <th>Dichte gesamt</th>
-            <td>{{ density.toFixed(3) }}</td>
-          </tr>
-          <tr>
-            <th>Star(s)</th>
-            <td>{{ stars }}</td>
-          </tr>
-          <tr>
-            <th>Brücken</th>
-            <td>{{ bridgesCount }}</td>
-          </tr>
-          <tr>
-            <th>Brueckenperson(en)</th>
-            <td>{{ bridgePersons }}</td>
-          </tr>
-          <tr>
-            <th>Personen ohne Beziehungen</th>
-            <td>{{ isolated }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <!-- <p class="panel-block" style="display: block">
-      <br />
-    </p> -->
+    <p class="panel-tabs">
+      <a :class="{ 'is-active': tab === '' }" @click="go('')">Überblick</a>
+      <a :class="{ 'is-active': tab === 'sector' }" @click="go('sector')"
+        >Sektoren</a
+      >
+      <a :class="{ 'is-active': tab === 'horizon' }" @click="go('horizon')"
+        >Horizonte</a
+      >
+      <a :class="{ 'is-active': tab === 'gender' }" @click="go('gender')"
+        >Geschlecht</a
+      >
+    </p>
+    <StatisticsTable v-if="tab === ''"></StatisticsTable>
+    <StatisticsTableCategories
+      v-else
+      :categories="tab"
+    ></StatisticsTableCategories>
   </nav>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import { useStore } from "@/store";
-import { calculateDensity, NetworkAnalysis } from "@/data/NetworkAnalysis";
+import StatisticsTable from "@/components/StatisticsTable.vue";
+import StatisticsTableCategories from "@/components/StatisticsTableCategories.vue";
 
 export default defineComponent({
+  components: { StatisticsTable, StatisticsTableCategories },
   setup() {
     const store = useStore();
 
-    const networkAnalysis = computed((): NetworkAnalysis => {
-      return store.getters.networkAnalysis;
-    });
+    const tab = ref("");
 
-    const density = computed((): number => {
-      const { alterCount, intConnCount } = networkAnalysis.value;
-      return calculateDensity(alterCount, intConnCount);
-    });
-
-    const bridgePersons = computed(() => {
-      const alteri = networkAnalysis.value.bridgePersons;
-      if (alteri.length > 0) {
-        return (
-          alteri.length + " (" + alteri.map((a) => a.name).join(", ") + ")"
-        );
-      } else {
-        return "0";
-      }
-    });
-
-    const stars = computed(() => {
-      const alteri = networkAnalysis.value.stars;
-      if (alteri.length > 0 && networkAnalysis.value.maxDegree > 0) {
-        return (
-          alteri.map((a) => a.name).join(", ") +
-          " (" +
-          networkAnalysis.value.maxDegree +
-          " Beziehungen)"
-        );
-      } else {
-        return "keine";
-      }
-    });
-
-    const isolated = computed(() => {
-      const alteri = networkAnalysis.value.isolated;
-      if (alteri.length > 0) {
-        return (
-          alteri.length + " (" + alteri.map((a) => a.name).join(", ") + ")"
-        );
-      } else {
-        return "0";
-      }
-    });
+    const go = (newTab: string) => {
+      tab.value = newTab;
+    };
 
     // onMounted(() => {
     //   console.log("hello");
     // });
 
     return {
-      networkSize: computed(() => networkAnalysis.value.alterCount),
-      naehenSum: computed(() => networkAnalysis.value.naehenSum),
-      density,
-      stars,
-      isolated,
-      bridgePersons,
-      bridgesCount: computed(() => networkAnalysis.value.bridges.length),
+      tab,
+      go,
       hideStatistics: () => {
         store.commit("view/disable", "statistics");
       },
@@ -136,8 +62,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="scss">
-td:not([align]) {
-  text-align: right;
-}
-</style>
+<style scoped lang="scss"></style>
