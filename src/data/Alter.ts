@@ -33,3 +33,14 @@ export function initAlter(): Alter {
     isSelected: false,
   };
 }
+
+/**
+ * get the "closeness" of an alter in 9 concentric rings around the ego.
+ * 9 = very close, ..., 0 = on or beyond the outer horizon.
+ * Based on Java class Position by Nikolaus Kelis (v. 1.4.2)
+ * @param alter
+ * @returns integer between 9 (close) and 0 (distant)
+ */
+export function naehenScore(alter: Alter): number {
+  return Math.max(9 - Math.floor((alter.distance * 9) / 100), 0);
+}

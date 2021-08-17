@@ -1,6 +1,6 @@
 export const Sectors = [
   "Familie",
-  "Freund*innen/Bekannte",
+  "Freund*innen / Bekannte",
   "Kolleg*innen",
   "prof. Helfer*innen",
 ];
