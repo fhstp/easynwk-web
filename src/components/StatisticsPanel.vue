@@ -65,42 +65,19 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 import { useStore } from "@/store";
-import { NetworkAnalysis } from "@/data/NetworkAnalysis";
+import { calculateDensity, NetworkAnalysis } from "@/data/NetworkAnalysis";
 
 export default defineComponent({
   setup() {
     const store = useStore();
 
-    const networkSize = computed(() => {
-      return store.state.nwk.alteri.length;
-    });
-
-    /**
-     * calculates the Nähesumme. For each alter sum the Nähesumme, which is an integer between 0 and 9 (9 very close ... 0 on or beyond outer horizon).
-     * Based on Java class Position by Nikolaus Kelis (v. 1.4.2)
-     */
-    const naehenSum = computed(() => {
-      let sum = 0;
-      for (const alter of store.state.nwk.alteri) {
-        sum += Math.max(9 - Math.floor((alter.distance * 9) / 100), 0);
-      }
-      return sum;
-    });
-
-    /*
-     * Based on Java class NetworkAnalysis by Nikolaus Kelis (v. 1.4.2)
-     */
-    const density = computed((): number => {
-      if (networkSize.value < 2) {
-        return 0.0;
-      } else {
-        const i = (networkSize.value * (networkSize.value - 1.0)) / 2.0;
-        return store.state.nwk.connections.length / i;
-      }
-    });
-
     const networkAnalysis = computed((): NetworkAnalysis => {
       return store.getters.networkAnalysis;
+    });
+
+    const density = computed((): number => {
+      const { alterCount, intConnCount } = networkAnalysis.value;
+      return calculateDensity(alterCount, intConnCount);
     });
 
     const bridgePersons = computed(() => {
@@ -144,8 +121,8 @@ export default defineComponent({
     // });
 
     return {
-      networkSize,
-      naehenSum,
+      networkSize: computed(() => networkAnalysis.value.alterCount),
+      naehenSum: computed(() => networkAnalysis.value.naehenSum),
       density,
       stars,
       isolated,

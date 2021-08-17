@@ -1,7 +1,7 @@
 import { Alter } from "./Alter";
 import { Sectors } from "./Sectors";
 
-export type categorizer = (a: Alter) => string | null;
+export type categorizerType = (a: Alter) => string | null;
 
 // export const gender: categorizer = (alter: Alter) => {
 //     return alter.currentGender;
