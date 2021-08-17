@@ -1,5 +1,4 @@
 import { initAlter } from "@/data/Alter";
-import { analyseNWK, NetworkAnalysis } from "@/data/NetworkAnalysis";
 import { NWK, initNWKasJSON, loadNWK, TAB_BASE } from "@/data/NWK";
 
 import { loadStateFromStore } from "./localStoragePlugin";
@@ -19,9 +18,9 @@ const getters = {
     }
   },
 
-  networkAnalysis(state: NWK): NetworkAnalysis {
-    return analyseNWK(state);
-  },
+  // networkAnalysis(state: NWK): NetworkAnalysis {
+  //   return analyseNWK(state);
+  // },
 };
 
 // mutations are operations that actually mutate the state.

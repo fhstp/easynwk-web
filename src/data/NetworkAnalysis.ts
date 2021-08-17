@@ -1,5 +1,5 @@
 import { Alter, naehenScore } from "./Alter";
-import { categorizerType, sector } from "./AlterCategories";
+import { AlterCategorization, sectorIndex } from "./AlterCategories";
 import { Connection } from "./Connection";
 import { NWK } from "./NWK";
 
@@ -46,9 +46,8 @@ export function getOrInit(
 interface AlterMetrics {
   alter: Alter;
   degree: number;
-  sector: string;
+  sector: number;
   bridgePerson: boolean;
-  category: string;
 }
 
 /**
@@ -59,21 +58,18 @@ interface AlterMetrics {
  */
 export function analyseNWKbyCategory(
   nwk: NWK,
-  categorizer: categorizerType
+  categories: AlterCategorization
 ): Map<string, NetworkAnalysis> {
   // (1) prepare a map of (valid) alters with metrics indexed by id
-  // const alterMetrics: AlterMetrics[] = [];
   const alterMetrics: Map<number, AlterMetrics> = new Map();
   for (const alter of nwk.alteri) {
-    const sec = sector(alter);
-    const category = categorizer(alter);
-    if (sec != null && category != null)
+    const sec = sectorIndex(alter);
+    if (sec != null)
       alterMetrics.set(alter.id, {
         alter,
         degree: 0,
         sector: sec,
         bridgePerson: false,
-        category,
       });
   }
 
@@ -84,136 +80,77 @@ export function analyseNWKbyCategory(
     const a2 = alterMetrics.get(conn.id2);
     if (!(a1 && a2)) continue;
 
-    // (1.5) count connections
-    if (a1.category === a2.category) {
-      getOrInit(result, a1.category).intConnCount++;
-    } else {
-      getOrInit(result, a1.category).extConnCount++;
-      getOrInit(result, a2.category).extConnCount++;
-    }
-
     // (2) increase degree of each node
     a1.degree++;
     a2.degree++;
 
-    // (3) detect bridges and mark bridge persons
+    // (3) mark bridge persons
     if (a1.sector !== a2.sector) {
       a1.bridgePerson = true;
       a2.bridgePerson = true;
+    }
+  }
 
-      // bridges count only if both sides are of the same category
-      if (a1.category === a2.category) {
-        const analysis = getOrInit(result, a1.category);
-        analysis.bridges.push(conn);
+  for (let i = 0; i < categories.categories.length; i++) {
+    const analysis = getOrInit(result, categories.categories[i]);
+
+    for (const [, am] of alterMetrics) {
+      if (categories.inCategory(i, am.alter)) {
+        // (4) degree higher than before => restart stars list
+        if (am.degree > analysis.maxDegree) {
+          analysis.maxDegree = am.degree;
+          analysis.stars = [];
+        }
+
+        // (5) degree at currently highest value => add alter to stars
+        if (am.degree == analysis.maxDegree) {
+          analysis.stars.push(am.alter);
+        }
+
+        // (6) collect isolated
+        if (am.degree == 0) {
+          analysis.isolated.push(am.alter);
+        }
+
+        // (7) collect bridge persons
+        if (am.bridgePerson) {
+          analysis.bridgePersons.push(am.alter);
+        }
+
+        // (8) increase networkSize & naehenSum
+        analysis.alterCount++;
+        analysis.naehenSum += naehenScore(am.alter);
+      }
+    }
+
+    for (const conn of nwk.connections) {
+      const a1 = alterMetrics.get(conn.id1);
+      const a2 = alterMetrics.get(conn.id2);
+      if (!(a1 && a2)) continue;
+
+      // (9) count connections for density
+      if (
+        categories.inCategory(i, a1.alter) &&
+        categories.inCategory(i, a2.alter)
+      ) {
+        // both sides of connection are in category
+        analysis.intConnCount++;
+
+        // (3b) bridges count only if both sides are in the same category
+        if (a1.sector !== a2.sector) {
+          analysis.bridges.push(conn);
+        }
+      } else if (
+        categories.inCategory(i, a1.alter) ||
+        categories.inCategory(i, a2.alter)
+      ) {
+        // exactly one side of connection is in category
+        analysis.extConnCount++;
       }
     }
   }
 
-  for (const [, am] of alterMetrics) {
-    const analysis = getOrInit(result, am.category);
-
-    // (4) degree higher than before => restart stars list
-    if (am.degree > analysis.maxDegree) {
-      analysis.maxDegree = am.degree;
-      analysis.stars = [];
-    }
-
-    // (5) degree at currently highest value => add alter to stars
-    if (am.degree == analysis.maxDegree) {
-      analysis.stars.push(am.alter);
-    }
-
-    // (6) collect isolated
-    if (am.degree == 0) {
-      analysis.isolated.push(am.alter);
-    }
-
-    // (7) collect bridge persons
-    if (am.bridgePerson) {
-      analysis.bridgePersons.push(am.alter);
-    }
-
-    // (8) increase networkSize & naehenSum
-    analysis.alterCount++;
-    analysis.naehenSum += naehenScore(am.alter);
-  }
-
   return result;
-}
-
-/**
- *
- * Based on Java class NetworkAnalysis by Nikolaus Kelis (v. 1.4.2)
- * @param nwk
- * @returns
- */
-export function analyseNWK(nwk: NWK): NetworkAnalysis {
-  const analysis = initNetworkAnalysis();
-
-  // (1) prepare a map of (valid) alters with metrics indexed by id
-  // const alterMetrics: AlterMetrics[] = [];
-  const alterMetrics: Map<number, AlterMetrics> = new Map();
-  for (const alter of nwk.alteri) {
-    const sec = sector(alter);
-    if (sec != null)
-      alterMetrics.set(alter.id, {
-        alter,
-        degree: 0,
-        sector: sec,
-        bridgePerson: false,
-        category: "",
-      });
-  }
-
-  for (const conn of nwk.connections) {
-    const a1 = alterMetrics.get(conn.id1);
-    const a2 = alterMetrics.get(conn.id2);
-    if (!(a1 && a2)) continue;
-
-    // (1.5) count connections
-    analysis.intConnCount++;
-    // extConnCount stays at zero
-
-    // (2) increase degree of each node
-    a1.degree++;
-    a2.degree++;
-
-    // (3) detect bridges and mark bridge persons
-    if (a1.sector !== a2.sector) {
-      a1.bridgePerson = true;
-      a2.bridgePerson = true;
-      analysis.bridges.push(conn);
-    }
-  }
-
-  for (const [, am] of alterMetrics) {
-    // (4) degree higher than before => restart stars list
-    if (am.degree > analysis.maxDegree) {
-      analysis.maxDegree = am.degree;
-      analysis.stars = [];
-    }
-
-    // (5) degree at currently highest value => add alter to stars
-    if (am.degree == analysis.maxDegree) {
-      analysis.stars.push(am.alter);
-    }
-
-    // (6) collect isolated
-    if (am.degree == 0) {
-      analysis.isolated.push(am.alter);
-    }
-
-    // (7) collect bridge persons
-    if (am.bridgePerson) {
-      analysis.bridgePersons.push(am.alter);
-    }
-
-    // (8) increase networkSize & naehenSum
-    analysis.alterCount++;
-    analysis.naehenSum += naehenScore(am.alter);
-  }
-
-  return analysis;
 }
 
 /**

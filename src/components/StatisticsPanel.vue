@@ -11,15 +11,13 @@
       </span>
     </p>
     <p class="panel-tabs">
-      <a :class="{ 'is-active': tab === '' }" @click="go('')">Überblick</a>
-      <a :class="{ 'is-active': tab === 'sector' }" @click="go('sector')"
-        >Sektoren</a
+      <a
+        v-for="cat in categories"
+        :key="cat"
+        :class="{ 'is-active': tab === cat }"
+        @click="go(cat)"
       >
-      <a :class="{ 'is-active': tab === 'horizon' }" @click="go('horizon')"
-        >Horizonte</a
-      >
-      <a :class="{ 'is-active': tab === 'gender' }" @click="go('gender')"
-        >Geschlecht</a
+        {{ categoryLabel(cat) }}</a
       >
     </p>
     <StatisticsTable v-if="tab === ''"></StatisticsTable>
@@ -31,10 +29,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { useStore } from "@/store";
 import StatisticsTable from "@/components/StatisticsTable.vue";
 import StatisticsTableCategories from "@/components/StatisticsTableCategories.vue";
+import {
+  allAlterCategorizationKeys,
+  getAlterCategorization,
+} from "@/data/AlterCategories";
 
 export default defineComponent({
   components: { StatisticsTable, StatisticsTableCategories },
@@ -52,6 +54,10 @@ export default defineComponent({
     // });
 
     return {
+      categories: allAlterCategorizationKeys,
+      categoryLabel: computed(
+        () => (cat: string) => getAlterCategorization(cat).label
+      ),
       tab,
       go,
       hideStatistics: () => {

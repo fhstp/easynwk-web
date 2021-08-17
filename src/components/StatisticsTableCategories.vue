@@ -65,7 +65,7 @@ import {
   getOrInit,
   NetworkAnalysis,
 } from "@/data/NetworkAnalysis";
-import { getCategorizer, getCategoryLabels } from "@/data/AlterCategories";
+import { getAlterCategorization } from "@/data/AlterCategories";
 
 export default defineComponent({
   props: {
@@ -78,13 +78,13 @@ export default defineComponent({
     const store = useStore();
 
     const categoryLabels = computed((): string[] => {
-      return getCategoryLabels(props.categories);
+      return getAlterCategorization(props.categories).categories;
     });
 
     const networkAnalysis = computed((): Map<string, NetworkAnalysis> => {
       return analyseNWKbyCategory(
         store.state.nwk,
-        getCategorizer(props.categories)
+        getAlterCategorization(props.categories)
       );
     });
 
@@ -102,6 +102,7 @@ export default defineComponent({
       const result: string[] = [];
       const totalAlteri = store.state.nwk.alteri.length;
       const analysis = networkAnalysis.value;
+
       for (const cat of categoryLabels.value) {
         const { alterCount, extConnCount } = getOrInit(analysis, cat);
         result.push(

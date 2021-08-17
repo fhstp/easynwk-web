@@ -44,14 +44,22 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 import { useStore } from "@/store";
-import { calculateDensity, NetworkAnalysis } from "@/data/NetworkAnalysis";
+import {
+  analyseNWKbyCategory,
+  calculateDensity,
+  getOrInit,
+  NetworkAnalysis,
+} from "@/data/NetworkAnalysis";
+import { getAlterCategorization } from "@/data/AlterCategories";
 
 export default defineComponent({
   setup() {
     const store = useStore();
 
     const networkAnalysis = computed((): NetworkAnalysis => {
-      return store.getters.networkAnalysis;
+      const categorization = getAlterCategorization();
+      const analysis = analyseNWKbyCategory(store.state.nwk, categorization);
+      return getOrInit(analysis, categorization.categories[0]);
     });
 
     const density = computed((): number => {
