@@ -25,7 +25,7 @@ export function initNWKasJSON(): string {
     connections: [],
 
     editIndex: null,
-    editTab: TAB_BASE,
+    editTab: "",
   });
 }
 
@@ -37,5 +37,5 @@ export function loadNWK(state: NWK, loadedText: string): void {
 
   // aspects of state to be reseted
   state.editIndex = null;
-  state.editTab = TAB_BASE;
+  state.editTab = "";
 }

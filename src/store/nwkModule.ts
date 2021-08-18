@@ -75,6 +75,21 @@ const mutations = {
     }
   },
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  editAlterById(state: NWK, payload: { id: number; changes: any }): void {
+    const index = state.alteri.findIndex((a) => a.id === payload.id);
+    // const index = state.alteri.map((a) => a.id).indexOf(payload.id);
+    if (index >= 0) {
+      const changedAlter = {
+        ...state.alteri[index],
+        ...payload.changes,
+      };
+      state.alteri.splice(index, 1, changedAlter);
+    } else {
+      console.warn("alter id not found: " + payload.id);
+    }
+  },
+
   removeAlter(state: NWK, alterIndex: number): void {
     // remove connections to/from alter
     const id = state.alteri[alterIndex].id;
@@ -102,6 +117,24 @@ const mutations = {
     );
   },
 
+  toggleConnection(state: NWK, payload: { id1: number; id2: number }): void {
+    const index = state.connections.findIndex(
+      (c) => c.id1 === payload.id1 && c.id2 === payload.id2
+    );
+    if (index >= 0) {
+      state.connections.splice(index, 1);
+    } else {
+      const index2 = state.connections.findIndex(
+        (c) => c.id2 === payload.id1 && c.id1 === payload.id2
+      );
+      if (index2 >= 0) {
+        state.connections.splice(index2, 1);
+      } else {
+        state.connections.push(payload);
+      }
+    }
+  },
+
   openAlterForm(
     state: NWK,
     payload: { alterIndex: number; tab?: string }
@@ -112,6 +145,7 @@ const mutations = {
 
   closeAlterForm(state: NWK): void {
     state.editIndex = null;
+    state.editTab = "";
   },
 };
 

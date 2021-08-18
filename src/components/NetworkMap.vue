@@ -95,6 +95,7 @@
           width="4"
           height="4"
           transform="translate(-2,-2)"
+          @click="clickAlter(mark.d)"
         />
         <text
           :x="mark.x"
@@ -111,7 +112,14 @@
 
     <!-- a foreground rect is necessary so that the whole display is clickable -->
     <!-- a foreground rect is useful to prevent text selection -->
-    <rect id="position" x="-110" y="-110" width="220" height="220" />
+    <rect
+      v-if="isEditMode"
+      id="position"
+      x="-110"
+      y="-110"
+      width="220"
+      height="220"
+    />
   </svg>
 </template>
 
@@ -124,7 +132,7 @@ import * as d3 from "d3";
 import { Alter } from "@/data/Alter";
 import { Sectors } from "@/data/Sectors";
 import { shapeByGender } from "@/data/Gender";
-import { TAB_BASE } from "@/data/NWK";
+import { TAB_BASE, TAB_CONNECTIONS } from "@/data/NWK";
 
 interface AlterMark {
   d: Alter;
@@ -155,6 +163,10 @@ export default defineComponent({
       );
     });
 
+    const isConnectMode = computed(
+      () => store.state.nwk.editTab === TAB_CONNECTIONS
+    );
+
     onMounted(() => {
       // d3.mouse only works if the event is registered using D3 .on
       const g = d3.select("#nwkmap");
@@ -179,6 +191,21 @@ export default defineComponent({
         emit("map-click", { distance, angle });
       });
     });
+
+    const clickAlter = (alter: Alter) => {
+      console.log(alter.name + " clicked");
+
+      if (isConnectMode.value && store.state.nwk.editIndex != null) {
+        const editId = store.state.nwk.alteri[store.state.nwk.editIndex].id;
+        const payload = { id1: editId, id2: alter.id };
+        store.commit("toggleConnection", payload);
+      } else {
+        // toggleSelection
+        const changes = { isSelected: !alter.isSelected };
+        const payload = { id: alter.id, changes };
+        store.commit("editAlterById", payload);
+      }
+    };
 
     /**
      * map of cartesian coords by alter.id (not the array index!)
@@ -233,6 +260,8 @@ export default defineComponent({
 
     return {
       isEditMode,
+      isConnectMode,
+      clickAlter,
       alteriMarks,
       selectedAlteriMarks,
       connectionMarks,
