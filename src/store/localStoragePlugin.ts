@@ -1,3 +1,8 @@
+/* vuex 4 module handling persistance in localStorage and undo/redo.
+
+undo/redo inspired by <https://github.com/factorial-io/undo-redo-vuex>
+and <https://github.com/anthonygore/vuex-undo-redo> */
+
 import { initNWKasJSON } from "@/data/NWK";
 import { MutationPayload, Store } from "vuex";
 import { IStoreState } from ".";
