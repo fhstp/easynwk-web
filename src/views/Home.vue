@@ -1,29 +1,34 @@
 <template>
   <div id="container">
-    <!-- TODO use slots to separate layout from logic https://vuejs.org/v2/guide/components.html#Content-Distribution-with-Slots -->
-    <div id="main">
-      <div class="scrollwrapper">
-        <div id="titlebar" class="box has-text-black">
-          <SideMenu @new-nwk="egoEditMode = true" @open-nwk="editEgoFinished" />
-          <div id="brand"><i>easy</i>NWK</div>
-          <EgoHeader @edit="egoEditMode = true" />
-          <UndoRedo />
-        </div>
+    <ErrorBoundary>
+      <!-- TODO use slots to separate layout from logic https://vuejs.org/v2/guide/components.html#Content-Distribution-with-Slots -->
+      <div id="main">
+        <div class="scrollwrapper">
+          <div id="titlebar" class="box has-text-black">
+            <SideMenu
+              @new-nwk="egoEditMode = true"
+              @open-nwk="editEgoFinished"
+            />
+            <div id="brand"><i>easy</i>NWK</div>
+            <EgoHeader @edit="egoEditMode = true" />
+            <UndoRedo />
+          </div>
 
-        <div id="forms">
-          <EgoEditForm v-if="egoEditMode" @edit-finished="editEgoFinished" />
+          <div id="forms">
+            <EgoEditForm v-if="egoEditMode" @edit-finished="editEgoFinished" />
 
-          <AlteriPanel v-if="!egoEditMode" />
-          <StatisticsPanel v-if="$store.state.view.statistics" />
-        </div>
-        <!-- TODO <div>
+            <AlteriPanel v-if="!egoEditMode" />
+            <StatisticsPanel v-if="$store.state.view.statistics" />
+          </div>
+          <!-- TODO <div>
             Über die easyNWK &nbsp; &nbsp; &nbsp; Impressum
         </div> -->
+        </div>
       </div>
-    </div>
-    <div id="chart">
-      <NetworkMap @map-click="mapclick" />
-    </div>
+      <div id="chart">
+        <NetworkMap @map-click="mapclick" />
+      </div>
+    </ErrorBoundary>
   </div>
 </template>
 
@@ -32,6 +37,7 @@ import { defineComponent, ref } from "vue";
 import { useStore } from "@/store";
 
 // @ is an alias to /src
+import ErrorBoundary from "@/components/ErrorBoundary.vue";
 import AlteriPanel from "@/components/AlteriPanel.vue";
 import EgoHeader from "@/components/EgoHeader.vue";
 import EgoEditForm from "@/components/EgoEditForm.vue";
@@ -42,6 +48,7 @@ import StatisticsPanel from "@/components/StatisticsPanel.vue";
 
 export default defineComponent({
   components: {
+    ErrorBoundary,
     EgoHeader,
     EgoEditForm,
     AlteriPanel,

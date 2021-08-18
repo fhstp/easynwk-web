@@ -31,6 +31,7 @@ import {
   faRedo,
   faChartBar,
   faRss,
+  faTrashAlt,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
@@ -54,6 +55,7 @@ library.add(
   faRedo,
   faChartBar,
   faRss,
+  faTrashAlt,
   faCheck
 );
 
