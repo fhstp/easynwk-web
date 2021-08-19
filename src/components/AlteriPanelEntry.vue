@@ -1,7 +1,7 @@
 <template>
   <div
     class="panel-block"
-    v-bind:class="{ selected: alter.isSelected, alteriform: isEditMode }"
+    v-bind:class="{ selected: isSelected, alteriform: isEditMode }"
     v-on:click="toggleSelection()"
   >
     <span v-if="!isEditMode" class="contact"
@@ -51,7 +51,6 @@ import { defineComponent, computed } from "vue";
 import { useStore } from "@/store";
 import AlteriEditForm from "@/components/AlteriEditForm.vue";
 import AlteriConnectionList from "@/components/AlteriConnectionList.vue";
-import { Alter } from "@/data/Alter";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/data/NWK";
 
 export default defineComponent({
@@ -84,13 +83,9 @@ export default defineComponent({
     });
 
     // handles isSelected
-    // TODO move selection out of NWK state?
     const toggleSelection = () => {
       if (!isEditMode.value) {
-        const alter2 = props.alter as Alter;
-        const changes = { isSelected: !alter2.isSelected };
-        const payload = { index: props.alterIndex, changes };
-        store.commit("editAlter", payload);
+        store.commit("view/toggleAlterSelected", props.alter.id);
       }
     };
 
@@ -103,6 +98,9 @@ export default defineComponent({
           tab: TAB_CONNECTIONS,
         });
       },
+      isSelected: computed(() =>
+        store.getters["view/isSelected"](props.alter.id)
+      ),
       isEditMode,
       isAlterOpsAllowed: computed(() => store.getters.editedAlterValid),
       isBaseForm: computed(

@@ -201,9 +201,7 @@ export default defineComponent({
         store.commit("toggleConnection", payload);
       } else {
         // toggleSelection
-        const changes = { isSelected: !alter.isSelected };
-        const payload = { id: alter.id, changes };
-        store.commit("editAlterById", payload);
+        store.commit("view/toggleAlterSelected", alter.id);
       }
     };
 
@@ -241,7 +239,9 @@ export default defineComponent({
     });
 
     const selectedAlteriMarks = computed((): Array<AlterMark> => {
-      return alteriMarks.value.filter((m) => m.d.isSelected);
+      return alteriMarks.value.filter((m) =>
+        store.getters["view/isSelected"](m.d.id)
+      );
     });
 
     const connectionMarks = computed((): Array<ConnectionMark> => {

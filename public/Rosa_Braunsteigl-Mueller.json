@@ -16,8 +16,7 @@
       "note": "",
       "edgeWeight": 0,
       "angle": -131.1060924804431,
-      "distance": 42.31366368839073,
-      "isSelected": false
+      "distance": 42.31366368839073
     },
     {
       "id": 7,
@@ -29,8 +28,7 @@
       "note": "",
       "edgeWeight": 0,
       "angle": -50.92234207573893,
-      "distance": 93.73453583270009,
-      "isSelected": false
+      "distance": 93.73453583270009
     },
     {
       "id": 6,
@@ -42,8 +40,7 @@
       "note": "",
       "edgeWeight": 0,
       "angle": 61.96572175097271,
-      "distance": 21.509343722623814,
-      "isSelected": false
+      "distance": 21.509343722623814
     },
     {
       "id": 5,
@@ -55,8 +52,7 @@
       "note": "",
       "edgeWeight": 0,
       "angle": 76.13437315775695,
-      "distance": 103,
-      "isSelected": false
+      "distance": 103
     },
     {
       "id": 4,
@@ -68,8 +64,7 @@
       "note": "",
       "edgeWeight": 0,
       "angle": 137.52753497925326,
-      "distance": 75.01518991342189,
-      "isSelected": false
+      "distance": 75.01518991342189
     },
     {
       "id": 3,
@@ -81,8 +76,7 @@
       "note": "",
       "edgeWeight": 0,
       "angle": -114.86833156298106,
-      "distance": 71.90407620902847,
-      "isSelected": false
+      "distance": 71.90407620902847
     },
     {
       "id": 2,
@@ -94,8 +88,7 @@
       "note": "",
       "edgeWeight": 0,
       "angle": 15.195768445698295,
-      "distance": 19.709025754817713,
-      "isSelected": true
+      "distance": 19.709025754817713
     },
     {
       "id": 1,
@@ -107,12 +100,12 @@
       "note": "",
       "edgeWeight": 0,
       "angle": 30.051411748698495,
-      "distance": 27.853551485665644,
-      "isSelected": false
+      "distance": 27.853551485665644
     }
   ],
   "connections": [
     { "id1": 1, "id2": 4 },
+    { "id1": 1, "id2": 2 },
     { "id1": 1, "id2": 6 }
   ]
 }

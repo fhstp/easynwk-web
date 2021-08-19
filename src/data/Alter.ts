@@ -15,7 +15,6 @@ export interface Alter {
 
   /** distance from center normalized to 100 for the outer horizont.  */
   distance: number;
-  isSelected: boolean;
 }
 
 export function initAlter(): Alter {
@@ -30,7 +29,6 @@ export function initAlter(): Alter {
     edgeWeight: 0,
     angle: 0,
     distance: 0,
-    isSelected: false,
   };
 }
 
