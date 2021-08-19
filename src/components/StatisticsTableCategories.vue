@@ -32,7 +32,14 @@
         </tr>
         <tr>
           <th>Star(s) (pro Kategorie)</th>
-          <td v-for="(cat, i) in categoryLabels" :key="i">{{ stars[i] }}</td>
+          <td
+            v-for="(cat, i) in categoryLabels"
+            :key="i"
+            @click="clickCell('stars', cat)"
+            :class="{ clickAble: stars[i] != '-' }"
+          >
+            {{ stars[i] }}
+          </td>
         </tr>
         <tr>
           <th>Brücken</th>
@@ -42,13 +49,25 @@
         </tr>
         <tr>
           <th>Brückenperson(en)</th>
-          <td v-for="(cat, i) in categoryLabels" :key="i">
+          <td
+            v-for="(cat, i) in categoryLabels"
+            :key="i"
+            @click="clickCell('bridgePersons', cat)"
+            :class="{ clickAble: bridgePersons[i] != '0' }"
+          >
             {{ bridgePersons[i] }}
           </td>
         </tr>
         <tr>
           <th>Personen ohne Beziehungen</th>
-          <td v-for="(cat, i) in categoryLabels" :key="i">{{ isolated[i] }}</td>
+          <td
+            v-for="(cat, i) in categoryLabels"
+            :key="i"
+            @click="clickCell('isolated', cat)"
+            :class="{ clickAble: isolated[i] != '0' }"
+          >
+            {{ isolated[i] }}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -160,6 +179,19 @@ export default defineComponent({
       });
     });
 
+    const clickCell = (
+      group: "stars" | "isolated" | "bridgePersons",
+      cat: string
+    ) => {
+      const alteri = getOrInit(networkAnalysis.value, cat)[group];
+      if (alteri.length > 0) {
+        store.commit(
+          "view/selectAlters",
+          alteri.map((a) => a.id)
+        );
+      }
+    };
+
     return {
       categoryLabels,
       networkSize: computed((): string[] => {
@@ -183,6 +215,7 @@ export default defineComponent({
           getOrInit(networkAnalysis.value, cat).bridges.length.toFixed(0)
         );
       }),
+      clickCell,
     };
   },
 });

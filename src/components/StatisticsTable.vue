@@ -22,7 +22,9 @@
         </tr>
         <tr>
           <th>Star(s)</th>
-          <td>{{ stars }}</td>
+          <td @click="clickCell('stars')" :class="{ clickAble: stars != '-' }">
+            {{ stars }}
+          </td>
         </tr>
         <tr>
           <th>Brücken</th>
@@ -30,11 +32,21 @@
         </tr>
         <tr>
           <th>Brückenperson(en)</th>
-          <td>{{ bridgePersons }}</td>
+          <td
+            @click="clickCell('bridgePersons')"
+            :class="{ clickAble: bridgePersons != '0' }"
+          >
+            {{ bridgePersons }}
+          </td>
         </tr>
         <tr>
           <th>Personen ohne Beziehungen</th>
-          <td>{{ isolated }}</td>
+          <td
+            @click="clickCell('isolated')"
+            :class="{ clickAble: isolated != '0' }"
+          >
+            {{ isolated }}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -103,6 +115,16 @@ export default defineComponent({
       }
     });
 
+    const clickCell = (group: "stars" | "isolated" | "bridgePersons") => {
+      const alteri = networkAnalysis.value[group];
+      if (alteri.length > 0) {
+        store.commit(
+          "view/selectAlters",
+          alteri.map((a) => a.id)
+        );
+      }
+    };
+
     return {
       networkSize: computed(() => networkAnalysis.value.alterCount),
       naehenSum: computed(() => networkAnalysis.value.naehenSum),
@@ -111,6 +133,7 @@ export default defineComponent({
       isolated,
       bridgePersons,
       bridgesCount: computed(() => networkAnalysis.value.bridges.length),
+      clickCell,
     };
   },
 });

@@ -44,6 +44,10 @@ const mutations = {
       state.selected.add(alterId);
     }
   },
+
+  selectAlters(state: ViewOptionsState, alterIds: number[]): void {
+    state.selected = new Set(alterIds);
+  },
 };
 
 export const viewOptionsModule = {
