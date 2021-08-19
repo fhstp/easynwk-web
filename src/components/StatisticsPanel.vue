@@ -6,7 +6,7 @@
       </span>
       <span>Kennzahlen</span>
       <span style="flex: 1">&nbsp;</span>
-      <span class="icon is-medium" @click="hideStatistics">
+      <span class="icon is-medium clickAble" @click="hideStatistics">
         <font-awesome-icon icon="times" size="1x" />
       </span>
     </p>

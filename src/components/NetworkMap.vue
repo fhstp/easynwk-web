@@ -91,7 +91,7 @@
           :href="'#' + mark.shape"
           :x="mark.x"
           :y="mark.y"
-          class="mark"
+          class="mark clickAble"
           width="4"
           height="4"
           transform="translate(-2,-2)"
@@ -297,6 +297,7 @@ line {
 #position {
   fill: white;
   fill-opacity: 0.01;
+  cursor: crosshair;
 }
 
 #ego {

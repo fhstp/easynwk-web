@@ -1,7 +1,11 @@
 <template>
   <div
     class="panel-block"
-    v-bind:class="{ selected: isSelected, alteriform: isEditMode }"
+    v-bind:class="{
+      selected: isSelected,
+      alteriform: isEditMode,
+      clickAble: !isEditMode,
+    }"
     v-on:click="toggleSelection()"
   >
     <span v-if="!isEditMode" class="contact"
