@@ -55,7 +55,7 @@ import { defineComponent, computed } from "vue";
 import { useStore } from "@/store";
 import AlteriEditForm from "@/components/AlteriEditForm.vue";
 import AlteriConnectionList from "@/components/AlteriConnectionList.vue";
-import { TAB_BASE, TAB_CONNECTIONS } from "@/data/NWK";
+import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 
 export default defineComponent({
   components: { AlteriEditForm, AlteriConnectionList },
@@ -78,12 +78,12 @@ export default defineComponent({
     };
 
     const edit = () => {
-      store.commit("openAlterForm", { alterIndex: props.alterIndex });
+      store.commit("view/openAlterForm", { alterIndex: props.alterIndex });
     };
 
     // handles isEditMode
     const isEditMode = computed(() => {
-      return store.state.nwk.editIndex === props.alterIndex;
+      return store.state.view.editIndex === props.alterIndex;
     });
 
     // handles isSelected
@@ -97,7 +97,7 @@ export default defineComponent({
       removeAlter,
       edit,
       editConnections: () => {
-        store.commit("openAlterForm", {
+        store.commit("view/openAlterForm", {
           alterIndex: props.alterIndex,
           tab: TAB_CONNECTIONS,
         });
@@ -108,10 +108,10 @@ export default defineComponent({
       isEditMode,
       isAlterOpsAllowed: computed(() => store.getters.editedAlterValid),
       isBaseForm: computed(
-        () => isEditMode.value && store.state.nwk.editTab === TAB_BASE
+        () => isEditMode.value && store.state.view.editTab === TAB_BASE
       ),
       isConnectionForm: computed(
-        () => isEditMode.value && store.state.nwk.editTab === TAB_CONNECTIONS
+        () => isEditMode.value && store.state.view.editTab === TAB_CONNECTIONS
       ),
       toggleSelection,
     };

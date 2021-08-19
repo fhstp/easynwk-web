@@ -91,7 +91,7 @@ export default defineComponent({
           id2: otherId,
         });
       },
-      editAlterFinished: () => store.commit("closeAlterForm"),
+      editAlterFinished: () => store.commit("view/closeAlterForm"),
     };
   },
 });

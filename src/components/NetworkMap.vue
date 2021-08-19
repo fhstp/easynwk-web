@@ -132,7 +132,7 @@ import * as d3 from "d3";
 import { Alter } from "@/data/Alter";
 import { Sectors } from "@/data/Sectors";
 import { shapeByGender } from "@/data/Gender";
-import { TAB_BASE, TAB_CONNECTIONS } from "@/data/NWK";
+import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 
 interface AlterMark {
   d: Alter;
@@ -158,13 +158,13 @@ export default defineComponent({
 
     const isEditMode = computed(() => {
       return (
-        store.state.nwk.editIndex != null &&
-        store.state.nwk.editTab === TAB_BASE
+        store.state.view.editIndex != null &&
+        store.state.view.editTab === TAB_BASE
       );
     });
 
     const isConnectMode = computed(
-      () => store.state.nwk.editTab === TAB_CONNECTIONS
+      () => store.state.view.editTab === TAB_CONNECTIONS
     );
 
     onMounted(() => {
@@ -182,7 +182,7 @@ export default defineComponent({
 
         if (isEditMode.value) {
           const payload = {
-            index: store.state.nwk.editIndex,
+            index: store.state.view.editIndex,
             changes: { distance: distance, angle: angle },
           };
           store.commit("editAlter", payload);
@@ -195,8 +195,8 @@ export default defineComponent({
     const clickAlter = (alter: Alter) => {
       console.log(alter.name + " clicked");
 
-      if (isConnectMode.value && store.state.nwk.editIndex != null) {
-        const editId = store.state.nwk.alteri[store.state.nwk.editIndex].id;
+      if (isConnectMode.value && store.state.view.editIndex != null) {
+        const editId = store.state.nwk.alteri[store.state.view.editIndex].id;
         const payload = { id1: editId, id2: alter.id };
         store.commit("toggleConnection", payload);
       } else {

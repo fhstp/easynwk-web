@@ -1,3 +1,4 @@
+import { initAlter } from "@/data/Alter";
 import { NWK } from "@/data/NWK";
 import { InjectionKey } from "vue";
 import {
@@ -9,13 +10,49 @@ import {
 
 import { IUnReDoState, localStoragePlugin } from "./localStoragePlugin";
 import { nwkModule } from "./nwkModule";
-import { viewOptionsModule, ViewOptionsState } from "./viewOptionsModule";
+import {
+  TAB_BASE,
+  viewOptionsModule,
+  ViewOptionsState,
+} from "./viewOptionsModule";
 
 export interface IStoreState {
   nwk: NWK;
   view: ViewOptionsState;
   unredo: IUnReDoState;
 }
+
+const getters = {
+  editedAlterValid(state: IStoreState): boolean {
+    if (state.view.editIndex != null) {
+      const alter = state.nwk.alteri[state.view.editIndex];
+      return alter.distance > 0 && alter.name.trim().length > 0;
+    } else {
+      // no alter open to edit --> always valid
+      return true;
+    }
+  },
+
+  // networkAnalysis(state: NWK): NetworkAnalysis {
+  //   return analyseNWK(state);
+  // },
+};
+
+const mutations = {
+  addAlter(state: IStoreState): void {
+    const newAlter = initAlter();
+    // set id depending on alteri in list
+    newAlter.id =
+      state.nwk.alteri.length > 0
+        ? Math.max(...state.nwk.alteri.map((v) => v.id)) + 1
+        : 0;
+
+    // new alter is always added on top of list
+    state.nwk.alteri.unshift(newAlter);
+    state.view.editIndex = 0;
+    state.view.editTab = TAB_BASE;
+  },
+};
 
 const plugins =
   process.env.NODE_ENV !== "production"
@@ -28,6 +65,8 @@ export const store = createStore<IStoreState>({
     nwk: nwkModule,
     view: viewOptionsModule,
   },
+  getters,
+  mutations,
   plugins,
 });
 

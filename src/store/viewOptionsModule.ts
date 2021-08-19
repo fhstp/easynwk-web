@@ -1,3 +1,6 @@
+export const TAB_BASE = "base";
+export const TAB_CONNECTIONS = "connections";
+
 export interface ViewOptionsFlags {
   anonymized: boolean;
   horizons: boolean;
@@ -7,6 +10,8 @@ export interface ViewOptionsFlags {
 
 export interface ViewOptionsState extends ViewOptionsFlags {
   selected: Set<number>;
+  editIndex: number | null;
+  editTab: string;
 }
 
 export function initViewOptionsState(): ViewOptionsState {
@@ -15,7 +20,10 @@ export function initViewOptionsState(): ViewOptionsState {
     horizons: true,
     connections: true,
     statistics: false,
+
     selected: new Set<number>(),
+    editIndex: null,
+    editTab: "",
   };
 }
 
@@ -47,6 +55,19 @@ const mutations = {
 
   selectAlters(state: ViewOptionsState, alterIds: number[]): void {
     state.selected = new Set(alterIds);
+  },
+
+  openAlterForm(
+    state: ViewOptionsState,
+    payload: { alterIndex: number; tab?: string }
+  ): void {
+    state.editIndex = payload.alterIndex;
+    state.editTab = payload.tab ? payload.tab : TAB_BASE;
+  },
+
+  closeAlterForm(state: ViewOptionsState): void {
+    state.editIndex = null;
+    state.editTab = "";
   },
 };
 

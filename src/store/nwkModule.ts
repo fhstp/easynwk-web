@@ -1,27 +1,10 @@
-import { initAlter } from "@/data/Alter";
-import { NWK, initNWKasJSON, loadNWK, TAB_BASE } from "@/data/NWK";
+import { NWK, initNWKasJSON, loadNWK } from "@/data/NWK";
 
 import { loadStateFromStore } from "./localStoragePlugin";
 
 // root state object.
 // each Vuex instance is just a single state tree.
 const state = JSON.parse(loadStateFromStore());
-
-const getters = {
-  editedAlterValid(state: NWK): boolean {
-    if (state.editIndex != null) {
-      const alter = state.alteri[state.editIndex];
-      return alter.distance > 0 && alter.name.trim().length > 0;
-    } else {
-      // no alter open to edit --> always valid
-      return true;
-    }
-  },
-
-  // networkAnalysis(state: NWK): NetworkAnalysis {
-  //   return analyseNWK(state);
-  // },
-};
 
 // mutations are operations that actually mutate the state.
 // each mutation handler gets the entire state tree as the
@@ -41,20 +24,6 @@ const mutations = {
 
   loadNWK(state: NWK, payload: string): void {
     loadNWK(state, payload);
-  },
-
-  addAlter(state: NWK): void {
-    const newAlter = initAlter();
-    // set id depending on alteri in list
-    newAlter.id =
-      state.alteri.length > 0
-        ? Math.max(...state.alteri.map((v) => v.id)) + 1
-        : 0;
-
-    // new alter is always added on top of list
-    state.alteri.unshift(newAlter);
-    state.editIndex = 0;
-    state.editTab = TAB_BASE;
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -134,24 +103,10 @@ const mutations = {
       }
     }
   },
-
-  openAlterForm(
-    state: NWK,
-    payload: { alterIndex: number; tab?: string }
-  ): void {
-    state.editIndex = payload.alterIndex;
-    state.editTab = payload.tab ? payload.tab : TAB_BASE;
-  },
-
-  closeAlterForm(state: NWK): void {
-    state.editIndex = null;
-    state.editTab = "";
-  },
 };
 
 export const nwkModule = {
   // namespaced: true,
   state,
-  getters,
   mutations,
 };

@@ -182,7 +182,7 @@ export default defineComponent({
       },
       set(value: string) {
         const payload = {
-          index: store.state.nwk.editIndex,
+          index: store.state.view.editIndex,
           changes: { currentGender: value },
         };
         store.commit("editAlter", payload);
@@ -195,7 +195,7 @@ export default defineComponent({
       },
       set(value: string) {
         const payload = {
-          index: store.state.nwk.editIndex,
+          index: store.state.view.editIndex,
           changes: { role: value },
         };
         store.commit("editAlter", payload);
@@ -208,7 +208,7 @@ export default defineComponent({
       },
       set(value: string) {
         const payload = {
-          index: store.state.nwk.editIndex,
+          index: store.state.view.editIndex,
           changes: { contactOfPartner: value },
         };
         store.commit("editAlter", payload);
@@ -220,7 +220,7 @@ export default defineComponent({
       const value = (evt.target as InputType).value.trim();
       if (props.alter && value !== props.alter[field]) {
         const changes = { [field]: value };
-        const payload = { index: store.state.nwk.editIndex, changes };
+        const payload = { index: store.state.view.editIndex, changes };
         store.commit("editAlter", payload);
       }
     };
@@ -256,7 +256,7 @@ export default defineComponent({
           (altername.value as HTMLInputElement).focus();
         }
       } else {
-        store.commit("closeAlterForm");
+        store.commit("view/closeAlterForm");
       }
     };
 
