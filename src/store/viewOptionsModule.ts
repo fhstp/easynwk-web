@@ -9,7 +9,7 @@ export interface ViewOptionsState extends ViewOptionsFlags {
   selected: Set<number>;
 }
 
-function initViewOptionsState(): ViewOptionsState {
+export function initViewOptionsState(): ViewOptionsState {
   return {
     anonymized: false,
     horizons: true,

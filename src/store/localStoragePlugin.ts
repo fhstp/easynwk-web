@@ -6,6 +6,7 @@ and <https://github.com/anthonygore/vuex-undo-redo> */
 import { initNWKasJSON } from "@/data/NWK";
 import { MutationPayload, Store } from "vuex";
 import { IStoreState } from ".";
+import { initViewOptionsState } from "./viewOptionsModule";
 
 const STORAGE_KEY = "easynwk";
 const UNREDO_MODULE = "unredo";
@@ -28,7 +29,6 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
   // keep track of undo history as local (non-reactive) vars
   const history = {
     initialState: loadStateFromStore(),
-    initialViewState: JSON.stringify(store.state.view),
     done: [] as Array<MutationPayload>,
     undone: [] as Array<MutationPayload>,
     replaying: false,
@@ -56,7 +56,7 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         history.replaying = true;
         // reset to initial state
         store.commit("loadNWK", history.initialState);
-        store.state.view = JSON.parse(history.initialViewState);
+        store.state.view = initViewOptionsState();
         // replay all mutations (but last)
         for (const c of history.done) {
           store.commit(c.type, c.payload);
