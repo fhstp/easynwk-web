@@ -130,7 +130,7 @@ export default defineComponent({
 
     const save = () => {
       download(
-        store.state.nwk.ego.name + ".json",
+        store.state.nwk.ego.name + "-json.nwk",
         JSON.stringify(store.state.nwk)
       );
     };
