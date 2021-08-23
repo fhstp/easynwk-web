@@ -35,6 +35,8 @@ export const Roles = [
   "Urgroßmutter",
   "Urgroßvater",
   "Schwager/Schwägerin",
+  "Schwiegermutter",
+  "Schwiegervater",
   "Schwiegertochter",
   "Schwiegersohn",
   "Enkelkind",
