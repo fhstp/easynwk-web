@@ -89,7 +89,7 @@ export default defineComponent({
     // handles isSelected
     const toggleSelection = () => {
       if (!isEditMode.value) {
-        store.commit("view/toggleAlterSelected", props.alter.id);
+        store.commit("view/selectSingleAlter", props.alter.id);
       }
     };
 

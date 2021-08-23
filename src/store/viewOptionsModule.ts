@@ -53,8 +53,22 @@ const mutations = {
     }
   },
 
+  selectSingleAlter(state: ViewOptionsState, alterId: number): void {
+    if (state.selected.has(alterId) && state.selected.size == 1) {
+      // exactly this alter was already selected
+      state.selected.clear();
+    } else {
+      state.selected.clear();
+      state.selected.add(alterId);
+    }
+  },
+
   selectAlters(state: ViewOptionsState, alterIds: number[]): void {
     state.selected = new Set(alterIds);
+  },
+
+  clearSelectedAlters(state: ViewOptionsState): void {
+    state.selected.clear();
   },
 
   openAlterForm(

@@ -186,6 +186,8 @@ export default defineComponent({
             changes: { distance: distance, angle: angle },
           };
           store.commit("editAlter", payload);
+          // } else {
+          //   store.commit("view/clearSelectedAlters");
         }
 
         emit("map-click", { distance, angle });
@@ -201,7 +203,7 @@ export default defineComponent({
         store.commit("toggleConnection", payload);
       } else {
         // toggleSelection
-        store.commit("view/toggleAlterSelected", alter.id);
+        store.commit("view/selectSingleAlter", alter.id);
       }
     };
 
