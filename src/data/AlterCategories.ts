@@ -39,11 +39,18 @@ const SECTOR: AlterCategorization = {
   categories: Sectors,
 };
 
-const HORIZON: AlterCategorization = {
-  label: "Horizont",
+const HORIZON_CUM: AlterCategorization = {
+  label: "Horizont (kumulativ)",
   inCategory: (catIndex: number, a: Alter): boolean =>
     horizonIndex(a) <= catIndex,
   categories: ["Kreis 3", "Kreis 3 + 2", "Kreis 3 + 2 + 1"],
+};
+
+const HORIZON: AlterCategorization = {
+  label: "Horizont",
+  inCategory: (catIndex: number, a: Alter): boolean =>
+    horizonIndex(a) == catIndex,
+  categories: ["Kreis 3", "Kreis 2", "Kreis 1"],
 };
 
 const GENDER: AlterCategorization = {
@@ -77,6 +84,8 @@ export function getAlterCategorization(key = ""): AlterCategorization {
     ? SECTOR
     : key === "horizon"
     ? HORIZON
+    : key === "horizon_cum"
+    ? HORIZON_CUM
     : key === "gender"
     ? GENDER
     : key === "age"
@@ -88,6 +97,7 @@ export const allAlterCategorizationKeys = [
   "",
   "sector",
   "horizon",
+  "horizon_cum",
   "gender",
   "age",
 ];
