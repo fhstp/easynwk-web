@@ -5,6 +5,7 @@ export interface Alter {
   name: string;
   role: string;
   contactOfPartner: boolean;
+  human: boolean;
   currentGender: string;
   age: string;
   note: string;
@@ -23,6 +24,7 @@ export function initAlter(): Alter {
     name: "",
     role: "",
     contactOfPartner: false,
+    human: true,
     currentGender: Gender[0],
     age: "",
     note: "",

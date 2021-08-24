@@ -63,6 +63,17 @@
     </div>
 
     <div class="field is-horizontal">
+      <div class="field-label">
+        <label class="label checkbox" for="chk-human">Mensch</label>
+      </div>
+      <div class="field-body">
+        <label>
+          <input id="chk-human" type="checkbox" v-model="alterHuman" />
+        </label>
+      </div>
+    </div>
+
+    <div v-if="alterHuman" class="field is-horizontal">
       <div class="field-label is-normal">
         <label class="label">Geschlecht</label>
       </div>
@@ -74,6 +85,25 @@
                 {{ value }}
               </option>
             </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-else class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Kategorie</label>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <div class="control">
+            <input
+              class="input"
+              :value="alterGender"
+              @blur="commitEdit($event, 'currentGender')"
+              @keyup.esc="cancelEdit($event, 'currentGender')"
+              type="text"
+            />
           </div>
         </div>
       </div>
@@ -202,16 +232,29 @@ export default defineComponent({
       },
     });
 
+    const commitCheckbox = (field: keyof Alter, value: string) => {
+      const payload = {
+        index: store.state.view.editIndex,
+        changes: { [field]: value },
+      };
+      store.commit("editAlter", payload);
+    };
+
+    const alterHuman = computed({
+      get() {
+        return props.alter?.human;
+      },
+      set(value: string) {
+        commitCheckbox("human", value);
+      },
+    });
+
     const alterContactOfPartner = computed({
       get() {
         return props.alter?.contactOfPartner;
       },
       set(value: string) {
-        const payload = {
-          index: store.state.view.editIndex,
-          changes: { contactOfPartner: value },
-        };
-        store.commit("editAlter", payload);
+        commitCheckbox("contactOfPartner", value);
       },
     });
 
@@ -271,6 +314,7 @@ export default defineComponent({
       alterNameInUI,
       invalidName,
       invalidPosition,
+      alterHuman,
       alterGender,
       alterRole,
       alterContactOfPartner,
