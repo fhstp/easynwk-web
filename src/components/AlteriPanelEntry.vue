@@ -136,12 +136,14 @@ export default defineComponent({
   font-weight: bold;
 }
 
-/* show buttons only when mouseover */
-.panel-block > .buttons {
-  display: none;
-}
-.panel-block:hover > .buttons {
-  display: inline;
+@media (hover: hover) and (pointer: fine) {
+  /* show buttons only when mouseover */
+  .panel-block > .buttons {
+    display: none;
+  }
+  .panel-block:hover > .buttons {
+    display: inline;
+  }
 }
 
 /* make text label as high as buttons to avoid height change */
