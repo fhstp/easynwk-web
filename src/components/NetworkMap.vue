@@ -65,6 +65,16 @@
     </text>
 
     <g id="marks">
+      <g v-for="mark in alteriMarks" :key="'shadow' + mark.d.id">
+        <circle
+          v-if="mark.selected"
+          :cx="mark.x"
+          :cy="mark.y"
+          r="4"
+          fill="url('#selected-gradient')"
+        />
+      </g>
+
       <g v-if="connections">
         <line
           v-for="(mark, index) in connectionMarks"
@@ -73,20 +83,19 @@
           :y1="mark.y1"
           :x2="mark.x2"
           :y2="mark.y2"
+          :class="{ select: mark.selected }"
         />
       </g>
 
-      <circle
-        v-for="mark in selectedAlteriMarks"
-        :key="'shadow' + mark.d.id"
-        :cx="mark.x"
-        :cy="mark.y"
-        r="4"
-        fill="url('#selected-gradient')"
-      />
-
       <g v-for="mark in alteriMarks" :key="mark.d.id">
-        <line v-if="connections" x1="0" y1="0" :x2="mark.x" :y2="mark.y" />
+        <line
+          v-if="connections"
+          :class="{ select: mark.selected }"
+          x1="0"
+          y1="0"
+          :x2="mark.x"
+          :y2="mark.y"
+        />
         <use
           :href="'#' + mark.shape"
           :x="mark.x"
@@ -139,6 +148,7 @@ interface AlterMark {
   shape: string;
   x: number;
   y: number;
+  selected: boolean;
 }
 
 interface ConnectionMark {
@@ -146,6 +156,7 @@ interface ConnectionMark {
   y1: number;
   x2: number;
   y2: number;
+  selected: boolean;
 }
 
 // knows list of Alter from vuex
@@ -234,16 +245,11 @@ export default defineComponent({
           shape: shapeByGender(el.currentGender),
           x: coords ? coords.x : 0,
           y: coords ? coords.y : 0,
+          selected: store.getters["view/isSelected"](el.id),
         });
       });
       // first draw marks further away from center to avoid overplotting
       return buffer.sort((a, b) => b.d.distance - a.d.distance);
-    });
-
-    const selectedAlteriMarks = computed((): Array<AlterMark> => {
-      return alteriMarks.value.filter((m) =>
-        store.getters["view/isSelected"](m.d.id)
-      );
     });
 
     const connectionMarks = computed((): Array<ConnectionMark> => {
@@ -251,11 +257,16 @@ export default defineComponent({
         const coords1 = alteriCoords.value.get(conn.id1);
         const coords2 = alteriCoords.value.get(conn.id2);
 
+        const selected =
+          store.getters["view/isSelected"](conn.id1) ||
+          store.getters["view/isSelected"](conn.id2);
+
         return {
           x1: coords1 ? coords1.x : 0,
           y1: coords1 ? coords1.y : 0,
           x2: coords2 ? coords2.x : 0,
           y2: coords2 ? coords2.y : 0,
+          selected,
         };
       });
     });
@@ -265,7 +276,6 @@ export default defineComponent({
       isConnectMode,
       clickAlter,
       alteriMarks,
-      selectedAlteriMarks,
       connectionMarks,
       horizons: computed(() => store.state.view.horizons),
       connections: computed(() => store.state.view.connections),
@@ -294,6 +304,10 @@ line.axis {
 line {
   stroke: lightgray;
   stroke-width: 0.5;
+}
+
+line.select {
+  stroke: rgb(18, 64, 171, 0.5);
 }
 
 #position {
