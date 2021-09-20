@@ -148,10 +148,17 @@
         </p> -->
       <p class="control">
         <button
+          v-if="addingNewAlter && (invalidName || invalidPosition)"
+          class="button is-warning"
+        >
+          Abbrechen
+        </button>
+        <button
+          v-else
           class="button is-primary"
           :disabled="invalidName || invalidPosition"
         >
-          Fertig
+          Schließen
         </button>
       </p>
     </div>
@@ -183,6 +190,8 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
+
+    const addingNewAlter = ref(!(props.alter?.name.length > 0));
 
     // name field is special because it must not be empty
     // the data item is only used for validity check & never stored
@@ -292,7 +301,12 @@ export default defineComponent({
 
     const editAlterFinished = () => {
       // TODO     if (!this.invalidPosition && !this.invalidName) {
-      if (invalidName.value) {
+      if (
+        addingNewAlter.value &&
+        (invalidName.value || invalidPosition.value)
+      ) {
+        store.commit("cancelAddAlter", store.state.view.editIndex);
+      } else if (invalidName.value) {
         // moving mouse cursor does not work
         // apparently editEgoFinished is not even called in the invalid state
         if (altername.value != null) {
@@ -311,6 +325,7 @@ export default defineComponent({
     });
 
     return {
+      addingNewAlter,
       alterNameInUI,
       invalidName,
       invalidPosition,
