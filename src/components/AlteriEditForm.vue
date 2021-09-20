@@ -148,17 +148,20 @@
         </p> -->
       <p class="control">
         <button
-          v-if="addingNewAlter && (invalidName || invalidPosition)"
-          class="button is-warning"
-        >
-          Abbrechen
-        </button>
-        <button
-          v-else
           class="button is-primary"
           :disabled="invalidName || invalidPosition"
         >
           Schließen
+        </button>
+      </p>
+      <p class="control">
+        <button
+          v-if="addingNewAlter"
+          class="button is-light"
+          type="button"
+          @mouseup.prevent="cancelAddAlter"
+        >
+          Abbrechen
         </button>
       </p>
     </div>
@@ -301,12 +304,7 @@ export default defineComponent({
 
     const editAlterFinished = () => {
       // TODO     if (!this.invalidPosition && !this.invalidName) {
-      if (
-        addingNewAlter.value &&
-        (invalidName.value || invalidPosition.value)
-      ) {
-        store.commit("cancelAddAlter", store.state.view.editIndex);
-      } else if (invalidName.value) {
+      if (invalidName.value) {
         // moving mouse cursor does not work
         // apparently editEgoFinished is not even called in the invalid state
         if (altername.value != null) {
@@ -314,6 +312,12 @@ export default defineComponent({
         }
       } else {
         store.commit("view/closeAlterForm");
+      }
+    };
+
+    const cancelAddAlter = () => {
+      if (addingNewAlter.value) {
+        store.commit("cancelAddAlter", store.state.view.editIndex);
       }
     };
 
@@ -338,6 +342,7 @@ export default defineComponent({
       genderOptions,
       roleOptions,
       editAlterFinished,
+      cancelAddAlter,
       altername,
     };
   },
