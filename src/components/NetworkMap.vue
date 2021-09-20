@@ -44,6 +44,21 @@
         <stop offset="60%" stop-color="rgb(18, 64, 171)" stop-opacity="0.25" />
         <stop offset="100%" stop-color="rgb(18, 64, 171)" stop-opacity="0" />
       </radialGradient>
+      <filter id="dilate-and-xor">
+        <!-- h/t https://stackoverflow.com/a/63287731/1140589 -->
+        <feMorphology
+          in="SourceGraphic"
+          result="dilate-result"
+          operator="dilate"
+          radius="0.5"
+        />
+        <feComposite
+          in="SourceGraphic"
+          in2="dilate-result"
+          result="xor-result"
+          operator="xor"
+        />
+      </filter>
     </defs>
     <!-- transform coordinate system to be scale independent -->
     <g id="coords" v-if="horizons">
@@ -89,12 +104,13 @@
 
       <g v-for="mark in alteriMarks" :key="mark.d.id">
         <line
-          v-if="connections"
+          v-if="connections && mark.d.edgeType >= 1"
           :class="{ select: mark.selected }"
           x1="0"
           y1="0"
           :x2="mark.x"
           :y2="mark.y"
+          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : null"
         />
         <use
           :href="'#' + mark.shape"
