@@ -69,6 +69,17 @@
             {{ isolated[i] }}
           </td>
         </tr>
+        <tr>
+          <th>Personen mit aktuell keiner Beziehung zur Ankerperson</th>
+          <td
+            v-for="(cat, i) in categoryLabels"
+            :key="i"
+            @click="clickCell('alterZeroEdge', cat)"
+            :class="{ clickAble: alterZeroEdge[i] != '0' }"
+          >
+            {{ alterZeroEdge[i] }}
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -135,22 +146,6 @@ export default defineComponent({
       return result;
     });
 
-    const bridgePersons = computed(() => {
-      return categoryLabels.value.map((cat) => {
-        const analysis = getOrInit(networkAnalysis.value, cat);
-        if (analysis.bridgePersons.length > 0) {
-          return (
-            analysis.bridgePersons.length +
-            " (" +
-            analysis.bridgePersons.map((a) => a.name).join(", ") +
-            ")"
-          );
-        } else {
-          return "0";
-        }
-      });
-    });
-
     const stars = computed(() => {
       return categoryLabels.value.map((cat) => {
         const analysis = getOrInit(networkAnalysis.value, cat);
@@ -163,24 +158,28 @@ export default defineComponent({
       });
     });
 
-    const isolated = computed(() => {
-      return categoryLabels.value.map((cat) => {
-        const analysis = getOrInit(networkAnalysis.value, cat);
-        if (analysis.isolated.length > 0) {
-          return (
-            analysis.isolated.length +
-            " (" +
-            analysis.isolated.map((a) => a.name).join(", ") +
-            ")"
-          );
-        } else {
-          return "0";
-        }
+    function makeComputedAlterGroup(
+      group: "stars" | "isolated" | "bridgePersons" | "alterZeroEdge"
+    ) {
+      return computed(() => {
+        return categoryLabels.value.map((cat) => {
+          const analysis = getOrInit(networkAnalysis.value, cat);
+          if (analysis[group].length > 0) {
+            return (
+              analysis[group].length +
+              " (" +
+              analysis[group].map((a) => a.name).join(", ") +
+              ")"
+            );
+          } else {
+            return "0";
+          }
+        });
       });
-    });
+    }
 
     const clickCell = (
-      group: "stars" | "isolated" | "bridgePersons",
+      group: "stars" | "isolated" | "bridgePersons" | "alterZeroEdge",
       cat: string
     ) => {
       const alteri = getOrInit(networkAnalysis.value, cat)[group];
@@ -208,8 +207,9 @@ export default defineComponent({
       extDensity,
 
       stars,
-      isolated,
-      bridgePersons,
+      isolated: makeComputedAlterGroup("isolated"),
+      alterZeroEdge: makeComputedAlterGroup("alterZeroEdge"),
+      bridgePersons: makeComputedAlterGroup("bridgePersons"),
       bridgesCount: computed((): string[] => {
         return categoryLabels.value.map((cat) =>
           getOrInit(networkAnalysis.value, cat).bridges.length.toFixed(0)

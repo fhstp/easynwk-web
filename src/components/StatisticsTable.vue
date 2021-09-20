@@ -48,6 +48,15 @@
             {{ isolated }}
           </td>
         </tr>
+        <tr>
+          <th>Personen mit aktuell keiner Beziehung zur Ankerperson</th>
+          <td
+            @click="clickCell('alterZeroEdge')"
+            :class="{ clickAble: alterZeroEdge != '0' }"
+          >
+            {{ alterZeroEdge }}
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -79,17 +88,6 @@ export default defineComponent({
       return calculateDensity(alterCount, intConnCount);
     });
 
-    const bridgePersons = computed(() => {
-      const alteri = networkAnalysis.value.bridgePersons;
-      if (alteri.length > 0) {
-        return (
-          alteri.length + " (" + alteri.map((a) => a.name).join(", ") + ")"
-        );
-      } else {
-        return "0";
-      }
-    });
-
     const stars = computed(() => {
       const alteri = networkAnalysis.value.stars;
       if (alteri.length > 0 && networkAnalysis.value.maxDegree > 0) {
@@ -104,18 +102,24 @@ export default defineComponent({
       }
     });
 
-    const isolated = computed(() => {
-      const alteri = networkAnalysis.value.isolated;
-      if (alteri.length > 0) {
-        return (
-          alteri.length + " (" + alteri.map((a) => a.name).join(", ") + ")"
-        );
-      } else {
-        return "0";
-      }
-    });
+    function makeComputedAlterGroup(
+      group: "stars" | "isolated" | "bridgePersons" | "alterZeroEdge"
+    ) {
+      return computed(() => {
+        const alteri = networkAnalysis.value[group];
+        if (alteri.length > 0) {
+          return (
+            alteri.length + " (" + alteri.map((a) => a.name).join(", ") + ")"
+          );
+        } else {
+          return "0";
+        }
+      });
+    }
 
-    const clickCell = (group: "stars" | "isolated" | "bridgePersons") => {
+    const clickCell = (
+      group: "stars" | "isolated" | "bridgePersons" | "alterZeroEdge"
+    ) => {
       const alteri = networkAnalysis.value[group];
       if (alteri.length > 0) {
         store.commit(
@@ -130,8 +134,9 @@ export default defineComponent({
       naehenSum: computed(() => networkAnalysis.value.naehenSum),
       density,
       stars,
-      isolated,
-      bridgePersons,
+      isolated: makeComputedAlterGroup("isolated"),
+      alterZeroEdge: makeComputedAlterGroup("alterZeroEdge"),
+      bridgePersons: makeComputedAlterGroup("bridgePersons"),
       bridgesCount: computed(() => networkAnalysis.value.bridges.length),
       clickCell,
     };
