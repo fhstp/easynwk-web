@@ -14,6 +14,7 @@ export interface NetworkAnalysis {
   isolated: Array<Alter>;
   bridgePersons: Array<Alter>;
   bridges: Array<Connection>;
+  alterZeroEdge: Array<Alter>;
 }
 
 function initNetworkAnalysis(): NetworkAnalysis {
@@ -28,6 +29,7 @@ function initNetworkAnalysis(): NetworkAnalysis {
     isolated: [],
     bridgePersons: [],
     bridges: [],
+    alterZeroEdge: [],
   };
 }
 
@@ -64,7 +66,7 @@ export function analyseNWKbyCategory(
   const alterMetrics: Map<number, AlterMetrics> = new Map();
   for (const alter of nwk.alteri) {
     const sec = sectorIndex(alter);
-    if (sec != null)
+    if (sec != null && alter.edgeType >= 1)
       alterMetrics.set(alter.id, {
         alter,
         degree: 0,
@@ -93,6 +95,14 @@ export function analyseNWKbyCategory(
 
   for (let i = 0; i < categories.categories.length; i++) {
     const analysis = getOrInit(result, categories.categories[i]);
+
+    // count alterZeroEdgeCount in this category
+    for (const alter of nwk.alteri) {
+      if (alter.edgeType == 0 && categories.inCategory(i, alter)) {
+        analysis.alterZeroEdge.push(alter);
+      }
+    }
+    // TODO reconsider whether a zero edge alter can be star or bridgeperson
 
     for (const [, am] of alterMetrics) {
       if (categories.inCategory(i, am.alter)) {

@@ -9,7 +9,7 @@ export interface Alter {
   currentGender: string;
   age: string;
   note: string;
-  edgeWeight: number;
+  edgeType: number;
 
   /** angle from x-axis between -180° and +180° */
   angle: number;
@@ -28,7 +28,7 @@ export function initAlter(): Alter {
     currentGender: Gender[0],
     age: "",
     note: "",
-    edgeWeight: 0,
+    edgeType: 1,
     angle: 0,
     distance: 0,
   };

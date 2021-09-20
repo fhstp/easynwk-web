@@ -128,6 +128,39 @@
       </div>
     </div>
 
+    <div class="field is-horizontal">
+      <div class="field-label">
+        <label class="label" title="Beziehung zur Ankerperson">Beziehung</label>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <div class="control radio-group">
+            <label
+              class="radio"
+              title="Die Beziehung von Ankerperson zum Kontakt ist aktuell aufrecht."
+            >
+              <input type="radio" v-model="alterEdgeType" value="1" />
+              besteht
+            </label>
+            <label
+              class="radio"
+              title="Derzeit gibt es keine Beziehung von Ankerperson mit dem Kontakt."
+            >
+              <input type="radio" v-model="alterEdgeType" value="0" />
+              keine aktuelle Beziehung
+            </label>
+            <label
+              class="radio"
+              title="Die Beziehung zum Kontakt betrifft zwei oder mehr Sektoren."
+            >
+              <input type="radio" v-model="alterEdgeType" value="2" />
+              multiplex
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="field">
       <div class="control">
         <textarea
@@ -218,31 +251,20 @@ export default defineComponent({
     });
 
     // getter & setter for select dropdown
-    const alterGender = computed({
-      get() {
-        return props.alter?.currentGender;
-      },
-      set(value: string) {
-        const payload = {
-          index: store.state.view.editIndex,
-          changes: { currentGender: value },
-        };
-        store.commit("editAlter", payload);
-      },
-    });
-
-    const alterRole = computed({
-      get() {
-        return props.alter?.role;
-      },
-      set(value: string) {
-        const payload = {
-          index: store.state.view.editIndex,
-          changes: { role: value },
-        };
-        store.commit("editAlter", payload);
-      },
-    });
+    function accessor(field: keyof Alter) {
+      return computed({
+        get() {
+          return props.alter[field];
+        },
+        set(value: string) {
+          const payload = {
+            index: store.state.view.editIndex,
+            changes: { [field]: value },
+          };
+          store.commit("editAlter", payload);
+        },
+      });
+    }
 
     const commitCheckbox = (field: keyof Alter, value: string) => {
       const payload = {
@@ -334,9 +356,10 @@ export default defineComponent({
       invalidName,
       invalidPosition,
       alterHuman,
-      alterGender,
-      alterRole,
+      alterGender: accessor("currentGender"),
+      alterRole: accessor("role"),
       alterContactOfPartner,
+      alterEdgeType: accessor("edgeType"),
       commitEdit,
       cancelEdit,
       genderOptions,
@@ -357,5 +380,15 @@ div.form {
 /* to hide datalist arrow in webkit (https://codepen.io/airen/pen/arGXvz) */
 input::-webkit-calendar-picker-indicator {
   display: none;
+}
+
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.radio + .radio {
+  margin-left: 0;
 }
 </style>
