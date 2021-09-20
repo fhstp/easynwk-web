@@ -52,6 +52,16 @@ const mutations = {
     state.view.editIndex = 0;
     state.view.editTab = TAB_BASE;
   },
+  // removes a newly added alter from the list
+  cancelAddAlter(state: IStoreState, alterIndex: number): void {
+    console.log("cancel " + alterIndex);
+
+    // canceled alter is new and therefore cannot have connections
+    state.nwk.alteri.splice(alterIndex, 1);
+
+    state.view.editIndex = null;
+    state.view.editTab = "";
+  },
 };
 
 const plugins =

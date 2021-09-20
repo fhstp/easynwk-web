@@ -78,7 +78,7 @@
       <div class="field is-grouped is-grouped-centered">
         <p class="control">
           <button class="button is-primary" :disabled="invalidName">
-            Fertig
+            Schließen
           </button>
         </p>
       </div>

@@ -151,7 +151,17 @@
           class="button is-primary"
           :disabled="invalidName || invalidPosition"
         >
-          Fertig
+          Schließen
+        </button>
+      </p>
+      <p class="control">
+        <button
+          v-if="addingNewAlter"
+          class="button is-light"
+          type="button"
+          @mouseup.prevent="cancelAddAlter"
+        >
+          Abbrechen
         </button>
       </p>
     </div>
@@ -183,6 +193,8 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
+
+    const addingNewAlter = ref(!(props.alter?.name.length > 0));
 
     // name field is special because it must not be empty
     // the data item is only used for validity check & never stored
@@ -303,6 +315,12 @@ export default defineComponent({
       }
     };
 
+    const cancelAddAlter = () => {
+      if (addingNewAlter.value) {
+        store.commit("cancelAddAlter", store.state.view.editIndex);
+      }
+    };
+
     onMounted(() => {
       // the DOM element will be assigned to the ref after initial render
       if (altername.value != null) {
@@ -311,6 +329,7 @@ export default defineComponent({
     });
 
     return {
+      addingNewAlter,
       alterNameInUI,
       invalidName,
       invalidPosition,
@@ -323,6 +342,7 @@ export default defineComponent({
       genderOptions,
       roleOptions,
       editAlterFinished,
+      cancelAddAlter,
       altername,
     };
   },
