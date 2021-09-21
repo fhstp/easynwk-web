@@ -129,6 +129,16 @@
     </div>
 
     <div class="field is-horizontal">
+      <div class="field-label is-normal"></div>
+      <div class="field-body">
+        <label class="checkbox">
+          <input type="checkbox" v-model="alterDeceased" />
+          {{ SYMBOL_DECEASED }}verstorben
+        </label>
+      </div>
+    </div>
+
+    <div class="field is-horizontal">
       <div class="field-label">
         <label class="label" title="Beziehung zur Ankerperson">Beziehung</label>
       </div>
@@ -208,6 +218,7 @@ import { useStore } from "@/store";
 import { Alter } from "@/data/Alter";
 import { Gender } from "@/data/Gender";
 import { Roles } from "@/data/Roles";
+import { SYMBOL_DECEASED } from "@/assets/utils";
 type InputType = HTMLInputElement | HTMLTextAreaElement;
 
 // gender & role options
@@ -359,6 +370,7 @@ export default defineComponent({
       alterGender: accessor("currentGender"),
       alterRole: accessor("role"),
       alterContactOfPartner,
+      alterDeceased: accessor("deceased"),
       alterEdgeType: accessor("edgeType"),
       commitEdit,
       cancelEdit,
@@ -367,6 +379,7 @@ export default defineComponent({
       editAlterFinished,
       cancelAddAlter,
       altername,
+      SYMBOL_DECEASED,
     };
   },
 });

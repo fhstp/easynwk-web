@@ -129,7 +129,7 @@
           :dx="mark.x < 0 ? -3 : 3"
           :dy="mark.y < 0 ? -1 : 4"
         >
-          {{ mark.d.name }}
+          {{ (mark.d.deceased ? SYMBOL_DECEASED : "") + mark.d.name }}
         </text>
       </g>
       <circle id="ego" cx="0" cy="0" r="1.5" />
@@ -158,6 +158,7 @@ import { Alter } from "@/data/Alter";
 import { Sectors } from "@/data/Sectors";
 import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
+import { SYMBOL_DECEASED } from "@/assets/utils";
 
 interface AlterMark {
   d: Alter;
@@ -296,6 +297,7 @@ export default defineComponent({
       horizons: computed(() => store.state.view.horizons),
       connections: computed(() => store.state.view.connections),
       Sectors,
+      SYMBOL_DECEASED,
     };
   },
 });

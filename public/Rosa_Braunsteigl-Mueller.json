@@ -47,13 +47,14 @@
     },
     {
       "id": 5,
-      "name": "+Hubert",
+      "name": "Hubert",
       "role": "Vater",
       "contactOfPartner": false,
       "human":true,
       "currentGender": "männlich",
       "age": "",
       "note": "",
+      "deceased": true,
       "edgeType": 0,
       "angle": 76.13437315775695,
       "distance": 103
