@@ -9,7 +9,8 @@
     v-on:click="toggleSelection()"
   >
     <span v-if="!isEditMode" class="contact"
-      >{{ alter.name }} / {{ alter.role }}</span
+      ><span v-if="alter.deceased">{{ SYMBOL_DECEASED }}</span>
+      {{ alter.name }} / {{ alter.role }}</span
     >
 
     <span class="buttons are-small" v-if="!isEditMode && isAlterOpsAllowed">
@@ -56,6 +57,7 @@ import { useStore } from "@/store";
 import AlteriEditForm from "@/components/AlteriEditForm.vue";
 import AlteriConnectionList from "@/components/AlteriConnectionList.vue";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
+import { SYMBOL_DECEASED } from "@/assets/utils";
 
 export default defineComponent({
   components: { AlteriEditForm, AlteriConnectionList },
@@ -114,6 +116,7 @@ export default defineComponent({
         () => isEditMode.value && store.state.view.editTab === TAB_CONNECTIONS
       ),
       toggleSelection,
+      SYMBOL_DECEASED,
     };
   },
 });

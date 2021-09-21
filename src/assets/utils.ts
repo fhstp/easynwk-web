@@ -14,3 +14,5 @@ export function download(filename: string, text: string): void {
 
   document.body.removeChild(element);
 }
+
+export const SYMBOL_DECEASED = "💀";
