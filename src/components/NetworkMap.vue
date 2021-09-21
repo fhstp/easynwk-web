@@ -259,7 +259,7 @@ export default defineComponent({
         const coords = alteriCoords.value.get(el.id);
         buffer.push({
           d: el,
-          shape: shapeByGender(el.currentGender),
+          shape: shapeByGender(el.human, el.currentGender),
           x: coords ? coords.x : 0,
           y: coords ? coords.y : 0,
           selected: store.getters["view/isSelected"](el.id),

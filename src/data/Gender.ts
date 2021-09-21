@@ -5,10 +5,11 @@ export const Gender = [
   "divers", // 3
 ];
 
-export function shapeByGender(gender: string): string {
+export function shapeByGender(human: boolean, gender: string): string {
+  if (!human) return "star";
+
   if (gender === Gender[1]) return "circle";
   else if (gender === Gender[2]) return "square";
   else if (gender === Gender[3]) return "triangle";
-  else if (gender === Gender[0]) return "pentagram";
-  else return "star";
+  else return "pentagram";
 }
