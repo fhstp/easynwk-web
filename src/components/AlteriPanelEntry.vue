@@ -10,7 +10,10 @@
   >
     <span v-if="!isEditMode" class="contact"
       ><span v-if="alter.deceased">{{ SYMBOL_DECEASED }}</span>
-      {{ alter.name }} / {{ alter.role }}</span
+      {{ alter.name }}
+      <span :class="{ autovalue: alter.roleDefault }"
+        >/ {{ alter.role }}</span
+      ></span
     >
 
     <span class="buttons are-small" v-if="!isEditMode && isAlterOpsAllowed">
@@ -152,5 +155,10 @@ export default defineComponent({
 /* make text label as high as buttons to avoid height change */
 .contact {
   padding: 3px 0px;
+}
+
+@import "~bulma/sass/base/_all.sass";
+.autovalue {
+  color: $grey-light;
 }
 </style>
