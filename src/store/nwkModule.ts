@@ -1,4 +1,7 @@
+import { Alter } from "@/data/Alter";
+import { Ego } from "@/data/Ego";
 import { NWK, initNWKasJSON, loadNWK } from "@/data/NWK";
+import { applyAdaptiveNWKDefaults } from "./adaptiveNWKDefaults";
 
 import { loadStateFromStore } from "./localStoragePlugin";
 
@@ -12,8 +15,7 @@ const state = JSON.parse(loadStateFromStore());
 // mutations must be synchronous and can be recorded by plugins
 // for debugging purposes.
 const mutations = {
-  // eslint-disable-next-line
-  editEgo(state: NWK, payload: any): void {
+  editEgo(state: NWK, payload: Partial<Ego>): void {
     // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
     state.ego = { ...state.ego, ...payload };
   },
@@ -26,8 +28,10 @@ const mutations = {
     loadNWK(state, payload);
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  editAlter(state: NWK, payload: { index: number; changes: any }): void {
+  editAlter(
+    state: NWK,
+    payload: { index: number; changes: Partial<Alter> }
+  ): void {
     // based oen vuex\examples\composition\todomvc\store\mutations.js
     // const index = state.alteri.indexOf(payload.alter);
 
@@ -38,14 +42,17 @@ const mutations = {
         ...state.alteri[payload.index],
         ...payload.changes,
       };
+      applyAdaptiveNWKDefaults(changedAlter, payload.changes);
       state.alteri.splice(payload.index, 1, changedAlter);
     } else {
       console.warn("alter index out of bounds: " + payload.index);
     }
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  editAlterById(state: NWK, payload: { id: number; changes: any }): void {
+  editAlterById(
+    state: NWK,
+    payload: { id: number; changes: Partial<Alter> }
+  ): void {
     const index = state.alteri.findIndex((a) => a.id === payload.id);
     // const index = state.alteri.map((a) => a.id).indexOf(payload.id);
     if (index >= 0) {
@@ -53,6 +60,7 @@ const mutations = {
         ...state.alteri[index],
         ...payload.changes,
       };
+      applyAdaptiveNWKDefaults(changedAlter, payload.changes);
       state.alteri.splice(index, 1, changedAlter);
     } else {
       console.warn("alter id not found: " + payload.id);
