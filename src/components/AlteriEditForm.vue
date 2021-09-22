@@ -39,9 +39,13 @@
         <div class="control">
           <input
             class="input"
+            :class="{ autovalue: alter.roleDefault }"
             type="text"
-            v-model="alterRole"
+            :value="alter.role"
             list="predefined-roles"
+            @blur="blurRole"
+            @focus="focusRole"
+            @keyup.esc="cancelEdit($event, 'role')"
           />
           <!-- <span class="icon is-small is-right has-text-link">
             <font-awesome-icon icon="chevron-down" />
@@ -80,7 +84,10 @@
       <div class="field-body">
         <div class="control">
           <div class="select is-fullwidth">
-            <select v-model="alterGender">
+            <select
+              :class="{ autovalue: alter.genderDefault }"
+              v-model="alterGender"
+            >
               <option v-for="value in genderOptions" :key="value">
                 {{ value }}
               </option>
@@ -277,32 +284,6 @@ export default defineComponent({
       });
     }
 
-    const commitCheckbox = (field: keyof Alter, value: string) => {
-      const payload = {
-        index: store.state.view.editIndex,
-        changes: { [field]: value },
-      };
-      store.commit("editAlter", payload);
-    };
-
-    const alterHuman = computed({
-      get() {
-        return props.alter?.human;
-      },
-      set(value: string) {
-        commitCheckbox("human", value);
-      },
-    });
-
-    const alterContactOfPartner = computed({
-      get() {
-        return props.alter?.contactOfPartner;
-      },
-      set(value: string) {
-        commitCheckbox("contactOfPartner", value);
-      },
-    });
-
     // generic event handlers from form to vuex
     const commitEdit = (evt: InputEvent, field: keyof Alter) => {
       const value = (evt.target as InputType).value.trim();
@@ -317,6 +298,22 @@ export default defineComponent({
       (evt.target as InputType).value = (props.alter as Alter)[
         field
       ].toString();
+    };
+
+    // special event handlers for role <-- temporily clear default role
+    const focusRole = (evt: InputEvent) => {
+      if (props.alter.roleDefault) {
+        (evt.target as InputType).value = "";
+      }
+    };
+
+    const blurRole = (evt: InputEvent) => {
+      const value = (evt.target as InputType).value.trim();
+      if (props.alter.roleDefault && value == "") {
+        (evt.target as InputType).value = props.alter.role;
+      } else {
+        commitEdit(evt, "role");
+      }
     };
 
     // apparently v-for needs this to be a data item
@@ -366,14 +363,15 @@ export default defineComponent({
       alterNameInUI,
       invalidName,
       invalidPosition,
-      alterHuman,
+      alterHuman: accessor("human"),
       alterGender: accessor("currentGender"),
-      alterRole: accessor("role"),
-      alterContactOfPartner,
+      alterContactOfPartner: accessor("contactOfPartner"),
       alterDeceased: accessor("deceased"),
       alterEdgeType: accessor("edgeType"),
       commitEdit,
       cancelEdit,
+      focusRole,
+      blurRole,
       genderOptions,
       roleOptions,
       editAlterFinished,
@@ -403,5 +401,18 @@ input::-webkit-calendar-picker-indicator {
 
 .radio + .radio {
   margin-left: 0;
+}
+
+@import "~bulma/sass/base/_all.sass";
+.autovalue {
+  color: $grey-light;
+}
+
+.autovalue:focus {
+  color: $text-strong;
+}
+
+select > option {
+  color: $text-strong;
 }
 </style>

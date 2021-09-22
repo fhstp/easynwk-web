@@ -4,9 +4,6 @@ import { Connection } from "./Connection";
 
 // define your typings for the store state
 export interface NWK {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // [x: string]: any;
-
   ego: Ego;
   alteri: Array<Alter>;
   connections: Array<Connection>;

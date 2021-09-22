@@ -4,13 +4,20 @@ export interface Alter {
   id: number;
   name: string;
   role: string;
+  /** if the role has its initial default value and has NOT been changed by user */
+  roleDefault: boolean;
   contactOfPartner: boolean;
   human: boolean;
   currentGender: string;
+  /** if the gender has its initial default value and has NOT been changed by user */
+  genderDefault: boolean;
   age: string;
   note: string;
   deceased: boolean;
+  /** connection to ego: 1 ... normal, 0 ... currently no edge, 2 ... multiplex edge */
   edgeType: number;
+  /** if the edge type has its initial default value and has NOT been changed by user */
+  edgeTypeDefault: boolean;
 
   /** angle from x-axis between -180° and +180° */
   angle: number;
@@ -24,13 +31,16 @@ export function initAlter(): Alter {
     id: -1,
     name: "",
     role: "",
+    roleDefault: true,
     contactOfPartner: false,
     human: true,
     currentGender: Gender[0],
+    genderDefault: true,
     age: "",
     note: "",
     deceased: false,
     edgeType: 1,
+    edgeTypeDefault: true,
     angle: 0,
     distance: 0,
   };
