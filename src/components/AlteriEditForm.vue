@@ -284,32 +284,6 @@ export default defineComponent({
       });
     }
 
-    const commitCheckbox = (field: keyof Alter, value: string) => {
-      const payload = {
-        index: store.state.view.editIndex,
-        changes: { [field]: value },
-      };
-      store.commit("editAlter", payload);
-    };
-
-    const alterHuman = computed({
-      get() {
-        return props.alter?.human;
-      },
-      set(value: string) {
-        commitCheckbox("human", value);
-      },
-    });
-
-    const alterContactOfPartner = computed({
-      get() {
-        return props.alter?.contactOfPartner;
-      },
-      set(value: string) {
-        commitCheckbox("contactOfPartner", value);
-      },
-    });
-
     // generic event handlers from form to vuex
     const commitEdit = (evt: InputEvent, field: keyof Alter) => {
       const value = (evt.target as InputType).value.trim();
@@ -389,9 +363,9 @@ export default defineComponent({
       alterNameInUI,
       invalidName,
       invalidPosition,
-      alterHuman,
+      alterHuman: accessor("human"),
       alterGender: accessor("currentGender"),
-      alterContactOfPartner,
+      alterContactOfPartner: accessor("contactOfPartner"),
       alterDeceased: accessor("deceased"),
       alterEdgeType: accessor("edgeType"),
       commitEdit,
