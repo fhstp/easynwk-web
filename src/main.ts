@@ -32,6 +32,7 @@ import {
   faChartBar,
   faRss,
   faTrashAlt,
+  faInfoCircle,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
@@ -56,6 +57,7 @@ library.add(
   faChartBar,
   faRss,
   faTrashAlt,
+  faInfoCircle,
   faCheck
 );
 
