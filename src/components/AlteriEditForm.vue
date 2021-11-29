@@ -152,17 +152,17 @@
             </label>
             <label
               class="radio"
-              title="Derzeit gibt es keine Beziehung von Ankerperson mit dem Kontakt."
-            >
-              <input type="radio" v-model="alterEdgeType" value="0" />
-              keine aktuelle Beziehung
-            </label>
-            <label
-              class="radio"
               title="Die Beziehung zum Kontakt betrifft zwei oder mehr Sektoren."
             >
               <input type="radio" v-model="alterEdgeType" value="2" />
               multiplex
+            </label>
+            <label
+              class="radio"
+              title="Derzeit gibt es keine Beziehung von Ankerperson mit dem Kontakt."
+            >
+              <input type="radio" v-model="alterEdgeType" value="0" />
+              keine aktuelle Beziehung
             </label>
           </div>
         </div>
