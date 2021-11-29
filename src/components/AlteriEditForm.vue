@@ -56,15 +56,6 @@
         </div>
       </div>
     </div>
-    <div class="field is-horizontal">
-      <div class="field-label is-normal"></div>
-      <div class="field-body">
-        <label class="checkbox">
-          <input type="checkbox" v-model="alterContactOfPartner" />
-          Kontakt der Partnerin/des Partners
-        </label>
-      </div>
-    </div>
 
     <div class="field is-horizontal">
       <div class="field-label">
@@ -365,7 +356,6 @@ export default defineComponent({
       invalidPosition,
       alterHuman: accessor("human"),
       alterGender: accessor("currentGender"),
-      alterContactOfPartner: accessor("contactOfPartner"),
       alterDeceased: accessor("deceased"),
       alterEdgeType: accessor("edgeType"),
       commitEdit,

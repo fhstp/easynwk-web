@@ -6,7 +6,6 @@ export interface Alter {
   role: string;
   /** if the role has its initial default value and has NOT been changed by user */
   roleDefault: boolean;
-  contactOfPartner: boolean;
   human: boolean;
   currentGender: string;
   /** if the gender has its initial default value and has NOT been changed by user */
@@ -32,7 +31,6 @@ export function initAlter(): Alter {
     name: "",
     role: "",
     roleDefault: true,
-    contactOfPartner: false,
     human: true,
     currentGender: Gender[0],
     genderDefault: true,
