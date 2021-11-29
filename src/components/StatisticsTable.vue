@@ -40,7 +40,7 @@
           </td>
         </tr>
         <tr>
-          <th>Personen ohne Beziehungen</th>
+          <th>Isolierte</th>
           <td
             @click="clickCell('isolated')"
             :class="{ clickAble: isolated != '0' }"
@@ -49,7 +49,7 @@
           </td>
         </tr>
         <tr>
-          <th>Personen mit aktuell keiner Beziehung zur Ankerperson</th>
+          <th>Personen ohne Kante zur Ankerperson</th>
           <td
             @click="clickCell('alterZeroEdge')"
             :class="{ clickAble: alterZeroEdge != '0' }"

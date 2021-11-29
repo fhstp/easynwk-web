@@ -59,7 +59,7 @@
           </td>
         </tr>
         <tr>
-          <th>Personen ohne Beziehungen</th>
+          <th>Isolierte</th>
           <td
             v-for="(cat, i) in categoryLabels"
             :key="i"
@@ -70,7 +70,7 @@
           </td>
         </tr>
         <tr>
-          <th>Personen mit aktuell keiner Beziehung zur Ankerperson</th>
+          <th>Personen ohne Kante zur Ankerperson</th>
           <td
             v-for="(cat, i) in categoryLabels"
             :key="i"
