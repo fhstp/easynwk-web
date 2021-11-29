@@ -42,10 +42,11 @@ const mutations = {
   addAlter(state: IStoreState): void {
     const newAlter = initAlter();
     // set id depending on alteri in list
+    // bugfix: if any id is undefined, NaN, or null --> default to 1
     newAlter.id =
       state.nwk.alteri.length > 0
-        ? Math.max(...state.nwk.alteri.map((v) => v.id)) + 1
-        : 0;
+        ? Math.max(...state.nwk.alteri.map((v) => (v.id ? v.id : 1))) + 1
+        : 1;
 
     // new alter is always added on top of list
     state.nwk.alteri.unshift(newAlter);
