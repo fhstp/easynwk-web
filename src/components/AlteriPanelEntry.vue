@@ -11,6 +11,7 @@
     <span v-if="!isEditMode" class="contact"
       ><span v-if="alter.deceased">{{ SYMBOL_DECEASED }}</span>
       {{ alter.name }}
+      <span v-if="alter.age">/ {{ alter.age + " " }} </span>
       <span :class="{ autovalue: alter.roleDefault }"
         >/ {{ alter.role }}</span
       ></span
