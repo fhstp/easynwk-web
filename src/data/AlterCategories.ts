@@ -39,6 +39,15 @@ const SECTOR: AlterCategorization = {
   categories: Sectors,
 };
 
+const PROFI: AlterCategorization = {
+  label: "Prof. Hilfe",
+  inCategory: (catIndex: number, a: Alter): boolean =>
+    (catIndex === 0 && sectorIndex(a) === 3) ||
+    (catIndex === 1 && sectorIndex(a) != 3) ||
+    catIndex === 2,
+  categories: ["prof. Helfer*innen", "andere", "gesamtes Netzwerk"],
+};
+
 const HORIZON_CUM: AlterCategorization = {
   label: "Horizont (kumulativ)",
   inCategory: (catIndex: number, a: Alter): boolean =>
@@ -60,18 +69,18 @@ const GENDER: AlterCategorization = {
   categories: Gender,
 };
 
-const AGE: AlterCategorization = {
-  label: "Alter",
-  inCategory: (catIndex: number, a: Alter): boolean => {
-    const age = Number.parseFloat(a.age);
-    return (
-      (catIndex == 0 && age >= 0 && age < 19) ||
-      (catIndex == 1 && age >= 19 && age < 65) ||
-      (catIndex == 2 && age >= 65)
-    );
-  },
-  categories: ["0-18", "19-64", ">65+"],
-};
+// const AGE: AlterCategorization = {
+//   label: "Alter",
+//   inCategory: (catIndex: number, a: Alter): boolean => {
+//     const age = Number.parseFloat(a.age);
+//     return (
+//       (catIndex == 0 && age >= 0 && age < 19) ||
+//       (catIndex == 1 && age >= 19 && age < 65) ||
+//       (catIndex == 2 && age >= 65)
+//     );
+//   },
+//   categories: ["0-18", "19-64", ">65+"],
+// };
 
 const ALL: AlterCategorization = {
   label: "Überblick",
@@ -82,22 +91,25 @@ const ALL: AlterCategorization = {
 export function getAlterCategorization(key = ""): AlterCategorization {
   return key === "sector"
     ? SECTOR
+    : key === "profi"
+    ? PROFI
     : key === "horizon"
     ? HORIZON
     : key === "horizon_cum"
     ? HORIZON_CUM
     : key === "gender"
     ? GENDER
-    : key === "age"
-    ? AGE
     : ALL;
+  // : key === "age"
+  // ? AGE
 }
 
 export const allAlterCategorizationKeys = [
   "",
   "sector",
+  "profi",
   "horizon",
   "horizon_cum",
   "gender",
-  "age",
+  // "age",
 ];
