@@ -24,12 +24,12 @@
           <th>Dichte der Kategorie</th>
           <td v-for="(cat, i) in categoryLabels" :key="i">{{ density[i] }}</td>
         </tr>
-        <tr>
+        <!-- <tr>
           <th>Dichte zu anderen Kategorien</th>
           <td v-for="(cat, i) in categoryLabels" :key="i">
             {{ extDensity[i] }}
           </td>
-        </tr>
+        </tr> -->
         <tr>
           <th>Star(s) (pro Kategorie)</th>
           <td
@@ -91,7 +91,7 @@ import { useStore } from "@/store";
 import {
   analyseNWKbyCategory,
   calculateDensity,
-  calculateExternalDensity,
+  // calculateExternalDensity,
   getOrInit,
   NetworkAnalysis,
 } from "@/data/NetworkAnalysis";
@@ -128,23 +128,23 @@ export default defineComponent({
       return result;
     });
 
-    const extDensity = computed((): string[] => {
-      const result: string[] = [];
-      const totalAlteri = store.state.nwk.alteri.length;
-      const analysis = networkAnalysis.value;
+    // const extDensity = computed((): string[] => {
+    //   const result: string[] = [];
+    //   const totalAlteri = store.state.nwk.alteri.length;
+    //   const analysis = networkAnalysis.value;
 
-      for (const cat of categoryLabels.value) {
-        const { alterCount, extConnCount } = getOrInit(analysis, cat);
-        result.push(
-          calculateExternalDensity(
-            alterCount,
-            totalAlteri - alterCount,
-            extConnCount
-          ).toFixed(3)
-        );
-      }
-      return result;
-    });
+    //   for (const cat of categoryLabels.value) {
+    //     const { alterCount, extConnCount } = getOrInit(analysis, cat);
+    //     result.push(
+    //       calculateExternalDensity(
+    //         alterCount,
+    //         totalAlteri - alterCount,
+    //         extConnCount
+    //       ).toFixed(3)
+    //     );
+    //   }
+    //   return result;
+    // });
 
     const stars = computed(() => {
       return categoryLabels.value.map((cat) => {
@@ -204,7 +204,7 @@ export default defineComponent({
         );
       }),
       density,
-      extDensity,
+      // extDensity,
 
       stars,
       isolated: makeComputedAlterGroup("isolated"),
