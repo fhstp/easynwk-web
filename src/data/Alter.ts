@@ -1,4 +1,4 @@
-import { Gender } from "@/data/Gender";
+import { defaultGender } from "@/data/Gender";
 
 export interface Alter {
   id: number;
@@ -32,7 +32,7 @@ export function initAlter(): Alter {
     role: "",
     roleDefault: true,
     human: true,
-    currentGender: Gender[0],
+    currentGender: defaultGender,
     genderDefault: true,
     age: "",
     note: "",
