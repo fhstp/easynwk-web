@@ -67,7 +67,9 @@
       <circle cx="0" cy="0" r="33.33" fill="url('#horizon-gradient33')" />
       <line class="axis" x1="0" y1="-100" x2="0" y2="100" />
       <line class="axis" x1="100" y1="0" x2="-100" y2="0" />
+    </g>
 
+    <g id="sectors">
       <text x="100" y="-100" text-anchor="end">{{ Sectors[0] }}</text>
       <text x="-100" y="-100" text-anchor="start">{{ Sectors[1] }}</text>
       <text x="-100" y="100" text-anchor="start">{{ Sectors[2] }}</text>
@@ -342,7 +344,7 @@ line.select {
   fill: rgb(54, 54, 54);
 }
 
-#coords text {
+#sectors text {
   font-weight: bold;
   fill: gray;
 }
