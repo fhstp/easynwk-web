@@ -134,7 +134,16 @@
           {{ (mark.d.deceased ? SYMBOL_DECEASED : "") + mark.d.name }}
         </text>
       </g>
-      <circle id="ego" cx="0" cy="0" r="1.5" />
+      <use
+        id="ego"
+        :href="'#' + egoShape"
+        x="0"
+        y="0"
+        class="mark clickAble"
+        width="4"
+        height="4"
+        transform="translate(-2,-2)"
+      />
     </g>
 
     <!-- a foreground rect is necessary so that the whole display is clickable -->
@@ -291,6 +300,9 @@ export default defineComponent({
     });
 
     return {
+      egoShape: computed(() =>
+        shapeByGender(true, store.state.nwk.ego.currentGender)
+      ),
       isEditMode,
       isConnectMode,
       clickAlter,
