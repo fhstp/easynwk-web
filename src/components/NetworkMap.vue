@@ -142,7 +142,7 @@
         :href="'#' + egoShape"
         x="0"
         y="0"
-        class="mark clickAble"
+        class="mark"
         width="4"
         height="4"
         transform="translate(-2,-2)"

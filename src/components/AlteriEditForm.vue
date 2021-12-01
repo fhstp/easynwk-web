@@ -142,7 +142,10 @@
       </div>
       <div class="field-body">
         <div class="field">
-          <div class="control radio-group">
+          <fieldset
+            :disabled="!alterHuman || alterDeceased"
+            class="control radio-group"
+          >
             <label
               class="radio"
               title="Die Beziehung von Ankerperson zum Kontakt ist aktuell aufrecht."
@@ -164,7 +167,7 @@
               <input type="radio" v-model="alterEdgeType" value="0" />
               keine aktuelle Beziehung
             </label>
-          </div>
+          </fieldset>
         </div>
       </div>
     </div>

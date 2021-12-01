@@ -15,8 +15,8 @@ export interface Alter {
   deceased: boolean;
   /** connection to ego: 1 ... normal, 0 ... currently no edge, 2 ... multiplex edge */
   edgeType: number;
-  /** if the edge type has its initial default value and has NOT been changed by user */
-  edgeTypeDefault: boolean;
+  /** the edge type previously set by user (0, 1, or 2); initially -1 until changed by user */
+  edgeTypeByUser: number;
 
   /** angle from x-axis between -180° and +180° */
   angle: number;
@@ -38,7 +38,7 @@ export function initAlter(): Alter {
     note: "",
     deceased: false,
     edgeType: 1,
-    edgeTypeDefault: true,
+    edgeTypeByUser: -1,
     angle: 0,
     distance: 0,
   };

@@ -7,19 +7,21 @@ export function applyAdaptiveNWKDefaults(
   changedAlter: Alter,
   changes: Partial<Alter>
 ): void {
-  // monitor if user has explicitly set an edge type --> never override that
-  if (changedAlter.edgeTypeDefault && "edgeType" in changes) {
-    changedAlter.edgeTypeDefault = false;
+  // monitor if user explicitly sets an edge type --> remember that
+  if ("edgeType" in changes) {
+    changedAlter.edgeTypeByUser = changedAlter.edgeType;
   }
 
-  // not human -->keine aktuelle Beziehung
-  // deceased -->keine aktuelle Beziehung
-  if (
-    changedAlter.edgeTypeDefault &&
-    ("human" in changes || "deceased" in changes)
-  ) {
-    changedAlter.edgeType =
-      changedAlter.human && !changedAlter.deceased ? 1 : 0;
+  if ("human" in changes || "deceased" in changes) {
+    if (changedAlter.human && !changedAlter.deceased) {
+      // use remembered edge type, or by default normal edge
+      changedAlter.edgeType =
+        changedAlter.edgeTypeByUser >= 0 ? changedAlter.edgeTypeByUser : 1;
+    } else {
+      // not human --> keine aktuelle Beziehung
+      // deceased --> keine aktuelle Beziehung
+      changedAlter.edgeType = 0;
+    }
   }
 
   // monitor if user has explicitly set a role --> never override that
@@ -32,7 +34,7 @@ export function applyAdaptiveNWKDefaults(
     if (sector != null) changedAlter.role = SectorDefaultRoles[sector];
   }
 
-  // monitor if user has explicitly set a role --> never override that
+  // monitor if user has explicitly set a gender --> never override that
   if (changedAlter.genderDefault && "currentGender" in changes) {
     changedAlter.genderDefault = false;
   }
