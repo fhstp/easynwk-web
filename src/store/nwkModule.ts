@@ -43,6 +43,9 @@ const mutations = {
         ...payload.changes,
       };
       applyAdaptiveNWKDefaults(changedAlter, payload.changes);
+      if ("human" in payload.changes || "deceased" in payload.changes) {
+        removeAllConnections(state, payload.index);
+      }
       state.alteri.splice(payload.index, 1, changedAlter);
     } else {
       console.warn("alter index out of bounds: " + payload.index);
@@ -69,10 +72,7 @@ const mutations = {
 
   removeAlter(state: NWK, alterIndex: number): void {
     // remove connections to/from alter
-    const id = state.alteri[alterIndex].id;
-    state.connections = state.connections.filter(
-      (c) => c.id1 != id && c.id2 != id
-    );
+    removeAllConnections(state, alterIndex);
 
     // old code
     // this.alteri = this.alteri.filter((item) => item.id !== alterToRemove.id);
@@ -112,6 +112,16 @@ const mutations = {
     }
   },
 };
+
+/**
+ * removes all connections to and from an alter
+ */
+function removeAllConnections(state: NWK, alterIndex: number): void {
+  const id = state.alteri[alterIndex].id;
+  state.connections = state.connections.filter(
+    (c) => c.id1 != id && c.id2 != id
+  );
+}
 
 export const nwkModule = {
   // namespaced: true,
