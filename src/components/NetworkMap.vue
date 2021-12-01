@@ -29,8 +29,8 @@
         />
       </symbol>
       <radialGradient id="selected-gradient">
-        <stop offset="60%" stop-color="rgb(18, 64, 171)" stop-opacity="0.25" />
-        <stop offset="100%" stop-color="rgb(18, 64, 171)" stop-opacity="0" />
+        <stop offset="60%" stop-color="rgb(0, 80, 150)" stop-opacity="0.25" />
+        <stop offset="100%" stop-color="rgb(0, 80, 150)" stop-opacity="0" />
       </radialGradient>
       <filter id="dilate-and-xor">
         <!-- h/t https://stackoverflow.com/a/63287731/1140589 -->
@@ -315,7 +315,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 text {
-  font-size: 5px;
+  font-size: 4px;
 }
 
 circle#horizon-base {
@@ -342,7 +342,9 @@ line {
 }
 
 line.select {
-  stroke: rgb(136, 159, 213);
+  // stroke: rgb(136, 159, 213);
+  // stroke: rgb($fhstpblue, 0.6);
+  stroke: rgb(102, 150, 192);
 }
 
 #position {

@@ -14,7 +14,7 @@
       class="button is-small"
       title="Wiederherstellen"
       @click="redo"
-      v-if="canRedo"
+      :disabled="!canRedo"
     >
       <span class="icon">
         <font-awesome-icon icon="redo" />

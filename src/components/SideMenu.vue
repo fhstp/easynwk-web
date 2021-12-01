@@ -181,11 +181,15 @@ export default defineComponent({
 
 <style lang="scss">
 .button.is-burger {
+  color: white;
   width: 2.5rem;
   height: 2.5rem;
   padding: 0;
   background-color: transparent;
   border-color: transparent;
+}
+.button.is-burger:hover {
+  color: white;
 }
 
 /* The sidepanel menu */

@@ -136,7 +136,7 @@ export default defineComponent({
 }
 
 .panel-block.selected {
-  background: rgba($color-secondary-1-0, 0.25);
+  background: rgba($fhstpblue, 0.2);
 }
 
 .panel-block.selected > span {

@@ -4,14 +4,16 @@
       <!-- TODO use slots to separate layout from logic https://vuejs.org/v2/guide/components.html#Content-Distribution-with-Slots -->
       <div id="main">
         <div class="scrollwrapper">
-          <div id="titlebar" class="box has-text-black">
+          <div id="titlebar">
             <SideMenu
               @new-nwk="egoEditMode = true"
               @open-nwk="editEgoFinished"
             />
             <div id="brand"><i>easy</i>NWK</div>
-            <EgoHeader @edit="egoEditMode = true" />
             <UndoRedo />
+          </div>
+          <div id="egobar">
+            <EgoHeader v-if="!egoEditMode" @edit="egoEditMode = true" />
           </div>
 
           <div id="forms">
@@ -124,14 +126,24 @@ export default defineComponent({
 
 #titlebar {
   font-size: 180%;
-  background: $color-primary-1; /* hsl(32, 100%, 50%); /* $light; */
-  padding: 1vmin 1vmin 1vmin 1vmin;
-  margin: 0.5rem 1px 1rem 1px;
+  background: $fhstpblue; /* hsl(32, 100%, 50%); /* $light; */
+  color: white;
+  padding: 1vmin 1vmin 0.3rem 1vmin;
+  margin: 0.5rem 1px 0 1px;
+  border-radius: 6px 6px 0 0;
   flex-shrink: 0;
 
   flex-direction: row;
   flex-wrap: nowrap;
   display: flex;
+}
+
+#egobar {
+  font-size: 1rem;
+  background: $color-primary-1; /* hsl(32, 100%, 50%); /* $light; */
+  padding: 0.5rem 1vmin 1vmin 1vmin;
+  margin: 0 1px 1rem 1px;
+  border-radius: 0 0 6px 6px;
 }
 
 #brand {
