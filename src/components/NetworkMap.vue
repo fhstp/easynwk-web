@@ -118,6 +118,16 @@
           @click="clickAlter(mark.d)"
         />
         <text
+          class="textbg"
+          :x="mark.x"
+          :y="mark.y"
+          :text-anchor="mark.x < 0 ? 'end' : 'start'"
+          :dx="mark.x < 0 ? -3 : 3"
+          :dy="mark.y < 0 ? -1 : 4"
+        >
+          {{ (mark.d.deceased ? SYMBOL_DECEASED : "") + mark.d.name }}
+        </text>
+        <text
           :x="mark.x"
           :y="mark.y"
           :text-anchor="mark.x < 0 ? 'end' : 'start'"
@@ -316,6 +326,12 @@ export default defineComponent({
 <style scoped lang="scss">
 text {
   font-size: 4px;
+}
+
+.textbg {
+  stroke: white;
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
 }
 
 circle#horizon-base {
