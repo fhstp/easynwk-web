@@ -30,6 +30,7 @@
       <button
         class="button is-small"
         title="Beziehungen des Kontakts bearbeiten"
+        :disabled="isConnectionDisabled"
         @click.stop="editConnections()"
       >
         <span class="icon is-small">
@@ -110,6 +111,9 @@ export default defineComponent({
       },
       isSelected: computed(() =>
         store.getters["view/isSelected"](props.alter.id)
+      ),
+      isConnectionDisabled: computed(
+        () => !props.alter.human || props.alter.deceased
       ),
       isEditMode,
       isAlterOpsAllowed: computed(() => store.getters.editedAlterValid),
