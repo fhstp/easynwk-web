@@ -45,7 +45,11 @@ const PROFI: AlterCategorization = {
     (catIndex === 0 && sectorIndex(a) === 3) ||
     (catIndex === 1 && sectorIndex(a) != 3) ||
     catIndex === 2,
-  categories: ["prof. Helfer*innen", "andere", "gesamtes Netzwerk"],
+  categories: [
+    "prof. Hilfe",
+    "Netzwerk ohne prof.\xa0Hilfe",
+    "gesamtes Netzwerk",
+  ],
 };
 
 const HORIZON_CUM: AlterCategorization = {
