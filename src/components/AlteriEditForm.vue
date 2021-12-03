@@ -1,5 +1,6 @@
 <template>
-  <p class="label">Kontakt bearbeiten</p>
+  <p class="label" v-if="addingNewAlter">Kontakt hinzufügen</p>
+  <p class="label" v-else>Kontakt bearbeiten</p>
   <form class="form" @submit.prevent="editAlterFinished">
     <div class="field has-text-danger" v-if="invalidPosition">
       <span class="icon is-small">
@@ -196,6 +197,17 @@
           ref="domButton"
           :disabled="invalidName || invalidPosition"
         >
+          {{ addingNewAlter ? "Nächster Kontakt" : "Schließen" }}
+        </button>
+      </p>
+      <p class="control">
+        <button
+          v-if="addingNewAlter"
+          class="button is-light"
+          :disabled="invalidName || invalidPosition"
+          type="button"
+          @mouseup.prevent="editAlterFinished(false)"
+        >
           Schließen
         </button>
       </p>
@@ -328,7 +340,7 @@ export default defineComponent({
       }
     );
 
-    const editAlterFinished = () => {
+    const editAlterFinished = (allowAddNext = true) => {
       // TODO     if (!this.invalidPosition && !this.invalidName) {
       if (invalidName.value) {
         // moving mouse cursor does not work
@@ -339,6 +351,10 @@ export default defineComponent({
       } else {
         (domButton.value as HTMLButtonElement).focus();
         store.commit("view/closeAlterForm");
+
+        if (addingNewAlter.value && allowAddNext) {
+          store.commit("addAlter");
+        }
       }
     };
 
