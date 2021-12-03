@@ -63,6 +63,14 @@ const mutations = {
     state.view.editIndex = null;
     state.view.editTab = "";
   },
+  openAlterFormById(
+    state: IStoreState,
+    payload: { alterId: number; tab?: string }
+  ): void {
+    const index = state.nwk.alteri.findIndex((a) => a.id === payload.alterId);
+    state.view.editIndex = index;
+    state.view.editTab = payload.tab ? payload.tab : TAB_BASE;
+  },
 };
 
 const plugins =

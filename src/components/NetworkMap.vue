@@ -236,16 +236,31 @@ export default defineComponent({
       });
     });
 
+    let clickTimeoutId: number | null = null;
     const clickAlter = (alter: Alter) => {
-      console.log(alter.name + " clicked");
-
       if (isConnectMode.value && store.state.view.editIndex != null) {
         const editId = store.state.nwk.alteri[store.state.view.editIndex].id;
         const payload = { id1: editId, id2: alter.id };
         store.commit("toggleConnection", payload);
       } else {
-        // toggleSelection
-        store.commit("view/selectSingleAlter", alter.id);
+        if (clickTimeoutId == null) {
+          clickTimeoutId = setTimeout(() => {
+            // simple click
+            clickTimeoutId = null;
+            console.log(alter.name + " clicked");
+
+            // toggleSelection
+            store.commit("view/selectSingleAlter", alter.id);
+          }, 500); //tolerance in ms
+        } else {
+          // double click
+          clearTimeout(clickTimeoutId);
+          clickTimeoutId = null;
+          console.log(alter.name + " dblclick");
+
+          // open form
+          store.commit("openAlterFormById", { alterId: alter.id });
+        }
       }
     };
 
