@@ -193,6 +193,7 @@
       <p class="control">
         <button
           class="button is-primary"
+          ref="domButton"
           :disabled="invalidName || invalidPosition"
         >
           Schließen
@@ -316,6 +317,7 @@ export default defineComponent({
 
     // we need a DOM ref in order to focus
     const altername = ref<InstanceType<typeof HTMLInputElement> | null>(null);
+    const domButton = ref<InstanceType<typeof HTMLButtonElement> | null>(null);
 
     watch(
       () => props.alter?.distance,
@@ -335,6 +337,7 @@ export default defineComponent({
           (altername.value as HTMLInputElement).focus();
         }
       } else {
+        (domButton.value as HTMLButtonElement).focus();
         store.commit("view/closeAlterForm");
       }
     };
@@ -370,6 +373,7 @@ export default defineComponent({
       editAlterFinished,
       cancelAddAlter,
       altername,
+      domButton,
       SYMBOL_DECEASED,
     };
   },
