@@ -168,7 +168,7 @@ import { useStore } from "@/store";
 
 import * as d3 from "d3";
 // import { ContainerElement } from "d3";
-import { Alter } from "@/data/Alter";
+import { Alter, isConnectable } from "@/data/Alter";
 import { Sectors } from "@/data/Sectors";
 import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
@@ -239,9 +239,11 @@ export default defineComponent({
     let clickTimeoutId: number | null = null;
     const clickAlter = (alter: Alter) => {
       if (isConnectMode.value && store.state.view.editIndex != null) {
-        const editId = store.state.nwk.alteri[store.state.view.editIndex].id;
-        const payload = { id1: editId, id2: alter.id };
-        store.commit("toggleConnection", payload);
+        if (isConnectable(alter)) {
+          const editId = store.state.nwk.alteri[store.state.view.editIndex].id;
+          const payload = { id1: editId, id2: alter.id };
+          store.commit("toggleConnection", payload);
+        }
       } else {
         if (clickTimeoutId == null) {
           clickTimeoutId = setTimeout(() => {
