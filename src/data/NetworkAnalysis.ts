@@ -1,4 +1,4 @@
-import { Alter, naehenScore } from "./Alter";
+import { Alter, isConnectable, naehenScore } from "./Alter";
 import { AlterCategorization, sectorIndex } from "./AlterCategories";
 import { Connection } from "./Connection";
 import { NWK } from "./NWK";
@@ -98,7 +98,11 @@ export function analyseNWKbyCategory(
 
     // count alterZeroEdgeCount in this category
     for (const alter of nwk.alteri) {
-      if (alter.edgeType == 0 && categories.inCategory(i, alter)) {
+      if (
+        alter.edgeType == 0 &&
+        categories.inCategory(i, alter) &&
+        isConnectable(alter)
+      ) {
         analysis.alterZeroEdge.push(alter);
       }
     }

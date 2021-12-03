@@ -1,4 +1,4 @@
-import { Alter } from "@/data/Alter";
+import { Alter, isConnectable } from "@/data/Alter";
 import { sectorIndex } from "@/data/AlterCategories";
 import { getGenderDefaultByRole } from "@/data/Roles";
 import { SectorDefaultRoles } from "@/data/Sectors";
@@ -13,7 +13,7 @@ export function applyAdaptiveNWKDefaults(
   }
 
   if ("human" in changes || "deceased" in changes) {
-    if (changedAlter.human && !changedAlter.deceased) {
+    if (isConnectable(changedAlter)) {
       // use remembered edge type, or by default normal edge
       changedAlter.edgeType =
         changedAlter.edgeTypeByUser >= 0 ? changedAlter.edgeTypeByUser : 1;

@@ -63,6 +63,7 @@ import AlteriEditForm from "@/components/AlteriEditForm.vue";
 import AlteriConnectionList from "@/components/AlteriConnectionList.vue";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
+import { Alter, isConnectable } from "@/data/Alter";
 
 export default defineComponent({
   components: { AlteriEditForm, AlteriConnectionList },
@@ -113,7 +114,7 @@ export default defineComponent({
         store.getters["view/isSelected"](props.alter.id)
       ),
       isConnectionDisabled: computed(
-        () => !props.alter.human || props.alter.deceased
+        () => !isConnectable(props.alter as Alter)
       ),
       isEditMode,
       isAlterOpsAllowed: computed(() => store.getters.editedAlterValid),

@@ -54,3 +54,14 @@ export function initAlter(): Alter {
 export function naehenScore(alter: Alter): number {
   return Math.max(9 - Math.floor((alter.distance * 9) / 100), 0);
 }
+
+/**
+ * check if the alter can be connected to the ego or another alter.
+ * By definition it is not possible to have a connection to a deceased or non-human alter.
+ *
+ * @param alter
+ * @returns true, if a connection from ego or another alter is possible
+ */
+export function isConnectable(alter: Alter): boolean {
+  return alter.human && !alter.deceased;
+}
