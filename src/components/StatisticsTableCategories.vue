@@ -122,8 +122,10 @@ export default defineComponent({
       const result: string[] = [];
       const analysis = networkAnalysis.value;
       for (const cat of categoryLabels.value) {
-        const { alterCount, intConnCount } = getOrInit(analysis, cat);
-        result.push(calculateDensity(alterCount, intConnCount).toFixed(3));
+        const { alterConnectable, intConnCount } = getOrInit(analysis, cat);
+        result.push(
+          calculateDensity(alterConnectable, intConnCount).toFixed(3)
+        );
       }
       return result;
     });
@@ -195,7 +197,7 @@ export default defineComponent({
       categoryLabels,
       networkSize: computed((): string[] => {
         return categoryLabels.value.map((cat) =>
-          getOrInit(networkAnalysis.value, cat).alterCount.toFixed(0)
+          getOrInit(networkAnalysis.value, cat).alterConnected.toFixed(0)
         );
       }),
       naehenSum: computed((): string[] => {

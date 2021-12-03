@@ -84,8 +84,8 @@ export default defineComponent({
     });
 
     const density = computed((): number => {
-      const { alterCount, intConnCount } = networkAnalysis.value;
-      return calculateDensity(alterCount, intConnCount);
+      const { alterConnectable, intConnCount } = networkAnalysis.value;
+      return calculateDensity(alterConnectable, intConnCount);
     });
 
     const stars = computed(() => {
@@ -130,7 +130,7 @@ export default defineComponent({
     };
 
     return {
-      networkSize: computed(() => networkAnalysis.value.alterCount),
+      networkSize: computed(() => networkAnalysis.value.alterConnected),
       naehenSum: computed(() => networkAnalysis.value.naehenSum),
       density,
       stars,
