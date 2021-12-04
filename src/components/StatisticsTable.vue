@@ -1,6 +1,6 @@
 <template>
   <div class="panel-block" style="display: block">
-    <table class="table">
+    <table class="table is-fullwidth" ref="domTable">
       <!-- <thead>
     <tr>
       <th><abbr title="Position">Pos</abbr></th>
@@ -59,11 +59,26 @@
         </tr>
       </tbody>
     </table>
+    <div class="buttons is-centered">
+      <!-- <button class="button" type="button" @click.stop="toggleHorizons">
+        <span class="icon">
+          <font-awesome-icon icon="file-csv" />
+        </span>
+        <span>in Zwischenablage kopieren</span>
+      </button> -->
+
+      <button class="button" type="button" @click.stop="exportCSV">
+        <span class="icon">
+          <font-awesome-icon icon="file-csv" />
+        </span>
+        <span>als CSV speichern</span>
+      </button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { useStore } from "@/store";
 import {
   analyseNWKbyCategory,
@@ -72,6 +87,7 @@ import {
   NetworkAnalysis,
 } from "@/data/NetworkAnalysis";
 import { getAlterCategorization } from "@/data/AlterCategories";
+import { downloadText } from "@/assets/utils";
 
 export default defineComponent({
   setup() {
@@ -129,6 +145,15 @@ export default defineComponent({
       }
     };
 
+    const domTable = ref<InstanceType<typeof HTMLTableElement> | null>(null);
+
+    const exportCSV = () => {
+      downloadText(
+        "statistics.csv",
+        (domTable.value as HTMLTableElement).innerText.replaceAll("\t", ";")
+      );
+    };
+
     return {
       networkSize: computed(() => networkAnalysis.value.alterConnected),
       naehenSum: computed(() => networkAnalysis.value.naehenSum),
@@ -139,6 +164,8 @@ export default defineComponent({
       bridgePersons: makeComputedAlterGroup("bridgePersons"),
       bridgesCount: computed(() => networkAnalysis.value.bridges.length),
       clickCell,
+      exportCSV,
+      domTable,
     };
   },
 });

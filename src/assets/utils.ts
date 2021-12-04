@@ -15,7 +15,7 @@ function download(filename: string, dataURL: string): void {
 export function downloadText(filename: string, text: string): void {
   download(
     filename,
-    "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+    "data:text/plain;charset=utf-8,\ufeff" + encodeURIComponent(text)
   );
 }
 
