@@ -341,7 +341,10 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@import "~bulma/sass/base/_all.sass";
+
 text {
+  font-family: $family-primary;
   font-size: 4px;
 }
 
