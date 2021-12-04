@@ -60,6 +60,15 @@
 
         <p><br /></p>
 
+        <button class="button" @click="exportPNG">
+          <span class="icon">
+            <font-awesome-icon icon="file-image" />
+          </span>
+          <span>PNG speichern</span>
+        </button>
+
+        <p><br /></p>
+
         <button class="button" @click="showStatistics">
           <span class="icon">
             <font-awesome-icon icon="chart-bar" />
@@ -93,7 +102,7 @@
 import { computed, defineComponent, ref } from "vue";
 // @ is an alias to /src
 import { useStore } from "@/store";
-import { download } from "@/assets/utils";
+import { downloadSVGasPNG, downloadText } from "@/assets/utils";
 
 export default defineComponent({
   setup(props, { emit }) {
@@ -129,7 +138,7 @@ export default defineComponent({
     };
 
     const save = () => {
-      download(
+      downloadText(
         store.state.nwk.ego.name + ".json",
         JSON.stringify(store.state.nwk)
       );
@@ -148,6 +157,10 @@ export default defineComponent({
         });
     };
 
+    const exportPNG = () => {
+      downloadSVGasPNG(store.state.nwk.ego.name + ".png", "svg#nwkmap");
+    };
+
     const horizons = computed(() => store.state.view.horizons);
 
     const toggleHorizons = () => {
@@ -163,6 +176,7 @@ export default defineComponent({
       open,
       save,
       openDemoData,
+      exportPNG,
 
       showStatistics: () => {
         store.commit("view/enable", "statistics");
