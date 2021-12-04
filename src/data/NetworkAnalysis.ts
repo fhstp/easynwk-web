@@ -119,6 +119,7 @@ export function analyseNWKbyCategory(
         }
 
         // (5) degree at currently highest value => add alter to stars
+        // to exclude connectable alteri #46 --> && am.alter.edgeType >= 1
         if (am.degree == analysis.maxDegree) {
           analysis.stars.push(am.alter);
         }
@@ -129,6 +130,7 @@ export function analyseNWKbyCategory(
         }
 
         // (7) collect bridge persons
+        // to exclude connectable alteri #46 --> && am.alter.edgeType >= 1
         if (am.bridgePerson) {
           analysis.bridgePersons.push(am.alter);
         }
@@ -156,6 +158,7 @@ export function analyseNWKbyCategory(
         analysis.intConnCount++;
 
         // (3b) bridges count only if both sides are in the same category
+        // to exclude connectable alteri #46 --> && a1.edgeType >= 1 && a2.edgeType >= 1
         if (a1.sector !== a2.sector) {
           analysis.bridges.push(conn);
         }
