@@ -64,7 +64,14 @@
           <span class="icon">
             <font-awesome-icon icon="file-image" />
           </span>
-          <span>PNG speichern</span>
+          <span>PNG exportieren</span>
+        </button>
+
+        <button class="button" @click="exportCSV">
+          <span class="icon">
+            <font-awesome-icon icon="file-csv" />
+          </span>
+          <span>Kennzahlen exportieren</span>
         </button>
 
         <p><br /></p>
@@ -103,6 +110,7 @@ import { computed, defineComponent, ref } from "vue";
 // @ is an alias to /src
 import { useStore } from "@/store";
 import { downloadSVGasPNG, downloadText } from "@/assets/utils";
+import { statisticsCSV } from "@/data/statisticsCSV";
 
 export default defineComponent({
   setup(props, { emit }) {
@@ -157,10 +165,6 @@ export default defineComponent({
         });
     };
 
-    const exportPNG = () => {
-      downloadSVGasPNG(store.state.nwk.ego.name + ".png", "svg#nwkmap");
-    };
-
     const horizons = computed(() => store.state.view.horizons);
 
     const toggleHorizons = () => {
@@ -176,7 +180,15 @@ export default defineComponent({
       open,
       save,
       openDemoData,
-      exportPNG,
+      exportPNG: () => {
+        downloadSVGasPNG(store.state.nwk.ego.name + ".png", "svg#nwkmap");
+      },
+      exportCSV: () => {
+        downloadText(
+          store.state.nwk.ego.name + ".csv",
+          statisticsCSV(store.state.nwk)
+        );
+      },
 
       showStatistics: () => {
         store.commit("view/enable", "statistics");
@@ -227,7 +239,7 @@ export default defineComponent({
 #sidepanel.shown {
   transition: visibility 0s, width 1s; /* 1 second transition effect to slide in the sidepanel */
   visibility: visible;
-  width: 250px;
+  width: 280px;
 }
 
 /* The sidepanel links */

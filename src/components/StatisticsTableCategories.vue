@@ -1,6 +1,6 @@
 <template>
   <div class="panel-block" style="display: block">
-    <table class="table">
+    <table class="table is-fullwidth">
       <thead>
         <tr>
           <th></th>
@@ -124,7 +124,13 @@ export default defineComponent({
       for (const cat of categoryLabels.value) {
         const { alterConnectable, intConnCount } = getOrInit(analysis, cat);
         result.push(
-          calculateDensity(alterConnectable, intConnCount).toFixed(3)
+          calculateDensity(alterConnectable, intConnCount).toLocaleString(
+            undefined,
+            {
+              minimumFractionDigits: 3,
+              maximumFractionDigits: 3,
+            }
+          )
         );
       }
       return result;

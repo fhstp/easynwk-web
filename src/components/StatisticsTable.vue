@@ -1,6 +1,6 @@
 <template>
   <div class="panel-block" style="display: block">
-    <table class="table">
+    <table class="table is-fullwidth">
       <!-- <thead>
     <tr>
       <th><abbr title="Position">Pos</abbr></th>
@@ -18,7 +18,14 @@
         </tr>
         <tr>
           <th>Dichte gesamt</th>
-          <td>{{ density.toFixed(3) }}</td>
+          <td>
+            {{
+              density.toLocaleString(undefined, {
+                minimumFractionDigits: 3,
+                maximumFractionDigits: 3,
+              })
+            }}
+          </td>
         </tr>
         <tr>
           <th>Star(s)</th>
