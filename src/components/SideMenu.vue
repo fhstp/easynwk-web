@@ -101,6 +101,11 @@
       </div>
 
       <a href="http://www.easynwk.com/" target="_blank">Über die easyNWK</a>
+      <a href="https://github.com/fhstp/easynwk-web" target="_blank"
+        >Source Code</a
+      >
+      <a href="http://www.easynwk.com/impressum/">Impressum</a>
+      <img src="fhstp_sw_pos.png" width="80" height="80" />
     </div>
   </div>
 </template>
@@ -256,7 +261,8 @@ export default defineComponent({
   background-color: white;
 }
 
-#sidepanel a {
+#sidepanel a,
+#sidepanel img {
   padding: 8px 8px 8px 32px;
   text-decoration: none;
   color: #c1c1c1;

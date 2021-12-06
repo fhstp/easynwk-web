@@ -22,9 +22,6 @@
             <AlteriPanel v-if="!egoEditMode" />
             <StatisticsPanel v-if="$store.state.view.statistics" />
           </div>
-          <!-- TODO <div>
-            Über die easyNWK &nbsp; &nbsp; &nbsp; Impressum
-        </div> -->
         </div>
       </div>
       <div id="chart">
