@@ -24,6 +24,8 @@ import {
   faFolderOpen,
   faFile,
   faSave,
+  faFileImage,
+  faFileCsv,
   // faChevronDown,
   // faUndoAlt,
   // faRedoAlt,
@@ -32,6 +34,7 @@ import {
   faChartBar,
   faRss,
   faTrashAlt,
+  faInfoCircle,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
@@ -48,6 +51,8 @@ library.add(
   faFolderOpen,
   faFile,
   faSave,
+  faFileImage,
+  faFileCsv,
   // faChevronDown,
   // faUndoAlt,
   // faRedoAlt,
@@ -56,6 +61,7 @@ library.add(
   faChartBar,
   faRss,
   faTrashAlt,
+  faInfoCircle,
   faCheck
 );
 

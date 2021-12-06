@@ -42,6 +42,7 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
 import { useStore } from "@/store";
+import { isConnectable } from "@/data/Alter";
 
 export default defineComponent({
   props: {
@@ -73,7 +74,10 @@ export default defineComponent({
 
     const altersNotConnected = computed(() => {
       return store.state.nwk.alteri.filter(
-        (d) => !connectedAlterIds.value.includes(d.id) && d.id != props.alter.id
+        (d) =>
+          !connectedAlterIds.value.includes(d.id) &&
+          d.id != props.alter.id &&
+          isConnectable(d)
       );
     });
 

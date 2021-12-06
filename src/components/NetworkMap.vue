@@ -28,21 +28,9 @@
           d="M 0.69236155,1.054307 0.00345969,0.69533821 -0.68279921,1.0593342 -0.55428199,0.29322216 -1.1125284,-0.24696789 l 0.76832984,-0.11451451 0.34124363,-0.6978518 0.34633676,0.69533819 0.76914657,0.1088939 -0.55428196,0.54425715 z"
         />
       </symbol>
-      <radialGradient id="horizon-gradient100">
-        <stop offset="92%" stop-opacity="0" />
-        <stop offset="100%" stop-opacity="0.25" />
-      </radialGradient>
-      <radialGradient id="horizon-gradient67">
-        <stop offset="88%" stop-opacity="0" />
-        <stop offset="100%" stop-opacity="0.25" />
-      </radialGradient>
-      <radialGradient id="horizon-gradient33">
-        <stop offset="76%" stop-opacity="0" />
-        <stop offset="100%" stop-opacity="0.25" />
-      </radialGradient>
       <radialGradient id="selected-gradient">
-        <stop offset="60%" stop-color="rgb(18, 64, 171)" stop-opacity="0.25" />
-        <stop offset="100%" stop-color="rgb(18, 64, 171)" stop-opacity="0" />
+        <stop offset="60%" stop-color="rgb(0, 80, 150)" stop-opacity="0.25" />
+        <stop offset="100%" stop-color="rgb(0, 80, 150)" stop-opacity="0" />
       </radialGradient>
       <filter id="dilate-and-xor">
         <!-- h/t https://stackoverflow.com/a/63287731/1140589 -->
@@ -50,7 +38,7 @@
           in="SourceGraphic"
           result="dilate-result"
           operator="dilate"
-          radius="0.5"
+          radius="0.35"
         />
         <feComposite
           in="SourceGraphic"
@@ -61,13 +49,20 @@
       </filter>
     </defs>
     <!-- transform coordinate system to be scale independent -->
-    <g id="coords" v-if="horizons">
-      <circle cx="0" cy="0" r="100" fill="url('#horizon-gradient100')" />
-      <circle cx="0" cy="0" r="66.67" fill="url('#horizon-gradient67')" />
-      <circle cx="0" cy="0" r="33.33" fill="url('#horizon-gradient33')" />
-      <line class="axis" x1="0" y1="-100" x2="0" y2="100" />
-      <line class="axis" x1="100" y1="0" x2="-100" y2="0" />
+    <g id="coords" v-if="showHorizons">
+      <!-- <rect x="-120" y="-120" width="240" height="240" fill="#bcbddc"/> -->
+      <circle id="horizon-base" cx="0" cy="0" r="100" />
+      <circle id="horizon-overlay" cx="0" cy="0" r="66.67" />
+      <circle id="horizon-overlay" cx="0" cy="0" r="33.33" />
+      <line x1="0" y1="-105" x2="0" y2="105" />
+      <line x1="105" y1="0" x2="-105" y2="0" />
+    </g>
+    <g id="coords-min" v-else>
+      <line x1="0" y1="-105" x2="0" y2="105" />
+      <line x1="105" y1="0" x2="-105" y2="0" />
+    </g>
 
+    <g id="sectors">
       <text x="100" y="-100" text-anchor="end">{{ Sectors[0] }}</text>
       <text x="-100" y="-100" text-anchor="start">{{ Sectors[1] }}</text>
       <text x="-100" y="100" text-anchor="start">{{ Sectors[2] }}</text>
@@ -123,6 +118,16 @@
           @click="clickAlter(mark.d)"
         />
         <text
+          class="textbg"
+          :x="mark.x"
+          :y="mark.y"
+          :text-anchor="mark.x < 0 ? 'end' : 'start'"
+          :dx="mark.x < 0 ? -3 : 3"
+          :dy="mark.y < 0 ? -1 : 4"
+        >
+          {{ (mark.d.deceased ? SYMBOL_DECEASED : "") + mark.d.name }}
+        </text>
+        <text
           :x="mark.x"
           :y="mark.y"
           :text-anchor="mark.x < 0 ? 'end' : 'start'"
@@ -132,7 +137,16 @@
           {{ (mark.d.deceased ? SYMBOL_DECEASED : "") + mark.d.name }}
         </text>
       </g>
-      <circle id="ego" cx="0" cy="0" r="1.5" />
+      <use
+        id="ego"
+        :href="'#' + egoShape"
+        x="0"
+        y="0"
+        class="mark"
+        width="4"
+        height="4"
+        transform="translate(-2,-2)"
+      />
     </g>
 
     <!-- a foreground rect is necessary so that the whole display is clickable -->
@@ -154,7 +168,7 @@ import { useStore } from "@/store";
 
 import * as d3 from "d3";
 // import { ContainerElement } from "d3";
-import { Alter } from "@/data/Alter";
+import { Alter, isConnectable } from "@/data/Alter";
 import { Sectors } from "@/data/Sectors";
 import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
@@ -222,16 +236,33 @@ export default defineComponent({
       });
     });
 
+    let clickTimeoutId: number | null = null;
     const clickAlter = (alter: Alter) => {
-      console.log(alter.name + " clicked");
-
       if (isConnectMode.value && store.state.view.editIndex != null) {
-        const editId = store.state.nwk.alteri[store.state.view.editIndex].id;
-        const payload = { id1: editId, id2: alter.id };
-        store.commit("toggleConnection", payload);
+        if (isConnectable(alter)) {
+          const editId = store.state.nwk.alteri[store.state.view.editIndex].id;
+          const payload = { id1: editId, id2: alter.id };
+          store.commit("toggleConnection", payload);
+        }
       } else {
-        // toggleSelection
-        store.commit("view/selectSingleAlter", alter.id);
+        if (clickTimeoutId == null) {
+          clickTimeoutId = setTimeout(() => {
+            // simple click
+            clickTimeoutId = null;
+            console.log(alter.name + " clicked");
+
+            // toggleSelection
+            store.commit("view/selectSingleAlter", alter.id);
+          }, 500); //tolerance in ms
+        } else {
+          // double click
+          clearTimeout(clickTimeoutId);
+          clickTimeoutId = null;
+          console.log(alter.name + " dblclick");
+
+          // open form
+          store.commit("openAlterFormById", { alterId: alter.id });
+        }
       }
     };
 
@@ -289,12 +320,15 @@ export default defineComponent({
     });
 
     return {
+      egoShape: computed(() =>
+        shapeByGender(true, store.state.nwk.ego.currentGender)
+      ),
       isEditMode,
       isConnectMode,
       clickAlter,
       alteriMarks,
       connectionMarks,
-      horizons: computed(() => store.state.view.horizons),
+      showHorizons: computed(() => store.state.view.horizons),
       connections: computed(() => store.state.view.connections),
       Sectors,
       SYMBOL_DECEASED,
@@ -307,25 +341,46 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@import "~bulma/sass/base/_all.sass";
+
 text {
-  font-size: 5px;
+  font-family: $family-primary;
+  font-size: 4px;
 }
-circle.horizon {
-  fill: none;
-  stroke: lightgray;
-  stroke-width: 1;
-}
-line.axis {
+
+.textbg {
   stroke: white;
   stroke-width: 3;
+  vector-effect: non-scaling-stroke;
 }
-line {
+
+circle#horizon-base {
+  // fill: #dadaeb;
+  fill: #c7e9c0;
+}
+circle#horizon-overlay {
+  fill: rgb(255, 255, 255, 0.5);
+}
+
+#coords line {
+  stroke: white;
+  stroke-width: 2;
+}
+#coords-min line {
   stroke: lightgray;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+line {
+  stroke: #afafaf;
   stroke-width: 0.5;
 }
 
 line.select {
-  stroke: rgb(18, 64, 171, 0.5);
+  // stroke: rgb(136, 159, 213);
+  // stroke: rgb($fhstpblue, 0.6);
+  stroke: rgb(102, 150, 192);
 }
 
 #position {
@@ -342,7 +397,7 @@ line.select {
   fill: rgb(54, 54, 54);
 }
 
-#coords text {
+#sectors text {
   font-weight: bold;
   fill: gray;
 }

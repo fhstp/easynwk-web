@@ -1,5 +1,6 @@
 <template>
-  <p class="label">Kontakt bearbeiten</p>
+  <p class="label" v-if="addingNewAlter">Kontakt hinzufügen</p>
+  <p class="label" v-else>Kontakt bearbeiten</p>
   <form class="form" @submit.prevent="editAlterFinished">
     <div class="field has-text-danger" v-if="invalidPosition">
       <span class="icon is-small">
@@ -54,15 +55,6 @@
             <option v-for="value in roleOptions" :key="value" :value="value" />
           </datalist>
         </div>
-      </div>
-    </div>
-    <div class="field is-horizontal">
-      <div class="field-label is-normal"></div>
-      <div class="field-body">
-        <label class="checkbox">
-          <input type="checkbox" v-model="alterContactOfPartner" />
-          Kontakt der Partnerin/des Partners
-        </label>
       </div>
     </div>
 
@@ -151,7 +143,10 @@
       </div>
       <div class="field-body">
         <div class="field">
-          <div class="control radio-group">
+          <fieldset
+            :disabled="!alterHuman || alterDeceased"
+            class="control radio-group"
+          >
             <label
               class="radio"
               title="Die Beziehung von Ankerperson zum Kontakt ist aktuell aufrecht."
@@ -161,19 +156,19 @@
             </label>
             <label
               class="radio"
-              title="Derzeit gibt es keine Beziehung von Ankerperson mit dem Kontakt."
-            >
-              <input type="radio" v-model="alterEdgeType" value="0" />
-              keine aktuelle Beziehung
-            </label>
-            <label
-              class="radio"
               title="Die Beziehung zum Kontakt betrifft zwei oder mehr Sektoren."
             >
               <input type="radio" v-model="alterEdgeType" value="2" />
               multiplex
             </label>
-          </div>
+            <label
+              class="radio"
+              title="Derzeit gibt es keine Beziehung von Ankerperson mit dem Kontakt."
+            >
+              <input type="radio" v-model="alterEdgeType" value="0" />
+              keine aktuelle Beziehung
+            </label>
+          </fieldset>
         </div>
       </div>
     </div>
@@ -199,7 +194,19 @@
       <p class="control">
         <button
           class="button is-primary"
+          ref="domButton"
           :disabled="invalidName || invalidPosition"
+        >
+          {{ addingNewAlter ? "Nächster Kontakt" : "Schließen" }}
+        </button>
+      </p>
+      <p class="control">
+        <button
+          v-if="addingNewAlter"
+          class="button is-light"
+          :disabled="invalidName || invalidPosition"
+          type="button"
+          @mouseup.prevent="editAlterFinished(false)"
         >
           Schließen
         </button>
@@ -322,6 +329,7 @@ export default defineComponent({
 
     // we need a DOM ref in order to focus
     const altername = ref<InstanceType<typeof HTMLInputElement> | null>(null);
+    const domButton = ref<InstanceType<typeof HTMLButtonElement> | null>(null);
 
     watch(
       () => props.alter?.distance,
@@ -332,7 +340,7 @@ export default defineComponent({
       }
     );
 
-    const editAlterFinished = () => {
+    const editAlterFinished = (allowAddNext = true) => {
       // TODO     if (!this.invalidPosition && !this.invalidName) {
       if (invalidName.value) {
         // moving mouse cursor does not work
@@ -341,7 +349,12 @@ export default defineComponent({
           (altername.value as HTMLInputElement).focus();
         }
       } else {
+        (domButton.value as HTMLButtonElement).focus();
         store.commit("view/closeAlterForm");
+
+        if (addingNewAlter.value && allowAddNext) {
+          store.commit("addAlter");
+        }
       }
     };
 
@@ -365,7 +378,6 @@ export default defineComponent({
       invalidPosition,
       alterHuman: accessor("human"),
       alterGender: accessor("currentGender"),
-      alterContactOfPartner: accessor("contactOfPartner"),
       alterDeceased: accessor("deceased"),
       alterEdgeType: accessor("edgeType"),
       commitEdit,
@@ -377,6 +389,7 @@ export default defineComponent({
       editAlterFinished,
       cancelAddAlter,
       altername,
+      domButton,
       SYMBOL_DECEASED,
     };
   },

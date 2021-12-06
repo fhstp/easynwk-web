@@ -11,6 +11,7 @@
     <span v-if="!isEditMode" class="contact"
       ><span v-if="alter.deceased">{{ SYMBOL_DECEASED }}</span>
       {{ alter.name }}
+      <span v-if="alter.age">/ {{ alter.age + " " }} </span>
       <span :class="{ autovalue: alter.roleDefault }"
         >/ {{ alter.role }}</span
       ></span
@@ -29,6 +30,7 @@
       <button
         class="button is-small"
         title="Beziehungen des Kontakts bearbeiten"
+        :disabled="isConnectionDisabled"
         @click.stop="editConnections()"
       >
         <span class="icon is-small">
@@ -61,6 +63,7 @@ import AlteriEditForm from "@/components/AlteriEditForm.vue";
 import AlteriConnectionList from "@/components/AlteriConnectionList.vue";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
+import { Alter, isConnectable } from "@/data/Alter";
 
 export default defineComponent({
   components: { AlteriEditForm, AlteriConnectionList },
@@ -110,6 +113,9 @@ export default defineComponent({
       isSelected: computed(() =>
         store.getters["view/isSelected"](props.alter.id)
       ),
+      isConnectionDisabled: computed(
+        () => !isConnectable(props.alter as Alter)
+      ),
       isEditMode,
       isAlterOpsAllowed: computed(() => store.getters.editedAlterValid),
       isBaseForm: computed(
@@ -135,7 +141,7 @@ export default defineComponent({
 }
 
 .panel-block.selected {
-  background: rgba($color-secondary-1-0, 0.25);
+  background: rgba($fhstpblue, 0.2);
 }
 
 .panel-block.selected > span {

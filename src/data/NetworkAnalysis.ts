@@ -1,10 +1,11 @@
-import { Alter, naehenScore } from "./Alter";
+import { Alter, isConnectable, naehenScore } from "./Alter";
 import { AlterCategorization, sectorIndex } from "./AlterCategories";
 import { Connection } from "./Connection";
 import { NWK } from "./NWK";
 
 export interface NetworkAnalysis {
-  alterCount: number;
+  alterConnected: number;
+  alterConnectable: number;
   intConnCount: number;
   extConnCount: number;
   naehenSum: number;
@@ -19,7 +20,8 @@ export interface NetworkAnalysis {
 
 function initNetworkAnalysis(): NetworkAnalysis {
   return {
-    alterCount: 0,
+    alterConnected: 0,
+    alterConnectable: 0,
     intConnCount: 0,
     extConnCount: 0,
     naehenSum: 0,
@@ -66,7 +68,7 @@ export function analyseNWKbyCategory(
   const alterMetrics: Map<number, AlterMetrics> = new Map();
   for (const alter of nwk.alteri) {
     const sec = sectorIndex(alter);
-    if (sec != null && alter.edgeType >= 1)
+    if (sec != null && isConnectable(alter))
       alterMetrics.set(alter.id, {
         alter,
         degree: 0,
@@ -98,7 +100,11 @@ export function analyseNWKbyCategory(
 
     // count alterZeroEdgeCount in this category
     for (const alter of nwk.alteri) {
-      if (alter.edgeType == 0 && categories.inCategory(i, alter)) {
+      if (
+        alter.edgeType == 0 &&
+        categories.inCategory(i, alter) &&
+        isConnectable(alter)
+      ) {
         analysis.alterZeroEdge.push(alter);
       }
     }
@@ -113,23 +119,28 @@ export function analyseNWKbyCategory(
         }
 
         // (5) degree at currently highest value => add alter to stars
+        // to exclude connectable alteri #46 --> && am.alter.edgeType >= 1
         if (am.degree == analysis.maxDegree) {
           analysis.stars.push(am.alter);
         }
 
-        // (6) collect isolated
-        if (am.degree == 0) {
+        // (6) collect isolated (must have edge to ego!)
+        if (am.degree == 0 && am.alter.edgeType >= 1) {
           analysis.isolated.push(am.alter);
         }
 
         // (7) collect bridge persons
+        // to exclude connectable alteri #46 --> && am.alter.edgeType >= 1
         if (am.bridgePerson) {
           analysis.bridgePersons.push(am.alter);
         }
 
         // (8) increase networkSize & naehenSum
-        analysis.alterCount++;
-        analysis.naehenSum += naehenScore(am.alter);
+        analysis.alterConnectable++;
+        if (am.alter.edgeType >= 1) {
+          analysis.alterConnected++;
+          analysis.naehenSum += naehenScore(am.alter);
+        }
       }
     }
 
@@ -147,6 +158,7 @@ export function analyseNWKbyCategory(
         analysis.intConnCount++;
 
         // (3b) bridges count only if both sides are in the same category
+        // to exclude connectable alteri #46 --> && a1.edgeType >= 1 && a2.edgeType >= 1
         if (a1.sector !== a2.sector) {
           analysis.bridges.push(conn);
         }
@@ -182,15 +194,15 @@ export function calculateDensity(
   }
 }
 
-export function calculateExternalDensity(
-  alterCount: number,
-  externalAlterCount: number,
-  connectionsCount: number
-): number {
-  if (alterCount < 1 || externalAlterCount < 1) {
-    return 0.0;
-  } else {
-    const i = alterCount * externalAlterCount;
-    return connectionsCount / i;
-  }
-}
+// export function calculateExternalDensity(
+//   alterCount: number,
+//   externalAlterCount: number,
+//   connectionsCount: number
+// ): number {
+//   if (alterCount < 1 || externalAlterCount < 1) {
+//     return 0.0;
+//   } else {
+//     const i = alterCount * externalAlterCount;
+//     return connectionsCount / i;
+//   }
+// }

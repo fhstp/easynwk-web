@@ -1,6 +1,9 @@
 <template>
   <div id="ego">
-    {{ displayName }}
+    Ankerperson:&nbsp;
+    <b>{{ displayName }}</b>
+    &nbsp;
+    <span v-if="egoAge">/ {{ egoAge }} </span>
     &nbsp;
     <button
       class="button is-small"
@@ -30,6 +33,7 @@ export default defineComponent({
 
     return {
       displayName,
+      egoAge: computed(() => store.state.nwk.ego.age),
     };
   },
 });

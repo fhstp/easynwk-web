@@ -1,6 +1,6 @@
 <template>
   <div class="panel-block" style="display: block">
-    <table class="table">
+    <table class="table is-fullwidth">
       <thead>
         <tr>
           <th></th>
@@ -9,29 +9,49 @@
       </thead>
       <tbody>
         <tr>
-          <th>Netzwerkgröße</th>
+          <th title="Erklärung">
+            Netzwerkgröße
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">
             {{ networkSize[i] }}
           </td>
         </tr>
         <tr>
-          <th>Beziehungsgewicht</th>
+          <th title="Erklärung">
+            Beziehungsgewicht
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">
             {{ naehenSum[i] }}
           </td>
         </tr>
         <tr>
-          <th>Dichte der Kategorie</th>
+          <th title="Erklärung">
+            Dichte der Kategorie
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">{{ density[i] }}</td>
         </tr>
-        <tr>
+        <!-- <tr>
           <th>Dichte zu anderen Kategorien</th>
           <td v-for="(cat, i) in categoryLabels" :key="i">
             {{ extDensity[i] }}
           </td>
-        </tr>
+        </tr> -->
         <tr>
-          <th>Star(s) (pro Kategorie)</th>
+          <th title="Erklärung">
+            Star(s) (pro Kategorie)
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td
             v-for="(cat, i) in categoryLabels"
             :key="i"
@@ -42,13 +62,23 @@
           </td>
         </tr>
         <tr>
-          <th>Brücken</th>
+          <th title="Erklärung">
+            Brücken
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">
             {{ bridgesCount[i] }}
           </td>
         </tr>
         <tr>
-          <th>Brückenperson(en)</th>
+          <th title="Erklärung">
+            Brückenperson(en)
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td
             v-for="(cat, i) in categoryLabels"
             :key="i"
@@ -59,7 +89,12 @@
           </td>
         </tr>
         <tr>
-          <th>Personen ohne Beziehungen</th>
+          <th title="Erklärung">
+            Isolierte
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td
             v-for="(cat, i) in categoryLabels"
             :key="i"
@@ -70,7 +105,12 @@
           </td>
         </tr>
         <tr>
-          <th>Personen mit aktuell keiner Beziehung zur Ankerperson</th>
+          <th title="Erklärung">
+            Personen ohne Kante zur Ankerperson
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td
             v-for="(cat, i) in categoryLabels"
             :key="i"
@@ -91,7 +131,7 @@ import { useStore } from "@/store";
 import {
   analyseNWKbyCategory,
   calculateDensity,
-  calculateExternalDensity,
+  // calculateExternalDensity,
   getOrInit,
   NetworkAnalysis,
 } from "@/data/NetworkAnalysis";
@@ -122,29 +162,37 @@ export default defineComponent({
       const result: string[] = [];
       const analysis = networkAnalysis.value;
       for (const cat of categoryLabels.value) {
-        const { alterCount, intConnCount } = getOrInit(analysis, cat);
-        result.push(calculateDensity(alterCount, intConnCount).toFixed(3));
-      }
-      return result;
-    });
-
-    const extDensity = computed((): string[] => {
-      const result: string[] = [];
-      const totalAlteri = store.state.nwk.alteri.length;
-      const analysis = networkAnalysis.value;
-
-      for (const cat of categoryLabels.value) {
-        const { alterCount, extConnCount } = getOrInit(analysis, cat);
+        const { alterConnectable, intConnCount } = getOrInit(analysis, cat);
         result.push(
-          calculateExternalDensity(
-            alterCount,
-            totalAlteri - alterCount,
-            extConnCount
-          ).toFixed(3)
+          calculateDensity(alterConnectable, intConnCount).toLocaleString(
+            undefined,
+            {
+              minimumFractionDigits: 3,
+              maximumFractionDigits: 3,
+            }
+          )
         );
       }
       return result;
     });
+
+    // const extDensity = computed((): string[] => {
+    //   const result: string[] = [];
+    //   const totalAlteri = store.state.nwk.alteri.length;
+    //   const analysis = networkAnalysis.value;
+
+    //   for (const cat of categoryLabels.value) {
+    //     const { alterCount, extConnCount } = getOrInit(analysis, cat);
+    //     result.push(
+    //       calculateExternalDensity(
+    //         alterCount,
+    //         totalAlteri - alterCount,
+    //         extConnCount
+    //       ).toFixed(3)
+    //     );
+    //   }
+    //   return result;
+    // });
 
     const stars = computed(() => {
       return categoryLabels.value.map((cat) => {
@@ -195,7 +243,7 @@ export default defineComponent({
       categoryLabels,
       networkSize: computed((): string[] => {
         return categoryLabels.value.map((cat) =>
-          getOrInit(networkAnalysis.value, cat).alterCount.toFixed(0)
+          getOrInit(networkAnalysis.value, cat).alterConnected.toFixed(0)
         );
       }),
       naehenSum: computed((): string[] => {
@@ -204,7 +252,7 @@ export default defineComponent({
         );
       }),
       density,
-      extDensity,
+      // extDensity,
 
       stars,
       isolated: makeComputedAlterGroup("isolated"),

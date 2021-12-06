@@ -1,4 +1,4 @@
-import { Gender } from "@/data/Gender";
+import { defaultGender } from "@/data/Gender";
 
 export interface Alter {
   id: number;
@@ -6,7 +6,6 @@ export interface Alter {
   role: string;
   /** if the role has its initial default value and has NOT been changed by user */
   roleDefault: boolean;
-  contactOfPartner: boolean;
   human: boolean;
   currentGender: string;
   /** if the gender has its initial default value and has NOT been changed by user */
@@ -16,8 +15,8 @@ export interface Alter {
   deceased: boolean;
   /** connection to ego: 1 ... normal, 0 ... currently no edge, 2 ... multiplex edge */
   edgeType: number;
-  /** if the edge type has its initial default value and has NOT been changed by user */
-  edgeTypeDefault: boolean;
+  /** the edge type previously set by user (0, 1, or 2); initially -1 until changed by user */
+  edgeTypeByUser: number;
 
   /** angle from x-axis between -180° and +180° */
   angle: number;
@@ -32,15 +31,14 @@ export function initAlter(): Alter {
     name: "",
     role: "",
     roleDefault: true,
-    contactOfPartner: false,
     human: true,
-    currentGender: Gender[0],
+    currentGender: defaultGender,
     genderDefault: true,
     age: "",
     note: "",
     deceased: false,
     edgeType: 1,
-    edgeTypeDefault: true,
+    edgeTypeByUser: -1,
     angle: 0,
     distance: 0,
   };
@@ -55,4 +53,15 @@ export function initAlter(): Alter {
  */
 export function naehenScore(alter: Alter): number {
   return Math.max(9 - Math.floor((alter.distance * 9) / 100), 0);
+}
+
+/**
+ * check if the alter can be connected to the ego or another alter.
+ * By definition it is not possible to have a connection to a deceased or non-human alter.
+ *
+ * @param alter
+ * @returns true, if a connection from ego or another alter is possible
+ */
+export function isConnectable(alter: Alter): boolean {
+  return alter.human && !alter.deceased;
 }

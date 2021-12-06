@@ -1,6 +1,6 @@
 <template>
   <div class="panel-block" style="display: block">
-    <table class="table">
+    <table class="table is-fullwidth">
       <!-- <thead>
     <tr>
       <th><abbr title="Position">Pos</abbr></th>
@@ -9,29 +9,66 @@
   </thead> -->
       <tbody>
         <tr>
-          <th>Netzwerkgröße</th>
+          <th title="Erklärung">
+            Netzwerkgröße
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td>{{ networkSize }}</td>
         </tr>
         <tr>
-          <th>Beziehungsgewicht</th>
+          <th title="Erklärung">
+            Beziehungsgewicht
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td>{{ naehenSum }}</td>
         </tr>
         <tr>
-          <th>Dichte gesamt</th>
-          <td>{{ density.toFixed(3) }}</td>
+          <th title="Erklärung">
+            Dichte gesamt
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
+          <td>
+            {{
+              density.toLocaleString(undefined, {
+                minimumFractionDigits: 3,
+                maximumFractionDigits: 3,
+              })
+            }}
+          </td>
         </tr>
         <tr>
-          <th>Star(s)</th>
+          <th title="Erklärung">
+            Star(s)
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td @click="clickCell('stars')" :class="{ clickAble: stars != '-' }">
             {{ stars }}
           </td>
         </tr>
         <tr>
-          <th>Brücken</th>
+          <th title="Erklärung">
+            Brücken
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td>{{ bridgesCount }}</td>
         </tr>
         <tr>
-          <th>Brückenperson(en)</th>
+          <th title="Erklärung">
+            Brückenperson(en)
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td
             @click="clickCell('bridgePersons')"
             :class="{ clickAble: bridgePersons != '0' }"
@@ -40,7 +77,12 @@
           </td>
         </tr>
         <tr>
-          <th>Personen ohne Beziehungen</th>
+          <th title="Erklärung">
+            Isolierte
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td
             @click="clickCell('isolated')"
             :class="{ clickAble: isolated != '0' }"
@@ -49,7 +91,12 @@
           </td>
         </tr>
         <tr>
-          <th>Personen mit aktuell keiner Beziehung zur Ankerperson</th>
+          <th title="Erklärung">
+            Personen ohne Kante zur Ankerperson
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td
             @click="clickCell('alterZeroEdge')"
             :class="{ clickAble: alterZeroEdge != '0' }"
@@ -84,8 +131,8 @@ export default defineComponent({
     });
 
     const density = computed((): number => {
-      const { alterCount, intConnCount } = networkAnalysis.value;
-      return calculateDensity(alterCount, intConnCount);
+      const { alterConnectable, intConnCount } = networkAnalysis.value;
+      return calculateDensity(alterConnectable, intConnCount);
     });
 
     const stars = computed(() => {
@@ -130,7 +177,7 @@ export default defineComponent({
     };
 
     return {
-      networkSize: computed(() => networkAnalysis.value.alterCount),
+      networkSize: computed(() => networkAnalysis.value.alterConnected),
       naehenSum: computed(() => networkAnalysis.value.naehenSum),
       density,
       stars,

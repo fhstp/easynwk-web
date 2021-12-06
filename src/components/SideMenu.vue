@@ -60,6 +60,22 @@
 
         <p><br /></p>
 
+        <button class="button" @click="exportPNG">
+          <span class="icon">
+            <font-awesome-icon icon="file-image" />
+          </span>
+          <span>PNG exportieren</span>
+        </button>
+
+        <button class="button" @click="exportCSV">
+          <span class="icon">
+            <font-awesome-icon icon="file-csv" />
+          </span>
+          <span>Kennzahlen exportieren</span>
+        </button>
+
+        <p><br /></p>
+
         <button class="button" @click="showStatistics">
           <span class="icon">
             <font-awesome-icon icon="chart-bar" />
@@ -85,6 +101,11 @@
       </div>
 
       <a href="http://www.easynwk.com/" target="_blank">Über die easyNWK</a>
+      <a href="https://github.com/fhstp/easynwk-web" target="_blank"
+        >Source Code</a
+      >
+      <a href="http://www.easynwk.com/impressum/">Impressum</a>
+      <img src="fhstp_sw_pos.png" width="80" height="80" />
     </div>
   </div>
 </template>
@@ -93,7 +114,8 @@
 import { computed, defineComponent, ref } from "vue";
 // @ is an alias to /src
 import { useStore } from "@/store";
-import { download } from "@/assets/utils";
+import { downloadSVGasPNG, downloadText } from "@/assets/utils";
+import { statisticsCSV } from "@/data/statisticsCSV";
 
 export default defineComponent({
   setup(props, { emit }) {
@@ -129,7 +151,7 @@ export default defineComponent({
     };
 
     const save = () => {
-      download(
+      downloadText(
         store.state.nwk.ego.name + ".json",
         JSON.stringify(store.state.nwk)
       );
@@ -163,6 +185,15 @@ export default defineComponent({
       open,
       save,
       openDemoData,
+      exportPNG: () => {
+        downloadSVGasPNG(store.state.nwk.ego.name + ".png", "svg#nwkmap");
+      },
+      exportCSV: () => {
+        downloadText(
+          store.state.nwk.ego.name + ".csv",
+          statisticsCSV(store.state.nwk)
+        );
+      },
 
       showStatistics: () => {
         store.commit("view/enable", "statistics");
@@ -181,11 +212,15 @@ export default defineComponent({
 
 <style lang="scss">
 .button.is-burger {
+  color: white;
   width: 2.5rem;
   height: 2.5rem;
   padding: 0;
   background-color: transparent;
   border-color: transparent;
+}
+.button.is-burger:hover {
+  color: white;
 }
 
 /* The sidepanel menu */
@@ -209,7 +244,7 @@ export default defineComponent({
 #sidepanel.shown {
   transition: visibility 0s, width 1s; /* 1 second transition effect to slide in the sidepanel */
   visibility: visible;
-  width: 250px;
+  width: 280px;
 }
 
 /* The sidepanel links */
@@ -226,7 +261,8 @@ export default defineComponent({
   background-color: white;
 }
 
-#sidepanel a {
+#sidepanel a,
+#sidepanel img {
   padding: 8px 8px 8px 32px;
   text-decoration: none;
   color: #c1c1c1;
