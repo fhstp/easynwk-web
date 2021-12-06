@@ -9,15 +9,30 @@
   </thead> -->
       <tbody>
         <tr>
-          <th>Netzwerkgröße</th>
+          <th title="Erklärung">
+            Netzwerkgröße
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td>{{ networkSize }}</td>
         </tr>
         <tr>
-          <th>Beziehungsgewicht</th>
+          <th title="Erklärung">
+            Beziehungsgewicht
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td>{{ naehenSum }}</td>
         </tr>
         <tr>
-          <th>Dichte gesamt</th>
+          <th title="Erklärung">
+            Dichte gesamt
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td>
             {{
               density.toLocaleString(undefined, {
@@ -28,17 +43,32 @@
           </td>
         </tr>
         <tr>
-          <th>Star(s)</th>
+          <th title="Erklärung">
+            Star(s)
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td @click="clickCell('stars')" :class="{ clickAble: stars != '-' }">
             {{ stars }}
           </td>
         </tr>
         <tr>
-          <th>Brücken</th>
+          <th title="Erklärung">
+            Brücken
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td>{{ bridgesCount }}</td>
         </tr>
         <tr>
-          <th>Brückenperson(en)</th>
+          <th title="Erklärung">
+            Brückenperson(en)
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td
             @click="clickCell('bridgePersons')"
             :class="{ clickAble: bridgePersons != '0' }"
@@ -47,7 +77,12 @@
           </td>
         </tr>
         <tr>
-          <th>Isolierte</th>
+          <th title="Erklärung">
+            Isolierte
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td
             @click="clickCell('isolated')"
             :class="{ clickAble: isolated != '0' }"
@@ -56,7 +91,12 @@
           </td>
         </tr>
         <tr>
-          <th>Personen ohne Kante zur Ankerperson</th>
+          <th title="Erklärung">
+            Personen ohne Kante zur Ankerperson
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td
             @click="clickCell('alterZeroEdge')"
             :class="{ clickAble: alterZeroEdge != '0' }"

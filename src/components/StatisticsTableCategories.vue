@@ -9,19 +9,34 @@
       </thead>
       <tbody>
         <tr>
-          <th>Netzwerkgröße</th>
+          <th title="Erklärung">
+            Netzwerkgröße
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">
             {{ networkSize[i] }}
           </td>
         </tr>
         <tr>
-          <th>Beziehungsgewicht</th>
+          <th title="Erklärung">
+            Beziehungsgewicht
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">
             {{ naehenSum[i] }}
           </td>
         </tr>
         <tr>
-          <th>Dichte der Kategorie</th>
+          <th title="Erklärung">
+            Dichte der Kategorie
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">{{ density[i] }}</td>
         </tr>
         <!-- <tr>
@@ -31,7 +46,12 @@
           </td>
         </tr> -->
         <tr>
-          <th>Star(s) (pro Kategorie)</th>
+          <th title="Erklärung">
+            Star(s) (pro Kategorie)
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td
             v-for="(cat, i) in categoryLabels"
             :key="i"
@@ -42,13 +62,23 @@
           </td>
         </tr>
         <tr>
-          <th>Brücken</th>
+          <th title="Erklärung">
+            Brücken
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">
             {{ bridgesCount[i] }}
           </td>
         </tr>
         <tr>
-          <th>Brückenperson(en)</th>
+          <th title="Erklärung">
+            Brückenperson(en)
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td
             v-for="(cat, i) in categoryLabels"
             :key="i"
@@ -59,7 +89,12 @@
           </td>
         </tr>
         <tr>
-          <th>Isolierte</th>
+          <th title="Erklärung">
+            Isolierte
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td
             v-for="(cat, i) in categoryLabels"
             :key="i"
@@ -70,7 +105,12 @@
           </td>
         </tr>
         <tr>
-          <th>Personen ohne Kante zur Ankerperson</th>
+          <th title="Erklärung">
+            Personen ohne Kante zur Ankerperson
+            <span class="icon">
+              <font-awesome-icon icon="info-circle" />
+            </span>
+          </th>
           <td
             v-for="(cat, i) in categoryLabels"
             :key="i"
