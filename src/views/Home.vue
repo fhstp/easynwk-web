@@ -22,9 +22,11 @@
             <AlteriPanel v-if="!egoEditMode" />
             <StatisticsPanel v-if="$store.state.view.statistics" />
           </div>
-          <!-- TODO <div>
-            Über die easyNWK &nbsp; &nbsp; &nbsp; Impressum
-        </div> -->
+          <div class="footer">
+            <a href="http://www.easynwk.com/">Über die easyNWK</a>
+            <a href="https://github.com/fhstp/easynwk-web">Source Code</a>
+            <a href="http://www.easynwk.com/impressum/">Impressum</a>
+          </div>
         </div>
       </div>
       <div id="chart">
@@ -168,6 +170,18 @@ export default defineComponent({
   border-radius: 50%;
 }
 */
+
+.footer {
+  margin-top: 0.5rem;
+  display: flex;
+  padding: 0 1%;
+  font-size: 75%;
+}
+.footer a {
+  flex: 1;
+  margin: 0 1%;
+  text-align: center;
+}
 
 @media (min-width: 168vh) {
   #main {
