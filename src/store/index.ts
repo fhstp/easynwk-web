@@ -10,6 +10,7 @@ import {
 
 import { IUnReDoState, localStoragePlugin } from "./localStoragePlugin";
 import { nwkModule } from "./nwkModule";
+import { pseudonymPlugin, PseudonymState } from "./pseudonymPlugin";
 import {
   TAB_BASE,
   viewOptionsModule,
@@ -20,6 +21,7 @@ export interface IStoreState {
   nwk: NWK;
   view: ViewOptionsState;
   unredo: IUnReDoState;
+  pseudonym: PseudonymState;
 }
 
 const getters = {
@@ -75,8 +77,8 @@ const mutations = {
 
 const plugins =
   process.env.NODE_ENV !== "production"
-    ? [createLogger(), localStoragePlugin]
-    : [localStoragePlugin];
+    ? [createLogger(), localStoragePlugin, pseudonymPlugin]
+    : [localStoragePlugin, pseudonymPlugin];
 
 export const store = createStore<IStoreState>({
   strict: process.env.NODE_ENV !== "production",

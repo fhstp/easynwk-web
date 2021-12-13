@@ -2,7 +2,6 @@ export const TAB_BASE = "base";
 export const TAB_CONNECTIONS = "connections";
 
 export interface ViewOptionsFlags {
-  anonymized: boolean;
   horizons: boolean;
   connections: boolean;
   alteriNames: boolean;
@@ -17,7 +16,7 @@ export interface ViewOptionsState extends ViewOptionsFlags {
 
 export function initViewOptionsState(): ViewOptionsState {
   return {
-    anonymized: false,
+    // pseudonyms: true,
     horizons: true,
     connections: true,
     alteriNames: true,

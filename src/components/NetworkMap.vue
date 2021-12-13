@@ -307,7 +307,11 @@ export default defineComponent({
 
         buffer.push({
           d: el,
-          label: (el.deceased ? SYMBOL_DECEASED : "") + el.name,
+          label:
+            (el.deceased ? SYMBOL_DECEASED : "") +
+            (store.state.pseudonym.active
+              ? store.getters["pseudonym/pseudonize"](el.id)
+              : el.name),
           shape: shapeByGender(el.human, el.currentGender),
           x: coords ? coords.x : 0,
           y: coords ? coords.y : 0,

@@ -83,6 +83,15 @@
           <span>Kennzahlen</span>
         </button>
 
+        <button class="button" @click.stop="togglePseudonyms">
+          <span class="icon">
+            <font-awesome-icon icon="user-secret" />
+          </span>
+          <span v-if="pseudonyms">De-Anonymisieren</span>
+          <span v-else>Anonymisieren</span>
+          <span></span>
+        </button>
+
         <button class="button" @click.stop="toggleHorizons">
           <span class="icon">
             <font-awesome-icon icon="rss" />
@@ -196,6 +205,8 @@ export default defineComponent({
 
       showStatistics: () => store.commit("view/enable", "statistics"),
 
+      pseudonyms: computed(() => store.state.pseudonym.active),
+      togglePseudonyms: () => store.commit("pseudonym/toggle"),
       horizons: computed(() => store.state.view.horizons),
       toggleHorizons: () => store.commit("view/toggle", "horizons"),
       connections: computed(() => store.state.view.connections),
