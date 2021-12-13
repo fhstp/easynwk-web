@@ -5,6 +5,7 @@ export interface ViewOptionsFlags {
   anonymized: boolean;
   horizons: boolean;
   connections: boolean;
+  alteriNames: boolean;
   statistics: boolean;
 }
 
@@ -19,6 +20,7 @@ export function initViewOptionsState(): ViewOptionsState {
     anonymized: false,
     horizons: true,
     connections: true,
+    alteriNames: true,
     statistics: false,
 
     selected: new Set<number>(),

@@ -98,6 +98,14 @@
           <span v-if="connections">Verbindungen aus</span>
           <span v-else>Verbindungen ein</span>
         </button>
+
+        <button class="button" @click.stop="toggleAlteriNames">
+          <span class="icon">
+            <font-awesome-icon icon="font" />
+          </span>
+          <span v-if="alteriNames">Kontaktnamen aus</span>
+          <span v-else>Kontaktnamen ein</span>
+        </button>
       </div>
 
       <a href="http://www.easynwk.com/" target="_blank">Über die easyNWK</a>
@@ -178,6 +186,7 @@ export default defineComponent({
     };
 
     const connections = computed(() => store.state.view.connections);
+    const alteriNames = computed(() => store.state.view.alteriNames);
 
     return {
       menuOpen,
@@ -204,6 +213,11 @@ export default defineComponent({
       toggleConnections: () => {
         if (connections.value) store.commit("view/disable", "connections");
         else store.commit("view/enable", "connections");
+      },
+      alteriNames,
+      toggleAlteriNames: () => {
+        if (alteriNames.value) store.commit("view/disable", "alteriNames");
+        else store.commit("view/enable", "alteriNames");
       },
     };
   },

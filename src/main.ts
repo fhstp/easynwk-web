@@ -33,6 +33,7 @@ import {
   faRedo,
   faChartBar,
   faRss,
+  faFont,
   faTrashAlt,
   faInfoCircle,
   faCheck,
@@ -60,6 +61,7 @@ library.add(
   faRedo,
   faChartBar,
   faRss,
+  faFont,
   faTrashAlt,
   faInfoCircle,
   faCheck

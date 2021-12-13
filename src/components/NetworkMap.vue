@@ -118,6 +118,7 @@
           @click="clickAlter(mark.d)"
         />
         <text
+          v-if="alteriNames"
           class="textbg"
           :x="mark.x"
           :y="mark.y"
@@ -128,6 +129,7 @@
           {{ (mark.d.deceased ? SYMBOL_DECEASED : "") + mark.d.name }}
         </text>
         <text
+          v-if="alteriNames"
           :x="mark.x"
           :y="mark.y"
           :text-anchor="mark.x < 0 ? 'end' : 'start'"
@@ -328,6 +330,7 @@ export default defineComponent({
       clickAlter,
       alteriMarks,
       connectionMarks,
+      alteriNames: computed(() => store.state.view.alteriNames),
       showHorizons: computed(() => store.state.view.horizons),
       connections: computed(() => store.state.view.connections),
       Sectors,
