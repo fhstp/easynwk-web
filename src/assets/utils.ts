@@ -28,9 +28,17 @@ export function downloadSVGasPNG(filename: string, svgSelector: string): void {
     return;
   }
 
+  const domRect = svgElem.getBoundingClientRect();
+
   let svgData = new XMLSerializer().serializeToString(svgElem);
   svgData = '<?xml version="1.0" standalone="no"?>\r\n' + svgData;
   svgData = insertStyleSheets(svgData);
+
+  // workaround a Firefox bug that cannot draw SVG of relative size
+  svgData = svgData.replace(
+    'width="100%" height="100%"',
+    'width="' + domRect.width + '" height="' + domRect.width + '"'
+  );
   // downloadText(filename.replace("png", "svg"), svgData);
 
   const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
@@ -41,7 +49,6 @@ export function downloadSVGasPNG(filename: string, svgSelector: string): void {
   img.onload = () => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
-    const domRect = svgElem.getBoundingClientRect();
     canvas.width = domRect.width;
     canvas.height = domRect.height;
     ctx?.drawImage(img, 0, 0, domRect.width, domRect.height);
