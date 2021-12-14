@@ -58,8 +58,20 @@
       <line x1="105" y1="0" x2="-105" y2="0" />
     </g>
     <g id="coords-min" v-else>
-      <line x1="0" y1="-105" x2="0" y2="105" />
-      <line x1="105" y1="0" x2="-105" y2="0" />
+      <line
+        vector-effect="non-scaling-stroke"
+        x1="0"
+        y1="-102"
+        x2="0"
+        y2="102"
+      />
+      <line
+        vector-effect="non-scaling-stroke"
+        x1="102"
+        y1="0"
+        x2="-102"
+        y2="0"
+      />
     </g>
 
     <g id="sectors">
@@ -120,6 +132,7 @@
         <text
           v-if="alteriNames"
           class="textbg"
+          vector-effect="non-scaling-stroke"
           :x="mark.x"
           :y="mark.y"
           :text-anchor="mark.x < 0 ? 'end' : 'start'"
@@ -354,7 +367,6 @@ text {
 .textbg {
   stroke: white;
   stroke-width: 3;
-  vector-effect: non-scaling-stroke;
 }
 
 circle#horizon-base {
@@ -372,7 +384,6 @@ circle#horizon-overlay {
 #coords-min line {
   stroke: lightgray;
   stroke-width: 1;
-  vector-effect: non-scaling-stroke;
 }
 
 line {
