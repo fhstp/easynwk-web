@@ -130,7 +130,7 @@
           @click="clickAlter(mark.d)"
         />
         <text
-          v-if="alteriNames"
+          v-if="alteriNames && useTextBG"
           class="textbg"
           vector-effect="non-scaling-stroke"
           :x="mark.x"
@@ -348,6 +348,14 @@ export default defineComponent({
       connections: computed(() => store.state.view.connections),
       Sectors,
       SYMBOL_DECEASED,
+      // TODO browser detection b/c vector-effect seems not to work in Safari only as of 14 Dec 2021
+      useTextBG: computed(
+        () =>
+          !(
+            /Safari/.test(navigator.userAgent) &&
+            /Apple Computer/.test(navigator.vendor)
+          )
+      ),
     };
   },
 });
