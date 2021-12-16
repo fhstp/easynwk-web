@@ -139,7 +139,7 @@
           :dx="mark.x < 0 ? -3 : 3"
           :dy="mark.y < 0 ? -1 : 4"
         >
-          {{ (mark.d.deceased ? SYMBOL_DECEASED : "") + mark.d.name }}
+          {{ mark.label }}
         </text>
         <text
           v-if="alteriNames"
@@ -149,7 +149,7 @@
           :dx="mark.x < 0 ? -3 : 3"
           :dy="mark.y < 0 ? -1 : 4"
         >
-          {{ (mark.d.deceased ? SYMBOL_DECEASED : "") + mark.d.name }}
+          {{ mark.label }}
         </text>
       </g>
       <use
@@ -191,6 +191,7 @@ import { SYMBOL_DECEASED } from "@/assets/utils";
 
 interface AlterMark {
   d: Alter;
+  label: string;
   shape: string;
   x: number;
   y: number;
@@ -303,8 +304,10 @@ export default defineComponent({
       store.state.nwk.alteri.forEach((el) => {
         // console.log("alter: " + el.name);
         const coords = alteriCoords.value.get(el.id);
+
         buffer.push({
           d: el,
+          label: (el.deceased ? SYMBOL_DECEASED : "") + el.name,
           shape: shapeByGender(el.human, el.currentGender),
           x: coords ? coords.x : 0,
           y: coords ? coords.y : 0,
