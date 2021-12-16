@@ -178,16 +178,6 @@ export default defineComponent({
         });
     };
 
-    const horizons = computed(() => store.state.view.horizons);
-
-    const toggleHorizons = () => {
-      if (horizons.value) store.commit("view/disable", "horizons");
-      else store.commit("view/enable", "horizons");
-    };
-
-    const connections = computed(() => store.state.view.connections);
-    const alteriNames = computed(() => store.state.view.alteriNames);
-
     return {
       menuOpen,
       newNWK,
@@ -204,21 +194,14 @@ export default defineComponent({
         );
       },
 
-      showStatistics: () => {
-        store.commit("view/enable", "statistics");
-      },
-      horizons,
-      toggleHorizons,
-      connections,
-      toggleConnections: () => {
-        if (connections.value) store.commit("view/disable", "connections");
-        else store.commit("view/enable", "connections");
-      },
-      alteriNames,
-      toggleAlteriNames: () => {
-        if (alteriNames.value) store.commit("view/disable", "alteriNames");
-        else store.commit("view/enable", "alteriNames");
-      },
+      showStatistics: () => store.commit("view/enable", "statistics"),
+
+      horizons: computed(() => store.state.view.horizons),
+      toggleHorizons: () => store.commit("view/toggle", "horizons"),
+      connections: computed(() => store.state.view.connections),
+      toggleConnections: () => store.commit("view/toggle", "connections"),
+      alteriNames: computed(() => store.state.view.alteriNames),
+      toggleAlteriNames: () => store.commit("view/toggle", "alteriNames"),
     };
   },
 });

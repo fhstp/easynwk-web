@@ -47,6 +47,10 @@ const mutations = {
     state[flag] = false;
   },
 
+  toggle(state: ViewOptionsState, flag: keyof ViewOptionsFlags): void {
+    state[flag] = !state[flag];
+  },
+
   toggleAlterSelected(state: ViewOptionsState, alterId: number): void {
     if (state.selected.has(alterId)) {
       state.selected.delete(alterId);
