@@ -199,7 +199,7 @@ export default defineComponent({
       exportCSV: () => {
         downloadText(
           store.state.nwk.ego.name + ".csv",
-          statisticsCSV(store.state.nwk)
+          statisticsCSV(store.state.nwk, store.getters["displayName"])
         );
       },
 

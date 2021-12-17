@@ -198,7 +198,9 @@ export default defineComponent({
       return categoryLabels.value.map((cat) => {
         const analysis = getOrInit(networkAnalysis.value, cat);
         if (analysis.stars.length > 0 && analysis.maxDegree > 0) {
-          return analysis.stars.map((a) => a.name).join(", ");
+          return analysis.stars
+            .map((a) => store.getters["displayName"](a))
+            .join(", ");
           //  + " (" + analysis.maxDegree + " Beziehungen)"
         } else {
           return "-";
@@ -216,7 +218,9 @@ export default defineComponent({
             return (
               analysis[group].length +
               " (" +
-              analysis[group].map((a) => a.name).join(", ") +
+              analysis[group]
+                .map((a) => store.getters["displayName"](a))
+                .join(", ") +
               ")"
             );
           } else {

@@ -9,8 +9,7 @@
     v-on:click="toggleSelection()"
   >
     <span v-if="!isEditMode" class="contact"
-      ><span v-if="alter.deceased">{{ SYMBOL_DECEASED }}</span>
-      {{ alter.name }}
+      >{{ displayName }}
       <span v-if="alter.age">/ {{ alter.age + " " }} </span>
       <span :class="{ autovalue: alter.roleDefault }"
         >/ {{ alter.role }}</span
@@ -62,7 +61,6 @@ import { useStore } from "@/store";
 import AlteriEditForm from "@/components/AlteriEditForm.vue";
 import AlteriConnectionList from "@/components/AlteriConnectionList.vue";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
-import { SYMBOL_DECEASED } from "@/assets/utils";
 import { Alter, isConnectable } from "@/data/Alter";
 
 export default defineComponent({
@@ -125,7 +123,7 @@ export default defineComponent({
         () => isEditMode.value && store.state.view.editTab === TAB_CONNECTIONS
       ),
       toggleSelection,
-      SYMBOL_DECEASED,
+      displayName: computed(() => store.getters["displayName"](props.alter)),
     };
   },
 });

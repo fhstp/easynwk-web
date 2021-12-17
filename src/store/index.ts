@@ -1,4 +1,5 @@
-import { initAlter } from "@/data/Alter";
+import { SYMBOL_DECEASED } from "@/assets/utils";
+import { Alter, initAlter } from "@/data/Alter";
 import { NWK } from "@/data/NWK";
 import { InjectionKey } from "vue";
 import {
@@ -33,6 +34,14 @@ const getters = {
       // no alter open to edit --> always valid
       return true;
     }
+  },
+
+  displayName(state: IStoreState) {
+    return (alter: Alter) =>
+      (alter.deceased ? SYMBOL_DECEASED : "") +
+      (state.pseudonym.active
+        ? store.getters["pseudonym/pseudonize"](alter.id)
+        : alter.name);
   },
 
   // networkAnalysis(state: NWK): NetworkAnalysis {

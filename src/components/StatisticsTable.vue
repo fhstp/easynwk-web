@@ -139,7 +139,7 @@ export default defineComponent({
       const alteri = networkAnalysis.value.stars;
       if (alteri.length > 0 && networkAnalysis.value.maxDegree > 0) {
         return (
-          alteri.map((a) => a.name).join(", ") +
+          alteri.map((a) => store.getters["displayName"](a)).join(", ") +
           " (" +
           networkAnalysis.value.maxDegree +
           " Beziehungen)"
@@ -156,7 +156,10 @@ export default defineComponent({
         const alteri = networkAnalysis.value[group];
         if (alteri.length > 0) {
           return (
-            alteri.length + " (" + alteri.map((a) => a.name).join(", ") + ")"
+            alteri.length +
+            " (" +
+            alteri.map((a) => store.getters["displayName"](a)).join(", ") +
+            ")"
           );
         } else {
           return "0";

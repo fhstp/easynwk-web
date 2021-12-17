@@ -9,10 +9,14 @@ import {
   NetworkAnalysis,
 } from "@/data/NetworkAnalysis";
 import { NWK } from "@/data/NWK";
+import { Alter } from "./Alter";
 
 const SEP = ";";
 
-export function statisticsCSV(nwk: NWK): string {
+export function statisticsCSV(
+  nwk: NWK,
+  displayName: (a: Alter) => string
+): string {
   let output = "Auswertung" + SEP + nwk.ego.name;
 
   for (const cat of allAlterCategorizationKeys) {
@@ -60,7 +64,7 @@ export function statisticsCSV(nwk: NWK): string {
       .map((label) => {
         const { stars, maxDegree } = getOrInit(networkAnalysis, label);
         if (stars.length > 0 && maxDegree > 0) {
-          return stars.map((a) => a.name).join(", ");
+          return stars.map((a) => displayName(a)).join(", ");
           //  + " (" + maxDegree + " Beziehungen)"
         } else {
           return "-";
@@ -78,6 +82,7 @@ export function statisticsCSV(nwk: NWK): string {
     output += makeComputedAlterGroup(
       networkAnalysis,
       categorization.categories,
+      displayName,
       "bridgePersons"
     ).reduce((prev, curr) => prev + SEP + curr, "");
 
@@ -85,6 +90,7 @@ export function statisticsCSV(nwk: NWK): string {
     output += makeComputedAlterGroup(
       networkAnalysis,
       categorization.categories,
+      displayName,
       "isolated"
     ).reduce((prev, curr) => prev + SEP + curr, "");
 
@@ -92,6 +98,7 @@ export function statisticsCSV(nwk: NWK): string {
     output += makeComputedAlterGroup(
       networkAnalysis,
       categorization.categories,
+      displayName,
       "alterZeroEdge"
     ).reduce((prev, curr) => prev + SEP + curr, "");
   }
@@ -102,6 +109,7 @@ export function statisticsCSV(nwk: NWK): string {
 function makeComputedAlterGroup(
   networkAnalysis: Map<string, NetworkAnalysis>,
   categoryLabels: string[],
+  displayName: (a: Alter) => string,
   group: "stars" | "isolated" | "bridgePersons" | "alterZeroEdge"
 ) {
   return categoryLabels.map((cat) => {
@@ -110,7 +118,7 @@ function makeComputedAlterGroup(
       return (
         analysis[group].length +
         " (" +
-        analysis[group].map((a) => a.name).join(", ") +
+        analysis[group].map((a) => displayName(a)).join(", ") +
         ")"
       );
     } else {
