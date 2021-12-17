@@ -1,3 +1,4 @@
+import { getRoleAbbrev, PseudonymGenerator } from "@/data/Roles";
 import { Store } from "vuex";
 import { IStoreState } from ".";
 
@@ -8,6 +9,7 @@ export interface PseudonymState {
 export const pseudonymPlugin = (store: Store<IStoreState>): void => {
   // keep track of undo history as local (non-reactive) vars
   const pseudonyms = new Map<number, string>();
+  const generator = new PseudonymGenerator();
 
   store.registerModule("pseudonym", {
     namespaced: true,
@@ -25,29 +27,53 @@ export const pseudonymPlugin = (store: Store<IStoreState>): void => {
   });
 
   store.subscribe((mutation, stateAfter: IStoreState) => {
-    if (
-      stateAfter.pseudonym.active &&
-      mutation.type.startsWith("pseudonym/toggle")
-    ) {
-      for (const alter of stateAfter.nwk.alteri) {
-        if (!pseudonyms.get(alter.id)) {
-          console.log("add pseudo for " + alter.name);
-          pseudonyms.set(alter.id, "max1");
+    if (mutation.type === "pseudonym/toggle") {
+      if (stateAfter.pseudonym.active) {
+        // toggling pseudonyms on --> create for existing alteri
+        for (const alter of stateAfter.nwk.alteri) {
+          if (!pseudonyms.get(alter.id)) {
+            console.log("add pseudo for " + alter.name);
+            pseudonyms.set(alter.id, generator.makePseudonym(alter.role));
+          }
         }
+      } else {
+        // toggling pseudonyms off --> throw away
+        pseudonyms.clear();
+        generator.reset();
       }
-    }
-  });
+    } else if (stateAfter.pseudonym.active) {
+      // while pseudonyms are shown
+      if (mutation.type === "loadNWK") {
+        // loadNWK --> throw away & fill
+        generator.reset();
+        pseudonyms.clear();
+        for (const alter of stateAfter.nwk.alteri) {
+          pseudonyms.set(alter.id, generator.makePseudonym(alter.role));
+        }
+      } else if (mutation.type === "newNWK") {
+        // newNWK --> throw away
+        pseudonyms.clear();
+        generator.reset();
+      } else if (mutation.type.startsWith("editAlter")) {
+        // alter edited --> check if pseudonym fits role
 
-  store.subscribe((mutation, stateAfter: IStoreState) => {
-    if (
-      stateAfter.pseudonym.active &&
-      !mutation.type.startsWith("unredo/") &&
-      !mutation.type.startsWith("view/")
-    ) {
-      for (const alter of stateAfter.nwk.alteri) {
-        if (!pseudonyms.get(alter.id)) {
-          console.log("add pseudo for " + alter.name);
-          pseudonyms.set(alter.id, "max");
+        const alter =
+          "index" in mutation.payload
+            ? stateAfter.nwk.alteri[mutation.payload.index]
+            : "id" in mutation.payload
+            ? stateAfter.nwk.alteri.find((a) => a.id === mutation.payload.id)
+            : null;
+
+        if (alter != null) {
+          const currPseudo = pseudonyms.get(alter.id);
+          if (
+            !(currPseudo && currPseudo.startsWith(getRoleAbbrev(alter.role)))
+          ) {
+            console.log(
+              "update pseudonym for " + alter.name + " from " + currPseudo
+            );
+            pseudonyms.set(alter.id, generator.makePseudonym(alter.role));
+          }
         }
       }
     }
