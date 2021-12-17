@@ -6,6 +6,10 @@ export interface PseudonymState {
   active: boolean;
 }
 
+export function initPseudonymState(): PseudonymState {
+  return { active: false };
+}
+
 export const pseudonymPlugin = (store: Store<IStoreState>): void => {
   // keep track of undo history as local (non-reactive) vars
   const pseudonyms = new Map<number, string>();
@@ -13,9 +17,7 @@ export const pseudonymPlugin = (store: Store<IStoreState>): void => {
 
   store.registerModule("pseudonym", {
     namespaced: true,
-    state: {
-      active: false,
-    },
+    state: initPseudonymState(),
     getters: {
       pseudonize: () => (alterId: number) => pseudonyms.get(alterId),
     },
@@ -29,12 +31,14 @@ export const pseudonymPlugin = (store: Store<IStoreState>): void => {
   store.subscribe((mutation, stateAfter: IStoreState) => {
     if (mutation.type === "pseudonym/toggle") {
       if (stateAfter.pseudonym.active) {
+        // do NOT assume pseudonyms were reset (e.g., b/c undo)
+        pseudonyms.clear();
+        generator.reset();
+
         // toggling pseudonyms on --> create for existing alteri
         for (const alter of stateAfter.nwk.alteri) {
-          if (!pseudonyms.get(alter.id)) {
-            console.log("add pseudo for " + alter.name);
-            pseudonyms.set(alter.id, generator.makePseudonym(alter.role));
-          }
+          console.log("add pseudo for " + alter.name);
+          pseudonyms.set(alter.id, generator.makePseudonym(alter.role));
         }
       } else {
         // toggling pseudonyms off --> throw away

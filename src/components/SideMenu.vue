@@ -83,7 +83,7 @@
           <span>Kennzahlen</span>
         </button>
 
-        <button class="button" @click.stop="togglePseudonyms">
+        <button class="button" @click="togglePseudonyms">
           <span class="icon">
             <font-awesome-icon icon="user-secret" />
           </span>
