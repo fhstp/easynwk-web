@@ -133,6 +133,7 @@ import { computed, defineComponent, ref } from "vue";
 import { useStore } from "@/store";
 import { downloadSVGasPNG, downloadText } from "@/assets/utils";
 import { statisticsCSV } from "@/data/statisticsCSV";
+import { NWK } from "@/data/NWK";
 
 export default defineComponent({
   setup(props, { emit }) {
@@ -168,10 +169,19 @@ export default defineComponent({
     };
 
     const save = () => {
-      downloadText(
-        store.state.nwk.ego.name + ".json",
-        JSON.stringify(store.state.nwk)
-      );
+      let nwkJSON = JSON.stringify(store.state.nwk);
+      let filename = store.state.nwk.ego.name;
+
+      if (store.state.pseudonym.active) {
+        const tempNWK = JSON.parse(nwkJSON) as NWK;
+        for (const alter of tempNWK.alteri) {
+          alter.name = store.getters["pseudonym/pseudonize"](alter.id);
+        }
+        nwkJSON = JSON.stringify(tempNWK);
+        filename += "_anonym";
+      }
+
+      downloadText(filename + ".json", nwkJSON);
     };
 
     const openDemoData = () => {
