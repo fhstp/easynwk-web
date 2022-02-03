@@ -6,6 +6,7 @@ and <https://github.com/anthonygore/vuex-undo-redo> */
 import { initNWKasJSON } from "@/data/NWK";
 import { MutationPayload, Store } from "vuex";
 import { IStoreState } from ".";
+import { initPseudonymState } from "./pseudonymPlugin";
 import { initViewOptionsState } from "./viewOptionsModule";
 
 const STORAGE_KEY = "easynwk";
@@ -55,6 +56,7 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         // make subscribers aware that we are replaying
         history.replaying = true;
         // reset to initial state
+        store.state.pseudonym = initPseudonymState();
         store.commit("loadNWK", history.initialState);
         store.state.view = initViewOptionsState();
         // replay all mutations (but last)

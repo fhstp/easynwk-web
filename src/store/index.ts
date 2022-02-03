@@ -1,4 +1,5 @@
-import { initAlter } from "@/data/Alter";
+import { SYMBOL_DECEASED } from "@/assets/utils";
+import { Alter, initAlter } from "@/data/Alter";
 import { NWK } from "@/data/NWK";
 import { InjectionKey } from "vue";
 import {
@@ -10,6 +11,7 @@ import {
 
 import { IUnReDoState, localStoragePlugin } from "./localStoragePlugin";
 import { nwkModule } from "./nwkModule";
+import { pseudonymPlugin, PseudonymState } from "./pseudonymPlugin";
 import {
   TAB_BASE,
   viewOptionsModule,
@@ -20,6 +22,7 @@ export interface IStoreState {
   nwk: NWK;
   view: ViewOptionsState;
   unredo: IUnReDoState;
+  pseudonym: PseudonymState;
 }
 
 const getters = {
@@ -31,6 +34,14 @@ const getters = {
       // no alter open to edit --> always valid
       return true;
     }
+  },
+
+  displayName(state: IStoreState) {
+    return (alter: Alter) =>
+      (alter.deceased ? SYMBOL_DECEASED : "") +
+      (state.pseudonym.active
+        ? store.getters["pseudonym/pseudonize"](alter.id)
+        : alter.name);
   },
 
   // networkAnalysis(state: NWK): NetworkAnalysis {
@@ -75,8 +86,8 @@ const mutations = {
 
 const plugins =
   process.env.NODE_ENV !== "production"
-    ? [createLogger(), localStoragePlugin]
-    : [localStoragePlugin];
+    ? [createLogger(), localStoragePlugin, pseudonymPlugin]
+    : [localStoragePlugin, pseudonymPlugin];
 
 export const store = createStore<IStoreState>({
   strict: process.env.NODE_ENV !== "production",

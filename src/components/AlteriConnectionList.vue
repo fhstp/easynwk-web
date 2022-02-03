@@ -14,7 +14,7 @@
         @click.stop="addConnection(other.id)"
         class="button is-fullwidth"
       >
-        {{ other.name }}
+        {{ displayName(other) }}
       </button>
     </div>
     <div class="column">
@@ -25,7 +25,7 @@
         @click.stop="removeConnection(other.id)"
         class="button is-fullwidth"
       >
-        {{ other.name }}
+        {{ displayName(other) }}
       </button>
     </div>
   </div>
@@ -96,6 +96,7 @@ export default defineComponent({
         });
       },
       editAlterFinished: () => store.commit("view/closeAlterForm"),
+      displayName: store.getters["displayName"],
     };
   },
 });
