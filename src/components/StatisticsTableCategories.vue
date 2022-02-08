@@ -9,7 +9,9 @@
       </thead>
       <tbody>
         <tr>
-          <th title="Erklärung">
+          <th
+            title="Anzahl der Kontakte im Netzwerk exklusive Ankerperson und exklusive Personen ohne Kante zur Ankerperson"
+          >
             Netzwerkgröße
             <span class="icon">
               <font-awesome-icon icon="info-circle" />
@@ -20,7 +22,9 @@
           </td>
         </tr>
         <tr>
-          <th title="Erklärung">
+          <th
+            title="summierte Nähe bzw. Distanz der Kontakte zur Ankerperson. Je höher die Kennzahl, umso näher stehen die Personen der Ankerperson."
+          >
             Beziehungsgewicht
             <span class="icon">
               <font-awesome-icon icon="info-circle" />
@@ -31,7 +35,9 @@
           </td>
         </tr>
         <tr>
-          <th title="Erklärung">
+          <th
+            title="Verhältnis der tatsächlich vorhandenen zu den theoretisch möglichen Verbindungen (exklusive der Verbindungen zwischen Anker- und Kontaktpersonen, inklusive Personen ohne Kante zur Ankerperson). Optional: Maßzahl liegt zwischen 0 (nur isolierte Kontakte) und 1 (jede Person im Netzwerk ist mit jeder anderen verbunden)."
+          >
             Dichte der Kategorie
             <span class="icon">
               <font-awesome-icon icon="info-circle" />
@@ -46,7 +52,9 @@
           </td>
         </tr> -->
         <tr>
-          <th title="Erklärung">
+          <th
+            title="Kontakt(e) mit den meisten Verbindungen im Netzwerk (neben der Ankerperson)"
+          >
             Star(s) (pro Kategorie)
             <span class="icon">
               <font-awesome-icon icon="info-circle" />
@@ -62,7 +70,7 @@
           </td>
         </tr>
         <tr>
-          <th title="Erklärung">
+          <th title="Anzahl der Verbindungen zwischen den Sektoren im Netzwerk">
             Brücken
             <span class="icon">
               <font-awesome-icon icon="info-circle" />
@@ -73,7 +81,9 @@
           </td>
         </tr>
         <tr>
-          <th title="Erklärung">
+          <th
+            title="Kontakt(e), die einzelne Sektoren im Netzwerk miteinander verbinden"
+          >
             Brückenperson(en)
             <span class="icon">
               <font-awesome-icon icon="info-circle" />
@@ -89,7 +99,9 @@
           </td>
         </tr>
         <tr>
-          <th title="Erklärung">
+          <th
+            title="Kontakt(e), die ausschließlich mit der Ankerperson verbunden sind"
+          >
             Isolierte
             <span class="icon">
               <font-awesome-icon icon="info-circle" />
@@ -105,7 +117,9 @@
           </td>
         </tr>
         <tr>
-          <th title="Erklärung">
+          <th
+            title="Lebende Personen ohne aktualisierte Verbindung zur Ankerperson. Verbindungen mit anderen Personen im Netzwerk und damit indirekte Verbindung zur Ankerperson sind möglich."
+          >
             Personen ohne Kante zur Ankerperson
             <span class="icon">
               <font-awesome-icon icon="info-circle" />

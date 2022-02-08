@@ -34,7 +34,11 @@
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label">Rolle</label>
+        <label
+          class="label"
+          title="Soziale Rolle des Kontakts, Auswahlmöglichkeiten"
+          >Rolle</label
+        >
       </div>
       <div class="field-body">
         <div class="control">
@@ -71,7 +75,11 @@
 
     <div v-if="alterHuman" class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label">Geschlecht</label>
+        <label
+          class="label"
+          title="biologisches und/oder soziales Geschlecht; Kategorisierung obliegt der Ankerperson"
+          >Geschlecht</label
+        >
       </div>
       <div class="field-body">
         <div class="control">
@@ -110,7 +118,9 @@
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label">Alter</label>
+        <label class="label" title="Optional,soziales Alter der Kontaktperson"
+          >Alter</label
+        >
       </div>
       <div class="field-body">
         <div class="field">
@@ -130,7 +140,7 @@
     <div class="field is-horizontal">
       <div class="field-label is-normal"></div>
       <div class="field-body">
-        <label class="checkbox">
+        <label class="checkbox" title="Häkchen, falls Kontaktperson verstorben">
           <input type="checkbox" v-model="alterDeceased" />
           {{ SYMBOL_DECEASED }}verstorben
         </label>
@@ -139,7 +149,9 @@
 
     <div class="field is-horizontal">
       <div class="field-label">
-        <label class="label" title="Beziehung zur Ankerperson">Beziehung</label>
+        <label class="label" title="Aktualisierung der Verbindung"
+          >Beziehung</label
+        >
       </div>
       <div class="field-body">
         <div class="field">
@@ -149,21 +161,21 @@
           >
             <label
               class="radio"
-              title="Die Beziehung von Ankerperson zum Kontakt ist aktuell aufrecht."
+              title="Beziehung wird aktuell gepflegt, aktualisierte Verbindung."
             >
               <input type="radio" v-model="alterEdgeType" value="1" />
               besteht
             </label>
             <label
               class="radio"
-              title="Die Beziehung zum Kontakt betrifft zwei oder mehr Sektoren."
+              title="Anker- und Kontaktperson begegnen sich in mehreren sozialen Rollen. Beziehung erfüllt mehrere Funktionen."
             >
               <input type="radio" v-model="alterEdgeType" value="2" />
               multiplex
             </label>
             <label
               class="radio"
-              title="Derzeit gibt es keine Beziehung von Ankerperson mit dem Kontakt."
+              title="Ankerperson und diese Person pflegen zurzeit keinen Kontakt, Beziehung ist nicht aktualisiert (sondern beendet/unterbrochen)."
             >
               <input type="radio" v-model="alterEdgeType" value="0" />
               keine aktuelle Beziehung
