@@ -119,7 +119,7 @@
 
       <a href="http://www.easynwk.com/" target="_blank">Über die easyNWK</a>
       <a href="https://github.com/fhstp/easynwk-web" target="_blank"
-        >Source Code</a
+        >Source Code (Version {{ appVersion }})</a
       >
       <a href="http://www.easynwk.com/impressum/">Impressum</a>
       <img src="fhstp_sw_pos.png" width="80" height="80" />
@@ -203,6 +203,7 @@ export default defineComponent({
       open,
       save,
       openDemoData,
+      appVersion: computed(() => process.env.VUE_APP_VERSION),
       exportPNG: () => {
         downloadSVGasPNG(store.state.nwk.ego.name + ".png", "svg#nwkmap");
       },
