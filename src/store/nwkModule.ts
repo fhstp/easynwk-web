@@ -1,4 +1,4 @@
-import { Alter } from "@/data/Alter";
+import { Alter, isConnectable } from "@/data/Alter";
 import { Ego } from "@/data/Ego";
 import { NWK, initNWKasJSON, loadNWK } from "@/data/NWK";
 import { applyAdaptiveNWKDefaults } from "./adaptiveNWKDefaults";
@@ -43,7 +43,7 @@ const mutations = {
         ...payload.changes,
       };
       applyAdaptiveNWKDefaults(changedAlter, payload.changes);
-      if ("human" in payload.changes || "deceased" in payload.changes) {
+      if (!isConnectable(changedAlter)) {
         removeAllConnections(state, payload.index);
       }
       state.alteri.splice(payload.index, 1, changedAlter);

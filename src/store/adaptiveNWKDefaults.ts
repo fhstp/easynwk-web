@@ -12,7 +12,7 @@ export function applyAdaptiveNWKDefaults(
     changedAlter.edgeTypeByUser = changedAlter.edgeType;
   }
 
-  if ("human" in changes || "deceased" in changes) {
+  if ("human" in changes || "deceased" in changes || "distance" in changes) {
     if (isConnectable(changedAlter)) {
       // use remembered edge type, or by default normal edge
       changedAlter.edgeType =

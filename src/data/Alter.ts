@@ -58,10 +58,11 @@ export function naehenScore(alter: Alter): number {
 /**
  * check if the alter can be connected to the ego or another alter.
  * By definition it is not possible to have a connection to a deceased or non-human alter.
+ * Neither is it possible to have a connection to an alter placed outside the outer horizon.
  *
  * @param alter
  * @returns true, if a connection from ego or another alter is possible
  */
 export function isConnectable(alter: Alter): boolean {
-  return alter.human && !alter.deceased;
+  return alter.human && !alter.deceased && alter.distance <= 100;
 }

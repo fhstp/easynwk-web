@@ -155,10 +155,7 @@
       </div>
       <div class="field-body">
         <div class="field">
-          <fieldset
-            :disabled="!alterHuman || alterDeceased"
-            class="control radio-group"
-          >
+          <fieldset :disabled="!isConnectable" class="control radio-group">
             <label
               class="radio"
               title="Beziehung wird aktuell gepflegt, aktualisierte Verbindung."
@@ -241,7 +238,7 @@
 import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useStore } from "@/store";
 
-import { Alter } from "@/data/Alter";
+import { Alter, isConnectable } from "@/data/Alter";
 import { Gender } from "@/data/Gender";
 import { Roles } from "@/data/Roles";
 import { SYMBOL_DECEASED } from "@/assets/utils";
@@ -392,6 +389,7 @@ export default defineComponent({
       alterGender: accessor("currentGender"),
       alterDeceased: accessor("deceased"),
       alterEdgeType: accessor("edgeType"),
+      isConnectable: computed(() => isConnectable(props.alter as Alter)),
       commitEdit,
       cancelEdit,
       focusRole,
