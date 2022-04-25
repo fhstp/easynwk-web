@@ -1,0 +1,19 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: easyNWK
+message: >-
+  "If you use this software, please cite it as
+  below."
+type: software
+authors:
+  - given-names: Alexander
+    family-names: Rind
+    orcid: 'https://orcid.org/0000-0001-8788-4600'
+    affiliation: >-
+      St. Pölten University of Applied Sciences,
+      Austria
+repository-code: 'https://github.com/fhstp/easynwk-web'
+url: 'https://www.easynwk.com/'
+license: MIT
