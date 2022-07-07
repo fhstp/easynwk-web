@@ -83,38 +83,7 @@
           <span>Kennzahlen</span>
         </button>
 
-        <button class="button" @click="togglePseudonyms">
-          <span class="icon">
-            <font-awesome-icon icon="user-secret" />
-          </span>
-          <span v-if="pseudonyms">De-Anonymisieren</span>
-          <span v-else>Anonymisieren</span>
-          <span></span>
-        </button>
 
-        <button class="button" @click.stop="toggleHorizons">
-          <span class="icon">
-            <font-awesome-icon icon="rss" />
-          </span>
-          <span v-if="horizons">Horizonte aus</span>
-          <span v-else>Horizonte ein</span>
-        </button>
-
-        <button class="button" @click.stop="toggleConnections">
-          <span class="icon">
-            <font-awesome-icon icon="project-diagram" />
-          </span>
-          <span v-if="connections">Verbindungen aus</span>
-          <span v-else>Verbindungen ein</span>
-        </button>
-
-        <button class="button" @click.stop="toggleAlteriNames">
-          <span class="icon">
-            <font-awesome-icon icon="font" />
-          </span>
-          <span v-if="alteriNames">Kontaktnamen aus</span>
-          <span v-else>Kontaktnamen ein</span>
-        </button>
       </div>
 
       <a href="http://www.easynwk.com/" target="_blank">Über die easyNWK</a>
