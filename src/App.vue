@@ -5,5 +5,11 @@
   </div>
   <router-view />
 </template>
-
+<script>
+export default {
+  created() {
+    document.documentElement.setAttribute('lang', 'de')
+  }
+}
+</script>
 <style></style>
