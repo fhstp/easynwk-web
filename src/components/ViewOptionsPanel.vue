@@ -1,24 +1,16 @@
 <template>
   <div class="panel">
-    <p class="panel-heading">
+    <p class="panel-heading" @click.stop="isOpen = ! isOpen">
       <span>Ansichtseinstellungen</span>
-      <span class="buttons are-small right">
-        <button id="btn-toggle" class="button" @click.stop="toggle">
-          <span id="icon-span" class="icon is-small">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-              <!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
-              <path
-                d="M192 384c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L192 306.8l137.4-137.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-160 160C208.4 380.9 200.2 384 192 384z"
-              />
-            </svg>
-          </span>
-        </button>
+      <span class="icon is-medium clickAble right">
+        <font-awesome-icon v-if="isOpen" icon="chevron-up" />
+        <font-awesome-icon v-else icon="chevron-down" size="1x" />
       </span>
     </p>
     <form class="panel-block form">
       <div class="field is-horizontal">
         <div class="field-body">
-          <div id="view-settings" class="field invis">
+          <div id="view-settings" class="field" v-if="isOpen">
             <div class="control">
               <div class="buttons">
               <a class="button" @click="togglePseudonyms">
@@ -68,26 +60,15 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, ref, computed, onMounted, watch } from "vue";
+<script lang="ts">
+import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
 
 export default defineComponent({
-  setup(props, { emit }) {
+  setup() {
     const store = useStore();
 
-    const toggle = () => {
-      const btn = document.querySelector("#icon-span");
-      const el = document.querySelector("#view-settings");
-      if (el.classList.contains("invis")) {
-        el.classList.remove("invis");
-        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M352 352c-8.188 0-16.38-3.125-22.62-9.375L192 205.3l-137.4 137.4c-12.5 12.5-32.75 12.5-45.25 0s-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25C368.4 348.9 360.2 352 352 352z"/></svg>`;
-      } else {
-        el.classList.add("invis");
-        btn.innerHTML = `          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M192 384c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L192 306.8l137.4-137.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-160 160C208.4 380.9 200.2 384 192 384z"/></svg>
-`;
-      }
-    };
+    const isOpen = ref(false);
 
     return {
       pseudonyms: computed(() => store.state.pseudonym.active),
@@ -98,22 +79,13 @@ export default defineComponent({
       toggleConnections: () => store.commit("view/toggle", "connections"),
       alteriNames: computed(() => store.state.view.alteriNames),
       toggleAlteriNames: () => store.commit("view/toggle", "alteriNames"),
-      toggle,
+      isOpen: isOpen,
     };
   },
 });
 </script>
 
 <style lang="scss">
-.invis {
-  display: none;
-  float: right;
-}
-
-.btn-toggle {
-  display: inline-flex;
-}
-
 .right {
   float: right;
 }
