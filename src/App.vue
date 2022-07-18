@@ -5,11 +5,11 @@
   </div>
   <router-view />
 </template>
-<script>
+<script lang="ts">
 export default {
-  created() {
-    document.documentElement.setAttribute('lang', 'de')
-  }
-}
+  created(): void {
+    document.documentElement.setAttribute("lang", "de");
+  },
+};
 </script>
 <style></style>
