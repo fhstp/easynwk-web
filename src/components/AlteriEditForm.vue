@@ -1,17 +1,17 @@
 <template>
-  <p class="label" v-if="addingNewAlter">Kontakt hinzufügen</p>
-  <p class="label" v-else>Kontakt bearbeiten</p>
+  <p class="label" v-if="addingNewAlter">{{ translate("contactsMsg3") }}</p>
+  <p class="label" v-else>{{ translate("contactsMsg4") }}</p>
   <form class="form" @submit.prevent="editAlterFinished">
     <div class="field has-text-danger" v-if="invalidPosition">
       <span class="icon is-small">
         <font-awesome-icon icon="exclamation-triangle" />
       </span>
-      Die Position in der Karte muss noch festgelegt werden.
+      {{ translate("positionMsg") }}
     </div>
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label">Name</label>
+        <label class="label">{{ translate("nameMsg") }}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -24,21 +24,19 @@
               @blur="commitEdit($event, 'name')"
               @keyup.esc="cancelEdit($event, 'name')"
               type="text"
-              placeholder="Vorname oder Spitzname"
+              :placeholder="translate('nameMsg2')"
             />
           </div>
-          <p class="help">Pflichtfeld</p>
+          <p class="help">{{ translate("fieldMsg") }}</p>
         </div>
       </div>
     </div>
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label
-          class="label"
-          title="Soziale Rolle des Kontakts, Auswahlmöglichkeiten"
-          >Rolle</label
-        >
+        <label class="label" title="{{ translate('titleMsg1')}}">{{
+          translate("roleMsg")
+        }}</label>
       </div>
       <div class="field-body">
         <div class="control">
@@ -64,7 +62,9 @@
 
     <div class="field is-horizontal">
       <div class="field-label">
-        <label class="label checkbox" for="chk-human">Mensch</label>
+        <label class="label checkbox" for="chk-human">{{
+          translate("humanMsg")
+        }}</label>
       </div>
       <div class="field-body">
         <label>
@@ -75,11 +75,9 @@
 
     <div v-if="alterHuman" class="field is-horizontal">
       <div class="field-label is-normal">
-        <label
-          class="label"
-          title="biologisches und/oder soziales Geschlecht; Kategorisierung obliegt der Ankerperson"
-          >Geschlecht</label
-        >
+        <label class="label" title="{{ translate('genderMsg1')}}">{{
+          translate("genderMsg2")
+        }}</label>
       </div>
       <div class="field-body">
         <div class="control">
@@ -99,7 +97,7 @@
 
     <div v-else class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label">Kategorie</label>
+        <label class="label">{{ translate("categoryMsg") }}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -118,9 +116,9 @@
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" title="Optional,soziales Alter der Kontaktperson"
-          >Alter</label
-        >
+        <label class="label" title="{{ translate('ageMsg1')}}">{{
+          translate("ageMsg2")
+        }}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -140,42 +138,33 @@
     <div class="field is-horizontal">
       <div class="field-label is-normal"></div>
       <div class="field-body">
-        <label class="checkbox" title="Häkchen, falls Kontaktperson verstorben">
+        <label class="checkbox" title="{{ translate('deadMsg2')}}">
           <input type="checkbox" v-model="alterDeceased" />
-          {{ SYMBOL_DECEASED }}verstorben
+          {{ SYMBOL_DECEASED }}{{ translate("deadMsg2") }}
         </label>
       </div>
     </div>
 
     <div class="field is-horizontal">
       <div class="field-label">
-        <label class="label" title="Aktualisierung der Verbindung"
-          >Beziehung</label
-        >
+        <label class="label" title="{{ translate('connectionMsg')}}">{{
+          translate("connectionMsg2")
+        }}</label>
       </div>
       <div class="field-body">
         <div class="field">
           <fieldset :disabled="!isConnectable" class="control radio-group">
-            <label
-              class="radio"
-              title="Beziehung wird aktuell gepflegt, aktualisierte Verbindung."
-            >
+            <label class="radio" title="{{ translate('connectionMsg3')}}">
               <input type="radio" v-model="alterEdgeType" value="1" />
-              besteht
+              {{ translate("connectionMsg4") }}
             </label>
-            <label
-              class="radio"
-              title="Anker- und Kontaktperson begegnen sich in mehreren sozialen Rollen. Beziehung erfüllt mehrere Funktionen."
-            >
+            <label class="radio" title="{{ translate('connectionMsg5')}}">
               <input type="radio" v-model="alterEdgeType" value="2" />
-              multiplex
+              {{ translate("connectionMsg6") }}
             </label>
-            <label
-              class="radio"
-              title="Ankerperson und diese Person pflegen zurzeit keinen Kontakt, Beziehung ist nicht aktualisiert (sondern beendet/unterbrochen)."
-            >
+            <label class="radio" title="{{ translate('connectionMsg7')}}">
               <input type="radio" v-model="alterEdgeType" value="0" />
-              keine aktuelle Beziehung
+              {{ translate("connectionMsg8") }}
             </label>
           </fieldset>
         </div>
@@ -189,7 +178,7 @@
           :value="alter.note"
           @blur="commitEdit($event, 'note')"
           @keyup.esc="cancelEdit($event, 'note')"
-          placeholder="Notizen zum Kontakt"
+          :placeholder="translate('notesMsg')"
         ></textarea>
       </div>
     </div>
@@ -206,7 +195,7 @@
           ref="domButton"
           :disabled="invalidName || invalidPosition"
         >
-          {{ addingNewAlter ? "Nächster Kontakt" : "Schließen" }}
+          {{ addingNewAlter ? translate("contactsMsg5") : "Schließen" }}
         </button>
       </p>
       <p class="control">
@@ -217,7 +206,7 @@
           type="button"
           @mouseup.prevent="editAlterFinished(false)"
         >
-          Schließen
+          {{ translate("closeMsg") }}
         </button>
       </p>
       <p class="control">
@@ -227,7 +216,7 @@
           type="button"
           @mouseup.prevent="cancelAddAlter"
         >
-          Abbrechen
+          {{ translate("cancelMsg") }}
         </button>
       </p>
     </div>
@@ -242,6 +231,8 @@ import { Alter, isConnectable } from "@/data/Alter";
 import { Gender } from "@/data/Gender";
 import { Roles } from "@/data/Roles";
 import { SYMBOL_DECEASED } from "@/assets/utils";
+import de from "@/de";
+import en from "@/en";
 type InputType = HTMLInputElement | HTMLTextAreaElement;
 
 // gender & role options
@@ -251,6 +242,18 @@ type InputType = HTMLInputElement | HTMLTextAreaElement;
 // emit edit-finished
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    translate(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
+  data() {
+    return {
+      lang: "de",
+    };
+  },
   props: {
     // gets Alter as prop cp. ToDo demo
     alter: {

@@ -1,4 +1,8 @@
 <template>
+  <select name="lang" v-model="lang" @change="onLangChange($event)">
+    <option value="de">Deutsch</option>
+    <option value="en">English</option>
+  </select>
   <div id="container">
     <ErrorBoundary>
       <!-- TODO use slots to separate layout from logic https://vuejs.org/v2/guide/components.html#Content-Distribution-with-Slots -->
@@ -13,19 +17,27 @@
             <UndoRedo />
           </div>
           <div id="egobar">
-            <EgoHeader v-if="!egoEditMode" @edit="egoEditMode = true" />
+            <EgoHeader
+              v-if="!egoEditMode"
+              @edit="egoEditMode = true"
+              :key="langKey"
+            />
           </div>
 
           <div id="forms">
-            <EgoEditForm v-if="egoEditMode" @edit-finished="editEgoFinished" />
+            <EgoEditForm
+              v-if="egoEditMode"
+              @edit-finished="editEgoFinished"
+              :key="langKey"
+            />
 
-            <AlteriPanel v-if="!egoEditMode" />
+            <AlteriPanel v-if="!egoEditMode" :key="langKey" />
             <StatisticsPanel v-if="$store.state.view.statistics" />
           </div>
         </div>
       </div>
       <div id="chart">
-        <NetworkMap @map-click="mapclick" />
+        <NetworkMap @map-click="mapclick" :key="langKey" />
       </div>
     </ErrorBoundary>
   </div>
@@ -55,6 +67,19 @@ export default defineComponent({
     SideMenu,
     UndoRedo,
     StatisticsPanel,
+  },
+
+  methods: {
+    onLangChange(event: any) {
+      document.documentElement.setAttribute("lang", event.target.value);
+      this.langKey = document.documentElement.lang;
+    },
+  },
+  data: function () {
+    return {
+      lang: "de",
+      langKey: "de",
+    };
   },
 
   setup() {

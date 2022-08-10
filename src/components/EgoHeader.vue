@@ -1,13 +1,13 @@
 <template>
   <div id="ego">
-    Ankerperson:&nbsp;
+    {{ translate("anchorMsg") }}:&nbsp;
     <b>{{ displayName }}</b>
     &nbsp;
     <span v-if="egoAge">/ {{ egoAge }} </span>
     &nbsp;
     <button
       class="button is-small"
-      title="Ankerperson bearbeiten"
+      :title="translate('anchorMsg2')"
       v-on:click="$emit('edit')"
     >
       <span class="icon">
@@ -20,9 +20,23 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
 import { useStore } from "@/store";
+import de from "@/de";
+import en from "@/en";
 // import { Ego } from "@/data/Ego";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    translate(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
+  data() {
+    return {
+      lang: "de",
+    };
+  },
   setup() {
     const store = useStore();
 

@@ -1,12 +1,12 @@
 <template>
   <nav class="panel">
     <p class="panel-heading">
-      <span>Ankerperson</span>
+      <span>{{ translate("anchorMsg") }}</span>
     </p>
     <form class="panel-block form" @submit.prevent="editEgoFinished">
       <div class="field is-horizontal">
         <div class="field-label is-normal">
-          <label class="label">Name</label>
+          <label class="label">{{ translate("nameMsg") }}</label>
         </div>
         <div class="field-body">
           <div class="field">
@@ -19,17 +19,17 @@
                 @blur="commitEdit($event, 'name')"
                 @keyup.esc="cancelEdit($event, 'name')"
                 type="text"
-                placeholder="Wer steht im Zentrum der NWK?"
+                :placeholder="translate('centerMsg')"
               />
             </div>
-            <p class="help">Pflichtfeld</p>
+            <p class="help">{{ translate("fieldMsg") }}</p>
           </div>
         </div>
       </div>
 
       <div class="field is-horizontal">
         <div class="field-label is-normal">
-          <label class="label">Geschlecht</label>
+          <label class="label">{{ translate("genderMsg2") }}</label>
         </div>
         <div class="field-body">
           <div class="control">
@@ -46,7 +46,7 @@
 
       <div class="field is-horizontal">
         <div class="field-label is-normal">
-          <label class="label">Alter</label>
+          <label class="label">{{ translate("ageMsg2") }}</label>
         </div>
         <div class="field-body">
           <div class="field">
@@ -70,7 +70,7 @@
             :value="$store.state.nwk.ego.note"
             @blur="commitEdit($event, 'note')"
             @keyup.esc="cancelEdit($event, 'note')"
-            placeholder="Notizen zum Kontakt"
+            :placeholder="translate('notesMsg')"
           ></textarea>
         </div>
       </div>
@@ -78,7 +78,7 @@
       <div class="field is-grouped is-grouped-centered">
         <p class="control">
           <button class="button is-primary" :disabled="invalidName">
-            Schließen
+            {{ translate("closeMsg") }}
           </button>
         </p>
       </div>
@@ -92,10 +92,24 @@ import { useStore } from "@/store";
 
 import { Ego } from "@/data/Ego";
 import { Gender } from "@/data/Gender";
+import de from "@/de";
+import en from "@/en";
 
 type InputType = HTMLInputElement | HTMLTextAreaElement;
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    translate(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
+  data() {
+    return {
+      lang: "de",
+    };
+  },
   setup(props, { emit }) {
     const store = useStore();
 

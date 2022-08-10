@@ -75,15 +75,23 @@
     </g>
 
     <g id="sectors">
-      <text x="100" y="-100" text-anchor="end">{{ Sectors[0] }}</text>
-      <text x="-100" y="-100" text-anchor="start">{{ Sectors[1] }}</text>
-      <text x="-100" y="100" text-anchor="start">{{ Sectors[2] }}</text>
-      <text x="100" y="100" text-anchor="end">{{ Sectors[3] }}</text>
+      <text x="100" y="-100" text-anchor="end">
+        {{ langIsGerman() ? Sectors[0] : SectorsEng[0] }}
+      </text>
+      <text x="-100" y="-100" text-anchor="start">
+        {{ langIsGerman() ? Sectors[1] : SectorsEng[1] }}
+      </text>
+      <text x="-100" y="100" text-anchor="start">
+        {{ langIsGerman() ? Sectors[2] : SectorsEng[2] }}
+      </text>
+      <text x="100" y="100" text-anchor="end">
+        {{ langIsGerman() ? Sectors[3] : SectorsEng[3] }}
+      </text>
     </g>
 
     <text v-if="isEditMode" text-anchor="middle" class="edithint">
-      <tspan x="0" y="-1em">Klicke in die Karte, um</tspan>
-      <tspan x="0" dy="2em">die Position festzulegen</tspan>
+      <tspan x="0" y="-1em">{{ translate("clickMsg1") }}</tspan>
+      <tspan x="0" dy="2em">{{ translate("clickMsg2") }}</tspan>
     </text>
 
     <g id="marks">
@@ -149,7 +157,7 @@
           :dx="mark.x < 0 ? -3 : 3"
           :dy="mark.y < 0 ? -1 : 4"
         >
-          {{ mark.label }}
+          {{ renderLabel(mark) }}
         </text>
       </g>
       <use
@@ -180,11 +188,14 @@
 <script lang="ts">
 import { defineComponent, computed, onMounted } from "vue";
 import { useStore } from "@/store";
+import { getRoleAbbrev } from "../data/Roles";
+import de from "@/de.ts";
+import en from "@/en.ts";
 
 import * as d3 from "d3";
 // import { ContainerElement } from "d3";
 import { Alter, isConnectable } from "@/data/Alter";
-import { Sectors } from "@/data/Sectors";
+import { Sectors, SectorsEng } from "@/data/Sectors";
 import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
@@ -211,6 +222,23 @@ interface ConnectionMark {
 // emit "map-click" (which is not currently used)
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    translate(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+    langIsGerman() {
+      if (document.documentElement.lang == "de") return true;
+      else return false;
+    },
+  },
+  data() {
+    return {
+      lang: "de",
+    };
+  },
+
   setup(props, { emit }) {
     const store = useStore();
 
@@ -251,6 +279,25 @@ export default defineComponent({
         emit("map-click", { distance, angle });
       });
     });
+
+    const getRoleShort = (role: string) => {
+      return getRoleAbbrev(role);
+    };
+
+    const markDetails = computed(() => store.state.view.details);
+
+    const renderLabel = (mark: AlterMark) => {
+      console.log(document.documentElement.lang);
+      if (markDetails.value && mark.d.age) {
+        return (
+          mark.label + " / " + getRoleShort(mark.d.role) + " / " + mark.d.age
+        );
+      } else if (markDetails.value && !mark.d.age) {
+        return mark.label + " / " + getRoleShort(mark.d.role);
+      } else {
+        return mark.label;
+      }
+    };
 
     let clickTimeoutId: number | null = null;
     const clickAlter = (alter: Alter) => {
@@ -344,12 +391,16 @@ export default defineComponent({
       isEditMode,
       isConnectMode,
       clickAlter,
+      getRoleShort,
+      renderLabel,
       alteriMarks,
       connectionMarks,
       alteriNames: computed(() => store.state.view.alteriNames),
       showHorizons: computed(() => store.state.view.horizons),
       connections: computed(() => store.state.view.connections),
+      details: computed(() => store.state.view.details),
       Sectors,
+      SectorsEng,
       SYMBOL_DECEASED,
       // TODO browser detection b/c vector-effect seems not to work in Safari only as of 14 Dec 2021
       useTextBG: computed(

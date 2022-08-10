@@ -6,6 +6,7 @@ export interface ViewOptionsFlags {
   connections: boolean;
   alteriNames: boolean;
   statistics: boolean;
+  details: boolean;
 }
 
 export interface ViewOptionsState extends ViewOptionsFlags {
@@ -21,6 +22,7 @@ export function initViewOptionsState(): ViewOptionsState {
     connections: true,
     alteriNames: true,
     statistics: false,
+    details: false,
 
     selected: new Set<number>(),
     editIndex: null,

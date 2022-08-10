@@ -5,6 +5,8 @@ export const Sectors = [
   "prof. Helfer*innen",
 ];
 
+export const SectorsEng = ["Family", "Friends", "Colleagues", "prof. helpers"];
+
 export const SectorDefaultRoles = [
   "Familienangehörige*r",
   "Freund*in",

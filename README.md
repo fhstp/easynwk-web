@@ -9,8 +9,9 @@ This tool supports the collection, reflection, and analysis of contact persons
 for social support.
 
 This projects is a follow-up to:
-* [easyNWK 1.5](http://www.easynwk.com/) developed in Java 6 by Nikolaus Kelis
-* [bachelor project](https://github.com/monitra93/bak2) by Monika Trajkovic
+
+- [easyNWK 1.5](http://www.easynwk.com/) developed in Java 6 by Nikolaus Kelis
+- [bachelor project](https://github.com/monitra93/bak2) by Monika Trajkovic
 
 ## Development lifecycle
 

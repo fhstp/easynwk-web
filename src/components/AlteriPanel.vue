@@ -1,11 +1,11 @@
 <template>
   <nav class="panel">
     <p class="panel-heading">
-      <span>Kontakte</span>
+      <span>{{ translate("contactsMsg6") }}</span>
       <span class="buttons are-small">
         <button
           class="button"
-          title="Kontakt hinzufügen"
+          title="{{ translate('contactsMsg3') }}"
           @click.stop="addAlter"
           :disabled="!isAlterOpsAllowed"
         >
@@ -21,12 +21,12 @@
       </span>
     </p>
     <p class="panel-block" style="display: block" v-if="alteri.length < 1">
-      Noch keine Kontakte vorhanden.<br />
-      Klicken Sie auf den Button mit dem
+      {{ translate("contactsMsg7") }}<br />
+      {{ translate("contactsMsg8") }}
       <span class="icon is-small">
         <font-awesome-icon icon="user-plus" />
       </span>
-      Symbol, um Kontakte in der Netzwerkkarte anzulegen.
+      {{ translate("contactsMsg9") }}
     </p>
 
     <AlteriPanelEntry
@@ -43,11 +43,25 @@ import { defineComponent, computed } from "vue";
 import { useStore } from "@/store";
 
 import AlteriPanelEntry from "@/components/AlteriPanelEntry.vue";
+import de from "@/de";
+import en from "@/en";
 
 // handle from below: edit, edit-finished, <del>remove-alter</del> --> vuex store
 // manages the edited-alter (from above or by itself) --> vuex store
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    translate(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
+  data() {
+    return {
+      lang: "de",
+    };
+  },
   components: { AlteriPanelEntry },
   setup() {
     const store = useStore();

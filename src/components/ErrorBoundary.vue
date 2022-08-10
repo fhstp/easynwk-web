@@ -4,20 +4,20 @@
     <div class="modal-content">
       <!-- Any other Bulma elements you want -->
       <div class="notification is-warning">
-        <h3 class="title">Irgendetwas ist schief gelaufen :-(</h3>
+        <h3 class="title">{{ translate("errorMsg") }}</h3>
 
         <p class="block" v-if="canUndo">
-          Mit <b>"Rückgängig"</b> kann der Fehler möglicherweiser behoben
-          werden.
+          {{ translate("errorMsg2") }}
         </p>
 
         <p class="block">
-          Mit <b>"Zwischenspeicher löschen"</b> können Sie easyNWK in den
-          Auslieferungszustand zurücksetzen. <i>Achtung:</i> Dabei gehen die
-          momentan bearbeiteten Daten verloren.
+          {{ translate("errorMsg3") }} <i>{{ translate("errorMsg4") }}</i>
+          {{ translate("errorMsg5") }}
         </p>
 
-        <p><b>Zwischengespeicherte Daten:</b> (können kopiert werden)</p>
+        <p>
+          <b>{{ translate("errorMsg6") }}</b> {{ translate("errorMsg7") }}
+        </p>
         <pre class="block">{{ vuexDump }}</pre>
 
         <div class="buttons">
@@ -30,14 +30,14 @@
             <span class="icon">
               <font-awesome-icon icon="undo" />
             </span>
-            <span>Rückgängig</span>
+            <span>{{ translate("backMsg") }}</span>
           </button>
 
           <button class="button is-danger" @click="resetLocalData">
             <span class="icon">
               <font-awesome-icon icon="trash-alt" />
             </span>
-            <span>Zwischenspeicher löschen</span>
+            <span>{{ translate("tempMsg") }}</span>
           </button>
         </div>
       </div>
@@ -49,8 +49,22 @@
 <script lang="ts">
 import { defineComponent, onErrorCaptured, ref, computed } from "vue";
 import { useStore } from "@/store";
+import de from "@/de";
+import en from "@/en";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    translate(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
+  data() {
+    return {
+      lang: "de",
+    };
+  },
   setup() {
     const store = useStore();
 

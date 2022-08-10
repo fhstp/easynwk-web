@@ -19,7 +19,7 @@
     <span class="buttons are-small" v-if="!isEditMode && isAlterOpsAllowed">
       <button
         class="button is-small"
-        title="Kontakt bearbeiten"
+        :title="translate('contactsMsg4')"
         @click.stop="edit()"
       >
         <span class="icon is-small">
@@ -28,7 +28,7 @@
       </button>
       <button
         class="button is-small"
-        title="Beziehungen des Kontakts bearbeiten"
+        :title="translate('contactsMsg10')"
         :disabled="isConnectionDisabled"
         @click.stop="editConnections()"
       >
@@ -38,7 +38,7 @@
       </button>
       <button
         class="button is-small"
-        title="Kontakt entfernen"
+        :title="translate('contactsMsg11')"
         v-on:click.stop="removeAlter"
       >
         <span class="icon is-small">
@@ -62,8 +62,22 @@ import AlteriEditForm from "@/components/AlteriEditForm.vue";
 import AlteriConnectionList from "@/components/AlteriConnectionList.vue";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { Alter, isConnectable } from "@/data/Alter";
+import de from "@/de";
+import en from "@/en";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    translate(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
+  data() {
+    return {
+      lang: "de",
+    };
+  },
   components: { AlteriEditForm, AlteriConnectionList },
   props: {
     // gets Alter as prop cp. ToDo demo
