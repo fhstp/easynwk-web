@@ -82,8 +82,6 @@
           </span>
           <span>Kennzahlen</span>
         </button>
-
-
       </div>
 
       <a href="http://www.easynwk.com/" target="_blank">Über die easyNWK</a>
