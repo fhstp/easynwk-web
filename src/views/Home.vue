@@ -20,7 +20,7 @@
             <EgoEditForm v-if="egoEditMode" @edit-finished="editEgoFinished" />
 
             <AlteriPanel v-if="!egoEditMode" />
-            <FeatureBar />
+            <ViewOptionsPanel />
             <StatisticsPanel v-if="$store.state.view.statistics" />
           </div>
         </div>
@@ -57,7 +57,7 @@ export default defineComponent({
     SideMenu,
     UndoRedo,
     StatisticsPanel,
-    FeatureBar: ViewOptionsPanel,
+    ViewOptionsPanel,
   },
 
   setup() {
