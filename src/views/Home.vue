@@ -30,8 +30,8 @@
               @edit-finished="editEgoFinished"
               :key="langKey"
             />
-
             <AlteriPanel v-if="!egoEditMode" :key="langKey" />
+            <ViewOptionsPanel />
             <StatisticsPanel v-if="$store.state.view.statistics" />
           </div>
         </div>
@@ -56,6 +56,7 @@ import SideMenu from "@/components/SideMenu.vue";
 import NetworkMap from "@/components/NetworkMap.vue";
 import UndoRedo from "@/components/UndoRedo.vue";
 import StatisticsPanel from "@/components/StatisticsPanel.vue";
+import ViewOptionsPanel from "@/components/ViewOptionsPanel.vue";
 
 export default defineComponent({
   components: {
@@ -67,6 +68,7 @@ export default defineComponent({
     SideMenu,
     UndoRedo,
     StatisticsPanel,
+    ViewOptionsPanel,
   },
 
   methods: {
