@@ -9,7 +9,7 @@
   </div>
   <router-view />
 </template>
-<script>
+<script lang="ts">
 export default {
   created(): void {
     document.documentElement.setAttribute("lang", "de");
