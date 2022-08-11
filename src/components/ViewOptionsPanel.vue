@@ -7,20 +7,20 @@
         <font-awesome-icon v-else icon="chevron-down" size="1x" />
       </span>
     </p>
-    <form class="panel-block form">
+    <div class="panel-block form">
       <div class="field is-horizontal">
         <div class="field-body">
           <div id="view-settings" class="field" v-if="isOpen">
             <div class="control">
               <div class="buttons">
-                <a class="button" @click="togglePseudonyms">
+                <button class="button" @click.stop="togglePseudonyms">
                   <span class="icon">
                     <font-awesome-icon icon="user-secret" />
                   </span>
                   <span v-if="pseudonyms">De-Anonymisieren</span>
                   <span v-else>Anonymisieren</span>
                   <span></span>
-                </a>
+                </button>
 
                 <button class="button" @click.stop="toggleHorizons">
                   <span class="icon">
@@ -52,7 +52,7 @@
           </div>
         </div>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
