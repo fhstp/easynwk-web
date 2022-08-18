@@ -74,6 +74,15 @@
           <span>Kennzahlen exportieren</span>
         </button>
 
+        <a href="/#/Pdf" target="_blank">
+          <button class="button">
+            <span class="icon">
+              <font-awesome-icon icon="file-csv" />
+            </span>
+            <span>PDF erstellen</span>
+          </button>
+        </a>
+
         <p><br /></p>
 
         <button class="button" @click="showStatistics">
