@@ -1,5 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
+import Pdf from "../views/Pdf.vue";
+
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -15,6 +17,11 @@ const routes: Array<RouteRecordRaw> = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
+  },
+  {
+    path: "/pdf",
+    name: "Pdf",
+    component: Pdf,
   },
 ];
 
