@@ -1,5 +1,4 @@
 <template>
-
   <button class="button" @click="createPdf">
     <span class="icon">
       <font-awesome-icon icon="fa-solid fa-file-pdf" />
@@ -21,22 +20,34 @@
     <div id="egobar">
       <EgoHeader />
     </div>
-    <AlteriPanel /> <!--To Do: genaue Informationen sollen angezeigt werden -->
+      <div v-for="(alter, index) in alteri" v-bind:key="index" class="connection">
+        {{ alter.name }}, {{ alter.role }}, Mensch: {{alter.human}}, {{ alter.currentGender }}, {{ alter.age }}, Verstorben: {{ alter.deceased }}, {{ alter.note }}
+      </div>
     <NetworkMap />
   </div>
 </template>
 <script>
 import EgoHeader from "@/components/EgoHeader";
-import AlteriPanel from "@/components/AlteriPanel";
 import NetworkMap from "@/components/NetworkMap";
 import "@/components/ViewOptionsPanel";
+import { useStore } from "@/store";
+import { computed } from "vue";
 
 export default {
   name: "Pdf",
   components: {
     EgoHeader,
-    AlteriPanel,
     NetworkMap,
+  },
+  setup() {
+    const store = useStore();
+
+    // knows list of Alter from vuex
+    const alteri = computed(() => store.state.nwk.alteri);
+
+    return {
+      alteri,
+    };
   },
   methods: {
     createPdf,
@@ -55,9 +66,9 @@ export function createPdf() {
   }
   const el = document.getElementById("print");
   const w = window.open(
-      "",
-      "",
-      "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
+    "",
+    "",
+    "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
   );
   w.document.write(`<!DOCTYPE html>
         <html>
@@ -76,6 +87,10 @@ export function createPdf() {
 </script>
 
 <style scoped>
+.connection{
+  padding: 3px 0;
+
+}
 #brand {
   margin: 0 0.5em;
   font-weight: bold;
@@ -101,7 +116,8 @@ export function createPdf() {
   flex-wrap: nowrap;
   display: flex;
 }
-@media print { /*To Do: Schwarz-Weiß*/
+@media print {
+  /*To Do: Schwarz-Weiß*/
   #titlebar {
     background: #005096 !important;
     -webkit-print-color-adjust: exact;
