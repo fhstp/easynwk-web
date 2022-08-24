@@ -74,10 +74,11 @@
           <span>Kennzahlen exportieren</span>
         </button>
 
-        <a href="/#/Pdf" target="_blank"> <!-- Button richtig stylen-->
-          <button class="button">
+        <a href="/#/Pdf" target="_blank" class="nostyle">
+          <!-- Button richtig stylen-->
+          <button class="button button-link">
             <span class="icon">
-              <font-awesome-icon icon="fa-solid fa-file-pdf" />
+              <font-awesome-icon icon="file-pdf" />
             </span>
             <span>PDF erstellen</span>
           </button>
@@ -206,6 +207,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.nostyle {
+  text-decoration: none;
+  padding: 0;
+}
+.button-link {
+  margin: -8px 0 0 -32px !important;
+}
 .button.is-burger {
   color: white;
   width: 2.5rem;

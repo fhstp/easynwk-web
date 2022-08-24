@@ -6,7 +6,7 @@
     <span>Create PDF</span>
   </button>
 
-  <button class="button" @click="this.$tabs.close()">
+  <button class="button" onclick="window.close()">
     <span class="icon">
       <font-awesome-icon icon="fa-solid fa-square-xmark" />
     </span>
@@ -20,9 +20,24 @@
     <div id="egobar">
       <EgoHeader />
     </div>
-      <div v-for="(alter, index) in alteri" v-bind:key="index" class="connection">
-        {{ alter.name }}, {{ alter.role }}, Mensch: {{alter.human}}, {{ alter.currentGender }}, {{ alter.age }}, Verstorben: {{ alter.deceased }}, {{ alter.note }}
+    <div class="columns">
+      <div class="column">
+        <p class="panel-heading">Kontakte</p>
+        <div
+          v-for="(alter, index) in alteri"
+          v-bind:key="index"
+          class="panel-block"
+        >
+          <p class="name">{{ alter.name }}</p>
+          <p>{{ alter.role }}</p>
+          <p>{{ alter.age.length >= 1 ? "Alter: " + alter.age : "" }}</p>
+          <p>Mensch: {{ alter.human ? "Ja" : "Nein" }}</p>
+          <p>Geschlecht: {{ alter.currentGender }}</p>
+          <p>Verstorben: {{ alter.deceased ? "Ja" : "Nein" }}</p>
+          <p>{{ alter.note.length >= 1 ? "Notiz: " + alter.note : "" }}</p>
+        </div>
       </div>
+    </div>
     <NetworkMap />
   </div>
 </template>
@@ -87,9 +102,16 @@ export function createPdf() {
 </script>
 
 <style scoped>
-.connection{
+.connection {
   padding: 3px 0;
-
+}
+.name {
+  font-weight: bold;
+}
+.panel-block {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
 }
 #brand {
   margin: 0 0.5em;
@@ -124,6 +146,10 @@ export function createPdf() {
   }
   #egobar {
     background: #ffc37d !important;
+    -webkit-print-color-adjust: exact;
+  }
+  .panel-heading {
+    background: #dbdbdb !important;
     -webkit-print-color-adjust: exact;
   }
 }
