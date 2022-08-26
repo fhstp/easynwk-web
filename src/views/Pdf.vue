@@ -31,9 +31,9 @@
           <p class="name">{{ alter.name }}</p>
           <p>{{ alter.role }}</p>
           <p>{{ alter.age.length >= 1 ? "Alter: " + alter.age : "" }}</p>
-          <p>Mensch: {{ alter.human ? "Ja" : "Nein" }}</p>
+          <p>{{ alter.human ? "" : "Mensch: Nein" }}</p>
           <p>Geschlecht: {{ alter.currentGender }}</p>
-          <p>Verstorben: {{ alter.deceased ? "Ja" : "Nein" }}</p>
+          <p>{{ alter.deceased ? "Verstorben: Ja" : "" }}</p>
           <p>{{ alter.note.length >= 1 ? "Notiz: " + alter.note : "" }}</p>
         </div>
       </div>
