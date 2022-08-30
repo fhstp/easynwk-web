@@ -150,6 +150,7 @@
           :dy="mark.y < 0 ? -1 : 4"
         >
           {{ mark.label }}
+          {{markDetails ? mark.d.age.length >= 1 ? "/ " + mark.d.age : "" : ""}}
         </text>
       </g>
       <use
@@ -252,6 +253,8 @@ export default defineComponent({
       });
     });
 
+    const markDetails = computed(() => store.state.view.details);
+
     let clickTimeoutId: number | null = null;
     const clickAlter = (alter: Alter) => {
       if (isConnectMode.value && store.state.view.editIndex != null) {
@@ -346,6 +349,7 @@ export default defineComponent({
       clickAlter,
       alteriMarks,
       connectionMarks,
+      markDetails,
       alteriNames: computed(() => store.state.view.alteriNames),
       showHorizons: computed(() => store.state.view.horizons),
       connections: computed(() => store.state.view.connections),

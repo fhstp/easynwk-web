@@ -47,6 +47,14 @@
                   <span v-if="alteriNames">Kontaktnamen aus</span>
                   <span v-else>Kontaktnamen ein</span>
                 </button>
+
+                <button class="button" @click.stop="toggleDetails">
+                  <span class="icon">
+                    <font-awesome-icon icon="font" />
+                  </span>
+                  <span v-if="details">Details ein</span>
+                  <span v-else>Details aus</span>
+                </button>
               </div>
             </div>
           </div>
@@ -76,6 +84,8 @@ export default defineComponent({
       alteriNames: computed(() => store.state.view.alteriNames),
       toggleAlteriNames: () => store.commit("view/toggle", "alteriNames"),
       isOpen: isOpen,
+      details: computed(() => store.state.view.details),
+      toggleDetails: () => store.commit("view/toggle", "details")
     };
   },
 });

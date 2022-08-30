@@ -130,7 +130,7 @@
               :value="alter.age"
               @blur="commitEdit($event, 'age')"
               @keyup.esc="cancelEdit($event, 'age')"
-              type="text"
+              type="number"
             />
           </div>
         </div>
