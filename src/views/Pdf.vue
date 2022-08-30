@@ -34,6 +34,7 @@
           <p>{{ alter.human ? "" : "Mensch: Nein" }}</p>
           <p>Geschlecht: {{ alter.currentGender }}</p>
           <p>{{ alter.deceased ? "Verstorben: Ja" : "" }}</p>
+          <p>Beziehung: {{alter.edgeType == 1 ? "besteht" : alter.edgeType == 2 ? "multiplex" : "keine aktuelle Beziehung"}}</p>
           <p>{{ alter.note.length >= 1 ? "Notiz: " + alter.note : "" }}</p>
         </div>
       </div>
@@ -47,6 +48,8 @@ import NetworkMap from "@/components/NetworkMap";
 import "@/components/ViewOptionsPanel";
 import { useStore } from "@/store";
 import { computed } from "vue";
+
+
 
 export default {
   name: "Pdf",
