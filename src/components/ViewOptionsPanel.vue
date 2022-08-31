@@ -50,7 +50,7 @@
 
                 <button class="button" @click.stop="toggleDetails">
                   <span class="icon">
-                    <font-awesome-icon icon="font" />
+                    <font-awesome-icon icon="info" />
                   </span>
                   <span v-if="details">Details ein</span>
                   <span v-else>Details aus</span>
@@ -58,7 +58,7 @@
 
                 <button class="button" @click.stop="toggleRoleShort">
                   <span class="icon">
-                    <font-awesome-icon icon="fa-solid fa-info" />
+                    <font-awesome-icon icon="info" />
                   </span>
                   <span v-if="roleShort">Rolle ein</span>
                   <span v-else>Rolle aus</span>
