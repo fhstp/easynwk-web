@@ -55,6 +55,14 @@
                   <span v-if="details">Details ein</span>
                   <span v-else>Details aus</span>
                 </button>
+
+                <button class="button" @click.stop="toggleRoleShort">
+                  <span class="icon">
+                    <font-awesome-icon icon="fa-solid fa-info" />
+                  </span>
+                  <span v-if="roleShort">Rolle ein</span>
+                  <span v-else>Rolle aus</span>
+                </button>
               </div>
             </div>
           </div>
@@ -85,7 +93,9 @@ export default defineComponent({
       toggleAlteriNames: () => store.commit("view/toggle", "alteriNames"),
       isOpen: isOpen,
       details: computed(() => store.state.view.details),
-      toggleDetails: () => store.commit("view/toggle", "details")
+      toggleDetails: () => store.commit("view/toggle", "details"),
+      roleShort: computed(() => store.state.view.roleShort),
+      toggleRoleShort: () => store.commit("view/toggle", "roleShort"),
     };
   },
 });

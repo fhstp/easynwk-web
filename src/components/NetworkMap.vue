@@ -140,6 +140,10 @@
           :dy="mark.y < 0 ? -1 : 4"
         >
           {{ mark.label }}
+          {{
+            markDetails ? (mark.d.age.length >= 1 ? "/ " + mark.d.age : "") : ""
+          }}
+          {{ markRoleDetails ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
         <text
           v-if="alteriNames"
@@ -150,7 +154,10 @@
           :dy="mark.y < 0 ? -1 : 4"
         >
           {{ mark.label }}
-          {{markDetails ? mark.d.age.length >= 1 ? "/ " + mark.d.age : "" : ""}}
+          {{
+            markDetails ? (mark.d.age.length >= 1 ? "/ " + mark.d.age : "") : ""
+          }}
+          {{ markRoleDetails ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
       </g>
       <use
@@ -189,6 +196,7 @@ import { Sectors } from "@/data/Sectors";
 import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
+import { getRoleAbbrev } from "../data/Roles";
 
 interface AlterMark {
   d: Alter;
@@ -254,6 +262,11 @@ export default defineComponent({
     });
 
     const markDetails = computed(() => store.state.view.details);
+
+    const getRoleShort = (role: string) => {
+      return getRoleAbbrev(role);
+    };
+    const markRoleDetails = computed(() => store.state.view.roleShort);
 
     let clickTimeoutId: number | null = null;
     const clickAlter = (alter: Alter) => {
@@ -350,6 +363,8 @@ export default defineComponent({
       alteriMarks,
       connectionMarks,
       markDetails,
+      markRoleDetails,
+      getRoleShort,
       alteriNames: computed(() => store.state.view.alteriNames),
       showHorizons: computed(() => store.state.view.horizons),
       connections: computed(() => store.state.view.connections),
@@ -388,6 +403,7 @@ circle#horizon-base {
   // fill: #dadaeb;
   fill: #c7e9c0;
 }
+
 circle#horizon-overlay {
   fill: rgb(255, 255, 255, 0.5);
 }
@@ -396,6 +412,7 @@ circle#horizon-overlay {
   stroke: white;
   stroke-width: 2;
 }
+
 #coords-min line {
   stroke: lightgray;
   stroke-width: 1;
