@@ -2,7 +2,6 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Pdf from "../views/Pdf.vue";
 
-
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",

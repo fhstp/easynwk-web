@@ -1,18 +1,18 @@
 <template>
   <div
-      class="panel-block"
-      v-bind:class="{
+    class="panel-block"
+    v-bind:class="{
       selected: isSelected,
       alteriform: isEditMode,
       clickAble: !isEditMode,
     }"
-      v-on:click="toggleSelection()"
+    v-on:click="toggleSelection()"
   >
     <span v-if="!isEditMode" class="contact"
-    >{{ displayName }}
+      >{{ displayName }}
       <span v-if="alter.age">/ {{ alter.age + " " }} </span>
       <span :class="{ autovalue: alter.roleDefault }"
-      >/ {{ alter.role }}</span
+        >/ {{ alter.role }}</span
       ></span
     >
   </div>
@@ -20,8 +20,8 @@
 
 <script>
 export default {
-  name: "PrintDetails"
-}
+  name: "PrintDetails",
+};
 </script>
 
 <script lang="ts">
@@ -48,7 +48,6 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
 
-
     return {
       editConnections: () => {
         store.commit("view/openAlterForm", {
@@ -57,18 +56,18 @@ export default defineComponent({
         });
       },
       isSelected: computed(() =>
-          store.getters["view/isSelected"](props.alter.id)
+        store.getters["view/isSelected"](props.alter.id)
       ),
       isConnectionDisabled: computed(
-          () => !isConnectable(props.alter as Alter)
+        () => !isConnectable(props.alter as Alter)
       ),
       isEditMode,
       isAlterOpsAllowed: computed(() => store.getters.editedAlterValid),
       isBaseForm: computed(
-          () => isEditMode.value && store.state.view.editTab === TAB_BASE
+        () => isEditMode.value && store.state.view.editTab === TAB_BASE
       ),
       isConnectionForm: computed(
-          () => isEditMode.value && store.state.view.editTab === TAB_CONNECTIONS
+        () => isEditMode.value && store.state.view.editTab === TAB_CONNECTIONS
       ),
     };
   },
