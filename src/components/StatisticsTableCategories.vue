@@ -14,8 +14,8 @@
           >
             Netzwerkgröße
             <!-- <span class="icon">
-              <font-awesome-icon icon="info-circle" />
-            </span> -->
+            <font-awesome-icon icon="info-circle" />
+          </span> -->
           </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">
             {{ networkSize[i] }}
@@ -40,11 +40,11 @@
           <td v-for="(cat, i) in categoryLabels" :key="i">{{ density[i] }}</td>
         </tr>
         <!-- <tr>
-          <th>Dichte zu anderen Kategorien</th>
-          <td v-for="(cat, i) in categoryLabels" :key="i">
-            {{ extDensity[i] }}
-          </td>
-        </tr> -->
+        <th>Dichte zu anderen Kategorien</th>
+        <td v-for="(cat, i) in categoryLabels" :key="i">
+          {{ extDensity[i] }}
+        </td>
+      </tr> -->
         <tr>
           <th
             title="Kontakt(e) mit den meisten Verbindungen im Netzwerk (neben der Ankerperson)"
@@ -274,6 +274,7 @@ thead th:not([align]) {
 td:not([align]) {
   text-align: right;
 }
+
 th {
   font-weight: normal;
 }

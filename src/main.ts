@@ -41,6 +41,7 @@ import {
   faCheck,
   faInfo,
 } from "@fortawesome/free-solid-svg-icons";
+
 library.add(
   faBars,
   faPencilAlt,
