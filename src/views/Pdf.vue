@@ -1,17 +1,19 @@
 <template>
-  <button class="button" @click="createPdf">
-    <span class="icon">
-      <font-awesome-icon icon="file-pdf" />
-    </span>
-    <span>Create PDF</span>
-  </button>
+  <div id="printinfo" class="buttons">
+    <button class="button" @click="createPdf">
+      <span class="icon">
+        <font-awesome-icon icon="file-pdf" />
+      </span>
+      <span>Drucken bzw. als PDF drucken</span>
+    </button>
 
-  <button class="button" onclick="window.close()">
-    <span class="icon">
-      <font-awesome-icon icon="arrow-left" />
-    </span>
-    <span>Tab schließen</span>
-  </button>
+    <button class="button" onclick="window.close()">
+      <span class="icon">
+        <font-awesome-icon icon="arrow-left" />
+      </span>
+      <span>Schließen & zur easyNWK zurückkehren</span>
+    </button>
+  </div>
 
   <div id="print">
     <div id="titlebar">
@@ -51,10 +53,10 @@
     <NetworkMap />
   </div>
 </template>
-<script>
-import EgoHeader from "@/components/EgoHeader";
-import NetworkMap from "@/components/NetworkMap";
-import "@/components/ViewOptionsPanel";
+<script lang="ts">
+import EgoHeader from "@/components/EgoHeader.vue";
+import NetworkMap from "@/components/NetworkMap.vue";
+//import "@/components/ViewOptionsPanel";
 import { useStore } from "@/store";
 import { computed } from "vue";
 
@@ -83,31 +85,7 @@ export default {
 };
 
 export function createPdf() {
-  let stylesHtml = "";
-  for (const node of [
-    ...document.querySelectorAll('link[rel="stylesheet"], style'),
-  ]) {
-    stylesHtml += node.outerHTML;
-  }
-  const el = document.getElementById("print");
-  const w = window.open(
-    "",
-    "",
-    "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
-  );
-  w.document.write(`<!DOCTYPE html>
-        <html>
-          <head>
-            ${stylesHtml}
-          </head>
-          <body>
-            ${el.innerHTML}
-          </body>
-        </html>`);
-  w.document.close();
-  w.focus();
-  w.print();
-  w.close();
+  window.print();
 }
 </script>
 
@@ -149,6 +127,10 @@ export function createPdf() {
   display: flex;
 }
 @media print {
+  #printinfo {
+    display: none;
+  }
+
   /*To Do: Schwarz-Weiß*/
   #titlebar {
     background: #005096 !important;
