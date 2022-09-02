@@ -117,7 +117,7 @@
           y1="0"
           :x2="mark.x"
           :y2="mark.y"
-          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : null"
+          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
         />
         <use
           :href="'#' + mark.shape"
