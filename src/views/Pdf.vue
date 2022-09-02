@@ -66,43 +66,35 @@
 <script lang="ts">
 import EgoHeader from "@/components/EgoHeader.vue";
 import NetworkMap from "@/components/NetworkMap.vue";
-//import "@/components/ViewOptionsPanel";
 import { useStore } from "@/store";
-import { computed } from "vue";
+import { defineComponent, computed, onMounted } from "vue";
 
-export default {
+export default defineComponent({
   name: "Pdf",
-  components: {
-    EgoHeader,
-    NetworkMap,
-  },
+  components: { EgoHeader, NetworkMap },
   setup() {
     const store = useStore();
-
     // knows list of Alter from vuex
     const alteri = computed(() => store.state.nwk.alteri);
 
+    const createPdf = () => {
+      window.print();
+    };
+
+    onMounted(() => {
+      // the print dialog will open immediately
+      createPdf();
+    });
+
     return {
       alteri,
+      createPdf,
     };
   },
-  methods: {
-    createPdf,
-  },
-  mounted() {
-    createPdf();
-  },
-};
-
-export function createPdf() {
-  window.print();
-}
+});
 </script>
 
 <style scoped>
-.connection {
-  padding: 3px 0;
-}
 .name {
   font-weight: bold;
 }
@@ -144,14 +136,17 @@ export function createPdf() {
   /*To Do: Schwarz-Weiß*/
   #titlebar {
     background: #005096 !important;
+    print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
   #egobar {
     background: #ffc37d !important;
+    print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
   .panel-heading {
     background: #dbdbdb !important;
+    print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
 }
