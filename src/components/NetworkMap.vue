@@ -142,6 +142,21 @@
           {{ mark.label }}
         </text>
         <text
+            class="tooltip"
+            :x="mark.x"
+            :y="mark.y"
+            :text-anchor="mark.x < 0 ? 'end' : 'start'"
+            :dx="mark.x < 0 ? -3 : 3"
+            :dy="mark.y < 0 ? -7 : 10"
+        >
+          {{ mark.d.name }}
+          <br/>{{ mark.d.role }}
+
+        </text>
+        <text
+          @mouseover="showTooltip(mark)"
+          :data-mark="1"
+          class="hover"
           v-if="alteriNames"
           :x="mark.x"
           :y="mark.y"
@@ -211,6 +226,11 @@ interface ConnectionMark {
 // emit "map-click" (which is not currently used)
 
 export default defineComponent({
+  data() {
+    return {
+      hover: false,
+    };
+  },
   setup(props, { emit }) {
     const store = useStore();
 
@@ -318,6 +338,10 @@ export default defineComponent({
       return buffer.sort((a, b) => b.d.distance - a.d.distance);
     });
 
+    function showTooltip(mark: any) {
+      console.log(mark);
+    }
+
     const connectionMarks = computed((): Array<ConnectionMark> => {
       return store.state.nwk.connections.map((conn) => {
         const coords1 = alteriCoords.value.get(conn.id1);
@@ -336,7 +360,6 @@ export default defineComponent({
         };
       });
     });
-
     return {
       egoShape: computed(() =>
         shapeByGender(true, store.state.nwk.ego.currentGender)
@@ -345,6 +368,7 @@ export default defineComponent({
       isConnectMode,
       clickAlter,
       alteriMarks,
+      showTooltip,
       connectionMarks,
       alteriNames: computed(() => store.state.view.alteriNames),
       showHorizons: computed(() => store.state.view.horizons),
@@ -373,6 +397,10 @@ export default defineComponent({
 text {
   font-family: $family-primary;
   font-size: 4px;
+}
+
+.tooltip{
+
 }
 
 .textbg {
