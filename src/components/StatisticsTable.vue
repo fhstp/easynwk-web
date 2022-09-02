@@ -14,8 +14,8 @@
           >
             Netzwerkgröße
             <!-- <span class="icon">
-              <font-awesome-icon icon="info-circle" />
-            </span> -->
+            <font-awesome-icon icon="info-circle" />
+          </span> -->
           </th>
           <td>{{ networkSize }}</td>
         </tr>

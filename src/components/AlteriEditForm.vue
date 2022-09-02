@@ -130,7 +130,7 @@
               :value="alter.age"
               @blur="commitEdit($event, 'age')"
               @keyup.esc="cancelEdit($event, 'age')"
-              type="text"
+              type="number"
             />
           </div>
         </div>
@@ -242,6 +242,7 @@ import { Alter, isConnectable } from "@/data/Alter";
 import { Gender } from "@/data/Gender";
 import { Roles } from "@/data/Roles";
 import { SYMBOL_DECEASED } from "@/assets/utils";
+
 type InputType = HTMLInputElement | HTMLTextAreaElement;
 
 // gender & role options

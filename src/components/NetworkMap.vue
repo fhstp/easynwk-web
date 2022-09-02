@@ -117,7 +117,7 @@
           y1="0"
           :x2="mark.x"
           :y2="mark.y"
-          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : null"
+          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
         />
         <use
           :href="'#' + mark.shape"
@@ -140,6 +140,8 @@
           :dy="mark.y < 0 ? -1 : 4"
         >
           {{ mark.label }}
+          {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
+          {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
         <text
           v-if="alteriNames"
@@ -150,6 +152,8 @@
           :dy="mark.y < 0 ? -1 : 4"
         >
           {{ mark.label }}
+          {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
+          {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
       </g>
       <use
@@ -188,6 +192,7 @@ import { Sectors } from "@/data/Sectors";
 import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
+import { getRoleAbbrev } from "../data/Roles";
 
 interface AlterMark {
   d: Alter;
@@ -251,6 +256,10 @@ export default defineComponent({
         emit("map-click", { distance, angle });
       });
     });
+
+    const getRoleShort = (role: string) => {
+      return getRoleAbbrev(role);
+    };
 
     let clickTimeoutId: number | null = null;
     const clickAlter = (alter: Alter) => {
@@ -346,6 +355,9 @@ export default defineComponent({
       clickAlter,
       alteriMarks,
       connectionMarks,
+      showAge: computed(() => store.state.view.ageInNwk),
+      showRole: computed(() => store.state.view.roleInNwk),
+      getRoleShort,
       alteriNames: computed(() => store.state.view.alteriNames),
       showHorizons: computed(() => store.state.view.horizons),
       connections: computed(() => store.state.view.connections),
@@ -384,6 +396,7 @@ circle#horizon-base {
   // fill: #dadaeb;
   fill: #c7e9c0;
 }
+
 circle#horizon-overlay {
   fill: rgb(255, 255, 255, 0.5);
 }
@@ -392,6 +405,7 @@ circle#horizon-overlay {
   stroke: white;
   stroke-width: 2;
 }
+
 #coords-min line {
   stroke: lightgray;
   stroke-width: 1;
