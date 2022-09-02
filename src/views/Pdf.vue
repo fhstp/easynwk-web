@@ -1,18 +1,28 @@
 <template>
-  <div id="printinfo" class="buttons">
-    <button class="button" @click="createPdf">
-      <span class="icon">
-        <font-awesome-icon icon="file-pdf" />
-      </span>
-      <span>Drucken bzw. als PDF drucken</span>
-    </button>
+  <div id="printinfo">
+    <div class="buttons">
+      <button class="button" @click="createPdf">
+        <span class="icon">
+          <font-awesome-icon icon="file-pdf" />
+        </span>
+        <span>Drucken bzw. als PDF drucken</span>
+      </button>
 
-    <button class="button" onclick="window.close()">
-      <span class="icon">
-        <font-awesome-icon icon="arrow-left" />
-      </span>
-      <span>Schließen & zur easyNWK zurückkehren</span>
-    </button>
+      <button class="button" onclick="window.close()">
+        <span class="icon">
+          <font-awesome-icon icon="arrow-left" />
+        </span>
+        <span>Schließen & zur easyNWK zurückkehren</span>
+      </button>
+    </div>
+    <p>
+      Wenn Sie eine PDF Datei dieser Ansicht erzeugen, indem Sie im Druckdialog
+      "Als PDF speichern" auswählen.
+    </p>
+    <p>
+      Sie können die Daten der Kontakte auch markieren, kopieren und in einem
+      Textverarbeitungsprogramm einfügen.
+    </p>
   </div>
 
   <div id="print">
