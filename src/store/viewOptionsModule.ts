@@ -6,8 +6,8 @@ export interface ViewOptionsFlags {
   connections: boolean;
   alteriNames: boolean;
   statistics: boolean;
-  details: boolean;
-  roleShort: boolean;
+  ageInNwk: boolean;
+  roleInNwk: boolean;
 }
 
 export interface ViewOptionsState extends ViewOptionsFlags {
@@ -23,8 +23,8 @@ export function initViewOptionsState(): ViewOptionsState {
     connections: true,
     alteriNames: true,
     statistics: false,
-    details: false,
-    roleShort: false,
+    ageInNwk: false,
+    roleInNwk: false,
 
     selected: new Set<number>(),
     editIndex: null,

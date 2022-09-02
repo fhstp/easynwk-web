@@ -140,10 +140,8 @@
           :dy="mark.y < 0 ? -1 : 4"
         >
           {{ mark.label }}
-          {{
-            markDetails ? (mark.d.age.length >= 1 ? "/ " + mark.d.age : "") : ""
-          }}
-          {{ markRoleDetails ? " / " + getRoleShort(mark.d.role) : "" }}
+          {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
+          {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
         <text
           v-if="alteriNames"
@@ -154,10 +152,8 @@
           :dy="mark.y < 0 ? -1 : 4"
         >
           {{ mark.label }}
-          {{
-            markDetails ? (mark.d.age.length >= 1 ? "/ " + mark.d.age : "") : ""
-          }}
-          {{ markRoleDetails ? " / " + getRoleShort(mark.d.role) : "" }}
+          {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
+          {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
       </g>
       <use
@@ -261,12 +257,9 @@ export default defineComponent({
       });
     });
 
-    const markDetails = computed(() => store.state.view.details);
-
     const getRoleShort = (role: string) => {
       return getRoleAbbrev(role);
     };
-    const markRoleDetails = computed(() => store.state.view.roleShort);
 
     let clickTimeoutId: number | null = null;
     const clickAlter = (alter: Alter) => {
@@ -362,8 +355,8 @@ export default defineComponent({
       clickAlter,
       alteriMarks,
       connectionMarks,
-      markDetails,
-      markRoleDetails,
+      showAge: computed(() => store.state.view.ageInNwk),
+      showRole: computed(() => store.state.view.roleInNwk),
       getRoleShort,
       alteriNames: computed(() => store.state.view.alteriNames),
       showHorizons: computed(() => store.state.view.horizons),

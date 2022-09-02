@@ -48,20 +48,20 @@
                   <span v-else>Kontaktnamen ein</span>
                 </button>
 
-                <button class="button" @click.stop="toggleDetails">
+                <button class="button" @click.stop="toggleAge">
                   <span class="icon">
                     <font-awesome-icon icon="info" />
                   </span>
-                  <span v-if="details">Details ein</span>
-                  <span v-else>Details aus</span>
+                  <span v-if="showAge">Alter der Kontakte aus</span>
+                  <span v-else>Alter der Kontakte ein</span>
                 </button>
 
                 <button class="button" @click.stop="toggleRoleShort">
                   <span class="icon">
                     <font-awesome-icon icon="info" />
                   </span>
-                  <span v-if="roleShort">Rolle ein</span>
-                  <span v-else>Rolle aus</span>
+                  <span v-if="showRole">Rolle der Kontakte aus</span>
+                  <span v-else>Rolle der Kontakte ein</span>
                 </button>
               </div>
             </div>
@@ -92,10 +92,10 @@ export default defineComponent({
       alteriNames: computed(() => store.state.view.alteriNames),
       toggleAlteriNames: () => store.commit("view/toggle", "alteriNames"),
       isOpen: isOpen,
-      details: computed(() => store.state.view.details),
-      toggleDetails: () => store.commit("view/toggle", "details"),
-      roleShort: computed(() => store.state.view.roleShort),
-      toggleRoleShort: () => store.commit("view/toggle", "roleShort"),
+      showAge: computed(() => store.state.view.ageInNwk),
+      toggleAge: () => store.commit("view/toggle", "ageInNwk"),
+      showRole: computed(() => store.state.view.roleInNwk),
+      toggleRoleShort: () => store.commit("view/toggle", "roleInNwk"),
     };
   },
 });
