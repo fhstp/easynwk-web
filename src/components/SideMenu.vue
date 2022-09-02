@@ -222,6 +222,7 @@ export default defineComponent({
   background-color: transparent;
   border-color: transparent;
 }
+
 .button.is-burger:hover {
   color: white;
 }

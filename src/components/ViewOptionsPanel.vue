@@ -47,6 +47,22 @@
                   <span v-if="alteriNames">Kontaktnamen aus</span>
                   <span v-else>Kontaktnamen ein</span>
                 </button>
+
+                <button class="button" @click.stop="toggleAge">
+                  <span class="icon">
+                    <font-awesome-icon icon="info" />
+                  </span>
+                  <span v-if="showAge">Alter der Kontakte aus</span>
+                  <span v-else>Alter der Kontakte ein</span>
+                </button>
+
+                <button class="button" @click.stop="toggleRoleShort">
+                  <span class="icon">
+                    <font-awesome-icon icon="info" />
+                  </span>
+                  <span v-if="showRole">Rolle der Kontakte aus</span>
+                  <span v-else>Rolle der Kontakte ein</span>
+                </button>
               </div>
             </div>
           </div>
@@ -76,6 +92,10 @@ export default defineComponent({
       alteriNames: computed(() => store.state.view.alteriNames),
       toggleAlteriNames: () => store.commit("view/toggle", "alteriNames"),
       isOpen: isOpen,
+      showAge: computed(() => store.state.view.ageInNwk),
+      toggleAge: () => store.commit("view/toggle", "ageInNwk"),
+      showRole: computed(() => store.state.view.roleInNwk),
+      toggleRoleShort: () => store.commit("view/toggle", "roleInNwk"),
     };
   },
 });
