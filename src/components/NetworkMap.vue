@@ -143,20 +143,23 @@
           {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
           {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
+
         <text
-            class="tooltip"
+            v-if="alteriNames && useTextBG"
+            vector-effect="non-scaling-stroke"
             :x="mark.x"
             :y="mark.y"
             :text-anchor="mark.x < 0 ? 'end' : 'start'"
             :dx="mark.x < 0 ? -3 : 3"
-            :dy="mark.y < 0 ? -7 : 10"
+            :dy="mark.y < 0 ? -1 : 4"
         >
-          {{ mark.d.name }}
-          <br/>{{ mark.d.role }}
-
+          <tspan class="toolhover" :x="mark.x" :y="mark.y" :dx="mark.x < 0 ? -3 : 3" :dy="mark.y < 0 ? -10 : -4">{{ mark.d.name }}</tspan>
+          <tspan class="toolhover" :x="mark.x" :y="mark.y" :dx="mark.x < 0 ? -3 : 3" :dy="mark.y < 0 ? -6 : -1">{{ mark.d.role }}</tspan>
         </text>
+
         <text
-          @mouseover="showTooltip(mark)"
+          @mouseover="showTooltip(mark, true)"
+          @mouseleave="showTooltip(mark, false)"
           :data-mark="1"
           class="hover"
           v-if="alteriNames"
@@ -232,11 +235,6 @@ interface ConnectionMark {
 
 export default defineComponent({
   components: {},
-  data() {
-    return {
-      hover: false,
-    };
-  },
   setup(props, { emit }) {
     const store = useStore();
 
@@ -291,6 +289,38 @@ export default defineComponent({
     const getRoleShort = (role: string) => {
       return getRoleAbbrev(role);
     };
+
+    /*const toolinfo = (mark: AlterMark) => {
+      let div = document.createElement("div")
+      let p = document.createElement("p")
+      let p1 = document.createElement("p1")
+      let content = document.createTextNode(mark.d.name)
+      let content2 = document.createTextNode(mark.d.role)
+      p.appendChild(content)
+      p1.appendChild(content2)
+      div.appendChild(p)
+      div.appendChild(p1)
+
+      const map = document.querySelector("#nwkmap")
+      var tooltop = 0
+      var toolleft = 0
+      if (map != undefined){
+        const mapY = map.getBoundingClientRect().top + map.getBoundingClientRect().height/2 - 50
+        const mapX = map.getBoundingClientRect().left + map.getBoundingClientRect().width/2
+        tooltop = mapY + mark.y
+        toolleft = mapX + mark.x
+        console.log(mapY)
+        console.log(mapX)
+        console.log(mark.y)
+        console.log(mark.x)
+      }
+      div.style.position = "absolute"
+      div.style.left = toolleft + "px"
+      div.style.top = tooltop + "px"
+
+
+      document.body.appendChild(div)
+    }*/
 
     let clickTimeoutId: number | null = null;
     const clickAlter = (alter: Alter) => {
@@ -358,8 +388,18 @@ export default defineComponent({
       return buffer.sort((a, b) => b.d.distance - a.d.distance);
     });
 
-    function showTooltip(mark: any) {
-      console.log(mark);
+    function showTooltip(mark: any, active: boolean) {
+      //toolinfo(mark)
+      var element = document.querySelectorAll(".toolhover")
+      if (active){
+        element = document.querySelectorAll(".toolhover-active")
+      }
+      for (var i = 0; i < element.length; i++) {
+        var e = element[i]
+        active ? e.classList.remove("toolhover-active") : e.classList.remove("toolhover")
+        active ? e.classList.add("toolhover") : e.classList.add("toolhover-active")
+      }
+
     }
 
     const connectionMarks = computed((): Array<ConnectionMark> => {
@@ -388,6 +428,7 @@ export default defineComponent({
       isConnectMode,
       clickAlter,
       alteriMarks,
+      //toolinfo,
       showTooltip,
       connectionMarks,
       showAge: computed(() => store.state.view.ageInNwk),
@@ -424,8 +465,21 @@ text {
   user-select: none;
 }
 
-.tooltip{
+.toolhover{
+  display: none;
+}
 
+.toolhover-active{
+  display: block;
+}
+
+.tooltip {
+  overflow-wrap: break-word;
+  white-space: pre-line;
+  hyphens: none;
+  width: 10px;
+  display: flex;
+  background-color: red;
 }
 
 .textbg {
