@@ -10,5 +10,12 @@ module.exports = {
       },
     },
   },
+  pages: {
+    index: {
+      // entry for the page
+      entry: "src/main.ts",
+      title: "easyNWK",
+    },
+  },
   publicPath: process.env.NODE_ENV === "production" ? "./" : "/",
 };
