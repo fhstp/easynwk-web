@@ -143,22 +143,50 @@
         </text>
 
         <text
-            v-if="alteriNames && useTextBG"
-            vector-effect="non-scaling-stroke"
+          v-if="alteriNames && useTextBG"
+          vector-effect="non-scaling-stroke"
+          :x="mark.x"
+          :y="mark.y"
+          :text-anchor="mark.x < 0 ? 'end' : 'start'"
+          :dx="mark.x < 0 ? -3 : 3"
+          :dy="mark.y < 0 ? -1 : 4"
+        >
+          <tspan
+            class="toolhover"
+            :markid="mark.d.id"
             :x="mark.x"
             :y="mark.y"
-            :text-anchor="mark.x < 0 ? 'end' : 'start'"
             :dx="mark.x < 0 ? -3 : 3"
-            :dy="mark.y < 0 ? -1 : 4"
-        >
-          <tspan class="toolhover" :x="mark.x" :y="mark.y" :dx="mark.x < 0 ? -3 : 3" :dy="mark.y < 0 ? -10 : -4">{{ mark.d.name }}</tspan>
-          <tspan class="toolhover" :x="mark.x" :y="mark.y" :dx="mark.x < 0 ? -3 : 3" :dy="mark.y < 0 ? -6 : -1">{{ mark.d.role }}</tspan>
+            :dy="mark.y < 0 ? -15 : -10"
+          >
+            {{ mark.d.name }}
+          </tspan>
+          <tspan
+            class="toolhover"
+            :markid="mark.d.id"
+            :x="mark.x"
+            :y="mark.y"
+            :dx="mark.x < 0 ? -3 : 3"
+            :dy="mark.y < 0 ? -10 : -5"
+          >
+            {{ mark.d.role }}
+          </tspan>
+
+          <tspan
+            class="toolhover"
+            :markid="mark.d.id"
+            :x="mark.x"
+            :y="mark.y"
+            :dx="mark.x < 0 ? -3 : 3"
+            :dy="mark.y < 0 ? -5 : 0"
+          >
+            {{ mark.d.age }}
+          </tspan>
         </text>
 
         <text
           @mouseover="showTooltip(mark, true)"
           @mouseleave="showTooltip(mark, false)"
-          :data-mark="1"
           class="hover"
           v-if="alteriNames"
           :x="mark.x"
@@ -270,38 +298,6 @@ export default defineComponent({
       });
     });
 
-    /*const toolinfo = (mark: AlterMark) => {
-      let div = document.createElement("div")
-      let p = document.createElement("p")
-      let p1 = document.createElement("p1")
-      let content = document.createTextNode(mark.d.name)
-      let content2 = document.createTextNode(mark.d.role)
-      p.appendChild(content)
-      p1.appendChild(content2)
-      div.appendChild(p)
-      div.appendChild(p1)
-
-      const map = document.querySelector("#nwkmap")
-      var tooltop = 0
-      var toolleft = 0
-      if (map != undefined){
-        const mapY = map.getBoundingClientRect().top + map.getBoundingClientRect().height/2 - 50
-        const mapX = map.getBoundingClientRect().left + map.getBoundingClientRect().width/2
-        tooltop = mapY + mark.y
-        toolleft = mapX + mark.x
-        console.log(mapY)
-        console.log(mapX)
-        console.log(mark.y)
-        console.log(mark.x)
-      }
-      div.style.position = "absolute"
-      div.style.left = toolleft + "px"
-      div.style.top = tooltop + "px"
-
-
-      document.body.appendChild(div)
-    }*/
-
     let clickTimeoutId: number | null = null;
     const clickAlter = (alter: Alter) => {
       if (isConnectMode.value && store.state.view.editIndex != null) {
@@ -369,17 +365,15 @@ export default defineComponent({
     });
 
     function showTooltip(mark: any, active: boolean) {
-      //toolinfo(mark)
-      var element = document.querySelectorAll(".toolhover")
-      if (active){
-        element = document.querySelectorAll(".toolhover-active")
-      }
+      var element = document.querySelectorAll(`[markid="${mark.d.id}"]`);
       for (var i = 0; i < element.length; i++) {
-        var e = element[i]
-        active ? e.classList.remove("toolhover-active") : e.classList.remove("toolhover")
-        active ? e.classList.add("toolhover") : e.classList.add("toolhover-active")
+        active
+          ? element[i].classList.remove("toolhover")
+          : element[i].classList.remove("toolhover-active");
+        active
+          ? element[i].classList.add("toolhover-active")
+          : element[i].classList.add("toolhover");
       }
-
     }
 
     const connectionMarks = computed((): Array<ConnectionMark> => {
@@ -440,11 +434,15 @@ text {
   font-size: 4px;
 }
 
-.toolhover{
+.toolhover {
   display: none;
 }
 
-.toolhover-active{
+.rect {
+  fill: #0c2c78;
+}
+
+.toolhover-active {
   display: block;
 }
 
