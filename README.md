@@ -40,9 +40,11 @@ npm run lint
 
 ## Demo
 
-The current state of the `master` branch can be previewed at <https://easynwk.netlify.app/>.
+The current state of the `main` branch can be previewed at <https://easynwk.netlify.app/>.
 
 ## Acknowledgments
+
+This work was partly funded by the Erasmus+ project [TransSoDia](https://research.fhstp.ac.at/en/projects/transsodia-transnational-and-digital-learning-and-teaching-in-cooperative-social-diagnostics) cofunded by the European Union.
 
 [Karin Goger](https://inclusion.fhstp.ac.at/team/karin-goger) provided
 extensive domain experience in social diagnostics, valuable feedback,
