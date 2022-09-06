@@ -40,7 +40,7 @@ npm run lint
 
 ## Demo
 
-The current state of the `master` branch can be previewed at <https://easynwk.netlify.app/>.
+The current state of the `main` branch can be previewed at <https://easynwk.netlify.app/>.
 
 ## Acknowledgments
 
@@ -48,3 +48,7 @@ The current state of the `master` branch can be previewed at <https://easynwk.ne
 extensive domain experience in social diagnostics, valuable feedback,
 and contacts to professionals.
 Further thanks to all interviewed persons and testers.
+
+<img align="right" src="https://ec.europa.eu/info/sites/default/files/ec-logo-horiz-web_en.jpg" alt="logo of the European Commission">
+
+This work was partly funded by the Erasmus+ project [TransSoDia](https://research.fhstp.ac.at/en/projects/transsodia-transnational-and-digital-learning-and-teaching-in-cooperative-social-diagnostics) cofunded by the European Union.
