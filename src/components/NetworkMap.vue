@@ -235,7 +235,27 @@ export default defineComponent({
       const g = d3.select("#nwkmap");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       g.on("click", (event: any) => {
+        const coords = d3.pointer(event);
 
+        // cp. https://stackoverflow.com/a/33043899/1140589
+        const distance = Math.sqrt(
+          coords[0] * coords[0] + coords[1] * coords[1]
+        );
+        const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
+
+        if (isEditMode.value) {
+          const payload = {
+            index: store.state.view.editIndex,
+            changes: { distance: distance, angle: angle },
+          };
+          store.commit("editAlter", payload);
+          // } else {
+          //   store.commit("view/clearSelectedAlters");
+        }
+
+        emit("map-click", { distance, angle });
+      });
+      g.on("dblclick", (event: any) => {
         store.commit("addAlter");
         const coords = d3.pointer(event);
 
