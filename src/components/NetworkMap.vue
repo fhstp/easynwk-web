@@ -235,6 +235,7 @@ export default defineComponent({
       const g = d3.select("#nwkmap");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       g.on("click", (event: any) => {
+
         store.commit("addAlter");
         const coords = d3.pointer(event);
 
