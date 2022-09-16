@@ -1,81 +1,92 @@
 <template>
-  <div id="printinfo">
-    <div class="buttons">
-      <button class="button" @click="createPdf">
-        <span class="icon">
-          <font-awesome-icon icon="file-pdf" />
-        </span>
-        <span>Drucken bzw. als PDF drucken</span>
-      </button>
+  <div class="page">
+    <div id="printinfo">
+      <div class="buttons">
+        <button class="button" @click="createPdf">
+          <span class="icon">
+            <font-awesome-icon icon="file-pdf" />
+          </span>
+          <span>Drucken bzw. als PDF drucken</span>
+        </button>
 
-      <button class="button" onclick="window.close()">
-        <span class="icon">
-          <font-awesome-icon icon="arrow-left" />
-        </span>
-        <span>Schließen & zur easyNWK zurückkehren</span>
-      </button>
+        <button class="button" onclick="window.close()">
+          <span class="icon">
+            <font-awesome-icon icon="arrow-left" />
+          </span>
+          <span>Schließen & zur easyNWK zurückkehren</span>
+        </button>
+      </div>
+      <p>
+        Wenn Sie eine PDF Datei dieser Ansicht erzeugen, indem Sie im
+        Druckdialog "Als PDF speichern" auswählen.
+      </p>
+      <p>
+        Sie können die Daten der Kontakte auch markieren, kopieren und in einem
+        Textverarbeitungsprogramm einfügen.
+      </p>
     </div>
-    <p>
-      Wenn Sie eine PDF Datei dieser Ansicht erzeugen, indem Sie im Druckdialog
-      "Als PDF speichern" auswählen.
-    </p>
-    <p>
-      Sie können die Daten der Kontakte auch markieren, kopieren und in einem
-      Textverarbeitungsprogramm einfügen.
-    </p>
-  </div>
 
-  <div id="print">
-    <div id="titlebar">
-      <div id="brand"><i>easy</i>NWK</div>
-    </div>
-    <div id="egobar">
-      <EgoHeader />
-    </div>
-    <div class="columns">
-      <div class="column">
-        <p class="panel-heading">Kontakte</p>
-        <div
-          v-for="(alter, index) in alteri"
-          v-bind:key="index"
-          class="panel-block"
-        >
-          <p class="name">{{ alter.name }}</p>
-          <p>{{ alter.role }}</p>
-          <p>{{ alter.age.length >= 1 ? "Alter: " + alter.age : "" }}</p>
-          <p>{{ alter.human ? "" : "Mensch: Nein" }}</p>
-          <p>Geschlecht: {{ alter.currentGender }}</p>
-          <p>{{ alter.deceased ? "Verstorben: Ja" : "" }}</p>
-          <p>
-            Beziehung:
-            {{
-              alter.edgeType == 1
-                ? "besteht"
-                : alter.edgeType == 2
-                ? "multiplex"
-                : "keine aktuelle Beziehung"
-            }}
-          </p>
-          <p>{{ alter.note.length >= 1 ? "Notiz: " + alter.note : "" }}</p>
+    <div id="print">
+      <div id="titlebar">
+        <div id="brand"><i>easy</i>NWK</div>
+      </div>
+      <div id="egobar">
+        <p class="name">{{ "Ankerperson: " + ego.name }}</p>
+        <p>{{ ego.currentGender ? "Geschlecht: " + ego.currentGender : "" }}</p>
+        <p>{{ ego.age.length >= 1 ? "Alter: " + ego.age : "" }}</p>
+        <p>{{ ego.note.length >= 1 ? "Notiz: " + ego.note : "" }}</p>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <p class="panel-heading">Kontakte</p>
+          <div
+            v-for="(alter, index) in alteri"
+            v-bind:key="index"
+            class="panel-block"
+          >
+            <p class="name">{{ alter.name }}</p>
+            <p>{{ alter.role }}</p>
+            <p>{{ alter.age.length >= 1 ? "Alter: " + alter.age : "" }}</p>
+            <p>{{ alter.human ? "" : "Mensch: Nein" }}</p>
+            <p>
+              {{
+                alter.human
+                  ? "Geschlecht: " + alter.currentGender
+                  : "Kategorie: " + alter.currentGender
+              }}
+            </p>
+            <p>{{ alter.deceased ? "Verstorben: Ja" : "" }}</p>
+            <p>
+              Beziehung:
+              {{
+                alter.edgeType == 1
+                  ? "besteht"
+                  : alter.edgeType == 2
+                  ? "multiplex"
+                  : "keine aktuelle Beziehung"
+              }}
+            </p>
+            <p>{{ alter.note.length >= 1 ? "Notiz: " + alter.note : "" }}</p>
+          </div>
         </div>
       </div>
+      <NetworkMap />
     </div>
-    <NetworkMap />
   </div>
 </template>
 <script lang="ts">
-import EgoHeader from "@/components/EgoHeader.vue";
 import NetworkMap from "@/components/NetworkMap.vue";
 import { useStore } from "@/store";
 import { defineComponent, computed, onMounted } from "vue";
 
 export default defineComponent({
   name: "Pdf",
-  components: { EgoHeader, NetworkMap },
+  components: { NetworkMap },
   setup() {
     const store = useStore();
     // knows list of Alter from vuex
     const alteri = computed(() => store.state.nwk.alteri);
+    const ego = computed(() => store.state.nwk.ego);
 
     const createPdf = () => {
       window.print();
@@ -88,6 +99,7 @@ export default defineComponent({
 
     return {
       alteri,
+      ego,
       createPdf,
     };
   },
@@ -95,11 +107,15 @@ export default defineComponent({
 </script>
 
 <style scoped>
+* {
+  filter: grayscale(1) !important;
+}
 .name {
   font-weight: bold;
 }
 .panel-block {
   display: flex;
+  background: none;
   flex-direction: column;
   align-items: baseline;
 }
@@ -109,16 +125,15 @@ export default defineComponent({
 }
 #egobar {
   font-size: 1rem;
-  background: #ffc37d;
   padding: 0.5rem 1vmin 1vmin 1vmin;
   margin: 0 1px 1rem 1px;
   border-radius: 0 0 6px 6px;
+  background: none;
 }
 
 #titlebar {
   font-size: 180%;
-  background: #005096;
-  color: white;
+  color: gray;
   padding: 1vmin 1vmin 0.3rem 1vmin;
   margin: 0.5rem 1px 0 1px;
   border-radius: 6px 6px 0 0;
@@ -127,27 +142,14 @@ export default defineComponent({
   flex-direction: row;
   flex-wrap: nowrap;
   display: flex;
+  background: none;
+}
+.page {
+  margin: 2em 4em 2em;
 }
 @media print {
   #printinfo {
     display: none;
-  }
-
-  /*To Do: Schwarz-Weiß*/
-  #titlebar {
-    background: #005096 !important;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-  #egobar {
-    background: #ffc37d !important;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-  .panel-heading {
-    background: #dbdbdb !important;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
   }
 }
 </style>
