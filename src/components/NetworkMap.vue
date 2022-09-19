@@ -226,56 +226,50 @@ export default defineComponent({
       );
     });
 
+    const setPosition = (event: any) => {
+      const coords = d3.pointer(event);
+
+      // cp. https://stackoverflow.com/a/33043899/1140589
+      const distance = Math.sqrt(coords[0] * coords[0] + coords[1] * coords[1]);
+      const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
+
+      if (isEditMode.value) {
+        const payload = {
+          index: store.state.view.editIndex,
+          changes: { distance: distance, angle: angle },
+        };
+        store.commit("editAlter", payload);
+        // } else {
+        //   store.commit("view/clearSelectedAlters");
+      }
+
+      emit("map-click", { distance, angle });
+    };
+
     const isConnectMode = computed(
       () => store.state.view.editTab === TAB_CONNECTIONS
     );
 
     onMounted(() => {
+      document.onkeydown = (event: any) => {
+        if (event.key === "Escape" || event.key === "Esc") {
+          if (isEditMode.value) {
+            store.commit("cancelAddAlter", store.state.view.editIndex);
+          }
+        }
+      };
       // d3.mouse only works if the event is registered using D3 .on
       const g = d3.select("#nwkmap");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       g.on("click", (event: any) => {
-        const coords = d3.pointer(event);
-
-        // cp. https://stackoverflow.com/a/33043899/1140589
-        const distance = Math.sqrt(
-          coords[0] * coords[0] + coords[1] * coords[1]
-        );
-        const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
-
-        if (isEditMode.value) {
-          const payload = {
-            index: store.state.view.editIndex,
-            changes: { distance: distance, angle: angle },
-          };
-          store.commit("editAlter", payload);
-          // } else {
-          //   store.commit("view/clearSelectedAlters");
-        }
-
-        emit("map-click", { distance, angle });
+        setPosition(event);
       });
       g.on("dblclick", (event: any) => {
-        store.commit("addAlter");
-        const coords = d3.pointer(event);
-
-        // cp. https://stackoverflow.com/a/33043899/1140589
-        const distance = Math.sqrt(
-          coords[0] * coords[0] + coords[1] * coords[1]
-        );
-        const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
-
-        if (isEditMode.value) {
-          const payload = {
-            index: store.state.view.editIndex,
-            changes: { distance: distance, angle: angle },
-          };
-          store.commit("editAlter", payload);
-          // } else {
-          //   store.commit("view/clearSelectedAlters");
+        if (!isEditMode.value) {
+          store.commit("addAlter");
+          setPosition(event);
         }
-
-        emit("map-click", { distance, angle });
       });
     });
 
