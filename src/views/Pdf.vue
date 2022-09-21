@@ -106,7 +106,9 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "@/assets/main.scss";
+
 * {
   filter: grayscale(1) !important;
 }
@@ -120,7 +122,7 @@ export default defineComponent({
   align-items: baseline;
 }
 #brand {
-  margin: 0 0.5em;
+  margin: 0 0;
   font-weight: bold;
 }
 #egobar {
@@ -133,7 +135,7 @@ export default defineComponent({
 
 #titlebar {
   font-size: 180%;
-  color: gray;
+  color: $text;
   padding: 1vmin 1vmin 0.3rem 1vmin;
   margin: 0.5rem 1px 0 1px;
   border-radius: 6px 6px 0 0;
