@@ -110,41 +110,20 @@
       </g>
 
       <g v-for="mark in alteriMarks" :key="mark.d.id">
-        <line
-          v-if="connections && mark.d.edgeType >= 1"
-          :class="{ select: mark.selected }"
-          x1="0"
-          y1="0"
-          :x2="mark.x"
-          :y2="mark.y"
-          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
-        />
-        <use
-          :href="'#' + mark.shape"
-          :x="mark.x"
-          :y="mark.y"
-          class="mark clickAble"
-          width="4"
-          height="4"
-          transform="translate(-2,-2)"
-          @click.stop="clickAlter(mark.d)"
-        />
-        <text
-          v-if="alteriNames && useTextBG"
-          class="textbg"
-          vector-effect="non-scaling-stroke"
-          :x="mark.x"
-          :y="mark.y"
-          :text-anchor="mark.x < 0 ? 'end' : 'start'"
+        <rect
+          style="fill: white"
+          class="toolhover"
+          :markid="mark.d.id"
+          :x="mark.x < 0 ? mark.x - 42.5 : mark.x + 0.5"
+          :y="mark.y < 0 ? mark.y - 38.5 : mark.y - 30"
+          :rect-anchor="mark.x < 0 ? 'end' : 'start'"
           :dx="mark.x < 0 ? -3 : 3"
-          :dy="mark.y < 0 ? -1 : 4"
-        >
-          {{ mark.label }}
-          {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
-          {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
-        </text>
-
+          :dy="mark.y < 0 ? -15 : -10"
+          width="40"
+          height="30"
+        ></rect>
         <text
+          id="div_template"
           v-if="alteriNames && useTextBG"
           vector-effect="non-scaling-stroke"
           :x="mark.x"
@@ -184,6 +163,40 @@
           >
             {{ mark.d.age }}
           </tspan>
+        </text>
+      </g>
+
+      <g v-for="mark in alteriMarks" :key="mark.d.id">
+        <line
+          v-if="connections && mark.d.edgeType >= 1"
+          :class="{ select: mark.selected }"
+          x1="0"
+          y1="0"
+          :x2="mark.x"
+          :y2="mark.y"
+          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : null"
+        />
+        <use
+          :href="'#' + mark.shape"
+          :x="mark.x"
+          :y="mark.y"
+          class="mark clickAble"
+          width="4"
+          height="4"
+          transform="translate(-2,-2)"
+          @click="clickAlter(mark.d)"
+        />
+        <text
+          v-if="alteriNames && useTextBG"
+          class="textbg"
+          vector-effect="non-scaling-stroke"
+          :x="mark.x"
+          :y="mark.y"
+          :text-anchor="mark.x < 0 ? 'end' : 'start'"
+          :dx="mark.x < 0 ? -3 : 3"
+          :dy="mark.y < 0 ? -1 : 4"
+        >
+          {{ mark.label }}
         </text>
 
         <text
