@@ -39,6 +39,8 @@ import {
   faTrashAlt,
   faInfoCircle,
   faCheck,
+  faFilePdf,
+  faArrowLeft,
   faInfo,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -71,6 +73,8 @@ library.add(
   faTrashAlt,
   faInfoCircle,
   faCheck,
+  faFilePdf,
+  faArrowLeft,
   faInfo
 );
 

@@ -126,7 +126,7 @@ export default defineComponent({
 
 #titlebar {
   font-size: 180%;
-  background: $fhstpblue; /* hsl(32, 100%, 50%); /* $light; */
+  background: $fhstpblue; /* #005096; /* $light; */
   color: white;
   padding: 1vmin 1vmin 0.3rem 1vmin;
   margin: 0.5rem 1px 0 1px;
