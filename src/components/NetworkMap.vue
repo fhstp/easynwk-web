@@ -226,7 +226,7 @@ export default defineComponent({
       );
     });
 
-    const setPosition = (event: any) => {
+    const setPosition = (event: UIEvent) => {
       const coords = d3.pointer(event);
 
       // cp. https://stackoverflow.com/a/33043899/1140589
@@ -251,7 +251,7 @@ export default defineComponent({
     );
 
     onMounted(() => {
-      document.onkeydown = (event: any) => {
+      document.onkeydown = (event: KeyboardEvent) => {
         if (event.key === "Escape" || event.key === "Esc") {
           if (isEditMode.value) {
             store.commit("cancelAddAlter", store.state.view.editIndex);
@@ -262,10 +262,10 @@ export default defineComponent({
       const g = d3.select("#nwkmap");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
-      g.on("click", (event: any) => {
+      g.on("click", (event) => {
         setPosition(event);
       });
-      g.on("dblclick", (event: any) => {
+      g.on("dblclick", (event) => {
         if (!isEditMode.value) {
           store.commit("addAlter");
           setPosition(event);
