@@ -136,8 +136,6 @@ export default defineComponent({
       alteri,
       ego,
       createPdf,
-      pseudonyms: computed(() => store.state.pseudonym.active),
-      horizons: computed(() => store.state.view.horizons),
     };
   },
 });
