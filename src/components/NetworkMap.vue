@@ -228,8 +228,8 @@ export default defineComponent({
         store.state.view.editTab === TAB_BASE
       );
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setPosition = (event: any) => {
+
+    const setPosition = (event: UIEvent) => {
       const coords = d3.pointer(event);
 
       // cp. https://stackoverflow.com/a/33043899/1140589
@@ -254,25 +254,21 @@ export default defineComponent({
     );
 
     onMounted(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      document.onkeydown = (event: any) => {
-        if (
-          event.key === "Escape" ||
-          (event.key === "Esc" && isEditMode.value)
-        ) {
-          store.commit("protectedCancelAlter", store.state.view.editIndex);
+      document.onkeydown = (event: KeyboardEvent) => {
+        if (event.key === "Escape" || event.key === "Esc") {
+          if (isEditMode.value) {
+            store.commit("cancelAddAlter", store.state.view.editIndex);
+          }
         }
       };
 
       // d3.mouse only works if the event is registered using D3 .on
       const g = d3.select("#nwkmap");
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      g.on("click", (event: any) => {
+      g.on("click", (event) => {
         setPosition(event);
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      g.on("dblclick", (event: any) => {
+      g.on("dblclick", (event) => {
         if (!isEditMode.value) {
           store.commit("addAlter");
           setPosition(event);
