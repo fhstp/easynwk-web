@@ -50,8 +50,13 @@ const getters = {
 };
 
 const mutations = {
-  addAlter(state: IStoreState): void {
-    const newAlter = initAlter();
+  addAlter(state: IStoreState, initialValues: Partial<Alter> = {}): void {
+    // initialize alter with default values and optionally with the passed values
+    const newAlter = {
+      ...initAlter(),
+      ...initialValues,
+    };
+
     // set id depending on alteri in list
     // bugfix: if any id is undefined, NaN, or null --> default to 1
     newAlter.id =

@@ -226,24 +226,14 @@ export default defineComponent({
       );
     });
 
-    const setPosition = (event: UIEvent) => {
+    const getPositionPolar = (event: UIEvent) => {
       const coords = d3.pointer(event);
 
       // cp. https://stackoverflow.com/a/33043899/1140589
       const distance = Math.sqrt(coords[0] * coords[0] + coords[1] * coords[1]);
       const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
 
-      if (isEditMode.value) {
-        const payload = {
-          index: store.state.view.editIndex,
-          changes: { distance: distance, angle: angle },
-        };
-        store.commit("editAlter", payload);
-        // } else {
-        //   store.commit("view/clearSelectedAlters");
-      }
-
-      emit("map-click", { distance, angle });
+      return { distance, angle };
     };
 
     const isConnectMode = computed(
@@ -263,12 +253,24 @@ export default defineComponent({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
       g.on("click", (event) => {
-        setPosition(event);
+        const posPol = getPositionPolar(event);
+        if (isEditMode.value) {
+          const payload = {
+            index: store.state.view.editIndex,
+            changes: posPol,
+          };
+          store.commit("editAlter", payload);
+          // } else {
+          //   store.commit("view/clearSelectedAlters");
+        }
+        emit("map-click", posPol);
       });
+
       g.on("dblclick", (event) => {
         if (!isEditMode.value) {
-          store.commit("addAlter");
-          setPosition(event);
+          const posPol = getPositionPolar(event);
+          store.commit("addAlter", posPol);
+          // setPosition(event);
         }
       });
     });
