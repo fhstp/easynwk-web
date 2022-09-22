@@ -127,7 +127,7 @@
           width="4"
           height="4"
           transform="translate(-2,-2)"
-          @click="clickAlter(mark.d)"
+          @click.stop="clickAlter(mark.d)"
         />
         <text
           v-if="alteriNames && useTextBG"
