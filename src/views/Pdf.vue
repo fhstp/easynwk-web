@@ -78,11 +78,12 @@
 import NetworkMap from "@/components/NetworkMap.vue";
 import { useStore } from "@/store";
 import { defineComponent, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "Pdf",
   components: { NetworkMap },
-  setup() {
+  setup: function () {
     const store = useStore();
     // knows list of Alter from vuex
     const alteri = computed(() => store.state.nwk.alteri);
@@ -92,9 +93,43 @@ export default defineComponent({
       window.print();
     };
 
+    // TODO currently: workaround -> schönere Lösung
+    const readHttpGet = () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let pseudo: any = useRouter().currentRoute.value.query.pseudo;
+      pseudo = /true/i.test(pseudo);
+      pseudo ? store.commit("pseudonym/toggle") : "";
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let hor: any = useRouter().currentRoute.value.query.hor;
+      hor = /true/i.test(hor);
+      hor ? "" : store.commit("view/toggle", "horizons");
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let con: any = useRouter().currentRoute.value.query.con;
+      con = /true/i.test(con);
+      con ? "" : store.commit("view/toggle", "connections");
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let alt: any = useRouter().currentRoute.value.query.alt;
+      alt = /true/i.test(alt);
+      alt ? "" : store.commit("view/toggle", "alteriNames");
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let age: any = useRouter().currentRoute.value.query.age;
+      age = /true/i.test(age);
+      age ? store.commit("view/toggle", "ageInNwk") : "";
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let role: any = useRouter().currentRoute.value.query.role;
+      role = /true/i.test(role);
+      role ? store.commit("view/toggle", "roleInNwk") : "";
+    };
+
     onMounted(() => {
       // the print dialog will open immediately
       createPdf();
+      readHttpGet();
     });
 
     return {

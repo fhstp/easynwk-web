@@ -74,7 +74,24 @@
           <span>Kennzahlen exportieren</span>
         </button>
 
-        <a href="/#/Pdf" target="_blank" class="button">
+        <a
+          :href="
+            '/#/Pdf?pseudo=' +
+            pseudonyms +
+            '&hor=' +
+            horizons +
+            '&con=' +
+            connections +
+            '&alt=' +
+            alteriNames +
+            '&age=' +
+            showAge +
+            '&role=' +
+            showRole
+          "
+          target="_blank"
+          class="button"
+        >
           <!-- Button richtig stylen-->
           <span class="icon">
             <font-awesome-icon icon="file-pdf" />
@@ -201,6 +218,10 @@ export default defineComponent({
       toggleConnections: () => store.commit("view/toggle", "connections"),
       alteriNames: computed(() => store.state.view.alteriNames),
       toggleAlteriNames: () => store.commit("view/toggle", "alteriNames"),
+      showAge: computed(() => store.state.view.ageInNwk),
+      toggleAge: () => store.commit("view/toggle", "ageInNwk"),
+      showRole: computed(() => store.state.view.roleInNwk),
+      toggleRoleShort: () => store.commit("view/toggle", "roleInNwk"),
     };
   },
 });
