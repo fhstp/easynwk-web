@@ -17,7 +17,6 @@
                 ref="egofield"
                 v-model="egoName"
                 @blur="commitEdit($event, 'name')"
-                @keyup.esc="cancelEdit($event, 'name')"
                 type="text"
                 placeholder="Wer steht im Zentrum der NWK?"
               />
@@ -55,7 +54,6 @@
                 class="input"
                 :value="$store.state.nwk.ego.age"
                 @blur="commitEdit($event, 'age')"
-                @keyup.esc="cancelEdit($event, 'age')"
                 type="text"
               />
             </div>
@@ -69,7 +67,6 @@
             class="textarea is-small"
             :value="$store.state.nwk.ego.note"
             @blur="commitEdit($event, 'note')"
-            @keyup.esc="cancelEdit($event, 'note')"
             placeholder="Notizen zum Kontakt"
           ></textarea>
         </div>
@@ -135,10 +132,6 @@ export default defineComponent({
       }
     };
 
-    const cancelEdit = (evt: InputEvent, field: keyof Ego) => {
-      (evt.target as InputType).value = store.state.nwk.ego[field];
-    };
-
     // apparently v-for needs this to be a data item
     const genderOptions = ref(Gender);
 
@@ -169,7 +162,6 @@ export default defineComponent({
       invalidName,
       egoGender,
       commitEdit,
-      cancelEdit,
       genderOptions,
       editEgoFinished,
       egofield,

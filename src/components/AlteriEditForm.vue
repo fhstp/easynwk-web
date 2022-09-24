@@ -22,7 +22,6 @@
               ref="altername"
               v-model="alterNameInUI"
               @blur="commitEdit($event, 'name')"
-              @keyup.esc="cancelEdit($event, 'name')"
               type="text"
               placeholder="Vorname oder Spitzname"
             />
@@ -50,7 +49,6 @@
             list="predefined-roles"
             @blur="blurRole"
             @focus="focusRole"
-            @keyup.esc="cancelEdit($event, 'role')"
           />
           <!-- <span class="icon is-small is-right has-text-link">
             <font-awesome-icon icon="chevron-down" />
@@ -108,7 +106,6 @@
               class="input"
               :value="alterGender"
               @blur="commitEdit($event, 'currentGender')"
-              @keyup.esc="cancelEdit($event, 'currentGender')"
               type="text"
             />
           </div>
@@ -129,7 +126,6 @@
               class="input"
               :value="alter.age"
               @blur="commitEdit($event, 'age')"
-              @keyup.esc="cancelEdit($event, 'age')"
               type="number"
             />
           </div>
@@ -188,7 +184,6 @@
           class="textarea is-small"
           :value="alter.note"
           @blur="commitEdit($event, 'note')"
-          @keyup.esc="cancelEdit($event, 'note')"
           placeholder="Notizen zum Kontakt"
         ></textarea>
       </div>
@@ -311,12 +306,6 @@ export default defineComponent({
       }
     };
 
-    const cancelEdit = (evt: InputEvent, field: keyof Alter) => {
-      (evt.target as InputType).value = (props.alter as Alter)[
-        field
-      ].toString();
-    };
-
     // special event handlers for role <-- temporily clear default role
     const focusRole = (evt: InputEvent) => {
       if (props.alter.roleDefault) {
@@ -392,7 +381,6 @@ export default defineComponent({
       alterEdgeType: accessor("edgeType"),
       isConnectable: computed(() => isConnectable(props.alter as Alter)),
       commitEdit,
-      cancelEdit,
       focusRole,
       blurRole,
       genderOptions,
