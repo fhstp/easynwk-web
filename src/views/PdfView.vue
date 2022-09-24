@@ -81,7 +81,7 @@ import { defineComponent, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
-  name: "Pdf",
+  name: "PdfView",
   components: { NetworkMap },
   setup: function () {
     const store = useStore();
