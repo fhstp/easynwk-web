@@ -220,7 +220,6 @@ export default defineComponent({
 
   setup: function (props, { emit }) {
     const store = useStore();
-    const alteri = computed(() => store.state.nwk.alteri);
 
     const isEditMode = computed(() => {
       return (
@@ -372,7 +371,6 @@ export default defineComponent({
         shapeByGender(true, store.state.nwk.ego.currentGender)
       ),
       isEditMode,
-      alteri,
       isConnectMode,
       clickAlter,
       alteriMarks,
