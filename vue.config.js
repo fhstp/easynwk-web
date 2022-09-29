@@ -1,14 +1,22 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 process.env.VUE_APP_VERSION = require("./package.json").version;
 
-module.exports = {
+const { defineConfig } = require("@vue/cli-service");
+module.exports = defineConfig({
   css: {
     loaderOptions: {
       sass: {
-        // additionalData : `@import "@/assets/variables.scss";`
-        prependData: `@import "@/assets/variables.scss";`,
+        additionalData: `@import "@/assets/variables.scss";`,
+        // prependData: `@import "@/assets/variables.scss";`,
       },
     },
   },
-  publicPath: process.env.NODE_ENV === "production" ? "./" : "/",
-};
+  pages: {
+    index: {
+      // entry for the page
+      entry: "src/main.ts",
+      title: "easyNWK",
+    },
+  },
+  transpileDependencies: true,
+});

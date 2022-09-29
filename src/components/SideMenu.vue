@@ -74,6 +74,31 @@
           <span>Kennzahlen exportieren</span>
         </button>
 
+        <a
+          :href="
+            '/#/Pdf?pseudo=' +
+            pseudonyms +
+            '&hor=' +
+            horizons +
+            '&con=' +
+            connections +
+            '&alt=' +
+            alteriNames +
+            '&age=' +
+            showAge +
+            '&role=' +
+            showRole
+          "
+          target="_blank"
+          class="button"
+        >
+          <!-- Button richtig stylen-->
+          <span class="icon">
+            <font-awesome-icon icon="file-pdf" />
+          </span>
+          <span>PDF erstellen</span>
+        </a>
+
         <p><br /></p>
 
         <button class="button" @click="showStatistics">
@@ -84,12 +109,14 @@
         </button>
       </div>
 
-      <a href="http://www.easynwk.com/" target="_blank">Über die easyNWK</a>
-      <a href="https://github.com/fhstp/easynwk-web" target="_blank"
-        >Source Code (Version {{ appVersion }})</a
-      >
-      <a href="http://www.easynwk.com/impressum/">Impressum</a>
-      <img src="fhstp_sw_pos.png" width="80" height="80" />
+      <div class="links">
+        <a href="http://www.easynwk.com/" target="_blank">Über die easyNWK</a>
+        <a href="https://github.com/fhstp/easynwk-web" target="_blank"
+          >Source Code (Version {{ appVersion }})</a
+        >
+        <a href="http://www.easynwk.com/impressum/">Impressum</a>
+        <img src="fhstp_sw_pos.png" width="80" height="80" />
+      </div>
     </div>
   </div>
 </template>
@@ -191,6 +218,10 @@ export default defineComponent({
       toggleConnections: () => store.commit("view/toggle", "connections"),
       alteriNames: computed(() => store.state.view.alteriNames),
       toggleAlteriNames: () => store.commit("view/toggle", "alteriNames"),
+      showAge: computed(() => store.state.view.ageInNwk),
+      toggleAge: () => store.commit("view/toggle", "ageInNwk"),
+      showRole: computed(() => store.state.view.roleInNwk),
+      toggleRoleShort: () => store.commit("view/toggle", "roleInNwk"),
     };
   },
 });
@@ -205,6 +236,7 @@ export default defineComponent({
   background-color: transparent;
   border-color: transparent;
 }
+
 .button.is-burger:hover {
   color: white;
 }
@@ -247,8 +279,8 @@ export default defineComponent({
   background-color: white;
 }
 
-#sidepanel a,
-#sidepanel img {
+#sidepanel .links a,
+#sidepanel .links img {
   padding: 8px 8px 8px 32px;
   text-decoration: none;
   color: #c1c1c1;
@@ -257,7 +289,7 @@ export default defineComponent({
 }
 
 /* When you mouse over the navigation links, change their color */
-#sidepanel a:hover {
+#sidepanel .links a:hover {
   color: #f1f1f1;
 }
 
