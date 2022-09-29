@@ -246,7 +246,7 @@ export default defineComponent({
       document.onkeydown = (event: KeyboardEvent) => {
         if (event.key === "Escape" || event.key === "Esc") {
           if (isEditMode.value) {
-            store.commit("cancelAddAlter", store.state.view.editIndex);
+            store.commit("protectedCancelAlter", store.state.view.editIndex);
           }
         }
       };
