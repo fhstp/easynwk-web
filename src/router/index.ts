@@ -22,11 +22,6 @@ const routes: Array<RouteRecordRaw> = [
     name: "Pdf",
     component: Pdf,
   },
-  {
-    path: "/pdf",
-    name: "Pdf",
-    component: Pdf,
-  },
 ];
 
 const router = createRouter({

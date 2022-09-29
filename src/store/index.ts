@@ -85,7 +85,7 @@ const mutations = {
     if (
       alter.age.length > 0 ||
       alter.note.length > 0 ||
-      !alter.genderDefault && alter.name.length < 1
+      (!alter.genderDefault && alter.name.length < 1)
     ) {
       confirm("Soll dieser Kontakt gelöscht werden?")
         ? (cancel = true)
