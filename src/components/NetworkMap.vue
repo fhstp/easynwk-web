@@ -187,7 +187,7 @@ import { useStore } from "@/store";
 
 import * as d3 from "d3";
 // import { ContainerElement } from "d3";
-import {Alter, initAlter, isConnectable} from "@/data/Alter";
+import { Alter, isConnectable } from "@/data/Alter";
 import { Sectors } from "@/data/Sectors";
 import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
@@ -218,16 +218,17 @@ interface ConnectionMark {
 export default defineComponent({
   components: {},
 
-  setup: function (props, {emit}) {
+  setup: function (props, { emit }) {
     const store = useStore();
+    const alteri = computed(() => store.state.nwk.alteri);
 
     const isEditMode = computed(() => {
       return (
-          store.state.view.editIndex != null &&
-          store.state.view.editTab === TAB_BASE
+        store.state.view.editIndex != null &&
+        store.state.view.editTab === TAB_BASE
       );
     });
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setPosition = (event: any) => {
       const coords = d3.pointer(event);
 
@@ -238,39 +239,39 @@ export default defineComponent({
       if (isEditMode.value) {
         const payload = {
           index: store.state.view.editIndex,
-          changes: {distance: distance, angle: angle},
+          changes: { distance: distance, angle: angle },
         };
         store.commit("editAlter", payload);
         // } else {
         //   store.commit("view/clearSelectedAlters");
       }
 
-      emit("map-click", {distance, angle});
+      emit("map-click", { distance, angle });
     };
 
     const isConnectMode = computed(
-        () => store.state.view.editTab === TAB_CONNECTIONS
+      () => store.state.view.editTab === TAB_CONNECTIONS
     );
 
-
     onMounted(() => {
-       document.onkeydown = (event: any) => {
-          if (event.key === "Escape" || event.key === "Esc") {
-            if (isEditMode.value) {
-              store.commit("cancelAddAlter", store.state.view.editIndex);
-            } else {
-              console.log("close")
-              store.commit("editAlterFinished")
-            }
-          }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      document.onkeydown = (event: any) => {
+        if (
+          event.key === "Escape" ||
+          (event.key === "Esc" && isEditMode.value)
+        ) {
+          store.commit("protectedCancelAlter", store.state.view.editIndex);
+        }
       };
+
       // d3.mouse only works if the event is registered using D3 .on
       const g = d3.select("#nwkmap");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       g.on("click", (event: any) => {
         setPosition(event);
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       g.on("dblclick", (event: any) => {
         if (!isEditMode.value) {
           store.commit("addAlter");
@@ -288,7 +289,7 @@ export default defineComponent({
       if (isConnectMode.value && store.state.view.editIndex != null) {
         if (isConnectable(alter)) {
           const editId = store.state.nwk.alteri[store.state.view.editIndex].id;
-          const payload = {id1: editId, id2: alter.id};
+          const payload = { id1: editId, id2: alter.id };
           store.commit("toggleConnection", payload);
         }
       } else {
@@ -308,7 +309,7 @@ export default defineComponent({
           console.log(alter.name + " dblclick");
 
           // open form
-          store.commit("openAlterFormById", {alterId: alter.id});
+          store.commit("openAlterFormById", { alterId: alter.id });
         }
       }
     };
@@ -323,7 +324,7 @@ export default defineComponent({
         const x = alter.distance * Math.cos((alter.angle * Math.PI) / 180);
         const y = -1 * alter.distance * Math.sin((alter.angle * Math.PI) / 180);
 
-        buffer.set(alter.id, {x, y});
+        buffer.set(alter.id, { x, y });
       });
 
       return buffer;
@@ -355,8 +356,8 @@ export default defineComponent({
         const coords2 = alteriCoords.value.get(conn.id2);
 
         const selected =
-            store.getters["view/isSelected"](conn.id1) ||
-            store.getters["view/isSelected"](conn.id2);
+          store.getters["view/isSelected"](conn.id1) ||
+          store.getters["view/isSelected"](conn.id2);
 
         return {
           x1: coords1 ? coords1.x : 0,
@@ -364,16 +365,16 @@ export default defineComponent({
           x2: coords2 ? coords2.x : 0,
           y2: coords2 ? coords2.y : 0,
           selected,
-
         };
       });
     });
 
     return {
       egoShape: computed(() =>
-          shapeByGender(true, store.state.nwk.ego.currentGender)
+        shapeByGender(true, store.state.nwk.ego.currentGender)
       ),
       isEditMode,
+      alteri,
       isConnectMode,
       clickAlter,
       alteriMarks,
@@ -388,11 +389,11 @@ export default defineComponent({
       SYMBOL_DECEASED,
       // TODO browser detection b/c vector-effect seems not to work in Safari only as of 14 Dec 2021
       useTextBG: computed(
-          () =>
-              !(
-                  /Safari/.test(navigator.userAgent) &&
-                  /Apple Computer/.test(navigator.vendor)
-              )
+        () =>
+          !(
+            /Safari/.test(navigator.userAgent) &&
+            /Apple Computer/.test(navigator.vendor)
+          )
       ),
     };
   },
