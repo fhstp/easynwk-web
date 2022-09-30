@@ -87,68 +87,6 @@
     </text>
 
     <g id="marks">
-      <g v-for="mark in alteriMarks" :key="mark.d.id">
-        <rect
-          style="fill: white"
-          class="toolhover"
-          :markid="mark.d.id"
-          :x="mark.x < 0 ? mark.x - 25.5 : mark.x + 2.5"
-          :y="mark.y < 0 ? mark.y - 34.5 : mark.y - 30.5"
-          :rx="2.5"
-          :ry="2.5"
-          :rect-anchor="mark.x < 0 ? 'end' : 'start'"
-          :dx="mark.x < 0 ? -3 : 3"
-          :dy="mark.y < 0 ? -15 : -11"
-          :width="
-            mark.d.role.length < mark.d.name.length
-              ? mark.d.name.length * 2.5
-              : mark.d.role.length * 2.5
-          "
-          :height="30"
-        ></rect>
-        <text
-          id="div_template"
-          v-if="alteriNames && useTextBG"
-          vector-effect="non-scaling-stroke"
-          :x="mark.x"
-          :y="mark.y"
-          :text-anchor="mark.x < 0 ? 'end' : 'start'"
-          :dx="mark.x < 0 ? -3 : 3"
-          :dy="mark.y < 0 ? -1 : 4"
-        >
-          <tspan
-            class="toolhover"
-            :markid="mark.d.id"
-            :x="mark.x"
-            :y="mark.y"
-            :dx="mark.x < 0 ? -4 : 4"
-            :dy="mark.y < 0 ? -15 : -10"
-          >
-            {{ mark.d.name }}
-          </tspan>
-          <tspan
-            class="toolhover"
-            :markid="mark.d.id"
-            :x="mark.x"
-            :y="mark.y"
-            :dx="mark.x < 0 ? -4 : 4"
-            :dy="mark.y < 0 ? -10 : -5"
-          >
-            {{ mark.d.role }}
-          </tspan>
-
-          <tspan
-            class="toolhover"
-            :markid="mark.d.id"
-            :x="mark.x"
-            :y="mark.y"
-            :dx="mark.x < 0 ? -4 : 4"
-            :dy="mark.y < 0 ? -5 : 0"
-          >
-            {{ mark.d.age }}
-          </tspan>
-        </text>
-      </g>
       <g v-for="mark in alteriMarks" :key="'shadow' + mark.d.id">
         <circle
           v-if="mark.selected"
@@ -244,6 +182,82 @@
       width="220"
       height="220"
     />
+    <g v-for="mark in alteriMarks" :key="mark.d.id">
+      <rect
+        style="fill: white"
+        class="toolhover"
+        :markid="mark.d.id"
+        :x="mark.x < 0 ? mark.x - 25.5 : mark.x + 2.5"
+        :y="mark.y < 0 ? mark.y - 34.5 : mark.y - 30.5"
+        :rx="2.5"
+        :ry="2.5"
+        :rect-anchor="mark.x < 0 ? 'end' : 'start'"
+        :dx="mark.x < 0 ? -3 : 3"
+        :dy="mark.y < 0 ? -15 : -11"
+        :width="
+          mark.d.role.length < mark.d.name.length
+            ? mark.d.name.length * 2.5
+            : mark.d.role.length * 2.5
+        "
+        :height="30"
+      ></rect>
+      <text
+        id="div_template"
+        class="text"
+        v-if="alteriNames && useTextBG"
+        vector-effect="non-scaling-stroke"
+        :x="mark.x"
+        :y="mark.y"
+        :text-anchor="mark.x < 0 ? 'end' : 'start'"
+        :dx="mark.x < 0 ? -3 : 3"
+        :dy="mark.y < 0 ? -1 : 4"
+      >
+        <tspan
+          class="toolhover"
+          :markid="mark.d.id"
+          :x="mark.x"
+          :y="mark.y"
+          :dx="mark.x < 0 ? -4 : 4"
+          :dy="mark.y < 0 ? -25 : -20"
+        >
+          {{ mark.d.name }}
+        </tspan>
+        <tspan
+          class="toolhover"
+          :markid="mark.d.id"
+          :x="mark.x"
+          :y="mark.y"
+          :dx="mark.x < 0 ? -4 : 4"
+          :dy="mark.y < 0 ? -20 : -15"
+        >
+          {{ mark.d.role }}
+        </tspan>
+
+        <tspan
+          class="toolhover"
+          :markid="mark.d.id"
+          :x="mark.x"
+          :y="mark.y"
+          :dx="mark.x < 0 ? -4 : 4"
+          :dy="mark.y < 0 ? -15 : -10"
+        >
+          {{ mark.d.age }}
+        </tspan>
+
+        <tspan
+          class="toolhover"
+          :markid="mark.d.id"
+          :x="mark.x"
+          :y="mark.y"
+          :dx="mark.x < 0 ? -4 : 4"
+          :dy="mark.y < 0 ? -10 : -5"
+        >
+          {{
+            mark.d.note < 8 ? mark.d.note : mark.d.note.substring(0, 15) + "..."
+          }}
+        </tspan>
+      </text>
+    </g>
   </svg>
 </template>
 
@@ -513,6 +527,14 @@ text {
   display: flex;
   background-color: red;
   position: absolute;
+}
+
+.text {
+  display: block;
+  width: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .textbg {
