@@ -1,100 +1,111 @@
 <template>
-  <svg id="tooltip" width="100%" height="100%" viewBox="-105 -105 210 210">
-    <g v-for="mark in alter" :key="mark.d.id">
-      <rect
-        style="fill: white"
+  <g v-for="mark in marks" :key="mark.d.id">
+    <rect
+      style="fill: white"
+      class="toolhover"
+      :markid="mark.d.id"
+      :x="getXPos(mark)"
+      :y="mark.y < 0 ? mark.y - 34.5 : mark.y - 30.5"
+      :rx="2.5"
+      :ry="2.5"
+      :rect-anchor="mark.x < 0 ? 'end' : 'start'"
+      :dx="mark.x < 0 ? -3 : 3"
+      :dy="mark.y < 0 ? -15 : -11"
+      :width="calcWidth(mark)"
+      :height="30"
+    ></rect>
+    <text
+      id="div_template"
+      class="text"
+      v-if="names && text"
+      vector-effect="non-scaling-stroke"
+      :x="mark.x"
+      :y="mark.y"
+      :text-anchor="mark.x < 0 ? 'end' : 'start'"
+      :dx="mark.x < 0 ? -3 : 3"
+      :dy="mark.y < 0 ? -1 : 4"
+    >
+      <tspan
         class="toolhover"
         :markid="mark.d.id"
-        :x="mark.x < 0 ? mark.x - 20.5 : mark.x + 2.5"
-        :y="mark.y < 0 ? mark.y - 34.5 : mark.y - 30.5"
-        :rx="2.5"
-        :ry="2.5"
-        :rect-anchor="mark.x < 0 ? 'end' : 'start'"
-        :dx="mark.x < 0 ? -3 : 3"
-        :dy="mark.y < 0 ? -15 : -11"
-        :width="
-          mark.d.role.length < mark.d.name.length
-            ? mark.d.name.length * 2.6
-            : mark.d.role.length * 2.6
-        "
-        :height="30"
-      ></rect>
-      <text
-        id="div_template"
-        v-if="alter && useTextBG"
-        vector-effect="non-scaling-stroke"
         :x="mark.x"
         :y="mark.y"
-        :text-anchor="mark.x < 0 ? 'end' : 'start'"
-        :dx="mark.x < 0 ? -3 : 3"
-        :dy="mark.y < 0 ? -1 : 4"
+        :dx="mark.x < 0 ? -4 : 4"
+        :dy="mark.y < 0 ? -25 : -20"
       >
-        <tspan
-          class="toolhover"
-          :markid="mark.d.id"
-          :x="mark.x"
-          :y="mark.y"
-          :dx="mark.x < 0 ? -4 : 4"
-          :dy="mark.y < 0 ? -15 : -10"
-        >
-          {{ mark.d.name }}
-        </tspan>
-        <tspan
-          class="toolhover"
-          :markid="mark.d.id"
-          :x="mark.x"
-          :y="mark.y"
-          :dx="mark.x < 0 ? -4 : 4"
-          :dy="mark.y < 0 ? -10 : -5"
-        >
-          {{ mark.d.role }}
-        </tspan>
+        {{ mark.d.name }}
+      </tspan>
+      <tspan
+        class="toolhover"
+        :markid="mark.d.id"
+        :x="mark.x"
+        :y="mark.y"
+        :dx="mark.x < 0 ? -4 : 4"
+        :dy="mark.y < 0 ? -20 : -15"
+      >
+        {{
+          mark.d.role < maxWordLength
+            ? mark.d.role
+            : mark.d.role.substring(0, maxWordLength) + "..."
+        }}
+      </tspan>
 
-        <tspan
-          class="toolhover"
-          :markid="mark.d.id"
-          :x="mark.x"
-          :y="mark.y"
-          :dx="mark.x < 0 ? -4 : 4"
-          :dy="mark.y < 0 ? -5 : 0"
-        >
-          {{ mark.d.age }}
-        </tspan>
-      </text>
-    </g>
-  </svg>
+      <tspan
+        class="toolhover"
+        :markid="mark.d.id"
+        :x="mark.x"
+        :y="mark.y"
+        :dx="mark.x < 0 ? -4 : 4"
+        :dy="mark.y < 0 ? -15 : -10"
+      >
+        {{ mark.d.age }}
+      </tspan>
+
+      <tspan
+        class="toolhover"
+        :markid="mark.d.id"
+        :x="mark.x"
+        :y="mark.y"
+        :dx="mark.x < 0 ? -4 : 4"
+        :dy="mark.y < 0 ? -10 : -5"
+      >
+        {{
+          mark.d.note < maxWordLength
+            ? mark.d.note
+            : mark.d.note.substring(0, maxWordLength) + "..."
+        }}
+      </tspan>
+    </text>
+  </g>
 </template>
-
 <script>
-import { alteriNames } from "@/components/NetworkMap.vue";
-import { computed, onMounted } from "vue";
-import * as d3 from "d3";
-
-d3.selectAll("tooltip").on("mouseover", function () {
-  d3.select(this).raise();
-});
-
 export default {
-  setup: function () {
-    const alter = alteriNames;
-
-    onMounted(() => {
-      console.log(alteriNames);
-    });
-    return {
-      alter,
-      useTextBG: computed(
-        () =>
-          !(
-            /Safari/.test(navigator.userAgent) &&
-            /Apple Computer/.test(navigator.vendor)
-          )
-      ),
-    };
+  props: {
+    marks: Array,
+    text: Boolean,
+    names: Boolean,
+  },
+  data() {
+    return { maxWordLength: 20, offset: 2.5 };
+  },
+  methods: {
+    getXPos(mark) {
+      const width = this.calcWidth(mark) + this.offset;
+      const pos = mark.x < 0 ? mark.x - width : mark.x + this.offset;
+      return pos;
+    },
+    calcWidth(mark) {
+      let width =
+        mark.d.role.length < mark.d.name.length
+          ? mark.d.name.length * this.offset
+          : mark.d.role.length * this.offset;
+      if (width > this.maxWordLength * this.offset)
+        width = this.maxWordLength * this.offset;
+      return width;
+    },
   },
 };
 </script>
-
 <style scoped lang="scss">
 @import "~bulma/sass/base/_all.sass";
 
@@ -113,6 +124,7 @@ text {
 
 .toolhover-active {
   display: block;
+  position: absolute;
 }
 
 .tooltip {
@@ -122,6 +134,15 @@ text {
   width: 10px;
   display: flex;
   background-color: red;
+  position: absolute;
+}
+
+.text {
+  display: block;
+  width: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .textbg {
