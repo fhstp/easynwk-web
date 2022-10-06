@@ -120,10 +120,12 @@
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
         />
         <use
+          @mouseover="showTooltip(mark, true)"
+          @mouseleave="showTooltip(mark, false)"
           :href="'#' + mark.shape"
           :x="mark.x"
           :y="mark.y"
-          class="mark clickAble"
+          class="mark clickAble hover"
           width="4"
           height="4"
           transform="translate(-2,-2)"
@@ -143,7 +145,11 @@
           {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
           {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
+
         <text
+          @mouseover="showTooltip(mark, true)"
+          @mouseleave="showTooltip(mark, false)"
+          class="hover"
           v-if="alteriNames"
           :x="mark.x"
           :y="mark.y"
@@ -178,6 +184,7 @@
       width="220"
       height="220"
     />
+    <ToolTip :marks="alteriMarks" :names="alteriNames" :text="useTextBG" />
   </svg>
 </template>
 
@@ -193,6 +200,7 @@ import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { getRoleAbbrev } from "../data/Roles";
+import ToolTip from "@/components/ToolTip.vue";
 
 interface AlterMark {
   d: Alter;
@@ -216,7 +224,9 @@ interface ConnectionMark {
 // emit "map-click" (which is not currently used)
 
 export default defineComponent({
-  setup(props, { emit }) {
+  components: { ToolTip },
+
+  setup: function (props, { emit }) {
     const store = useStore();
 
     const isEditMode = computed(() => {
@@ -226,34 +236,57 @@ export default defineComponent({
       );
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setPosition = (event: any) => {
+      const coords = d3.pointer(event);
+
+      // cp. https://stackoverflow.com/a/33043899/1140589
+      const distance = Math.sqrt(coords[0] * coords[0] + coords[1] * coords[1]);
+      const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
+
+      if (isEditMode.value) {
+        const payload = {
+          index: store.state.view.editIndex,
+          changes: { distance: distance, angle: angle },
+        };
+        store.commit("editAlter", payload);
+        // } else {
+        //   store.commit("view/clearSelectedAlters");
+      }
+
+      emit("map-click", { distance, angle });
+    };
+
     const isConnectMode = computed(
       () => store.state.view.editTab === TAB_CONNECTIONS
     );
 
     onMounted(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      document.onkeydown = (event: any) => {
+        if (event.key === "Escape" || event.key === "Esc") {
+          if (isEditMode.value) {
+            store.commit("cancelAddAlter", store.state.view.editIndex);
+          } else {
+            console.log("close");
+            store.commit("editAlterFinished");
+          }
+        }
+      };
       // d3.mouse only works if the event is registered using D3 .on
       const g = d3.select("#nwkmap");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       g.on("click", (event: any) => {
-        const coords = d3.pointer(event);
-
-        // cp. https://stackoverflow.com/a/33043899/1140589
-        const distance = Math.sqrt(
-          coords[0] * coords[0] + coords[1] * coords[1]
-        );
-        const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
-
-        if (isEditMode.value) {
-          const payload = {
-            index: store.state.view.editIndex,
-            changes: { distance: distance, angle: angle },
-          };
-          store.commit("editAlter", payload);
-          // } else {
-          //   store.commit("view/clearSelectedAlters");
+        setPosition(event);
+      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      g.on("dblclick", (event: any) => {
+        if (!isEditMode.value) {
+          store.commit("addAlter");
+          setPosition(event);
         }
-
-        emit("map-click", { distance, angle });
       });
     });
 
@@ -327,6 +360,19 @@ export default defineComponent({
       return buffer.sort((a, b) => b.d.distance - a.d.distance);
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function showTooltip(mark: any, active: boolean) {
+      var element = document.querySelectorAll(`[markid="${mark.d.id}"]`);
+      for (var i = 0; i < element.length; i++) {
+        active
+          ? element[i].classList.remove("toolhover")
+          : element[i].classList.remove("toolhover-active");
+        active
+          ? element[i].classList.add("toolhover-active")
+          : element[i].classList.add("toolhover");
+      }
+    }
+
     const connectionMarks = computed((): Array<ConnectionMark> => {
       return store.state.nwk.connections.map((conn) => {
         const coords1 = alteriCoords.value.get(conn.id1);
@@ -345,7 +391,6 @@ export default defineComponent({
         };
       });
     });
-
     return {
       egoShape: computed(() =>
         shapeByGender(true, store.state.nwk.ego.currentGender)
@@ -354,6 +399,7 @@ export default defineComponent({
       isConnectMode,
       clickAlter,
       alteriMarks,
+      showTooltip,
       connectionMarks,
       showAge: computed(() => store.state.view.ageInNwk),
       showRole: computed(() => store.state.view.roleInNwk),
@@ -385,6 +431,15 @@ export default defineComponent({
 text {
   font-family: $family-primary;
   font-size: 4px;
+  cursor: pointer;
+}
+
+.text {
+  display: block;
+  width: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .textbg {

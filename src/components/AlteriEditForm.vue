@@ -277,10 +277,6 @@ export default defineComponent({
       alterNameInUI.value = newValue;
     });
 
-    const invalidName = computed(() => {
-      return alterNameInUI.value.trim().length === 0;
-    });
-
     const invalidPosition = computed(() => {
       return props.alter?.distance <= 0;
     });
@@ -331,6 +327,13 @@ export default defineComponent({
       } else {
         commitEdit(evt, "role");
       }
+    };
+    const invalidName = computed(() => {
+      return alterNameInUI.value.trim().length === 0;
+    });
+
+    const getInvalidName = function () {
+      return invalidName;
     };
 
     // apparently v-for needs this to be a data item
@@ -392,6 +395,7 @@ export default defineComponent({
       alterEdgeType: accessor("edgeType"),
       isConnectable: computed(() => isConnectable(props.alter as Alter)),
       commitEdit,
+      getInvalidName,
       cancelEdit,
       focusRole,
       blurRole,
