@@ -120,10 +120,12 @@
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
         />
         <use
+          @mouseover="showTooltip(mark, true)"
+          @mouseleave="showTooltip(mark, false)"
           :href="'#' + mark.shape"
           :x="mark.x"
           :y="mark.y"
-          class="mark clickAble"
+          class="mark clickAble hover"
           width="4"
           height="4"
           transform="translate(-2,-2)"
@@ -397,7 +399,6 @@ export default defineComponent({
       isConnectMode,
       clickAlter,
       alteriMarks,
-      //toolinfo,
       showTooltip,
       connectionMarks,
       showAge: computed(() => store.state.view.ageInNwk),
@@ -430,29 +431,7 @@ export default defineComponent({
 text {
   font-family: $family-primary;
   font-size: 4px;
-}
-
-.toolhover {
-  display: none;
-}
-
-.rect {
-  fill: #0c2c78;
-}
-
-.toolhover-active {
-  display: block;
-  position: absolute;
-}
-
-.tooltip {
-  overflow-wrap: break-word;
-  white-space: pre-line;
-  hyphens: none;
-  width: 10px;
-  display: flex;
-  background-color: red;
-  position: absolute;
+  cursor: pointer;
 }
 
 .text {
