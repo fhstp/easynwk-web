@@ -1,7 +1,7 @@
 <template>
   <g v-for="mark in marks" :key="mark.d.id">
     <rect
-      style="fill: white"
+      style="fill: white; stroke: lightgrey; stroke-width: 0.4"
       class="toolhover"
       :markid="mark.d.id"
       :x="getXPos(mark)"
@@ -21,7 +21,7 @@
       vector-effect="non-scaling-stroke"
       :x="mark.x"
       :y="mark.y"
-      :text-anchor="mark.x < 0 ? 'end' : 'start'"
+      :text-anchor="'start'"
       :dx="mark.x < 0 ? -3 : 3"
       :dy="mark.y < 0 ? -1 : 4"
     >
@@ -30,7 +30,7 @@
         :markid="mark.d.id"
         :x="mark.x"
         :y="mark.y"
-        :dx="mark.x < 0 ? -4 : 4"
+        :dx="mark.x < 0 ? -calcWidth(mark) : 5.5"
         :dy="getTextYPos('name', mark)"
       >
         {{
@@ -44,11 +44,11 @@
         :markid="mark.d.id"
         :x="mark.x"
         :y="mark.y"
-        :dx="mark.x < 0 ? -4 : 4"
+        :dx="mark.x < 0 ? -calcWidth(mark) : 5.5"
         :dy="getTextYPos('role', mark)"
       >
         {{
-          mark.d.role.length < maxWordLength
+          mark.d.role.length <= maxWordLength
             ? "Rolle: " + mark.d.role
             : "Rolle: " + mark.d.role.substring(0, maxWordLength + 1) + "..."
         }}
@@ -59,7 +59,7 @@
         :markid="mark.d.id"
         :x="mark.x"
         :y="mark.y"
-        :dx="mark.x < 0 ? -4 : 4"
+        :dx="mark.x < 0 ? -calcWidth(mark) : 5.5"
         :dy="getTextYPos('gender', mark)"
         v-if="mark.d.currentGender != 'nicht festgelegt'"
       >
@@ -75,11 +75,11 @@
         :markid="mark.d.id"
         :x="mark.x"
         :y="mark.y"
-        :dx="mark.x < 0 ? -4 : 4"
+        :dx="mark.x < 0 ? -calcWidth(mark) : 5.5"
         :dy="getTextYPos('age', mark)"
         v-if="mark.d.age.length > 0"
       >
-        {{ "Alter: " + mark.d.age }}
+        {{ "Alter: " + mark.d.age + " Jahre" }}
       </tspan>
 
       <tspan
@@ -87,14 +87,18 @@
         :markid="mark.d.id"
         :x="mark.x"
         :y="mark.y"
-        :dx="mark.x < 0 ? -4 : 4"
+        :dx="mark.x < 0 ? -calcWidth(mark) : 5.5"
         :dy="getTextYPos('note1', mark)"
         v-if="mark.d.note.length > 0"
       >
         {{
           mark.d.note.length < maxWordLength
             ? "Notiz: " + mark.d.note
-            : "Notiz: " + mark.d.note.substring(0, maxWordLength + 1) + "-"
+            : "Notiz: " +
+              mark.d.note.substring(
+                0,
+                mark.d.note.slice(0, maxWordLength).lastIndexOf(" ") + 1
+              )
         }}
       </tspan>
 
@@ -103,11 +107,20 @@
         :markid="mark.d.id"
         :x="mark.x"
         :y="mark.y"
-        :dx="mark.x < 0 ? -4 : 4"
+        :dx="mark.x < 0 ? -calcWidth(mark) : 5.5"
         :dy="getTextYPos('note2', mark)"
+        v-if="mark.d.note.length > this.maxWordLength"
       >
         {{
-          mark.d.note.substring(maxWordLength + 1, maxWordLength * 2) + "..."
+          mark.d.note.length > maxWordLength * 2 + 6
+            ? mark.d.note.substring(
+                mark.d.note.slice(0, maxWordLength).lastIndexOf(" ") + 1,
+                maxWordLength * 2 + 6
+              ) + "..."
+            : mark.d.note.substring(
+                mark.d.note.slice(0, maxWordLength).lastIndexOf(" ") + 1,
+                maxWordLength * 2 + 6
+              )
         }}
       </tspan>
     </text>
@@ -133,10 +146,10 @@ export default {
       let width =
         mark.d.role.length < mark.d.name.length
           ? mark.d.name.length * this.offset
-          : mark.d.role.length * this.offset;
+          : mark.d.role.length * this.offset + 7;
       if (width > this.maxWordLength * this.offset || mark.d.note.length > 0)
-        width = this.maxWordLength * this.offset;
-      return width;
+        width = this.maxWordLength * this.offset + 7;
+      return mark.x < 0 ? width + 3.5 : width + 2;
     },
     getTextYPos(attribute, mark) {
       const attributesNotNull = {
@@ -164,15 +177,11 @@ export default {
         return this.defaultHeight;
       }
       //heightText -= this.defaultHeight;
-      return heightText + 5;
+      return mark.y < 0 ? heightText + 2 : heightText + 7;
     },
     getYPos(mark) {
       //mark.y < 0 ? mark.y - 34.5 : mark.y - 30.5
       const defaultPos = mark.y < 0 ? mark.y - 4.5 : mark.y;
-      console.log(
-        mark.d.currentGender != undefined ||
-          mark.d.currentGender != "nicht festgelegt"
-      );
       return defaultPos - this.calcHeight(mark);
     },
   },
@@ -196,6 +205,8 @@ text {
 
 .rect {
   fill: #0c2c78;
+  stroke: grey;
+  stroke-width: 2;
 }
 
 .toolhover-active {
