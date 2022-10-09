@@ -277,8 +277,6 @@ export default defineComponent({
       alterNameInUI.value = newValue;
     });
 
-
-
     const invalidPosition = computed(() => {
       return props.alter?.distance <= 0;
     });
@@ -335,9 +333,8 @@ export default defineComponent({
     });
 
     const getInvalidName = function () {
-      return invalidName
-    }
-
+      return invalidName;
+    };
 
     // apparently v-for needs this to be a data item
     const genderOptions = ref(Gender);
@@ -373,7 +370,6 @@ export default defineComponent({
         }
       }
     };
-
 
     const cancelAddAlter = () => {
       if (addingNewAlter.value) {
