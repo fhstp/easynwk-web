@@ -267,6 +267,11 @@ export default defineComponent({
           // setPosition(event);
         }
       });
+      let brush = d3.brush().extent([
+        [-105, -105],
+        [210, 210],
+      ]);
+      d3.select("#nwkmap").append("g").attr("class", "brush").call(brush);
     });
 
     const getRoleShort = (role: string) => {
