@@ -1,6 +1,6 @@
 # easyNWK Version History
 
-## version 2.0.2
+## version 2.0.2, released 24 Sep 2022
 
 * (feature) print all entered data or copy to text editor #47
 * (feature) show role and age in the network map optionally
