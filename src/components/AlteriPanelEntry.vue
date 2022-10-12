@@ -47,7 +47,11 @@
       </button>
     </span>
 
-    <AlteriEditForm v-if="isBaseForm" :alter="alter"></AlteriEditForm>
+    <AlteriEditForm
+      v-if="isBaseForm"
+      :alter="alter"
+      :mapclicked="mapclicked"
+    ></AlteriEditForm>
     <AlteriConnectionList
       v-if="isConnectionForm"
       :alter="alter"
@@ -75,6 +79,8 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    // toogled after each click on the map (resets keyboard cursor)
+    mapclicked: Boolean,
   },
   setup(props) {
     const store = useStore();

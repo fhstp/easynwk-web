@@ -405,6 +405,8 @@ export default defineComponent({
 text {
   font-family: $family-primary;
   font-size: 4px;
+  -webkit-user-select: none; /* Safari */
+  user-select: none;
 }
 
 .textbg {

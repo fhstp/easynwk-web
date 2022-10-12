@@ -253,6 +253,8 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    // toogled after each click on the map (resets keyboard cursor)
+    mapclicked: Boolean,
   },
   setup(props) {
     const store = useStore();
@@ -330,7 +332,7 @@ export default defineComponent({
     const domButton = ref<InstanceType<typeof HTMLButtonElement> | null>(null);
 
     watch(
-      () => props.alter?.distance,
+      () => props.mapclicked,
       () => {
         if (altername.value != null) {
           (altername.value as HTMLInputElement).focus();
