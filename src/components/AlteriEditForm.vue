@@ -369,6 +369,15 @@ export default defineComponent({
       if (altername.value != null) {
         (altername.value as HTMLInputElement).focus();
       }
+
+      document.onkeydown = (event: KeyboardEvent) => {
+        if (event.key === "Escape" || event.key === "Esc") {
+          if (document && document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+          }
+          store.commit("protectedCancelAlter", store.state.view.editIndex);
+        }
+      };
     });
 
     return {

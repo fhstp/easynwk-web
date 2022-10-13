@@ -243,14 +243,6 @@ export default defineComponent({
     );
 
     onMounted(() => {
-      document.onkeydown = (event: KeyboardEvent) => {
-        if (event.key === "Escape" || event.key === "Esc") {
-          if (isEditMode.value) {
-            store.commit("protectedCancelAlter", store.state.view.editIndex);
-          }
-        }
-      };
-
       // d3.mouse only works if the event is registered using D3 .on
       const g = d3.select("#nwkmap");
 

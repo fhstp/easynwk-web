@@ -36,7 +36,11 @@ const mutations = {
     // const index = state.alteri.indexOf(payload.alter);
 
     // lookup does not work for 2 parallel mutations (form change & map click)
-    if (payload.index >= 0 && payload.index < state.alteri.length) {
+    if (
+      payload.index != null &&
+      payload.index >= 0 &&
+      payload.index < state.alteri.length
+    ) {
       // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
       const changedAlter = {
         ...state.alteri[payload.index],
