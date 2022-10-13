@@ -210,7 +210,7 @@
           class="button is-light"
           :disabled="invalidName || invalidPosition"
           type="button"
-          @mouseup.prevent="editAlterFinished(false)"
+          @mouseup.prevent="editAlterFinished($event, false)"
         >
           Schließen
         </button>
@@ -279,12 +279,12 @@ export default defineComponent({
     });
 
     // getter & setter for select dropdown
-    function accessor(field: keyof Alter) {
+    function accessor<type>(field: keyof Alter) {
       return computed({
-        get() {
+        get(): type {
           return props.alter[field];
         },
-        set(value: string) {
+        set(value: type) {
           const payload = {
             index: store.state.view.editIndex,
             changes: { [field]: value },
@@ -295,7 +295,7 @@ export default defineComponent({
     }
 
     // generic event handlers from form to vuex
-    const commitEdit = (evt: InputEvent, field: keyof Alter) => {
+    const commitEdit = (evt: FocusEvent, field: keyof Alter) => {
       const value = (evt.target as InputType).value.trim();
       if (props.alter && value !== props.alter[field]) {
         const changes = { [field]: value };
@@ -305,13 +305,13 @@ export default defineComponent({
     };
 
     // special event handlers for role <-- temporily clear default role
-    const focusRole = (evt: InputEvent) => {
+    const focusRole = (evt: FocusEvent) => {
       if (props.alter.roleDefault) {
         (evt.target as InputType).value = "";
       }
     };
 
-    const blurRole = (evt: InputEvent) => {
+    const blurRole = (evt: FocusEvent) => {
       const value = (evt.target as InputType).value.trim();
       if (props.alter.roleDefault && value == "") {
         (evt.target as InputType).value = props.alter.role;
@@ -340,7 +340,7 @@ export default defineComponent({
       }
     );
 
-    const editAlterFinished = (allowAddNext = true) => {
+    const editAlterFinished = (_event: Event, allowAddNext = true) => {
       // TODO     if (!this.invalidPosition && !this.invalidName) {
       if (invalidName.value) {
         // moving mouse cursor does not work
@@ -376,10 +376,10 @@ export default defineComponent({
       alterNameInUI,
       invalidName,
       invalidPosition,
-      alterHuman: accessor("human"),
-      alterGender: accessor("currentGender"),
-      alterDeceased: accessor("deceased"),
-      alterEdgeType: accessor("edgeType"),
+      alterHuman: accessor<boolean>("human"),
+      alterGender: accessor<string>("currentGender"),
+      alterDeceased: accessor<boolean>("deceased"),
+      alterEdgeType: accessor<number>("edgeType"),
       isConnectable: computed(() => isConnectable(props.alter as Alter)),
       commitEdit,
       focusRole,
