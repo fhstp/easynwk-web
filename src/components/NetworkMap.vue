@@ -120,10 +120,12 @@
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
         />
         <use
+          @mouseover="showTooltip(mark, true)"
+          @mouseleave="showTooltip(mark, false)"
           :href="'#' + mark.shape"
           :x="mark.x"
           :y="mark.y"
-          class="mark clickAble"
+          class="mark clickAble hover"
           width="4"
           height="4"
           transform="translate(-2,-2)"
@@ -143,7 +145,11 @@
           {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
           {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
+
         <text
+          @mouseover="showTooltip(mark, true)"
+          @mouseleave="showTooltip(mark, false)"
+          class="hover"
           v-if="alteriNames"
           :x="mark.x"
           :y="mark.y"
@@ -178,6 +184,7 @@
       width="220"
       height="220"
     />
+    <ToolTip :marks="alteriMarks" :names="alteriNames" :text="useTextBG" />
   </svg>
 </template>
 
@@ -193,6 +200,7 @@ import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { getRoleAbbrev } from "../data/Roles";
+import ToolTip from "@/components/ToolTip.vue";
 
 interface AlterMark {
   d: Alter;
@@ -216,7 +224,7 @@ interface ConnectionMark {
 // emit "map-click" (which is not currently used)
 
 export default defineComponent({
-  components: {},
+  components: { ToolTip },
 
   setup: function (props, { emit }) {
     const store = useStore();
@@ -339,6 +347,19 @@ export default defineComponent({
       return buffer.sort((a, b) => b.d.distance - a.d.distance);
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function showTooltip(mark: any, active: boolean) {
+      var element = document.querySelectorAll(`[markid="${mark.d.id}"]`);
+      for (var i = 0; i < element.length; i++) {
+        active
+          ? element[i].classList.remove("toolhover")
+          : element[i].classList.remove("toolhover-active");
+        active
+          ? element[i].classList.add("toolhover-active")
+          : element[i].classList.add("toolhover");
+      }
+    }
+
     const connectionMarks = computed((): Array<ConnectionMark> => {
       return store.state.nwk.connections.map((conn) => {
         const coords1 = alteriCoords.value.get(conn.id1);
@@ -357,7 +378,6 @@ export default defineComponent({
         };
       });
     });
-
     return {
       egoShape: computed(() =>
         shapeByGender(true, store.state.nwk.ego.currentGender)
@@ -366,6 +386,7 @@ export default defineComponent({
       isConnectMode,
       clickAlter,
       alteriMarks,
+      showTooltip,
       connectionMarks,
       showAge: computed(() => store.state.view.ageInNwk),
       showRole: computed(() => store.state.view.roleInNwk),
@@ -397,8 +418,15 @@ export default defineComponent({
 text {
   font-family: $family-primary;
   font-size: 4px;
-  -webkit-user-select: none; /* Safari */
-  user-select: none;
+  cursor: pointer;
+}
+
+.text {
+  display: block;
+  width: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .textbg {
