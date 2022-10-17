@@ -180,6 +180,14 @@
       height="220"
     />
   </svg>
+  <button
+    v-if="showRenderBtn"
+    @click="toggleClusterConnection"
+    id="clusterBtn"
+    :style="connectBtnStyle"
+  >
+    c
+  </button>
 </template>
 
 <script lang="ts">
@@ -218,6 +226,15 @@ interface ConnectionMark {
 
 export default defineComponent({
   components: {},
+  computed: {
+    connectBtnStyle() {
+      return {
+        position: "absolute",
+        top: "100px",
+        left: "100px",
+      };
+    },
+  },
 
   setup: function (props, { emit }) {
     const store = useStore();
@@ -278,87 +295,112 @@ export default defineComponent({
           [210, 210],
         ])
         .on("end", updateChart);
-      d3.select("#nwkmap").append("g").attr("class", "brush").call(brush);
 
-      let markIdsInExtent: number[] = [];
-      let clusterIsConnected = false;
-      function updateChart(event: any) {
-        markIdsInExtent = [];
-        store.commit("view/clearSelectedAlters");
-        let extent = event.selection;
-        //console.log(extent);
-        let marksInExtent: AlterMark[] = [];
-        //let markIdsInExtent: number[] = [];
-        alteriMarks.value.forEach(function (value) {
-          if (isInBrushExtent(value, extent)) {
-            marksInExtent.push(value);
-            markIdsInExtent.push(value.d.id);
-          }
-        });
-        store.commit("view/selectAlters", markIdsInExtent);
-        clusterIsConnected = clusterConnected(markIdsInExtent);
-        console.log(clusterIsConnected);
-        toggleClusterConnection(markIdsInExtent);
-      }
-      function isInBrushExtent(mark: any, extent: any) {
-        return (
-          mark.x >= extent[0][0] &&
-          mark.x <= extent[1][0] &&
-          mark.y >= extent[0][1] &&
-          mark.y <= extent[1][1]
-        );
-      }
-      function clusterConnect(markIds: number[]) {
-        for (let i = 0; i < markIds.length - 1; i++) {
-          for (let x = i + 1; x < markIds.length; x++) {
-            store.commit("addConnection", {
-              id1: markIds[i],
-              id2: markIds[x],
-            });
-          }
-        }
-      }
-      function clusterDisconnect(markIds: number[]) {
-        for (let i = 0; i < markIds.length - 1; i++) {
-          for (let x = i + 1; x < markIds.length; x++) {
-            store.commit("removeConnection", {
-              id1: markIds[i],
-              id2: markIds[x],
-            });
-          }
-        }
-      }
-      function toggleClusterConnection(markIds: number[]) {
-        if (!clusterIsConnected) {
-          clusterConnect(markIds);
-          clusterIsConnected = true;
-        } else {
-          clusterDisconnect(markIds);
-          clusterIsConnected = false;
-        }
-      }
-      function clusterConnected(markIds: number[]) {
-        let allConnected = true;
-        for (let i = 0; i < markIds.length; i++) {
-          const connectedAlterIds = computed(() => {
-            const myId = markIds[i];
-            const id1s = store.state.nwk.connections
-              .filter((d) => d.id2 == myId)
-              .map((d) => d.id1);
-            const id2s = store.state.nwk.connections
-              .filter((d) => d.id1 == myId)
-              .map((d) => d.id2);
-            return [...id1s, ...id2s];
-          });
-          for (let x = i + 1; x < markIds.length; x++) {
-            if (!connectedAlterIds.value.includes(markIds[x])) {
-              allConnected = false;
-            }
-          }
-        }
-        return allConnected;
-      }
+      d3.select("#nwkmap").append("g").attr("class", "brush").call(brush);
     });
+
+    let mousePosX = 0;
+    let mousePosY = 0;
+    document.onmousemove = (event: any) => {
+      mousePosX = event.clientX;
+      mousePosY = event.clientY;
+    };
+
+    let marksInExtent: AlterMark[] = [];
+    let markIdsInExtent: number[] = [];
+    let clusterIsConnected = false;
+
+    let showRenderBtn = false;
+
+    function updateChart(event: any) {
+      const cbtn = document.querySelector("#clusterBtn");
+      cbtn ? document.body.removeChild(cbtn) : console.log("No button active");
+      markIdsInExtent = [];
+      store.commit("view/clearSelectedAlters");
+      let extent = event.selection;
+      //console.log(extent);
+      marksInExtent = [];
+      //let markIdsInExtent: number[] = [];
+      alteriMarks.value.forEach(function (value) {
+        if (isInBrushExtent(value, extent)) {
+          marksInExtent.push(value);
+          markIdsInExtent.push(value.d.id);
+        }
+      });
+      store.commit("view/selectAlters", markIdsInExtent);
+      renderClusterButton(mousePosX, mousePosY);
+      clusterIsConnected = clusterConnected(marksInExtent);
+      //toggleClusterConnection();
+    }
+    function isInBrushExtent(mark: any, extent: any) {
+      return (
+        mark.x >= extent[0][0] &&
+        mark.x <= extent[1][0] &&
+        mark.y >= extent[0][1] &&
+        mark.y <= extent[1][1]
+      );
+    }
+    function clusterConnect(marks: AlterMark[]) {
+      for (let i = 0; i < marks.length - 1; i++) {
+        for (let x = i + 1; x < marks.length; x++) {
+          if (isConnectable(marks[i].d) && isConnectable(marks[x].d)) {
+            store.commit("addConnection", {
+              id1: marks[i].d.id,
+              id2: marks[x].d.id,
+            });
+          }
+        }
+      }
+    }
+    function clusterDisconnect(marks: AlterMark[]) {
+      for (let i = 0; i < marks.length - 1; i++) {
+        for (let x = i + 1; x < marks.length; x++) {
+          store.commit("removeConnection", {
+            id1: marks[i].d.id,
+            id2: marks[x].d.id,
+          });
+        }
+      }
+    }
+    function toggleClusterConnection() {
+      if (!clusterIsConnected) {
+        clusterConnect(marksInExtent);
+        clusterIsConnected = true;
+      } else {
+        clusterDisconnect(marksInExtent);
+        clusterIsConnected = false;
+      }
+    }
+    function clusterConnected(marks: AlterMark[]) {
+      let allConnected = true;
+      for (let i = 0; i < marks.length; i++) {
+        const connectedAlterIds = computed(() => {
+          const myId = marks[i].d.id;
+          const id1s = store.state.nwk.connections
+            .filter((d) => d.id2 == myId)
+            .map((d) => d.id1);
+          const id2s = store.state.nwk.connections
+            .filter((d) => d.id1 == myId)
+            .map((d) => d.id2);
+          return [...id1s, ...id2s];
+        });
+        for (let x = i + 1; x < marks.length; x++) {
+          if (
+            !connectedAlterIds.value.includes(marks[x].d.id) &&
+            isConnectable(marks[x].d) &&
+            isConnectable(marks[i].d)
+          ) {
+            allConnected = false;
+          }
+        }
+      }
+      return allConnected;
+    }
+    function renderClusterButton(x: number, y: number) {
+      const btn = document.querySelector("#clusterBtn");
+      showRenderBtn = true;
+      console.log("Show: " + showRenderBtn);
+    }
 
     const getRoleShort = (role: string) => {
       return getRoleAbbrev(role);
@@ -464,6 +506,8 @@ export default defineComponent({
       alteriNames: computed(() => store.state.view.alteriNames),
       showHorizons: computed(() => store.state.view.horizons),
       connections: computed(() => store.state.view.connections),
+      toggleClusterConnection,
+      showRenderBtn,
       Sectors,
       SYMBOL_DECEASED,
       // TODO browser detection b/c vector-effect seems not to work in Safari only as of 14 Dec 2021
@@ -530,6 +574,12 @@ line.select {
   // stroke: rgb(136, 159, 213);
   // stroke: rgb($fhstpblue, 0.6);
   stroke: rgb(102, 150, 192);
+}
+
+#brush {
+  stroke: none;
+  fill: steelblue;
+  fill-opacity: 0.6;
 }
 
 #position {
