@@ -79,27 +79,6 @@ const mutations = {
     state.view.editIndex = null;
     state.view.editTab = "";
   },
-  protectedCancelAlter(state: IStoreState, alterIndex: number): void {
-    let cancel = true;
-    const alter = state.nwk.alteri[alterIndex];
-    // TODO check logic and maybe move into AlteriEditForm to check on the alter name text field instead of store
-    if (
-      // TODO refactor into a function hasChanges() in Alter.ts
-      (alter.age.length > 0 || alter.note.length > 0 || !alter.genderDefault) &&
-      alter.name.length < 1
-    ) {
-      confirm("Soll dieser Kontakt gelöscht werden?")
-        ? (cancel = true)
-        : (cancel = false);
-    }
-    if (alter.name.length < 1 && cancel) {
-      state.nwk.alteri.splice(alterIndex, 1);
-    }
-    if (cancel) {
-      state.view.editIndex = null;
-      state.view.editTab = "";
-    }
-  },
   openAlterFormById(
     state: IStoreState,
     payload: { alterId: number; tab?: string }

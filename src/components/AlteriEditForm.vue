@@ -233,7 +233,7 @@
 import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useStore } from "@/store";
 
-import { Alter, isConnectable } from "@/data/Alter";
+import { Alter, hasOptionalChanges, isConnectable } from "@/data/Alter";
 import { Gender } from "@/data/Gender";
 import { Roles } from "@/data/Roles";
 import { SYMBOL_DECEASED } from "@/assets/utils";
@@ -375,7 +375,20 @@ export default defineComponent({
           if (document && document.activeElement instanceof HTMLElement) {
             document.activeElement.blur();
           }
-          store.commit("protectedCancelAlter", store.state.view.editIndex);
+
+          if (invalidName.value || invalidPosition.value) {
+            // TODO asking maybe not necessary because of undo?
+            let remove = true;
+            if (hasOptionalChanges(props.alter as Alter)) {
+              remove = confirm("Soll dieser Kontakt gelöscht werden?");
+            }
+            if (remove) {
+              store.commit("cancelAddAlter", store.state.view.editIndex);
+            }
+          } else {
+            // alter is valid --> just close the form
+            store.commit("view/closeAlterForm");
+          }
         }
       };
     });

@@ -58,10 +58,10 @@ export default defineComponent({
     // const msg = ref("");
     const vuexDump = ref("");
 
-    onErrorCaptured(() => {
+    onErrorCaptured((err) => {
       console.log("error boundary invoked.");
       error.value = true;
-      //   msg.value = err.toString();
+      console.log(err);
       vuexDump.value = JSON.stringify(store.state, undefined, 2);
 
       return false;
