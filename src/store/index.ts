@@ -8,6 +8,7 @@ import {
   useStore as baseUseStore,
   Store,
 } from "vuex";
+import { applyAdaptiveNWKDefaults } from "./adaptiveNWKDefaults";
 
 import { IUnReDoState, localStoragePlugin } from "./localStoragePlugin";
 import { nwkModule } from "./nwkModule";
@@ -56,6 +57,7 @@ const mutations = {
       ...initAlter(),
       ...initialValues,
     };
+    applyAdaptiveNWKDefaults(newAlter, initialValues);
 
     // set id depending on alteri in list
     // bugfix: if any id is undefined, NaN, or null --> default to 1
@@ -71,7 +73,7 @@ const mutations = {
   },
   // removes a newly added alter from the list
   cancelAddAlter(state: IStoreState, alterIndex: number): void {
-    console.log("cancel " + alterIndex);
+    // console.log("cancel " + alterIndex);
 
     // canceled alter is new and therefore cannot have connections
     state.nwk.alteri.splice(alterIndex, 1);
