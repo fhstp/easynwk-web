@@ -117,7 +117,7 @@
           y1="0"
           :x2="mark.x"
           :y2="mark.y"
-          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : null"
+          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
         />
         <use
           @mouseover="showTooltip(mark, true)"
@@ -129,7 +129,7 @@
           width="4"
           height="4"
           transform="translate(-2,-2)"
-          @click="clickAlter(mark.d)"
+          @click.stop="clickAlter(mark.d)"
         />
         <text
           v-if="alteriNames && useTextBG"
@@ -142,6 +142,8 @@
           :dy="mark.y < 0 ? -1 : 4"
         >
           {{ mark.label }}
+          {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
+          {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
 
         <text
