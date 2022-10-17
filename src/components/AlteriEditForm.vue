@@ -22,7 +22,6 @@
               ref="altername"
               v-model="alterNameInUI"
               @blur="commitEdit($event, 'name')"
-              @keyup.esc="cancelEdit($event, 'name')"
               type="text"
               placeholder="Vorname oder Spitzname"
             />
@@ -50,7 +49,6 @@
             list="predefined-roles"
             @blur="blurRole"
             @focus="focusRole"
-            @keyup.esc="cancelEdit($event, 'role')"
           />
           <!-- <span class="icon is-small is-right has-text-link">
             <font-awesome-icon icon="chevron-down" />
@@ -108,7 +106,6 @@
               class="input"
               :value="alterGender"
               @blur="commitEdit($event, 'currentGender')"
-              @keyup.esc="cancelEdit($event, 'currentGender')"
               type="text"
             />
           </div>
@@ -129,7 +126,6 @@
               class="input"
               :value="alter.age"
               @blur="commitEdit($event, 'age')"
-              @keyup.esc="cancelEdit($event, 'age')"
               type="number"
             />
           </div>
@@ -188,7 +184,6 @@
           class="textarea is-small"
           :value="alter.note"
           @blur="commitEdit($event, 'note')"
-          @keyup.esc="cancelEdit($event, 'note')"
           placeholder="Notizen zum Kontakt"
         ></textarea>
       </div>
@@ -215,7 +210,7 @@
           class="button is-light"
           :disabled="invalidName || invalidPosition"
           type="button"
-          @mouseup.prevent="editAlterFinished(false)"
+          @mouseup.prevent="editAlterFinished($event, false)"
         >
           Schließen
         </button>
@@ -238,7 +233,7 @@
 import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useStore } from "@/store";
 
-import { Alter, isConnectable } from "@/data/Alter";
+import { Alter, hasOptionalChanges, isConnectable } from "@/data/Alter";
 import { Gender } from "@/data/Gender";
 import { Roles } from "@/data/Roles";
 import { SYMBOL_DECEASED } from "@/assets/utils";
@@ -258,6 +253,8 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    // toogled after each click on the map (resets keyboard cursor)
+    mapclicked: Boolean,
   },
   setup(props) {
     const store = useStore();
@@ -277,21 +274,17 @@ export default defineComponent({
       alterNameInUI.value = newValue;
     });
 
-    const invalidName = computed(() => {
-      return alterNameInUI.value.trim().length === 0;
-    });
-
     const invalidPosition = computed(() => {
       return props.alter?.distance <= 0;
     });
 
     // getter & setter for select dropdown
-    function accessor(field: keyof Alter) {
+    function accessor<type>(field: keyof Alter) {
       return computed({
-        get() {
+        get(): type {
           return props.alter[field];
         },
-        set(value: string) {
+        set(value: type) {
           const payload = {
             index: store.state.view.editIndex,
             changes: { [field]: value },
@@ -302,7 +295,7 @@ export default defineComponent({
     }
 
     // generic event handlers from form to vuex
-    const commitEdit = (evt: InputEvent, field: keyof Alter) => {
+    const commitEdit = (evt: FocusEvent, field: keyof Alter) => {
       const value = (evt.target as InputType).value.trim();
       if (props.alter && value !== props.alter[field]) {
         const changes = { [field]: value };
@@ -311,20 +304,14 @@ export default defineComponent({
       }
     };
 
-    const cancelEdit = (evt: InputEvent, field: keyof Alter) => {
-      (evt.target as InputType).value = (props.alter as Alter)[
-        field
-      ].toString();
-    };
-
     // special event handlers for role <-- temporily clear default role
-    const focusRole = (evt: InputEvent) => {
+    const focusRole = (evt: FocusEvent) => {
       if (props.alter.roleDefault) {
         (evt.target as InputType).value = "";
       }
     };
 
-    const blurRole = (evt: InputEvent) => {
+    const blurRole = (evt: FocusEvent) => {
       const value = (evt.target as InputType).value.trim();
       if (props.alter.roleDefault && value == "") {
         (evt.target as InputType).value = props.alter.role;
@@ -332,6 +319,9 @@ export default defineComponent({
         commitEdit(evt, "role");
       }
     };
+    const invalidName = computed(() => {
+      return alterNameInUI.value.trim().length === 0;
+    });
 
     // apparently v-for needs this to be a data item
     const genderOptions = ref(Gender);
@@ -342,7 +332,7 @@ export default defineComponent({
     const domButton = ref<InstanceType<typeof HTMLButtonElement> | null>(null);
 
     watch(
-      () => props.alter?.distance,
+      () => props.mapclicked,
       () => {
         if (altername.value != null) {
           (altername.value as HTMLInputElement).focus();
@@ -350,7 +340,7 @@ export default defineComponent({
       }
     );
 
-    const editAlterFinished = (allowAddNext = true) => {
+    const editAlterFinished = (_event: Event, allowAddNext = true) => {
       // TODO     if (!this.invalidPosition && !this.invalidName) {
       if (invalidName.value) {
         // moving mouse cursor does not work
@@ -379,6 +369,28 @@ export default defineComponent({
       if (altername.value != null) {
         (altername.value as HTMLInputElement).focus();
       }
+
+      document.onkeydown = (event: KeyboardEvent) => {
+        if (event.key === "Escape" || event.key === "Esc") {
+          if (document && document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+          }
+
+          if (invalidName.value || invalidPosition.value) {
+            // TODO asking maybe not necessary because of undo?
+            let remove = true;
+            if (hasOptionalChanges(props.alter as Alter)) {
+              remove = confirm("Soll dieser Kontakt gelöscht werden?");
+            }
+            if (remove) {
+              store.commit("cancelAddAlter", store.state.view.editIndex);
+            }
+          } else {
+            // alter is valid --> just close the form
+            store.commit("view/closeAlterForm");
+          }
+        }
+      };
     });
 
     return {
@@ -386,13 +398,12 @@ export default defineComponent({
       alterNameInUI,
       invalidName,
       invalidPosition,
-      alterHuman: accessor("human"),
-      alterGender: accessor("currentGender"),
-      alterDeceased: accessor("deceased"),
-      alterEdgeType: accessor("edgeType"),
+      alterHuman: accessor<boolean>("human"),
+      alterGender: accessor<string>("currentGender"),
+      alterDeceased: accessor<boolean>("deceased"),
+      alterEdgeType: accessor<number>("edgeType"),
       isConnectable: computed(() => isConnectable(props.alter as Alter)),
       commitEdit,
-      cancelEdit,
       focusRole,
       blurRole,
       genderOptions,

@@ -127,7 +127,7 @@
           width="4"
           height="4"
           transform="translate(-2,-2)"
-          @click="clickAlter(mark.d)"
+          @click.stop="clickAlter(mark.d)"
         />
         <text
           v-if="alteriNames && useTextBG"
@@ -216,7 +216,9 @@ interface ConnectionMark {
 // emit "map-click" (which is not currently used)
 
 export default defineComponent({
-  setup(props, { emit }) {
+  components: {},
+
+  setup: function (props, { emit }) {
     const store = useStore();
 
     const isEditMode = computed(() => {
@@ -226,6 +228,16 @@ export default defineComponent({
       );
     });
 
+    const getPositionPolar = (event: UIEvent) => {
+      const coords = d3.pointer(event);
+
+      // cp. https://stackoverflow.com/a/33043899/1140589
+      const distance = Math.sqrt(coords[0] * coords[0] + coords[1] * coords[1]);
+      const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
+
+      return { distance, angle };
+    };
+
     const isConnectMode = computed(
       () => store.state.view.editTab === TAB_CONNECTIONS
     );
@@ -233,27 +245,27 @@ export default defineComponent({
     onMounted(() => {
       // d3.mouse only works if the event is registered using D3 .on
       const g = d3.select("#nwkmap");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      g.on("click", (event: any) => {
-        const coords = d3.pointer(event);
 
-        // cp. https://stackoverflow.com/a/33043899/1140589
-        const distance = Math.sqrt(
-          coords[0] * coords[0] + coords[1] * coords[1]
-        );
-        const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
-
+      g.on("click", (event) => {
+        const posPol = getPositionPolar(event);
         if (isEditMode.value) {
           const payload = {
             index: store.state.view.editIndex,
-            changes: { distance: distance, angle: angle },
+            changes: posPol,
           };
           store.commit("editAlter", payload);
           // } else {
           //   store.commit("view/clearSelectedAlters");
         }
+        emit("map-click", posPol);
+      });
 
-        emit("map-click", { distance, angle });
+      g.on("dblclick", (event) => {
+        if (!isEditMode.value) {
+          const posPol = getPositionPolar(event);
+          store.commit("addAlter", posPol);
+          // setPosition(event);
+        }
       });
     });
 
@@ -385,6 +397,8 @@ export default defineComponent({
 text {
   font-family: $family-primary;
   font-size: 4px;
+  -webkit-user-select: none; /* Safari */
+  user-select: none;
 }
 
 .textbg {

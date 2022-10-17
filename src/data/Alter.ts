@@ -44,6 +44,20 @@ export function initAlter(): Alter {
   };
 }
 
+/** check if the alter has been changed by the user. Mandatory fields name and location are ignored.
+ */
+export function hasOptionalChanges(alter: Alter) {
+  return (
+    !alter.roleDefault ||
+    !alter.genderDefault ||
+    !alter.human ||
+    alter.age != "" ||
+    alter.note != "" ||
+    alter.deceased ||
+    alter.edgeTypeByUser != -1
+  );
+}
+
 /**
  * get the "closeness" of an alter in 9 concentric rings around the ego.
  * 9 = very close, ..., 0 = on or beyond the outer horizon.

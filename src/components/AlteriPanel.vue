@@ -34,6 +34,7 @@
       :key="alter.id"
       :alter="alter"
       :alterIndex="i"
+      :mapclicked="mapclicked"
     ></AlteriPanelEntry>
   </nav>
 </template>
@@ -49,6 +50,10 @@ import AlteriPanelEntry from "@/components/AlteriPanelEntry.vue";
 
 export default defineComponent({
   components: { AlteriPanelEntry },
+  props: {
+    // toogled after each click on the map (resets keyboard cursor)
+    mapclicked: Boolean,
+  },
   setup() {
     const store = useStore();
 

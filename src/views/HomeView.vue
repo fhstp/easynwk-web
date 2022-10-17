@@ -19,7 +19,7 @@
           <div id="forms">
             <EgoEditForm v-if="egoEditMode" @edit-finished="editEgoFinished" />
 
-            <AlteriPanel v-if="!egoEditMode" />
+            <AlteriPanel v-if="!egoEditMode" :mapclicked="mapclicked" />
             <ViewOptionsPanel />
             <StatisticsPanel v-if="$store.state.view.statistics" />
           </div>
@@ -65,6 +65,8 @@ export default defineComponent({
 
     const store = useStore();
 
+    const mapclicked = ref(false);
+
     // if Ego Name is empty --> start in Ego edit mode
     const egoEditMode = ref(
       !store.state.nwk.ego ||
@@ -78,12 +80,14 @@ export default defineComponent({
     };
 
     const mapclick = (coords: { distance: number; angle: number }) => {
+      mapclicked.value = !mapclicked.value;
       console.log(
         "map click at (" + coords.angle + ", " + coords.distance + ")"
       );
     };
 
     return {
+      mapclicked,
       egoEditMode,
       editEgoFinished,
       mapclick,
