@@ -180,14 +180,6 @@
       height="220"
     />
   </svg>
-  <button
-    v-if="showRenderBtn"
-    @click="toggleClusterConnection"
-    id="clusterBtn"
-    :style="connectBtnStyle"
-  >
-    c
-  </button>
 </template>
 
 <script lang="ts">
@@ -289,7 +281,7 @@ export default defineComponent({
       });
       let brush = d3
         .brush()
-        .filter((event) => event.ctrlKey)
+        //.filter((event) => event.ctrlKey)
         .extent([
           [-105, -105],
           [210, 210],
@@ -313,24 +305,28 @@ export default defineComponent({
     let showRenderBtn = false;
 
     function updateChart(event: any) {
-      const cbtn = document.querySelector("#clusterBtn");
-      cbtn ? document.body.removeChild(cbtn) : console.log("No button active");
-      markIdsInExtent = [];
-      store.commit("view/clearSelectedAlters");
-      let extent = event.selection;
-      //console.log(extent);
-      marksInExtent = [];
-      //let markIdsInExtent: number[] = [];
-      alteriMarks.value.forEach(function (value) {
-        if (isInBrushExtent(value, extent)) {
-          marksInExtent.push(value);
-          markIdsInExtent.push(value.d.id);
-        }
-      });
-      store.commit("view/selectAlters", markIdsInExtent);
-      renderClusterButton(mousePosX, mousePosY);
-      clusterIsConnected = clusterConnected(marksInExtent);
-      //toggleClusterConnection();
+      if (!isEditMode.value) {
+        const connectBtn = document.querySelector("#connectBtn");
+        connectBtn
+          ? document.body.removeChild(connectBtn)
+          : console.log("No button found");
+        markIdsInExtent = [];
+        store.commit("view/clearSelectedAlters");
+        let extent = event.selection;
+        //console.log(extent);
+        marksInExtent = [];
+        //let markIdsInExtent: number[] = [];
+        alteriMarks.value.forEach(function (value) {
+          if (isInBrushExtent(value, extent)) {
+            marksInExtent.push(value);
+            markIdsInExtent.push(value.d.id);
+          }
+        });
+        store.commit("view/selectAlters", markIdsInExtent);
+        renderClusterButton(mousePosX, mousePosY);
+        clusterIsConnected = clusterConnected(marksInExtent);
+        //toggleClusterConnection();
+      }
     }
     function isInBrushExtent(mark: any, extent: any) {
       return (
@@ -397,9 +393,24 @@ export default defineComponent({
       return allConnected;
     }
     function renderClusterButton(x: number, y: number) {
-      const btn = document.querySelector("#clusterBtn");
-      showRenderBtn = true;
-      console.log("Show: " + showRenderBtn);
+      const el = document.createElement("button");
+      el.addEventListener("click", () => {
+        toggleClusterConnection();
+        clusterIsConnected
+          ? (el.innerHTML = "disconnect")
+          : (el.innerHTML = "connect");
+      });
+      clusterIsConnected
+        ? (el.innerHTML = "disconnect")
+        : (el.innerHTML = "connect");
+      el.style.position = "absolute";
+      el.style.top = y + "px";
+      el.style.left = x + "px";
+      el.classList.add("button");
+      el.classList.add("is-small");
+      el.type = "button";
+      el.id = "connectBtn";
+      document.body.appendChild(el);
     }
 
     const getRoleShort = (role: string) => {
