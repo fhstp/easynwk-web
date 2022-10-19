@@ -289,14 +289,23 @@ export default defineComponent({
       });
       let brush = d3
         .brush()
-        //.filter((event) => event.ctrlKey)
         .extent([
           [-105, -105],
           [210, 210],
         ])
         .on("end", updateChart);
 
-      d3.select("#nwkmap").append("g").attr("class", "brush").call(brush);
+      d3.select("#nwkmap")
+        .append("g")
+        .attr("class", "brush")
+        .attr("id", "brush")
+        .call(brush);
+
+      d3.select("#nwkmap")
+        .select("#brush > .selection")
+        .style("fill", "steelblue")
+        .style("opacity", "0.4")
+        .style("stroke-width", "0.5");
     });
 
     let mousePosX = 0;
@@ -321,9 +330,7 @@ export default defineComponent({
         markIdsInExtent = [];
         store.commit("view/clearSelectedAlters");
         let extent = event.selection;
-        //console.log(extent);
         marksInExtent = [];
-        //let markIdsInExtent: number[] = [];
         alteriMarks.value.forEach(function (value) {
           if (isInBrushExtent(value, extent)) {
             marksInExtent.push(value);
@@ -333,7 +340,6 @@ export default defineComponent({
         store.commit("view/selectAlters", markIdsInExtent);
         renderClusterButton(mousePosX, mousePosY);
         clusterIsConnected = clusterConnected(marksInExtent);
-        //toggleClusterConnection();
       }
     }
     function isInBrushExtent(mark: any, extent: any) {
@@ -401,24 +407,27 @@ export default defineComponent({
       return allConnected;
     }
     function renderClusterButton(x: number, y: number) {
-      const el = document.createElement("button");
-      el.addEventListener("click", () => {
-        toggleClusterConnection();
+      if (marksInExtent.length > 1) {
+        //button
+        const el = document.createElement("button");
+        el.addEventListener("click", () => {
+          toggleClusterConnection();
+          clusterIsConnected
+            ? (el.innerHTML = "disconnect")
+            : (el.innerHTML = "connect");
+        });
         clusterIsConnected
           ? (el.innerHTML = "disconnect")
           : (el.innerHTML = "connect");
-      });
-      clusterIsConnected
-        ? (el.innerHTML = "disconnect")
-        : (el.innerHTML = "connect");
-      el.style.position = "absolute";
-      el.style.top = y + "px";
-      el.style.left = x + "px";
-      el.classList.add("button");
-      el.classList.add("is-small");
-      el.type = "button";
-      el.id = "connectBtn";
-      document.body.appendChild(el);
+        el.style.position = "absolute";
+        el.style.top = y + "px";
+        el.style.left = x + "px";
+        el.classList.add("button");
+        el.classList.add("is-small");
+        el.type = "button";
+        el.id = "connectBtn";
+        document.body.appendChild(el);
+      }
     }
 
     const getRoleShort = (role: string) => {
@@ -591,12 +600,6 @@ line.select {
   // stroke: rgb(136, 159, 213);
   // stroke: rgb($fhstpblue, 0.6);
   stroke: rgb(102, 150, 192);
-}
-
-#brush {
-  stroke: none;
-  fill: steelblue;
-  fill-opacity: 0.6;
 }
 
 #position {

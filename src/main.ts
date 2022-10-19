@@ -42,6 +42,8 @@ import {
   faFilePdf,
   faArrowLeft,
   faInfo,
+  faLink,
+  faUndoAlt,
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
   faBars,
@@ -74,7 +76,9 @@ library.add(
   faCheck,
   faFilePdf,
   faArrowLeft,
-  faInfo
+  faInfo,
+  faLink,
+  faUndoAlt
 );
 
 // Vue.component("font-awesome-icon", FontAwesomeIcon);
