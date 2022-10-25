@@ -76,7 +76,10 @@ const mutations = {
     // console.log("cancel " + alterIndex);
 
     // canceled alter is new and therefore cannot have connections
-    state.nwk.alteri.splice(alterIndex, 1);
+    // don't delete with index null value (see #97)
+    if (alterIndex !== null) {
+      state.nwk.alteri.splice(alterIndex, 1);
+    }
 
     state.view.editIndex = null;
     state.view.editTab = "";
