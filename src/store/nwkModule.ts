@@ -89,12 +89,29 @@ const mutations = {
     state.connections.push(payload);
   },
 
+  addClusterConnections(state: NWK, payload: number[]): void {
+    for (let i = 0; i < payload.length - 1; i++) {
+      for (let x = i + 1; x < payload.length; x++) {
+        state.connections.push({
+          id1: payload[i],
+          id2: payload[x],
+        });
+      }
+    }
+  },
+
   removeConnection(state: NWK, payload: { id1: number; id2: number }): void {
     state.connections = state.connections.filter(
       (c) => c.id1 != payload.id1 || c.id2 != payload.id2
     );
     state.connections = state.connections.filter(
       (c) => c.id1 != payload.id2 || c.id2 != payload.id1
+    );
+  },
+
+  removeClusterConnections(state: NWK, payload: number[]): void {
+    state.connections = state.connections.filter(
+      (c) => !(payload.includes(c.id1) && payload.includes(c.id2))
     );
   },
 

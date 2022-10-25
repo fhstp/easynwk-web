@@ -124,7 +124,6 @@
           :x="mark.x"
           :y="mark.y"
           class="mark clickAble"
-          id="person"
           width="4"
           height="4"
           transform="translate(-2,-2)"
@@ -180,10 +179,51 @@
       height="220"
     />
   </svg>
+  <div id="brushBtns" ref="brushBtns" class="buttons ares-small">
+    <button
+      id="btnClusterMove"
+      class="button is-small"
+      type="button"
+      title="gemeinsam verschieben"
+      disabled
+    >
+      <span class="icon is-small">
+        <font-awesome-icon icon="arrows-alt" />
+      </span>
+      <span>verschieben</span>
+    </button>
+    <button
+      id="btnClusterConnect"
+      class="button is-small"
+      type="button"
+      title="komplett verbinden (Clique erzeugen)"
+      @click="clusterConnect"
+      v-if="!isClusterFullyConnected"
+      :disabled="!isClusterConnectPossible"
+    >
+      <span class="icon is-small">
+        <font-awesome-icon icon="link" />
+      </span>
+      <span>verbinden</span>
+    </button>
+    <button
+      id="btnClusterUnConnect"
+      class="button is-small"
+      type="button"
+      title="alle Beziehungen lösen"
+      @click="clusterDisconnect"
+      v-else
+    >
+      <span class="icon is-small">
+        <font-awesome-icon icon="unlink" />
+      </span>
+      <span>entbinden</span>
+    </button>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted } from "vue";
+import { defineComponent, computed, onMounted, ref, watch } from "vue";
 import { useStore } from "@/store";
 
 import * as d3 from "d3";
@@ -194,6 +234,7 @@ import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { getRoleAbbrev } from "../data/Roles";
+import { D3BrushEvent } from "d3";
 
 interface AlterMark {
   d: Alter;
@@ -218,15 +259,7 @@ interface ConnectionMark {
 
 export default defineComponent({
   components: {},
-  computed: {
-    connectBtnStyle() {
-      return {
-        position: "absolute",
-        top: "100px",
-        left: "100px",
-      };
-    },
-  },
+  emits: ["map-click"],
 
   setup: function (props, { emit }) {
     const store = useStore();
@@ -256,7 +289,6 @@ export default defineComponent({
       // d3.mouse only works if the event is registered using D3 .on
       const g = d3.select("#nwkmap");
       g.selectAll("#marks").attr("pointer-events", "all");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
       g.on("click", (event) => {
         const posPol = getPositionPolar(event);
@@ -279,13 +311,38 @@ export default defineComponent({
           // setPosition(event);
         }
       });
-      let brush = d3
+
+      initBrushBehavior();
+    });
+
+    // disable brush as long as in edit or connect mode
+    watch(
+      () => isEditMode.value || isConnectMode.value,
+      (newIsSomeMode: boolean) => {
+        if (newIsSomeMode) {
+          d3.select("#nwkmap > #brush").remove();
+          if (brushBtns.value) {
+            brushBtns.value.style.visibility = "hidden";
+          }
+        } else {
+          initBrushBehavior();
+        }
+      }
+    );
+
+    function initBrushBehavior() {
+      const brush = d3
         .brush()
         .extent([
           [-105, -105],
           [210, 210],
         ])
-        .on("end", updateChart);
+        .on("start", () => {
+          if (brushBtns.value) {
+            brushBtns.value.style.visibility = "hidden";
+          }
+        })
+        .on("end", afterBrushChanged);
 
       d3.select("#nwkmap")
         .append("g")
@@ -298,43 +355,65 @@ export default defineComponent({
         .style("fill", "steelblue")
         .style("opacity", "0.4")
         .style("stroke-width", "0.5");
-    });
+    }
 
-    let mousePosX = 0;
-    let mousePosY = 0;
-    document.onmousemove = (event: any) => {
-      mousePosX = event.clientX;
-      mousePosY = event.clientY;
-    };
-
-    let marksInExtent: AlterMark[] = [];
     let markIdsInExtent: number[] = [];
-    let clusterIsConnected = false;
+    let connectableIdsInExtent: number[] = [];
 
-    let showRenderBtn = false;
+    // we need a DOM ref in order to focus
+    const brushBtns = ref<InstanceType<typeof HTMLDivElement> | null>(null);
 
-    function updateChart(event: any) {
-      if (!isEditMode.value) {
-        const connectBtn = document.querySelector("#connectBtn");
-        connectBtn
-          ? document.body.removeChild(connectBtn)
-          : console.log("No button found");
-        markIdsInExtent = [];
-        store.commit("view/clearSelectedAlters");
-        let extent = event.selection;
-        marksInExtent = [];
-        alteriMarks.value.forEach(function (value) {
-          if (isInBrushExtent(value, extent)) {
-            marksInExtent.push(value);
-            markIdsInExtent.push(value.d.id);
-          }
-        });
+    const isClusterConnectPossible = ref(false);
+    const isClusterFullyConnected = ref(false);
+
+    function afterBrushChanged(event: D3BrushEvent<unknown>) {
+      // console.log(event);
+
+      if (event.selection) {
+        const extent = event.selection as [[number, number], [number, number]];
+
+        const marksInExtent = alteriMarks.value.filter((am) =>
+          isInBrushExtent(am, extent)
+        );
+        markIdsInExtent = marksInExtent.map((am) => am.d.id);
         store.commit("view/selectAlters", markIdsInExtent);
-        renderClusterButton(mousePosX, mousePosY);
-        clusterIsConnected = clusterConnected(marksInExtent);
+
+        // check if cluster connect is possible (more than 1 connectable alter)
+        connectableIdsInExtent = marksInExtent
+          .filter((am) => isConnectable(am.d))
+          .map((am) => am.d.id);
+        isClusterConnectPossible.value = connectableIdsInExtent.length >= 2;
+        isClusterFullyConnected.value =
+          isClusterConnectPossible.value &&
+          clusterConnected(connectableIdsInExtent);
+
+        // move buttons relative to selection box as SVG element
+        // <https://stackoverflow.com/questions/26049488/how-to-get-absolute-coordinates-of-object-inside-a-g-group>
+        const svgExtent = document.querySelector("#brush > .selection");
+        if (svgExtent) {
+          // console.log(svgExtent);
+          const selRect = svgExtent.getBoundingClientRect();
+          // console.log(selRect);
+          if (brushBtns.value) {
+            brushBtns.value.style.visibility = "visible";
+            brushBtns.value.style.top = selRect.y + "px";
+            brushBtns.value.style.left = selRect.x + "px";
+          }
+        } else {
+          console.warn("Brush rect not found");
+        }
+      } else {
+        console.log("Brush selection inactive");
+        if (brushBtns.value) {
+          brushBtns.value.style.visibility = "hidden";
+        }
       }
     }
-    function isInBrushExtent(mark: any, extent: any) {
+
+    function isInBrushExtent(
+      mark: AlterMark,
+      extent: [[number, number], [number, number]]
+    ) {
       return (
         mark.x >= extent[0][0] &&
         mark.x <= extent[1][0] &&
@@ -342,42 +421,21 @@ export default defineComponent({
         mark.y <= extent[1][1]
       );
     }
-    function clusterConnect(marks: AlterMark[]) {
-      for (let i = 0; i < marks.length - 1; i++) {
-        for (let x = i + 1; x < marks.length; x++) {
-          if (isConnectable(marks[i].d) && isConnectable(marks[x].d)) {
-            store.commit("addConnection", {
-              id1: marks[i].d.id,
-              id2: marks[x].d.id,
-            });
-          }
-        }
-      }
+
+    function clusterConnect() {
+      store.commit("addClusterConnections", connectableIdsInExtent);
+      isClusterFullyConnected.value = true;
     }
-    function clusterDisconnect(marks: AlterMark[]) {
-      for (let i = 0; i < marks.length - 1; i++) {
-        for (let x = i + 1; x < marks.length; x++) {
-          store.commit("removeConnection", {
-            id1: marks[i].d.id,
-            id2: marks[x].d.id,
-          });
-        }
-      }
+
+    function clusterDisconnect() {
+      store.commit("removeClusterConnections", connectableIdsInExtent);
+      isClusterFullyConnected.value = false;
     }
-    function toggleClusterConnection() {
-      if (!clusterIsConnected) {
-        clusterConnect(marksInExtent);
-        clusterIsConnected = true;
-      } else {
-        clusterDisconnect(marksInExtent);
-        clusterIsConnected = false;
-      }
-    }
-    function clusterConnected(marks: AlterMark[]) {
-      let allConnected = true;
-      for (let i = 0; i < marks.length; i++) {
+
+    function clusterConnected(markIds: number[]) {
+      for (let i = 0; i < markIds.length; i++) {
         const connectedAlterIds = computed(() => {
-          const myId = marks[i].d.id;
+          const myId = markIds[i];
           const id1s = store.state.nwk.connections
             .filter((d) => d.id2 == myId)
             .map((d) => d.id1);
@@ -386,40 +444,13 @@ export default defineComponent({
             .map((d) => d.id2);
           return [...id1s, ...id2s];
         });
-        for (let x = i + 1; x < marks.length; x++) {
-          if (
-            !connectedAlterIds.value.includes(marks[x].d.id) &&
-            isConnectable(marks[x].d) &&
-            isConnectable(marks[i].d)
-          ) {
-            allConnected = false;
+        for (let x = i + 1; x < markIds.length; x++) {
+          if (!connectedAlterIds.value.includes(markIds[x])) {
+            return false;
           }
         }
       }
-      return allConnected;
-    }
-    function renderClusterButton(x: number, y: number) {
-      if (marksInExtent.length > 1) {
-        //button
-        const el = document.createElement("button");
-        el.addEventListener("click", () => {
-          toggleClusterConnection();
-          clusterIsConnected
-            ? (el.innerHTML = "disconnect")
-            : (el.innerHTML = "connect");
-        });
-        clusterIsConnected
-          ? (el.innerHTML = "disconnect")
-          : (el.innerHTML = "connect");
-        el.style.position = "absolute";
-        el.style.top = y + "px";
-        el.style.left = x + "px";
-        el.classList.add("button");
-        el.classList.add("is-small");
-        el.type = "button";
-        el.id = "connectBtn";
-        document.body.appendChild(el);
-      }
+      return true;
     }
 
     const getRoleShort = (role: string) => {
@@ -526,8 +557,11 @@ export default defineComponent({
       alteriNames: computed(() => store.state.view.alteriNames),
       showHorizons: computed(() => store.state.view.horizons),
       connections: computed(() => store.state.view.connections),
-      toggleClusterConnection,
-      showRenderBtn,
+      brushBtns,
+      isClusterConnectPossible,
+      isClusterFullyConnected,
+      clusterConnect,
+      clusterDisconnect,
       Sectors,
       SYMBOL_DECEASED,
       // TODO browser detection b/c vector-effect seems not to work in Safari only as of 14 Dec 2021
@@ -619,5 +653,10 @@ line.select {
   fill: rgba(lightgray, 0.5);
   font-size: 1em;
   font-weight: bold;
+}
+
+#brushBtns {
+  position: absolute;
+  visibility: hidden;
 }
 </style>
