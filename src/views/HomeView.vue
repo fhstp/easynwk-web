@@ -21,7 +21,7 @@
 
             <AlteriPanel v-if="!egoEditMode" :mapclicked="mapclicked" />
             <ViewOptionsPanel />
-            <StatisticsPanel v-if="$store.state.view.statistics" />
+            <StatisticsPanel v-if="showStatistics" />
           </div>
         </div>
       </div>
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
 
 // @ is an alias to /src
@@ -91,6 +91,7 @@ export default defineComponent({
       egoEditMode,
       editEgoFinished,
       mapclick,
+      showStatistics: computed(() => store.state.view.statistics),
     };
   },
 });
