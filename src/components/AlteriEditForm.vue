@@ -237,6 +237,7 @@ import { Alter, hasOptionalChanges, isConnectable } from "@/data/Alter";
 import { Gender } from "@/data/Gender";
 import { Roles } from "@/data/Roles";
 import { SYMBOL_DECEASED } from "@/assets/utils";
+import { TAB_BASE } from "@/store/viewOptionsModule";
 
 type InputType = HTMLInputElement | HTMLTextAreaElement;
 
@@ -374,6 +375,11 @@ export default defineComponent({
         if (event.key === "Escape" || event.key === "Esc") {
           if (document && document.activeElement instanceof HTMLElement) {
             document.activeElement.blur();
+          }
+
+          // check if form is open isEditMode (see #97)
+          if (store.state.view.editTab !== TAB_BASE) {
+            return;
           }
 
           if (invalidName.value || invalidPosition.value) {
