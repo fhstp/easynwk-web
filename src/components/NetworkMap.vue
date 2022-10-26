@@ -389,15 +389,17 @@ export default defineComponent({
 
         // move buttons relative to selection box as SVG element
         // <https://stackoverflow.com/questions/26049488/how-to-get-absolute-coordinates-of-object-inside-a-g-group>
+        const divChart = document.querySelector("div#chart");
         const svgExtent = document.querySelector("#brush > .selection");
-        if (svgExtent) {
+        if (divChart && svgExtent) {
           // console.log(svgExtent);
+          const chartRect = divChart.getBoundingClientRect();
           const selRect = svgExtent.getBoundingClientRect();
           // console.log(selRect);
           if (brushBtns.value) {
             brushBtns.value.style.visibility = "visible";
-            brushBtns.value.style.top = selRect.y + "px";
-            brushBtns.value.style.left = selRect.x + "px";
+            brushBtns.value.style.top = selRect.y - chartRect.y + "px";
+            brushBtns.value.style.left = selRect.x - chartRect.x + "px";
           }
         } else {
           console.warn("Brush rect not found");
