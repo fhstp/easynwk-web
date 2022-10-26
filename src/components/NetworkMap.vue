@@ -179,7 +179,7 @@
       height="220"
     />
   </svg>
-  <div id="brushBtns" ref="brushBtns" class="buttons ares-small">
+  <div id="brushBtns" ref="brushBtns">
     <button
       id="btnClusterMove"
       class="button is-small"
@@ -190,7 +190,6 @@
       <span class="icon is-small">
         <font-awesome-icon icon="arrows-alt" />
       </span>
-      <span>verschieben</span>
     </button>
     <button
       id="btnClusterConnect"
@@ -204,7 +203,6 @@
       <span class="icon is-small">
         <font-awesome-icon icon="link" />
       </span>
-      <span>verbinden</span>
     </button>
     <button
       id="btnClusterUnConnect"
@@ -217,7 +215,6 @@
       <span class="icon is-small">
         <font-awesome-icon icon="unlink" />
       </span>
-      <span>entbinden</span>
     </button>
   </div>
 </template>
@@ -395,11 +392,13 @@ export default defineComponent({
           // console.log(svgExtent);
           const chartRect = divChart.getBoundingClientRect();
           const selRect = svgExtent.getBoundingClientRect();
+          // console.log(chartRect);
           // console.log(selRect);
           if (brushBtns.value) {
             brushBtns.value.style.visibility = "visible";
             brushBtns.value.style.top = selRect.y - chartRect.y + "px";
-            brushBtns.value.style.left = selRect.x - chartRect.x + "px";
+            brushBtns.value.style.right =
+              chartRect.right - selRect.x + 4 + "px";
           }
         } else {
           console.warn("Brush rect not found");
@@ -660,5 +659,11 @@ line.select {
 #brushBtns {
   position: absolute;
   visibility: hidden;
+  // display: flex;
+  // flex-direction: column;
+}
+#brushBtns > button {
+  display: block;
+  margin-bottom: 0.5rem;
 }
 </style>
