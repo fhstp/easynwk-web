@@ -85,6 +85,26 @@ const mutations = {
     state.alteri.splice(alterIndex, 1);
   },
 
+  moveCluster(
+    state: NWK,
+    payload: { ids: number[]; dx: number; dy: number }
+  ): void {
+    for (let i = 0; i < state.alteri.length; i++) {
+      const alter = state.alteri[i];
+      if (payload.ids.includes(alter.id)) {
+        // TODO refactor trigonometry into 2 functions in Alter.ts?
+        const x = alter.distance * Math.cos((alter.angle * Math.PI) / 180);
+        const y = -1 * alter.distance * Math.sin((alter.angle * Math.PI) / 180);
+
+        const x2 = x + payload.dx;
+        const y2 = y + payload.dy;
+
+        alter.distance = Math.sqrt(x2 * x2 + y2 * y2);
+        alter.angle = Math.atan2(-1 * y2, x2) * (180 / Math.PI);
+      }
+    }
+  },
+
   addConnection(state: NWK, payload: { id1: number; id2: number }): void {
     state.connections.push(payload);
   },
