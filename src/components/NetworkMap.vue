@@ -180,7 +180,7 @@
     />
   </svg>
   <div id="brushBtns" ref="brushBtns">
-    <button
+    <!-- <button
       id="btnClusterMove"
       class="button is-small"
       type="button"
@@ -190,7 +190,7 @@
       <span class="icon is-small">
         <font-awesome-icon icon="arrows-alt" />
       </span>
-    </button>
+    </button> -->
     <button
       id="btnClusterConnect"
       class="button is-small"
