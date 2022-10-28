@@ -216,6 +216,16 @@
         <font-awesome-icon icon="unlink" />
       </span>
     </button>
+    <button
+      class="button is-small"
+      type="button"
+      title="Auswahlrechteck schließen"
+      @click="clearBrush"
+    >
+      <span class="icon is-small">
+        <font-awesome-icon icon="times" />
+      </span>
+    </button>
   </div>
 </template>
 
@@ -327,14 +337,15 @@ export default defineComponent({
       }
     );
 
+    const brush = d3.brush().extent([
+      [-105, -105],
+      [105, 105],
+    ]);
+
     function initBrushBehavior() {
-      const brush = d3
-        .brush()
-        .extent([
-          [-105, -105],
-          [210, 210],
-        ])
+      brush
         .on("start", () => {
+          // when brush is changed (e.g. resized) -> hide buttons
           if (brushBtns.value) {
             brushBtns.value.style.visibility = "hidden";
           }
@@ -353,6 +364,13 @@ export default defineComponent({
         .style("opacity", "0.4")
         .style("stroke-width", "0.5");
     }
+
+    /** resets the brush to a null selection */
+    const clearBrush = () => {
+      if (brush) {
+        brush.clear(d3.select("#nwkmap .brush"));
+      }
+    };
 
     let markIdsInExtent: number[] = [];
     let connectableIdsInExtent: number[] = [];
@@ -405,6 +423,7 @@ export default defineComponent({
         }
       } else {
         console.log("Brush selection inactive");
+        store.commit("view/clearSelectedAlters");
         if (brushBtns.value) {
           brushBtns.value.style.visibility = "hidden";
         }
@@ -563,6 +582,7 @@ export default defineComponent({
       isClusterFullyConnected,
       clusterConnect,
       clusterDisconnect,
+      clearBrush,
       Sectors,
       SYMBOL_DECEASED,
       // TODO browser detection b/c vector-effect seems not to work in Safari only as of 14 Dec 2021
