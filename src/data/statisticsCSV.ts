@@ -4,6 +4,7 @@ import {
 } from "@/data/AlterCategories";
 import {
   analyseNWKbyCategory,
+  calculateAverageDegree,
   calculateDensity,
   getOrInit,
   NetworkAnalysis,
@@ -42,6 +43,19 @@ export function statisticsCSV(
       output += SEP + getOrInit(networkAnalysis, label).naehenSum.toFixed(0);
     }
 
+    output += "\nkorrigiertes Beziehungsgewicht";
+    for (const label of categorization.categories) {
+      output +=
+        SEP +
+        (
+          getOrInit(networkAnalysis, label).naehenSum /
+          getOrInit(networkAnalysis, label).alterConnected
+        ).toLocaleString(undefined, {
+          minimumFractionDigits: 3,
+          maximumFractionDigits: 3,
+        });
+    }
+
     output += "\nDichte der Kategorie";
     for (const label of categorization.categories) {
       const { alterConnectable, intConnCount } = getOrInit(
@@ -51,6 +65,23 @@ export function statisticsCSV(
       output +=
         SEP +
         calculateDensity(alterConnectable, intConnCount).toLocaleString(
+          undefined,
+          {
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3,
+          }
+        );
+    }
+
+    output += "\nDurchschnittlicher Degree";
+    for (const label of categorization.categories) {
+      const { alterConnectable, intConnCount } = getOrInit(
+        networkAnalysis,
+        label
+      );
+      output +=
+        SEP +
+        calculateAverageDegree(alterConnectable, intConnCount).toLocaleString(
           undefined,
           {
             minimumFractionDigits: 3,

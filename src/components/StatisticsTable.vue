@@ -29,6 +29,21 @@
         </tr>
         <tr>
           <th
+            title="Durchschnittliche Nähe bzw. Distanz der Kontakte zur Ankerperson. Je höher die Kennzahl, umso näher stehen die Personen der Ankerperson."
+          >
+            korrigiertes Beziehungsgewicht
+          </th>
+          <td>
+            {{
+              (naehenSum / networkSize).toLocaleString(undefined, {
+                minimumFractionDigits: 3,
+                maximumFractionDigits: 3,
+              })
+            }}
+          </td>
+        </tr>
+        <tr>
+          <th
             title="Verhältnis der tatsächlich vorhandenen zu den theoretisch möglichen Verbindungen (exklusive der Verbindungen zwischen Anker- und Kontaktpersonen, inklusive Personen ohne Kante zur Ankerperson). Optional: Maßzahl liegt zwischen 0 (nur isolierte Kontakte) und 1 (jede Person im Netzwerk ist mit jeder anderen verbunden)."
           >
             Dichte gesamt
@@ -36,6 +51,21 @@
           <td>
             {{
               density.toLocaleString(undefined, {
+                minimumFractionDigits: 3,
+                maximumFractionDigits: 3,
+              })
+            }}
+          </td>
+        </tr>
+        <tr>
+          <th
+            title="Mittelwert der Verbindungen pro Kontakt (exklusive der Verbindungen zwischen Anker- und Kontaktpersonen, inklusive Personen ohne Kante zur Ankerperson). Optional: Maßzahl liegt zwischen 0 (nur isolierte Kontakte) und der Anzahl der Kontakte minus 1 (jede Person im Netzwerk ist mit jeder anderen verbunden)."
+          >
+            Durchschnittlicher Degree
+          </th>
+          <td>
+            {{
+              averageDegree.toLocaleString(undefined, {
                 minimumFractionDigits: 3,
                 maximumFractionDigits: 3,
               })
@@ -107,6 +137,7 @@ import { computed, defineComponent } from "vue";
 import { useStore } from "@/store";
 import {
   analyseNWKbyCategory,
+  calculateAverageDegree,
   calculateDensity,
   getOrInit,
   NetworkAnalysis,
@@ -126,6 +157,11 @@ export default defineComponent({
     const density = computed((): number => {
       const { alterConnectable, intConnCount } = networkAnalysis.value;
       return calculateDensity(alterConnectable, intConnCount);
+    });
+
+    const averageDegree = computed((): number => {
+      const { alterConnectable, intConnCount } = networkAnalysis.value;
+      return calculateAverageDegree(alterConnectable, intConnCount);
     });
 
     const stars = computed(() => {
@@ -176,6 +212,7 @@ export default defineComponent({
       networkSize: computed(() => networkAnalysis.value.alterConnected),
       naehenSum: computed(() => networkAnalysis.value.naehenSum),
       density,
+      averageDegree,
       stars,
       isolated: makeComputedAlterGroup("isolated"),
       alterZeroEdge: makeComputedAlterGroup("alterZeroEdge"),
