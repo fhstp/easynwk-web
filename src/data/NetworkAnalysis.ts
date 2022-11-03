@@ -194,6 +194,24 @@ export function calculateDensity(
   }
 }
 
+/**
+ *
+ * Based on formula by Joseph Richter Mackensteiner (20-Mar-2022)
+ * @param alterCount
+ * @param connectionsCount
+ * @returns
+ */
+export function calculateAverageDegree(
+  alterCount: number,
+  connectionsCount: number
+): number {
+  if (alterCount < 2) {
+    return 0.0;
+  } else {
+    return (2.0 * connectionsCount) / alterCount;
+  }
+}
+
 // export function calculateExternalDensity(
 //   alterCount: number,
 //   externalAlterCount: number,
