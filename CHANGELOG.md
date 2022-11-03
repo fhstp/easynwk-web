@@ -1,5 +1,12 @@
 # easyNWK Version History
 
+## version 2.0.3
+
+* (feature) add alter with double click on map
+* (usability) Escape key closes edit alter form and optionally cancels add alter
+* (usability) double click works within edit alter location
+* (security) large update of libraries
+
 ## version 2.0.2, released 24 Sep 2022
 
 * (feature) print all entered data or copy to text editor #47
