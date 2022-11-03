@@ -86,6 +86,10 @@ const mutations = {
   ): void {
     state.editIndex = payload.alterIndex;
     state.editTab = payload.tab ? payload.tab : TAB_BASE;
+
+    // intended side-effect: clearSelectedAlters
+    state.selected.clear();
+    // TODO nice to select opened alter (but index to id mapping missing)
   },
 
   closeAlterForm(state: ViewOptionsState): void {

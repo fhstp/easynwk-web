@@ -121,6 +121,7 @@ export default defineComponent({
 #chart {
   width: 97vmin;
   height: 100vmin;
+  position: relative;
   /* background: aqua; */
 }
 
