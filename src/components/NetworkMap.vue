@@ -295,7 +295,6 @@ export default defineComponent({
     onMounted(() => {
       // d3.mouse only works if the event is registered using D3 .on
       const g = d3.select("#nwkmap");
-      g.selectAll("#marks").attr("pointer-events", "all");
 
       g.on("click", (event) => {
         const posPol = getPositionPolar(event);
@@ -609,11 +608,6 @@ text {
   font-size: 4px;
   -webkit-user-select: none; /* Safari */
   user-select: none;
-}
-
-.selected {
-  fill: red;
-  opacity: 1;
 }
 
 .textbg {
