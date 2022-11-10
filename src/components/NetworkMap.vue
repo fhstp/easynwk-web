@@ -86,7 +86,7 @@
       <tspan x="0" dy="2em">die Position festzulegen</tspan>
     </text>
 
-    <g id="marks">
+    <g id="marksBackgroundLayer">
       <g v-for="mark in alteriMarks" :key="'shadow' + mark.d.id">
         <circle
           v-if="mark.selected"
@@ -118,16 +118,6 @@
           :x2="mark.x"
           :y2="mark.y"
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
-        />
-        <use
-          :href="'#' + mark.shape"
-          :x="mark.x"
-          :y="mark.y"
-          class="mark clickAble"
-          width="4"
-          height="4"
-          transform="translate(-2,-2)"
-          @click.stop="clickAlter(mark.d)"
         />
         <text
           v-if="alteriNames && useTextBG"
@@ -165,6 +155,21 @@
         width="4"
         height="4"
         transform="translate(-2,-2)"
+      />
+    </g>
+    <g class="brushParent"></g>
+    <g class="marksForegroundLayer">
+      <use
+        v-for="mark in alteriMarks"
+        :key="mark.d.id"
+        :href="'#' + mark.shape"
+        :x="mark.x"
+        :y="mark.y"
+        class="mark clickAble"
+        width="4"
+        height="4"
+        transform="translate(-2,-2)"
+        @click.stop="clickAlter(mark.d)"
       />
     </g>
 
@@ -326,7 +331,7 @@ export default defineComponent({
       () => isEditMode.value || isConnectMode.value,
       (newIsSomeMode: boolean) => {
         if (newIsSomeMode) {
-          d3.select("#nwkmap > #brush").remove();
+          d3.select("#nwkmap #brush").remove();
           if (brushBtns.value) {
             brushBtns.value.style.visibility = "hidden";
           }
@@ -351,7 +356,7 @@ export default defineComponent({
         })
         .on("end", afterBrushChanged);
 
-      d3.select("#nwkmap")
+      d3.select("#nwkmap g.brushParent")
         .append("g")
         .attr("class", "brush")
         .attr("id", "brush")
@@ -657,6 +662,8 @@ line.select {
 
 .mark {
   fill: rgb(54, 54, 54);
+  stroke: white;
+  stroke-width: 0.2;
 }
 
 #sectors text {
