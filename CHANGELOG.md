@@ -1,10 +1,14 @@
 # easyNWK Version History
 
-## version 2.0.3
+## version 2.0.3, released 11 Nov 2022
 
-* (feature) add alter with double click on map
-* (usability) Escape key closes edit alter form and optionally cancels add alter
-* (usability) double click works within edit alter location
+* (feature) add alter with double click on map [#61](https://github.com/fhstp/easynwk-web/issues/61)
+* (feature) close alter edit mode with double click on map [#45](https://github.com/fhstp/easynwk-web/issues/45)
+* (feature) rectangle to select multiple alters on map and fully connect/disconnect them
+* (usability) Escape key closes edit alter form and optionally cancels add alter [#97](https://github.com/fhstp/easynwk-web/issues/97)
+* (usability) alter symbols are drawn on top of everything else (esp. alter names) [#64](https://github.com/fhstp/easynwk-web/issues/64)
+* (bugfix) print view network map in color [#47](https://github.com/fhstp/easynwk-web/issues/47)
+* (bugfix) double click works within edit alter location
 * (security) large update of libraries
 
 ## version 2.0.2, released 24 Sep 2022
