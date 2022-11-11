@@ -331,6 +331,7 @@ export default defineComponent({
           } else {
             store.commit("addAlter", posPol);
           }
+          emit("map-click", posPol);
         }
       });
 
