@@ -48,9 +48,6 @@ const mutations = {
     // remove connections to/from alter
     removeAllConnections(state, alterIndex);
 
-    // old code
-    // this.alteri = this.alteri.filter((item) => item.id !== alterToRemove.id);
-
     // based on vuex\examples\composition\todomvc\store\mutations.js
     state.alteri.splice(alterIndex, 1);
   },

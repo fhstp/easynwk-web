@@ -19,7 +19,7 @@ export interface IUnReDoState {
 
 export function loadStateFromStore(): string {
   const storedNWK = localStorage.getItem(STORAGE_KEY);
-  if (storedNWK != null) {
+  if (storedNWK != null && storedNWK != "undefined") {
     return storedNWK;
   } else {
     return initNWKasJSON();
