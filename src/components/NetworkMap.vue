@@ -301,25 +301,36 @@ export default defineComponent({
       // d3.mouse only works if the event is registered using D3 .on
       const g = d3.select("#nwkmap");
 
+      let clickBackgroundTimeoutId: number | null = null;
       g.on("click", (event) => {
         const posPol = getPositionPolar(event);
-        if (isEditMode.value) {
-          const payload = {
-            index: store.state.view.editIndex,
-            changes: posPol,
-          };
-          store.commit("editAlter", payload);
-          // } else {
-          //   store.commit("view/clearSelectedAlters");
-        }
-        emit("map-click", posPol);
-      });
+        if (clickBackgroundTimeoutId == null) {
+          // first click -> start timer
+          clickBackgroundTimeoutId = setTimeout(() => {
+            // timeout expired -> simple click
+            clickBackgroundTimeoutId = null;
 
-      g.on("dblclick", (event) => {
-        if (!isEditMode.value) {
-          const posPol = getPositionPolar(event);
-          store.commit("addAlter", posPol);
-          // setPosition(event);
+            if (isEditMode.value) {
+              const payload = {
+                index: store.state.view.editIndex,
+                changes: posPol,
+              };
+              store.commit("editAlter", payload);
+              // } else {
+              //   store.commit("view/clearSelectedAlters");
+            }
+            emit("map-click", posPol);
+          }, 500); //tolerance in ms
+        } else {
+          // 2nd click -> double click
+          clearTimeout(clickBackgroundTimeoutId);
+          clickBackgroundTimeoutId = null;
+
+          if (isEditMode.value) {
+            store.commit("editAndCloseAlterForm", { changes: posPol });
+          } else {
+            store.commit("addAlter", posPol);
+          }
         }
       });
 
@@ -427,7 +438,9 @@ export default defineComponent({
         }
       } else {
         console.log("Brush selection inactive");
-        store.commit("view/clearSelectedAlters");
+        if (store.state.view.selected.size > 0) {
+          store.commit("view/clearSelectedAlters");
+        }
         if (brushBtns.value) {
           brushBtns.value.style.visibility = "hidden";
         }
