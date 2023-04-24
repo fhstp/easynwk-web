@@ -49,7 +49,7 @@ extensive domain experience in social diagnostics, valuable feedback,
 and contacts to professionals.
 Further thanks to all interviewed persons and testers.
 
-<img align="right" src="https://ec.europa.eu/info/sites/default/files/ec-logo-horiz-web_en.jpg" alt="logo of the European Commission">
+<img align="right" src="https://user-images.githubusercontent.com/1217527/234003656-5afae206-1571-4df9-bb49-bfed89578085.png" alt="logo of the European Commission">
 
 This work was partly funded by 
 the BMDW through the programme "Digital Innovation Hubs in Österreich" and Lower Austria ([sprint 1](https://dih-ost.at/product/egozentrierte-netzwerkkarte-digital/), [sprint 2](https://dih-ost.at/product/weiterentwicklung-der-egozentrierten-netzwerkkarte/)); and
