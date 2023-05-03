@@ -48,6 +48,7 @@
         />
       </filter>
     </defs>
+
     <!-- transform coordinate system to be scale independent -->
     <g id="coords" v-if="showHorizons">
       <!-- <rect x="-120" y="-120" width="240" height="240" fill="#bcbddc"/> -->
@@ -183,6 +184,10 @@
       width="220"
       height="220"
     />
+    <text x="-10" y="-105" text-anchor="start">Netzwerk von</text>
+    <text x="-20" y="-100" text-anchor="start">
+      {{ $store.state.nwk.ego.name }}({{ $store.state.nwk.ego.age }}a)
+    </text>
   </svg>
   <div id="brushBtns" ref="brushBtns">
     <!-- <button
