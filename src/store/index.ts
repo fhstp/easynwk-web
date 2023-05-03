@@ -8,9 +8,10 @@ import {
   useStore as baseUseStore,
   Store,
 } from "vuex";
+import { applyAdaptiveNWKDefaults } from "./adaptiveNWKDefaults";
 
 import { IUnReDoState, localStoragePlugin } from "./localStoragePlugin";
-import { nwkModule } from "./nwkModule";
+import { editAlter, nwkModule } from "./nwkModule";
 import { pseudonymPlugin, PseudonymState } from "./pseudonymPlugin";
 import {
   TAB_BASE,
@@ -50,8 +51,14 @@ const getters = {
 };
 
 const mutations = {
-  addAlter(state: IStoreState): void {
-    const newAlter = initAlter();
+  addAlter(state: IStoreState, initialValues: Partial<Alter> = {}): void {
+    // initialize alter with default values and optionally with the passed values
+    const newAlter = {
+      ...initAlter(),
+      ...initialValues,
+    };
+    applyAdaptiveNWKDefaults(newAlter, initialValues);
+
     // set id depending on alteri in list
     // bugfix: if any id is undefined, NaN, or null --> default to 1
     newAlter.id =
@@ -66,10 +73,13 @@ const mutations = {
   },
   // removes a newly added alter from the list
   cancelAddAlter(state: IStoreState, alterIndex: number): void {
-    console.log("cancel " + alterIndex);
+    // console.log("cancel " + alterIndex);
 
     // canceled alter is new and therefore cannot have connections
-    state.nwk.alteri.splice(alterIndex, 1);
+    // don't delete with index null value (see #97)
+    if (alterIndex !== null) {
+      state.nwk.alteri.splice(alterIndex, 1);
+    }
 
     state.view.editIndex = null;
     state.view.editTab = "";
@@ -81,6 +91,24 @@ const mutations = {
     const index = state.nwk.alteri.findIndex((a) => a.id === payload.alterId);
     state.view.editIndex = index;
     state.view.editTab = payload.tab ? payload.tab : TAB_BASE;
+  },
+  editAndCloseAlterForm(
+    state: IStoreState,
+    payload: { changes: Partial<Alter> }
+  ): void {
+    const index = state.view.editIndex;
+
+    editAlter(state.nwk, index, payload.changes);
+
+    if (
+      index == null ||
+      (state.nwk.alteri[index].name.trim().length > 0 &&
+        state.nwk.alteri[index].distance > 0)
+    ) {
+      // only close if the alter is valid (esp. has name)
+      state.view.editIndex = null;
+      state.view.editTab = "";
+    }
   },
 };
 

@@ -32,24 +32,7 @@ const mutations = {
     state: NWK,
     payload: { index: number; changes: Partial<Alter> }
   ): void {
-    // based oen vuex\examples\composition\todomvc\store\mutations.js
-    // const index = state.alteri.indexOf(payload.alter);
-
-    // lookup does not work for 2 parallel mutations (form change & map click)
-    if (payload.index >= 0 && payload.index < state.alteri.length) {
-      // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
-      const changedAlter = {
-        ...state.alteri[payload.index],
-        ...payload.changes,
-      };
-      applyAdaptiveNWKDefaults(changedAlter, payload.changes);
-      if (!isConnectable(changedAlter)) {
-        removeAllConnections(state, payload.index);
-      }
-      state.alteri.splice(payload.index, 1, changedAlter);
-    } else {
-      console.warn("alter index out of bounds: " + payload.index);
-    }
+    editAlter(state, payload.index, payload.changes);
   },
 
   editAlterById(
@@ -58,31 +41,30 @@ const mutations = {
   ): void {
     const index = state.alteri.findIndex((a) => a.id === payload.id);
     // const index = state.alteri.map((a) => a.id).indexOf(payload.id);
-    if (index >= 0) {
-      const changedAlter = {
-        ...state.alteri[index],
-        ...payload.changes,
-      };
-      applyAdaptiveNWKDefaults(changedAlter, payload.changes);
-      state.alteri.splice(index, 1, changedAlter);
-    } else {
-      console.warn("alter id not found: " + payload.id);
-    }
+    editAlter(state, index, payload.changes);
   },
 
   removeAlter(state: NWK, alterIndex: number): void {
     // remove connections to/from alter
     removeAllConnections(state, alterIndex);
 
-    // old code
-    // this.alteri = this.alteri.filter((item) => item.id !== alterToRemove.id);
-
-    // based oen vuex\examples\composition\todomvc\store\mutations.js
+    // based on vuex\examples\composition\todomvc\store\mutations.js
     state.alteri.splice(alterIndex, 1);
   },
 
   addConnection(state: NWK, payload: { id1: number; id2: number }): void {
     state.connections.push(payload);
+  },
+
+  addClusterConnections(state: NWK, payload: number[]): void {
+    for (let i = 0; i < payload.length - 1; i++) {
+      for (let x = i + 1; x < payload.length; x++) {
+        state.connections.push({
+          id1: payload[i],
+          id2: payload[x],
+        });
+      }
+    }
   },
 
   removeConnection(state: NWK, payload: { id1: number; id2: number }): void {
@@ -91,6 +73,12 @@ const mutations = {
     );
     state.connections = state.connections.filter(
       (c) => c.id1 != payload.id2 || c.id2 != payload.id1
+    );
+  },
+
+  removeClusterConnections(state: NWK, payload: number[]): void {
+    state.connections = state.connections.filter(
+      (c) => !(payload.includes(c.id1) && payload.includes(c.id2))
     );
   },
 
@@ -112,6 +100,33 @@ const mutations = {
     }
   },
 };
+
+export function editAlter(
+  state: NWK,
+  alterIndex: number | null,
+  changes: Partial<Alter>
+): void {
+  // lookup does not work for 2 parallel mutations (form change & map click)
+  if (
+    alterIndex != null &&
+    alterIndex >= 0 &&
+    alterIndex < state.alteri.length
+  ) {
+    // based on vuex\examples\composition\todomvc\store\mutations.js
+    // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
+    const changedAlter = {
+      ...state.alteri[alterIndex],
+      ...changes,
+    };
+    applyAdaptiveNWKDefaults(changedAlter, changes);
+    if (!isConnectable(changedAlter)) {
+      removeAllConnections(state, alterIndex);
+    }
+    state.alteri.splice(alterIndex, 1, changedAlter);
+  } else {
+    console.warn("alter index invalid or out of bounds: " + alterIndex);
+  }
+}
 
 /**
  * removes all connections to and from an alter

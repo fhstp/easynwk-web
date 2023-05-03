@@ -19,9 +19,9 @@
           <div id="forms">
             <EgoEditForm v-if="egoEditMode" @edit-finished="editEgoFinished" />
 
-            <AlteriPanel v-if="!egoEditMode" />
+            <AlteriPanel v-if="!egoEditMode" :mapclicked="mapclicked" />
             <ViewOptionsPanel />
-            <StatisticsPanel v-if="$store.state.view.statistics" />
+            <StatisticsPanel v-if="showStatistics" />
           </div>
         </div>
       </div>
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
 
 // @ is an alias to /src
@@ -65,6 +65,8 @@ export default defineComponent({
 
     const store = useStore();
 
+    const mapclicked = ref(false);
+
     // if Ego Name is empty --> start in Ego edit mode
     const egoEditMode = ref(
       !store.state.nwk.ego ||
@@ -78,15 +80,18 @@ export default defineComponent({
     };
 
     const mapclick = (coords: { distance: number; angle: number }) => {
+      mapclicked.value = !mapclicked.value;
       console.log(
         "map click at (" + coords.angle + ", " + coords.distance + ")"
       );
     };
 
     return {
+      mapclicked,
       egoEditMode,
       editEgoFinished,
       mapclick,
+      showStatistics: computed(() => store.state.view.statistics),
     };
   },
 });
@@ -116,6 +121,7 @@ export default defineComponent({
 #chart {
   width: 97vmin;
   height: 100vmin;
+  position: relative;
   /* background: aqua; */
 }
 

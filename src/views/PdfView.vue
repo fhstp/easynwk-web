@@ -144,9 +144,9 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "@/assets/main.scss";
 
-* {
-  filter: grayscale(1) !important;
-}
+// * {
+//   filter: grayscale(1) !important;
+// }
 .name {
   font-weight: bold;
 }

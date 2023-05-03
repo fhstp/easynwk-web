@@ -40,9 +40,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, onMounted } from "vue";
 import { useStore } from "@/store";
 import { isConnectable } from "@/data/Alter";
+import { TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 
 export default defineComponent({
   props: {
@@ -79,6 +80,16 @@ export default defineComponent({
           d.id != props.alter.id &&
           isConnectable(d)
       );
+    });
+
+    onMounted(() => {
+      document.onkeydown = (event: KeyboardEvent) => {
+        if (event.key === "Escape" || event.key === "Esc") {
+          if (store.state.view.editTab === TAB_CONNECTIONS) {
+            store.commit("view/closeAlterForm");
+          }
+        }
+      };
     });
 
     return {

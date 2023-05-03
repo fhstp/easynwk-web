@@ -86,7 +86,7 @@
       <tspan x="0" dy="2em">die Position festzulegen</tspan>
     </text>
 
-    <g id="marks">
+    <g id="marksBackgroundLayer">
       <g v-for="mark in alteriMarks" :key="'shadow' + mark.d.id">
         <circle
           v-if="mark.selected"
@@ -118,16 +118,6 @@
           :x2="mark.x"
           :y2="mark.y"
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
-        />
-        <use
-          :href="'#' + mark.shape"
-          :x="mark.x"
-          :y="mark.y"
-          class="mark clickAble"
-          width="4"
-          height="4"
-          transform="translate(-2,-2)"
-          @click="clickAlter(mark.d)"
         />
         <text
           v-if="alteriNames && useTextBG"
@@ -167,6 +157,21 @@
         transform="translate(-2,-2)"
       />
     </g>
+    <g class="brushParent"></g>
+    <g class="marksForegroundLayer">
+      <use
+        v-for="mark in alteriMarks"
+        :key="mark.d.id"
+        :href="'#' + mark.shape"
+        :x="mark.x"
+        :y="mark.y"
+        class="mark clickAble"
+        width="4"
+        height="4"
+        transform="translate(-2,-2)"
+        @click.stop="clickAlter(mark.d)"
+      />
+    </g>
 
     <!-- a foreground rect is necessary so that the whole display is clickable -->
     <!-- a foreground rect is useful to prevent text selection -->
@@ -179,20 +184,69 @@
       height="220"
     />
   </svg>
+  <div id="brushBtns" ref="brushBtns">
+    <!-- <button
+      id="btnClusterMove"
+      class="button is-small"
+      type="button"
+      title="gemeinsam verschieben"
+      disabled
+    >
+      <span class="icon is-small">
+        <font-awesome-icon icon="arrows-alt" />
+      </span>
+    </button> -->
+    <button
+      id="btnClusterConnect"
+      class="button is-small"
+      type="button"
+      title="komplett verbinden (Clique erzeugen)"
+      @click="clusterConnect"
+      v-if="!isClusterFullyConnected"
+      :disabled="!isClusterConnectPossible"
+    >
+      <span class="icon is-small">
+        <font-awesome-icon icon="link" />
+      </span>
+    </button>
+    <button
+      id="btnClusterUnConnect"
+      class="button is-small"
+      type="button"
+      title="alle Beziehungen lösen"
+      @click="clusterDisconnect"
+      v-else
+    >
+      <span class="icon is-small">
+        <font-awesome-icon icon="unlink" />
+      </span>
+    </button>
+    <button
+      class="button is-small"
+      type="button"
+      title="Auswahlrechteck schließen"
+      @click="clearBrush"
+    >
+      <span class="icon is-small">
+        <font-awesome-icon icon="times" />
+      </span>
+    </button>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted } from "vue";
+import { defineComponent, computed, onMounted, ref, watch } from "vue";
 import { useStore } from "@/store";
 
 import * as d3 from "d3";
 // import { ContainerElement } from "d3";
-import {Alter, initAlter, isConnectable} from "@/data/Alter";
+import { Alter, isConnectable } from "@/data/Alter";
 import { Sectors } from "@/data/Sectors";
 import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { getRoleAbbrev } from "../data/Roles";
+import { D3BrushEvent } from "d3";
 
 interface AlterMark {
   d: Alter;
@@ -217,67 +271,225 @@ interface ConnectionMark {
 
 export default defineComponent({
   components: {},
+  emits: ["map-click"],
 
-  setup: function (props, {emit}) {
+  setup: function (props, { emit }) {
     const store = useStore();
 
     const isEditMode = computed(() => {
       return (
-          store.state.view.editIndex != null &&
-          store.state.view.editTab === TAB_BASE
+        store.state.view.editIndex != null &&
+        store.state.view.editTab === TAB_BASE
       );
     });
 
-    const setPosition = (event: any) => {
+    const getPositionPolar = (event: UIEvent) => {
       const coords = d3.pointer(event);
 
       // cp. https://stackoverflow.com/a/33043899/1140589
       const distance = Math.sqrt(coords[0] * coords[0] + coords[1] * coords[1]);
       const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
 
-      if (isEditMode.value) {
-        const payload = {
-          index: store.state.view.editIndex,
-          changes: {distance: distance, angle: angle},
-        };
-        store.commit("editAlter", payload);
-        // } else {
-        //   store.commit("view/clearSelectedAlters");
-      }
-
-      emit("map-click", {distance, angle});
+      return { distance, angle };
     };
 
     const isConnectMode = computed(
-        () => store.state.view.editTab === TAB_CONNECTIONS
+      () => store.state.view.editTab === TAB_CONNECTIONS
     );
 
-
     onMounted(() => {
-       document.onkeydown = (event: any) => {
-          if (event.key === "Escape" || event.key === "Esc") {
-            if (isEditMode.value) {
-              store.commit("cancelAddAlter", store.state.view.editIndex);
-            } else {
-              console.log("close")
-              store.commit("editAlterFinished")
-            }
-          }
-      };
       // d3.mouse only works if the event is registered using D3 .on
       const g = d3.select("#nwkmap");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
-      g.on("click", (event: any) => {
-        setPosition(event);
-      });
-      g.on("dblclick", (event: any) => {
-        if (!isEditMode.value) {
-          store.commit("addAlter");
-          setPosition(event);
+      let clickBackgroundTimeoutId: number | null = null;
+      g.on("click", (event) => {
+        const posPol = getPositionPolar(event);
+        if (clickBackgroundTimeoutId == null) {
+          // first click -> start timer
+          clickBackgroundTimeoutId = setTimeout(() => {
+            // timeout expired -> simple click
+            clickBackgroundTimeoutId = null;
+
+            if (isEditMode.value) {
+              const payload = {
+                index: store.state.view.editIndex,
+                changes: posPol,
+              };
+              store.commit("editAlter", payload);
+              // } else {
+              //   store.commit("view/clearSelectedAlters");
+            }
+            emit("map-click", posPol);
+          }, 500); //tolerance in ms
+        } else {
+          // 2nd click -> double click
+          clearTimeout(clickBackgroundTimeoutId);
+          clickBackgroundTimeoutId = null;
+
+          if (isEditMode.value) {
+            store.commit("editAndCloseAlterForm", { changes: posPol });
+          } else {
+            store.commit("addAlter", posPol);
+          }
+          emit("map-click", posPol);
         }
       });
+
+      initBrushBehavior();
     });
+
+    // disable brush as long as in edit or connect mode
+    watch(
+      () => isEditMode.value || isConnectMode.value,
+      (newIsSomeMode: boolean) => {
+        if (newIsSomeMode) {
+          d3.select("#nwkmap #brush").remove();
+          if (brushBtns.value) {
+            brushBtns.value.style.visibility = "hidden";
+          }
+        } else {
+          initBrushBehavior();
+        }
+      }
+    );
+
+    const brush = d3.brush().extent([
+      [-105, -105],
+      [105, 105],
+    ]);
+
+    function initBrushBehavior() {
+      brush
+        .on("start", () => {
+          // when brush is changed (e.g. resized) -> hide buttons
+          if (brushBtns.value) {
+            brushBtns.value.style.visibility = "hidden";
+          }
+        })
+        .on("end", afterBrushChanged);
+
+      d3.select("#nwkmap g.brushParent")
+        .append("g")
+        .attr("class", "brush")
+        .attr("id", "brush")
+        .call(brush);
+
+      d3.select("#nwkmap")
+        .select("#brush > .selection")
+        .style("fill", "steelblue")
+        .style("opacity", "0.4")
+        .style("stroke-width", "0.5");
+    }
+
+    /** resets the brush to a null selection */
+    const clearBrush = () => {
+      if (brush) {
+        brush.clear(d3.select("#nwkmap .brush"));
+      }
+    };
+
+    let markIdsInExtent: number[] = [];
+    let connectableIdsInExtent: number[] = [];
+
+    // we need a DOM ref in order to focus
+    const brushBtns = ref<InstanceType<typeof HTMLDivElement> | null>(null);
+
+    const isClusterConnectPossible = ref(false);
+    const isClusterFullyConnected = ref(false);
+
+    function afterBrushChanged(event: D3BrushEvent<unknown>) {
+      // console.log(event);
+
+      if (event.selection) {
+        const extent = event.selection as [[number, number], [number, number]];
+
+        const marksInExtent = alteriMarks.value.filter((am) =>
+          isInBrushExtent(am, extent)
+        );
+        markIdsInExtent = marksInExtent.map((am) => am.d.id);
+        store.commit("view/selectAlters", markIdsInExtent);
+
+        // check if cluster connect is possible (more than 1 connectable alter)
+        connectableIdsInExtent = marksInExtent
+          .filter((am) => isConnectable(am.d))
+          .map((am) => am.d.id);
+        isClusterConnectPossible.value = connectableIdsInExtent.length >= 2;
+        isClusterFullyConnected.value =
+          isClusterConnectPossible.value &&
+          clusterConnected(connectableIdsInExtent);
+
+        // move buttons relative to selection box as SVG element
+        // <https://stackoverflow.com/questions/26049488/how-to-get-absolute-coordinates-of-object-inside-a-g-group>
+        const divChart = document.querySelector("div#chart");
+        const svgExtent = document.querySelector("#brush > .selection");
+        if (divChart && svgExtent) {
+          // console.log(svgExtent);
+          const chartRect = divChart.getBoundingClientRect();
+          const selRect = svgExtent.getBoundingClientRect();
+          // console.log(chartRect);
+          // console.log(selRect);
+          if (brushBtns.value) {
+            brushBtns.value.style.visibility = "visible";
+            brushBtns.value.style.top = selRect.y - chartRect.y + "px";
+            brushBtns.value.style.right =
+              chartRect.right - selRect.x + 4 + "px";
+          }
+        } else {
+          console.warn("Brush rect not found");
+        }
+      } else {
+        console.log("Brush selection inactive");
+        if (store.state.view.selected.size > 0) {
+          store.commit("view/clearSelectedAlters");
+        }
+        if (brushBtns.value) {
+          brushBtns.value.style.visibility = "hidden";
+        }
+      }
+    }
+
+    function isInBrushExtent(
+      mark: AlterMark,
+      extent: [[number, number], [number, number]]
+    ) {
+      return (
+        mark.x >= extent[0][0] &&
+        mark.x <= extent[1][0] &&
+        mark.y >= extent[0][1] &&
+        mark.y <= extent[1][1]
+      );
+    }
+
+    function clusterConnect() {
+      store.commit("addClusterConnections", connectableIdsInExtent);
+      isClusterFullyConnected.value = true;
+    }
+
+    function clusterDisconnect() {
+      store.commit("removeClusterConnections", connectableIdsInExtent);
+      isClusterFullyConnected.value = false;
+    }
+
+    function clusterConnected(markIds: number[]) {
+      for (let i = 0; i < markIds.length; i++) {
+        const connectedAlterIds = computed(() => {
+          const myId = markIds[i];
+          const id1s = store.state.nwk.connections
+            .filter((d) => d.id2 == myId)
+            .map((d) => d.id1);
+          const id2s = store.state.nwk.connections
+            .filter((d) => d.id1 == myId)
+            .map((d) => d.id2);
+          return [...id1s, ...id2s];
+        });
+        for (let x = i + 1; x < markIds.length; x++) {
+          if (!connectedAlterIds.value.includes(markIds[x])) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
 
     const getRoleShort = (role: string) => {
       return getRoleAbbrev(role);
@@ -288,7 +500,7 @@ export default defineComponent({
       if (isConnectMode.value && store.state.view.editIndex != null) {
         if (isConnectable(alter)) {
           const editId = store.state.nwk.alteri[store.state.view.editIndex].id;
-          const payload = {id1: editId, id2: alter.id};
+          const payload = { id1: editId, id2: alter.id };
           store.commit("toggleConnection", payload);
         }
       } else {
@@ -308,7 +520,7 @@ export default defineComponent({
           console.log(alter.name + " dblclick");
 
           // open form
-          store.commit("openAlterFormById", {alterId: alter.id});
+          store.commit("openAlterFormById", { alterId: alter.id });
         }
       }
     };
@@ -323,7 +535,7 @@ export default defineComponent({
         const x = alter.distance * Math.cos((alter.angle * Math.PI) / 180);
         const y = -1 * alter.distance * Math.sin((alter.angle * Math.PI) / 180);
 
-        buffer.set(alter.id, {x, y});
+        buffer.set(alter.id, { x, y });
       });
 
       return buffer;
@@ -355,8 +567,8 @@ export default defineComponent({
         const coords2 = alteriCoords.value.get(conn.id2);
 
         const selected =
-            store.getters["view/isSelected"](conn.id1) ||
-            store.getters["view/isSelected"](conn.id2);
+          store.getters["view/isSelected"](conn.id1) ||
+          store.getters["view/isSelected"](conn.id2);
 
         return {
           x1: coords1 ? coords1.x : 0,
@@ -364,14 +576,13 @@ export default defineComponent({
           x2: coords2 ? coords2.x : 0,
           y2: coords2 ? coords2.y : 0,
           selected,
-
         };
       });
     });
 
     return {
       egoShape: computed(() =>
-          shapeByGender(true, store.state.nwk.ego.currentGender)
+        shapeByGender(true, store.state.nwk.ego.currentGender)
       ),
       isEditMode,
       isConnectMode,
@@ -384,15 +595,21 @@ export default defineComponent({
       alteriNames: computed(() => store.state.view.alteriNames),
       showHorizons: computed(() => store.state.view.horizons),
       connections: computed(() => store.state.view.connections),
+      brushBtns,
+      isClusterConnectPossible,
+      isClusterFullyConnected,
+      clusterConnect,
+      clusterDisconnect,
+      clearBrush,
       Sectors,
       SYMBOL_DECEASED,
       // TODO browser detection b/c vector-effect seems not to work in Safari only as of 14 Dec 2021
       useTextBG: computed(
-          () =>
-              !(
-                  /Safari/.test(navigator.userAgent) &&
-                  /Apple Computer/.test(navigator.vendor)
-              )
+        () =>
+          !(
+            /Safari/.test(navigator.userAgent) &&
+            /Apple Computer/.test(navigator.vendor)
+          )
       ),
     };
   },
@@ -408,6 +625,8 @@ export default defineComponent({
 text {
   font-family: $family-primary;
   font-size: 4px;
+  -webkit-user-select: none; /* Safari */
+  user-select: none;
 }
 
 .textbg {
@@ -457,6 +676,8 @@ line.select {
 
 .mark {
   fill: rgb(54, 54, 54);
+  stroke: white;
+  stroke-width: 0.2;
 }
 
 #sectors text {
@@ -468,5 +689,16 @@ line.select {
   fill: rgba(lightgray, 0.5);
   font-size: 1em;
   font-weight: bold;
+}
+
+#brushBtns {
+  position: absolute;
+  visibility: hidden;
+  // display: flex;
+  // flex-direction: column;
+}
+#brushBtns > button {
+  display: block;
+  margin-bottom: 0.5rem;
 }
 </style>
