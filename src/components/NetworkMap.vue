@@ -185,8 +185,8 @@
       height="220"
     />
     <text x="-10" y="-105" text-anchor="start">Netzwerk von</text>
-    <text x="-20" y="-100" text-anchor="start">
-      {{ $store.state.nwk.ego.name }}({{ $store.state.nwk.ego.age }}a)
+    <text :x="-$store.state.nwk.ego.name.length" y="-100" text-anchor="start">
+      {{ $store.state.nwk.ego.name }} ({{ $store.state.nwk.ego.age }}a)
     </text>
   </svg>
   <div id="brushBtns" ref="brushBtns">
