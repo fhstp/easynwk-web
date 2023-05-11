@@ -1,4 +1,21 @@
 <template>
+  <div style="position: relative" v-if="showComparison">
+    <button
+      class="button is-small"
+      style="position: absolute; left: 5%; top: 32%"
+    >
+      &lt;
+    </button>
+    <svg width="90%" height="100">
+      <line x1="50" y1="50" x2="750" y2="50" class="comparisonLine"></line>
+    </svg>
+    <button
+      class="button is-small"
+      style="position: absolute; left: 92%; top: 32%"
+    >
+      &gt;
+    </button>
+  </div>
   <svg id="nwkmap" width="100%" height="100%" viewBox="-105 -105 210 210">
     <defs>
       <symbol id="square" viewBox="-1.5 -1.5 3 3">
@@ -594,6 +611,7 @@ export default defineComponent({
       getRoleShort,
       alteriNames: computed(() => store.state.view.alteriNames),
       showHorizons: computed(() => store.state.view.horizons),
+      showComparison: computed(() => store.state.view.nwkcomparison),
       connections: computed(() => store.state.view.connections),
       brushBtns,
       isClusterConnectPossible,
@@ -621,6 +639,10 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @import "~bulma/sass/base/_all.sass";
+
+.comparisonLine {
+  stroke: black !important;
+}
 
 text {
   font-family: $family-primary;

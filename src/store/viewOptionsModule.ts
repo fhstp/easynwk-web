@@ -8,6 +8,7 @@ export interface ViewOptionsFlags {
   statistics: boolean;
   ageInNwk: boolean;
   roleInNwk: boolean;
+  nwkcomparison: boolean;
 }
 
 export interface ViewOptionsState extends ViewOptionsFlags {
@@ -25,6 +26,7 @@ export function initViewOptionsState(): ViewOptionsState {
     statistics: false,
     ageInNwk: false,
     roleInNwk: false,
+    nwkcomparison: false,
 
     selected: new Set<number>(),
     editIndex: null,
