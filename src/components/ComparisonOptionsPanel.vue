@@ -15,7 +15,7 @@
               <div class="buttons">
                 <button class="button">
                   <span class="icon">
-                    <font-awesome-icon icon="user-secret" />
+                    <font-awesome-icon icon="plus-circle" />
                   </span>
                   <span>Neue leere Karte</span>
                   <span></span>
@@ -23,7 +23,7 @@
 
                 <button class="button">
                   <span class="icon">
-                    <font-awesome-icon icon="rss" />
+                    <font-awesome-icon icon="copy" />
                   </span>
                   <span>Karte duplizieren</span>
                 </button>
@@ -32,14 +32,14 @@
 
                 <button class="button">
                   <span class="icon">
-                    <font-awesome-icon icon="project-diagram" />
+                    <font-awesome-icon icon="exchange-alt" />
                   </span>
                   <span>Karte ändern</span>
                 </button>
 
                 <button class="button" @click.stop="toggleComparison">
                   <span class="icon">
-                    <font-awesome-icon icon="font" />
+                    <font-awesome-icon icon="compress-arrows-alt" />
                   </span>
                   <span v-if="!nwkcomparison">Vergleich ein</span>
                   <span v-else>Vergleich aus</span>

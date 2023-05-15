@@ -6,8 +6,11 @@
     >
       &lt;
     </button>
-    <svg width="90%" height="100">
-      <line x1="50" y1="50" x2="750" y2="50" class="comparisonLine"></line>
+    <svg width="80%" height="100">
+      <line x1="5" y1="50" x2="750" y2="50" class="comparisonLine"></line>
+      <a>
+        <circle cx="98.5%" cy="50" r="11" class="comparisonCircle" />
+      </a>
     </svg>
     <button
       class="button is-small"
@@ -642,6 +645,9 @@ export default defineComponent({
 
 .comparisonLine {
   stroke: black !important;
+}
+.comparisonCircle {
+  fill: #ffc37d;
 }
 
 text {
