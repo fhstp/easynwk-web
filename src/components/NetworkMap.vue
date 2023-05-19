@@ -2,19 +2,19 @@
   <div style="position: relative" v-if="showComparison">
     <button
       class="button is-small"
-      style="position: absolute; left: 5%; top: 32%"
+      style="position: absolute; left: 18%; top: 32%"
     >
       &lt;
     </button>
-    <svg width="80%" height="100">
+    <svg width="50%" height="100">
       <line x1="5" y1="50" x2="750" y2="50" class="comparisonLine"></line>
       <a>
-        <circle cx="98.5%" cy="50" r="11" class="comparisonCircle" />
+        <circle cx="97.5%" cy="50" r="9" class="comparisonCircle" />
       </a>
     </svg>
     <button
       class="button is-small"
-      style="position: absolute; left: 92%; top: 32%"
+      style="position: absolute; left: 78%; top: 32%"
     >
       &gt;
     </button>
