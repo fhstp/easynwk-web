@@ -184,7 +184,7 @@
       width="220"
       height="220"
     />
-    <text :x="-$store.state.nwk.ego.name.length" y="-103" text-anchor="start">
+    <text :x="-$store.state.nwk.ego.name.length" y="-101" text-anchor="start">
       {{ $store.state.nwk.ego.name }} ({{ $store.state.nwk.ego.age }}a)
     </text>
   </svg>
