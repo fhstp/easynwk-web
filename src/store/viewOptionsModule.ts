@@ -19,7 +19,7 @@ export interface ViewOptionsState extends ViewOptionsFlags {
 export function initViewOptionsState(): ViewOptionsState {
   return {
     // pseudonyms: true,
-    horizons: true,
+    horizons: false,
     connections: true,
     alteriNames: true,
     statistics: false,
