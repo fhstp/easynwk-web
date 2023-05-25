@@ -76,7 +76,7 @@
 
         <a
           :href="
-            '/#/Pdf?pseudo=' +
+            '#/Pdf?pseudo=' +
             pseudonyms +
             '&hor=' +
             horizons +
