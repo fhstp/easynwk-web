@@ -124,6 +124,7 @@
           <div class="control">
             <input
               class="input"
+              min="0"
               :value="alter.age"
               @blur="commitEdit($event, 'age')"
               type="number"

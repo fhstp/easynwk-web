@@ -1,5 +1,5 @@
 <template>
-  <svg id="nwkmap" width="100%" height="100%" viewBox="-105 -105 210 210">
+  <svg id="nwkmap" width="100%" height="100%" viewBox="-106 -106 212 212">
     <defs>
       <symbol id="square" viewBox="-1.5 -1.5 3 3">
         <rect x="-0.886" y="-0.886" width="1.772" height="1.772" />
@@ -48,6 +48,7 @@
         />
       </filter>
     </defs>
+
     <!-- transform coordinate system to be scale independent -->
     <g id="coords" v-if="showHorizons">
       <!-- <rect x="-120" y="-120" width="240" height="240" fill="#bcbddc"/> -->
@@ -183,6 +184,9 @@
       width="220"
       height="220"
     />
+    <text :x="0" y="-102" text-anchor="middle" class="ego">
+      {{ egoLabel }}
+    </text>
   </svg>
   <div id="brushBtns" ref="brushBtns">
     <!-- <button
@@ -581,6 +585,13 @@ export default defineComponent({
     });
 
     return {
+      egoLabel: computed(
+        () =>
+          store.state.nwk.ego.name +
+          (store.state.nwk.ego.age.length > 0
+            ? " (" + store.state.nwk.ego.age + "a)"
+            : "")
+      ),
       egoShape: computed(() =>
         shapeByGender(true, store.state.nwk.ego.currentGender)
       ),
@@ -627,6 +638,10 @@ text {
   font-size: 4px;
   -webkit-user-select: none; /* Safari */
   user-select: none;
+}
+
+text.ego {
+  font-style: italic;
 }
 
 .textbg {
