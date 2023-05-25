@@ -62,7 +62,7 @@
       <line
         vector-effect="non-scaling-stroke"
         x1="0"
-        y1="-102"
+        y1="-100"
         x2="0"
         y2="102"
       />
