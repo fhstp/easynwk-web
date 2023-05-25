@@ -1,5 +1,6 @@
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { Alter, initAlter } from "@/data/Alter";
+import { Version, initVersion } from "@/data/Version";
 import { NWK } from "@/data/NWK";
 import { InjectionKey } from "vue";
 import {
@@ -51,6 +52,12 @@ const getters = {
 };
 
 const mutations = {
+  addVersion(state: IStoreState, initialValues: Partial<Version> = {}): void {
+    const newVersion = {
+      ...initVersion(),
+      ...initialValues,
+    };
+  },
   addAlter(state: IStoreState, initialValues: Partial<Alter> = {}): void {
     // initialize alter with default values and optionally with the passed values
     const newAlter = {

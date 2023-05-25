@@ -34,7 +34,7 @@
                   <span class="icon">
                     <font-awesome-icon icon="exchange-alt" />
                   </span>
-                  <span>Karte ändern</span>
+                  <span>Karte wechseln</span>
                 </button>
 
                 <button class="button" @click.stop="toggleComparison">

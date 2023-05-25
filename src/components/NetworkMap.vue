@@ -1,23 +1,11 @@
 <template>
   <div style="position: relative" v-if="showComparison">
-    <button
-      class="button is-small"
-      style="position: absolute; left: 18%; top: 32%"
-    >
-      &lt;
-    </button>
     <svg width="50%" height="100">
       <line x1="5" y1="50" x2="750" y2="50" class="comparisonLine"></line>
       <a>
         <circle cx="97.5%" cy="50" r="9" class="comparisonCircle" />
       </a>
     </svg>
-    <button
-      class="button is-small"
-      style="position: absolute; left: 78%; top: 32%"
-    >
-      &gt;
-    </button>
   </div>
   <svg id="nwkmap" width="100%" height="100%" viewBox="-105 -105 210 210">
     <defs>
