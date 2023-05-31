@@ -53,11 +53,18 @@ const getters = {
 
 const mutations = {
   addVersion(state: IStoreState, initialValues: Partial<Version> = {}): void {
+    // initialize version with default values and optionally with the passed values
     const newVersion = {
       ...initVersion(),
       ...initialValues,
     };
+
+    console.log(state.nwk); // Check the state of NWK object
+    console.log(state.nwk.version); // Check the state of the version array
+
+    state.nwk.version.push(newVersion);
   },
+
   addAlter(state: IStoreState, initialValues: Partial<Alter> = {}): void {
     // initialize alter with default values and optionally with the passed values
     const newAlter = {

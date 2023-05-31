@@ -21,14 +21,12 @@
                   <span></span>
                 </button>
 
-                <button class="button">
+                <button class="button" @click="newVersion = true">
                   <span class="icon">
                     <font-awesome-icon icon="copy" />
                   </span>
                   <span>Karte duplizieren</span>
                 </button>
-
-                <br />
 
                 <button class="button">
                   <span class="icon">
@@ -43,6 +41,50 @@
                   </span>
                   <span v-if="!nwkcomparison">Vergleich ein</span>
                   <span v-else>Vergleich aus</span>
+                </button>
+              </div>
+
+              <div class="field is-horizontal" v-if="newVersion">
+                <div class="field-label is-normal">
+                  <label class="label">Titel</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <input
+                        class="input"
+                        type="text"
+                        placeholder="Titel der Version"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <br />
+
+              <div class="field is-horizontal" v-if="newVersion">
+                <div class="field-label is-normal">
+                  <label class="label">Datum</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <input class="input" type="date" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <br />
+
+              <div class="buttons" v-if="newVersion">
+                <button class="button is-primary" @click="addNewVersion">
+                  <span>Speichern</span>
+                </button>
+
+                <button class="button is-light" @click="newVersion = false">
+                  <span>Abbrechen</span>
                 </button>
               </div>
             </div>
@@ -63,10 +105,23 @@ export default defineComponent({
 
     const isOpen = ref(false);
 
+    const newVersion = ref(false);
+
+    const addNewVersion = () => {
+      console.log("Adding new version");
+      store.commit("addVersion", {
+        id: 1,
+        title: "Neue Version",
+        date: "2023-06-01",
+      });
+    };
+
     return {
       nwkcomparison: computed(() => store.state.view.nwkcomparison),
       toggleComparison: () => store.commit("view/toggle", "nwkcomparison"),
       isOpen: isOpen,
+      newVersion: newVersion,
+      addNewVersion: addNewVersion,
     };
   },
 });

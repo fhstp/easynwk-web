@@ -10,6 +10,6 @@ export function initVersion(): Version {
   return {
     id: -1,
     title: "",
-    date: "2023-05-25",
+    date: "",
   };
 }
