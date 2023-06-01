@@ -64,9 +64,8 @@ const mutations = {
         ? Math.max(...state.nwk.versions.map((v) => (v.id ? v.id : 1))) + 1
         : 1;
 
-    console.log(state.nwk); // defined
-    console.log(state.nwk.versions); // undefined
-    console.log(newVersion); //works
+    //change the version of the currentVersion to the id of the newly created Version
+    store.commit("editCurrentVersion", { id: newVersion.id });
 
     state.nwk.versions.push(newVersion);
   },
@@ -99,6 +98,16 @@ const mutations = {
     // don't delete with index null value (see #97)
     if (alterIndex !== null) {
       state.nwk.alteri.splice(alterIndex, 1);
+    }
+
+    state.view.editIndex = null;
+    state.view.editTab = "";
+  },
+  cancelAddVersion(state: IStoreState, versionIndex: number): void {
+    // canceled alter is new and therefore cannot have connections
+    // don't delete with index null value (see #97)
+    if (versionIndex !== null) {
+      state.nwk.versions.splice(versionIndex, 1);
     }
 
     state.view.editIndex = null;

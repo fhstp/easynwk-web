@@ -2,6 +2,7 @@ import { Alter } from "@/data/Alter";
 import { Ego, initEgo } from "@/data/Ego";
 import { Connection } from "./Connection";
 import { Version } from "@/data/Version";
+import { CurrentVersion, initCurrentVersion } from "@/data/CurrentVersion";
 
 // define your typings for the store state
 export interface NWK {
@@ -9,6 +10,7 @@ export interface NWK {
   alteri: Array<Alter>;
   connections: Array<Connection>;
   versions: Array<Version>;
+  currentVersion: CurrentVersion;
 }
 
 export function initNWKasJSON(): string {
@@ -17,6 +19,7 @@ export function initNWKasJSON(): string {
     alteri: [],
     connections: [],
     versions: [],
+    currentVersion: initCurrentVersion(),
   });
 }
 
@@ -26,4 +29,5 @@ export function loadNWK(state: NWK, loadedText: string): void {
   state.alteri = loaded.alteri;
   state.connections = loaded.connections;
   state.versions = loaded.versions;
+  state.currentVersion = loaded.currentVersion;
 }

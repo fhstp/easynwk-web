@@ -1,7 +1,9 @@
 import { defaultGender } from "@/data/Gender";
+import { defaultVersion } from "@/data/Version";
 
 export interface Alter {
   id: number;
+  version: number;
   name: string;
   role: string;
   /** if the role has its initial default value and has NOT been changed by user */
@@ -28,6 +30,7 @@ export interface Alter {
 export function initAlter(): Alter {
   return {
     id: -1,
+    version: defaultVersion,
     name: "",
     role: "",
     roleDefault: true,

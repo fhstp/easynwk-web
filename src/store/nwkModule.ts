@@ -5,6 +5,7 @@ import { applyAdaptiveNWKDefaults } from "./adaptiveNWKDefaults";
 
 import { loadStateFromStore } from "./localStoragePlugin";
 import { Version } from "@/data/Version";
+import { CurrentVersion } from "@/data/CurrentVersion";
 
 // root state object.
 // each Vuex instance is just a single state tree.
@@ -21,8 +22,8 @@ const mutations = {
     state.ego = { ...state.ego, ...payload };
   },
 
-  editVersion(state: NWK, payload: Partial<Version>): void {
-    state.versions = { ...state.versions, ...payload };
+  editCurrentVersion(state: NWK, payload: Partial<CurrentVersion>): void {
+    state.currentVersion = { ...state.currentVersion, ...payload };
   },
 
   newNWK(state: NWK): void {
@@ -31,6 +32,13 @@ const mutations = {
 
   loadNWK(state: NWK, payload: string): void {
     loadNWK(state, payload);
+  },
+
+  editVersion(
+    state: NWK,
+    payload: { index: number; changes: Partial<Version> }
+  ): void {
+    editVersion(state, payload.index, payload.changes);
   },
 
   editAlter(
@@ -57,16 +65,10 @@ const mutations = {
     state.alteri.splice(alterIndex, 1);
   },
 
-  /*addVersion(
+  addConnection(
     state: NWK,
-    payload: { id: number; title: string; date: string }
+    payload: { id1: number; id2: number; version: number }
   ): void {
-    state.version.push(payload);
-  },
-
-   */
-
-  addConnection(state: NWK, payload: { id1: number; id2: number }): void {
     state.connections.push(payload);
   },
 
@@ -76,6 +78,7 @@ const mutations = {
         state.connections.push({
           id1: payload[i],
           id2: payload[x],
+          version: payload[state.currentVersion.id],
         });
       }
     }
@@ -96,7 +99,10 @@ const mutations = {
     );
   },
 
-  toggleConnection(state: NWK, payload: { id1: number; id2: number }): void {
+  toggleConnection(
+    state: NWK,
+    payload: { id1: number; id2: number; version: number }
+  ): void {
     const index = state.connections.findIndex(
       (c) => c.id1 === payload.id1 && c.id2 === payload.id2
     );
@@ -139,6 +145,29 @@ export function editAlter(
     state.alteri.splice(alterIndex, 1, changedAlter);
   } else {
     console.warn("alter index invalid or out of bounds: " + alterIndex);
+  }
+}
+
+export function editVersion(
+  state: NWK,
+  versionIndex: number | null,
+  changes: Partial<Alter>
+): void {
+  // lookup does not work for 2 parallel mutations (form change & map click)
+  if (
+    versionIndex != null &&
+    versionIndex >= 0 &&
+    versionIndex < state.versions.length
+  ) {
+    // based on vuex\examples\composition\todomvc\store\mutations.js
+    // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
+    const changedVersion = {
+      ...state.versions[versionIndex],
+      ...changes,
+    };
+    state.versions.splice(versionIndex, 1, changedVersion);
+  } else {
+    console.warn("version index invalid or out of bounds: " + versionIndex);
   }
 }
 

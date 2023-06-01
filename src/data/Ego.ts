@@ -1,6 +1,8 @@
 import { defaultGender } from "./Gender";
+import { defaultVersion } from "@/data/Version";
 
 export interface Ego {
+  version: number;
   name: string;
   age: string;
   currentGender: string;
@@ -9,6 +11,7 @@ export interface Ego {
 
 export function initEgo(): Ego {
   return {
+    version: defaultVersion,
     name: "",
     currentGender: defaultGender,
     age: "",

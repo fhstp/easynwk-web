@@ -1,6 +1,10 @@
 <template>
   <div class="panel">
-    <p class="panel-heading" @click.stop="isOpen = !isOpen">
+    <p
+      class="panel-heading"
+      @click.stop="isOpen = !isOpen"
+      @click="newVersion = false"
+    >
       <span>Karten und Verläufe</span>
       <span class="icon is-medium clickAble right">
         <font-awesome-icon v-if="isOpen" icon="chevron-up" />
@@ -21,25 +25,25 @@
                   <span></span>
                 </button>
 
-                <button
-                  class="button"
-                  @click="newVersion = true"
-                  @click.stop="addNewVersion"
-                >
+                <button class="button" @click="newVersion = !newVersion">
                   <span class="icon">
                     <font-awesome-icon icon="copy" />
                   </span>
                   <span>Karte duplizieren</span>
                 </button>
 
-                <button class="button">
+                <button class="button" :disabled="isDisabled">
                   <span class="icon">
                     <font-awesome-icon icon="exchange-alt" />
                   </span>
                   <span>Karte wechseln</span>
                 </button>
 
-                <button class="button" @click.stop="toggleComparison">
+                <button
+                  class="button"
+                  @click.stop="toggleComparison"
+                  :disabled="isDisabled"
+                >
                   <span class="icon">
                     <font-awesome-icon icon="compress-arrows-alt" />
                   </span>
@@ -48,48 +52,57 @@
                 </button>
               </div>
 
-              <div class="field is-horizontal" v-if="newVersion">
-                <div class="field-label is-normal">
-                  <label class="label">Titel</label>
-                </div>
-                <div class="field-body">
-                  <div class="field">
-                    <div class="control">
-                      <input
-                        class="input"
-                        type="text"
-                        placeholder="Titel der aktuellen Version"
-                      />
+              <div v-if="newVersion">
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Titel</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <input
+                          class="input"
+                          type="text"
+                          placeholder="Titel der aktuellen Version"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <br />
+                <br />
 
-              <div class="field is-horizontal" v-if="newVersion">
-                <div class="field-label is-normal">
-                  <label class="label">Datum</label>
-                </div>
-                <div class="field-body">
-                  <div class="field">
-                    <div class="control">
-                      <input class="input" type="date" />
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Datum</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <input class="input" type="date" />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <br />
+                <br />
 
-              <div class="buttons" v-if="newVersion">
-                <button class="button is-primary" @click="addNewVersion">
-                  <span>Speichern</span>
-                </button>
+                <div class="buttons">
+                  <button
+                    class="button is-primary"
+                    @click="addNewVersion"
+                    @click.stop="newVersion = false"
+                  >
+                    <span>Speichern</span>
+                  </button>
 
-                <button class="button is-light" @click="newVersion = false">
-                  <span>Abbrechen</span>
-                </button>
+                  <button
+                    class="button is-light"
+                    @click.stop="newVersion = false"
+                  >
+                    <span>Abbrechen</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -104,7 +117,7 @@ import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
 import { Version } from "@/data/Version";
 
-type InputType = HTMLInputElement | HTMLTextAreaElement;
+//type InputType = HTMLInputElement | HTMLTextAreaElement;
 
 export default defineComponent({
   props: {
@@ -120,7 +133,24 @@ export default defineComponent({
 
     const newVersion = ref(false);
 
-    const commitVersion = (evt: FocusEvent, field: keyof Version) => {
+    const isDisabled = ref(true);
+
+    if (store.state.nwk.versions.length < 1) {
+      console.log(isDisabled.value);
+      isDisabled.value = true;
+    } else {
+      isDisabled.value = false;
+    }
+
+    /*const addingNewVersion = ref(!(props.version?.date.length > 0));
+
+    const cancelAddVersion = () => {
+      if (addingNewVersion.value) {
+        store.commit("cancelAddVersion", store.state.view.editIndex);
+      }
+    };
+
+    const commitEdit = (evt: FocusEvent, field: keyof Version) => {
       const value = (evt.target as InputType).value.trim();
       if (props.version && value !== props.version[field]) {
         const changes = { [field]: value };
@@ -129,12 +159,10 @@ export default defineComponent({
       }
     };
 
+     */
+
     const addNewVersion = () => {
-      console.log("Adding new version");
-      store.commit("addVersion", {
-        title: "Neue Version",
-        date: "2023-06-01",
-      });
+      store.commit("addVersion");
     };
 
     return {
@@ -143,6 +171,9 @@ export default defineComponent({
       isOpen: isOpen,
       newVersion: newVersion,
       addNewVersion: addNewVersion,
+      isDisabled: isDisabled,
+      //commitEdit,
+      //cancelAddVersion,
     };
   },
 });

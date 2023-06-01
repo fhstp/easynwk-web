@@ -13,3 +13,5 @@ export function initVersion(): Version {
     date: "",
   };
 }
+
+export const defaultVersion = 0;
