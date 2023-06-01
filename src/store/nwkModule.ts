@@ -4,6 +4,7 @@ import { NWK, initNWKasJSON, loadNWK } from "@/data/NWK";
 import { applyAdaptiveNWKDefaults } from "./adaptiveNWKDefaults";
 
 import { loadStateFromStore } from "./localStoragePlugin";
+import { Version } from "@/data/Version";
 
 // root state object.
 // each Vuex instance is just a single state tree.
@@ -18,6 +19,10 @@ const mutations = {
   editEgo(state: NWK, payload: Partial<Ego>): void {
     // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
     state.ego = { ...state.ego, ...payload };
+  },
+
+  editVersion(state: NWK, payload: Partial<Version>): void {
+    state.versions = { ...state.versions, ...payload };
   },
 
   newNWK(state: NWK): void {
@@ -51,6 +56,15 @@ const mutations = {
     // based on vuex\examples\composition\todomvc\store\mutations.js
     state.alteri.splice(alterIndex, 1);
   },
+
+  /*addVersion(
+    state: NWK,
+    payload: { id: number; title: string; date: string }
+  ): void {
+    state.version.push(payload);
+  },
+
+   */
 
   addConnection(state: NWK, payload: { id1: number; id2: number }): void {
     state.connections.push(payload);

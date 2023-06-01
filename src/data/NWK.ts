@@ -8,7 +8,7 @@ export interface NWK {
   ego: Ego;
   alteri: Array<Alter>;
   connections: Array<Connection>;
-  version: Array<Version>;
+  versions: Array<Version>;
 }
 
 export function initNWKasJSON(): string {
@@ -16,7 +16,7 @@ export function initNWKasJSON(): string {
     ego: initEgo(),
     alteri: [],
     connections: [],
-    version: [],
+    versions: [],
   });
 }
 
@@ -25,5 +25,5 @@ export function loadNWK(state: NWK, loadedText: string): void {
   state.ego = loaded.ego;
   state.alteri = loaded.alteri;
   state.connections = loaded.connections;
-  state.version = loaded.version;
+  state.versions = loaded.versions;
 }

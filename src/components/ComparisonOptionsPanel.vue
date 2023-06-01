@@ -21,7 +21,11 @@
                   <span></span>
                 </button>
 
-                <button class="button" @click="newVersion = true">
+                <button
+                  class="button"
+                  @click="newVersion = true"
+                  @click.stop="addNewVersion"
+                >
                   <span class="icon">
                     <font-awesome-icon icon="copy" />
                   </span>
@@ -54,7 +58,7 @@
                       <input
                         class="input"
                         type="text"
-                        placeholder="Titel der Version"
+                        placeholder="Titel der aktuellen Version"
                       />
                     </div>
                   </div>
@@ -98,19 +102,36 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
+import { Version } from "@/data/Version";
+
+type InputType = HTMLInputElement | HTMLTextAreaElement;
 
 export default defineComponent({
-  setup() {
+  props: {
+    version: {
+      type: Object,
+      required: true,
+    },
+  },
+  setup(props) {
     const store = useStore();
 
     const isOpen = ref(false);
 
     const newVersion = ref(false);
 
+    const commitVersion = (evt: FocusEvent, field: keyof Version) => {
+      const value = (evt.target as InputType).value.trim();
+      if (props.version && value !== props.version[field]) {
+        const changes = { [field]: value };
+        const payload = { index: store.state.view.editIndex, changes };
+        store.commit("editVersion", payload);
+      }
+    };
+
     const addNewVersion = () => {
       console.log("Adding new version");
       store.commit("addVersion", {
-        id: 1,
         title: "Neue Version",
         date: "2023-06-01",
       });

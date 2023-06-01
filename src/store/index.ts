@@ -59,10 +59,16 @@ const mutations = {
       ...initialValues,
     };
 
-    console.log(state.nwk); // Check the state of NWK object
-    console.log(state.nwk.version); // Check the state of the version array
+    newVersion.id =
+      state.nwk.versions.length > 0
+        ? Math.max(...state.nwk.versions.map((v) => (v.id ? v.id : 1))) + 1
+        : 1;
 
-    state.nwk.version.push(newVersion);
+    console.log(state.nwk); // defined
+    console.log(state.nwk.versions); // undefined
+    console.log(newVersion); //works
+
+    state.nwk.versions.push(newVersion);
   },
 
   addAlter(state: IStoreState, initialValues: Partial<Alter> = {}): void {
