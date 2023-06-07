@@ -53,7 +53,7 @@ const getters = {
 
 const mutations = {
   addVersion(state: IStoreState, initialValues: Partial<Version> = {}): void {
-    // initialize version with default values and optionally with the passed values
+    // Initialize version with default values and optionally with the passed values
     const newVersion = {
       ...initVersion(),
       ...initialValues,
@@ -64,12 +64,20 @@ const mutations = {
         ? Math.max(...state.nwk.versions.map((v) => (v.id ? v.id : 1))) + 1
         : 1;
 
-    //change the version of the currentVersion to the id of the newly created Version
-    store.commit("editCurrentVersion", { id: newVersion.id });
+    // Update the alteri array with the new version for existing alters
+    const currentVersion = newVersion.id;
+    const updatedAlteri = state.nwk.alteri.map((alter) => ({
+      ...alter,
+      version: currentVersion,
+    }));
 
+    // Add the new version and updated alteri to the respective arrays in nwk
     state.nwk.versions.push(newVersion);
-  },
+    state.nwk.alteri.push(...updatedAlteri);
 
+    // Change the version of the currentVersion to the id of the newly created Version
+    store.commit("editCurrentVersion", { id: newVersion.id });
+  },
   addAlter(state: IStoreState, initialValues: Partial<Alter> = {}): void {
     // initialize alter with default values and optionally with the passed values
     const newAlter = {
