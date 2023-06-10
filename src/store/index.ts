@@ -64,20 +64,23 @@ const mutations = {
         ? Math.max(...state.nwk.versions.map((v) => (v.id ? v.id : 1))) + 1
         : 1;
 
-    // Update the alteri array with the new version for existing alters
+    // Duplicate the alteri objects with the version ID of the current version
     const currentVersion = newVersion.id;
-    const updatedAlteri = state.nwk.alteri.map((alter) => ({
-      ...alter,
-      version: currentVersion,
-    }));
+    const duplicatedAlteri = state.nwk.alteri
+      .filter((alter) => alter.version === state.nwk.currentVersion.id)
+      .map((alter) => ({
+        ...alter,
+        version: currentVersion,
+      }));
 
-    // Add the new version and updated alteri to the respective arrays in nwk
+    // Add the new version and duplicated alteri to the respective arrays in nwk
     state.nwk.versions.push(newVersion);
-    state.nwk.alteri.push(...updatedAlteri);
+    state.nwk.alteri.push(...duplicatedAlteri);
 
-    // Change the version of the currentVersion to the id of the newly created Version
+    // Change the version of the currentVersion to the ID of the newly created version
     store.commit("editCurrentVersion", { id: newVersion.id });
   },
+
   addAlter(state: IStoreState, initialValues: Partial<Alter> = {}): void {
     // initialize alter with default values and optionally with the passed values
     const newAlter = {
