@@ -19,6 +19,7 @@ import {
   viewOptionsModule,
   ViewOptionsState,
 } from "./viewOptionsModule";
+import { Ego, initEgo } from "@/data/Ego";
 
 export interface IStoreState {
   nwk: NWK;
@@ -39,11 +40,18 @@ const getters = {
   },
 
   displayName(state: IStoreState) {
-    return (alter: Alter) =>
-      (alter.deceased ? SYMBOL_DECEASED : "") +
-      (state.pseudonym.active
-        ? store.getters["pseudonym/pseudonize"](alter.id)
-        : alter.name);
+    return (alter: Alter) => {
+      const currentVersion = state.nwk.currentVersion.id;
+      if (alter.version === currentVersion) {
+        return (
+          (alter.deceased ? SYMBOL_DECEASED : "") +
+          (state.pseudonym.active
+            ? store.getters["pseudonym/pseudonize"](alter.id)
+            : alter.name)
+        );
+      }
+      return ""; // Wenn das Alter nicht der aktuellen Version entspricht
+    };
   },
 
   // networkAnalysis(state: NWK): NetworkAnalysis {
@@ -101,6 +109,21 @@ const mutations = {
     state.view.editIndex = 0;
     state.view.editTab = TAB_BASE;
   },
+  /*addEgo(state: IStoreState, initialValues: Partial<Ego> = {}): void {
+    // initialize alter with default values and optionally with the passed values
+    const newEgo = {
+      ...initEgo(),
+      ...initialValues,
+    };
+    applyAdaptiveNWKDefaults(newEgo, initialValues);
+
+    // new alter is always added on top of list
+    state.nwk.ego.unshift(newEgo);
+    state.view.editIndex = 0;
+    state.view.editTab = TAB_BASE;
+  },
+
+   */
   // removes a newly added alter from the list
   cancelAddAlter(state: IStoreState, alterIndex: number): void {
     // console.log("cancel " + alterIndex);
