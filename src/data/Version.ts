@@ -1,9 +1,10 @@
-//to give the nwk a version with id, title and the date
+import { initNWK, NWK } from "@/data/NWK";
 
 export interface Version {
   id: number;
   title: string;
   date: string;
+  nwk: NWK;
 }
 
 export function initVersion(): Version {
@@ -11,7 +12,6 @@ export function initVersion(): Version {
     id: -1,
     title: "",
     date: "",
+    nwk: initNWK(),
   };
 }
-
-export const defaultVersion = 0;

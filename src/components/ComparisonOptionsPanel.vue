@@ -5,7 +5,7 @@
       @click.stop="isOpen = !isOpen"
       @click="newVersion = false"
     >
-      <span>Karten und Verläufe</span>
+      <span>Karten und Verlauf</span>
       <span class="icon is-medium clickAble right">
         <font-awesome-icon v-if="isOpen" icon="chevron-up" />
         <font-awesome-icon v-else icon="chevron-down" size="1x" />
@@ -115,7 +115,6 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
-import { Version } from "@/data/Version";
 
 //type InputType = HTMLInputElement | HTMLTextAreaElement;
 
@@ -126,7 +125,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup() {
     const store = useStore();
 
     const isOpen = ref(false);
@@ -135,12 +134,14 @@ export default defineComponent({
 
     const isDisabled = ref(true);
 
-    if (store.state.nwk.versions.length < 1) {
+    /*if (store.state.nwk.versions.length < 1) {
       console.log(isDisabled.value);
       isDisabled.value = true;
     } else {
       isDisabled.value = false;
     }
+
+     */
 
     /*const addingNewVersion = ref(!(props.version?.date.length > 0));
 

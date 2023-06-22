@@ -3,7 +3,7 @@
 undo/redo inspired by <https://github.com/factorial-io/undo-redo-vuex>
 and <https://github.com/anthonygore/vuex-undo-redo> */
 
-import { initNWKasJSON } from "@/data/NWK";
+import { initClientHistoryasJSON } from "@/data/ClientHistory";
 import { MutationPayload, Store } from "vuex";
 import { IStoreState } from ".";
 import { initPseudonymState } from "./pseudonymPlugin";
@@ -22,7 +22,7 @@ export function loadStateFromStore(): string {
   if (storedNWK != null && storedNWK != "undefined") {
     return storedNWK;
   } else {
-    return initNWKasJSON();
+    return initClientHistoryasJSON();
   }
 }
 

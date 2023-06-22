@@ -1,7 +1,6 @@
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { Alter, initAlter } from "@/data/Alter";
-import { Version, initVersion } from "@/data/Version";
-import { NWK } from "@/data/NWK";
+import { initNWK, loadNWK, NWK } from "@/data/NWK";
 import { InjectionKey } from "vue";
 import {
   createLogger,
@@ -19,13 +18,20 @@ import {
   viewOptionsModule,
   ViewOptionsState,
 } from "./viewOptionsModule";
-import { Ego, initEgo } from "@/data/Ego";
+import {
+  initClientHistoryasJSON,
+  loadClientHistory,
+  ClientHistory,
+} from "@/data/ClientHistory";
+import { temporaryModule } from "@/store/temporaryModule";
 
 export interface IStoreState {
   nwk: NWK;
+  version: ClientHistory;
   view: ViewOptionsState;
   unredo: IUnReDoState;
   pseudonym: PseudonymState;
+  temporaryNWK: NWK;
 }
 
 const getters = {
@@ -40,18 +46,11 @@ const getters = {
   },
 
   displayName(state: IStoreState) {
-    return (alter: Alter) => {
-      const currentVersion = state.nwk.currentVersion.id;
-      if (alter.version === currentVersion) {
-        return (
-          (alter.deceased ? SYMBOL_DECEASED : "") +
-          (state.pseudonym.active
-            ? store.getters["pseudonym/pseudonize"](alter.id)
-            : alter.name)
-        );
-      }
-      return ""; // Wenn das Alter nicht der aktuellen Version entspricht
-    };
+    return (alter: Alter) =>
+      (alter.deceased ? SYMBOL_DECEASED : "") +
+      (state.pseudonym.active
+        ? store.getters["pseudonym/pseudonize"](alter.id)
+        : alter.name);
   },
 
   // networkAnalysis(state: NWK): NetworkAnalysis {
@@ -60,35 +59,18 @@ const getters = {
 };
 
 const mutations = {
-  addVersion(state: IStoreState, initialValues: Partial<Version> = {}): void {
-    // Initialize version with default values and optionally with the passed values
-    const newVersion = {
-      ...initVersion(),
-      ...initialValues,
-    };
-
-    newVersion.id =
-      state.nwk.versions.length > 0
-        ? Math.max(...state.nwk.versions.map((v) => (v.id ? v.id : 1))) + 1
-        : 1;
-
-    // Duplicate the alteri objects with the version ID of the current version
-    const currentVersion = newVersion.id;
-    const duplicatedAlteri = state.nwk.alteri
-      .filter((alter) => alter.version === state.nwk.currentVersion.id)
-      .map((alter) => ({
-        ...alter,
-        version: currentVersion,
-      }));
-
-    // Add the new version and duplicated alteri to the respective arrays in nwk
-    state.nwk.versions.push(newVersion);
-    state.nwk.alteri.push(...duplicatedAlteri);
-
-    // Change the version of the currentVersion to the ID of the newly created version
-    store.commit("editCurrentVersion", { id: newVersion.id });
+  newNWK(state: IStoreState): void {
+    loadClientHistory(state.version, initClientHistoryasJSON());
   },
 
+  loadNWK(state: IStoreState, payload: any): void {
+    loadClientHistory(state.version, payload);
+    loadNWK(
+      state.nwk,
+      payload.versions.find((d: any) => d.id === payload.currentVersion).nwk
+    );
+    // TODO state.nwk mit payload.versions.find(d=> d.id===payload.currentversion).nwk
+  },
   addAlter(state: IStoreState, initialValues: Partial<Alter> = {}): void {
     // initialize alter with default values and optionally with the passed values
     const newAlter = {
@@ -109,21 +91,7 @@ const mutations = {
     state.view.editIndex = 0;
     state.view.editTab = TAB_BASE;
   },
-  /*addEgo(state: IStoreState, initialValues: Partial<Ego> = {}): void {
-    // initialize alter with default values and optionally with the passed values
-    const newEgo = {
-      ...initEgo(),
-      ...initialValues,
-    };
-    applyAdaptiveNWKDefaults(newEgo, initialValues);
 
-    // new alter is always added on top of list
-    state.nwk.ego.unshift(newEgo);
-    state.view.editIndex = 0;
-    state.view.editTab = TAB_BASE;
-  },
-
-   */
   // removes a newly added alter from the list
   cancelAddAlter(state: IStoreState, alterIndex: number): void {
     // console.log("cancel " + alterIndex);
@@ -137,7 +105,7 @@ const mutations = {
     state.view.editIndex = null;
     state.view.editTab = "";
   },
-  cancelAddVersion(state: IStoreState, versionIndex: number): void {
+  /*cancelAddVersion(state: IStoreState, versionIndex: number): void {
     // canceled alter is new and therefore cannot have connections
     // don't delete with index null value (see #97)
     if (versionIndex !== null) {
@@ -147,6 +115,8 @@ const mutations = {
     state.view.editIndex = null;
     state.view.editTab = "";
   },
+
+   */
   openAlterFormById(
     state: IStoreState,
     payload: { alterId: number; tab?: string }
@@ -185,6 +155,7 @@ export const store = createStore<IStoreState>({
   modules: {
     nwk: nwkModule,
     view: viewOptionsModule,
+    temporaryNWK: temporaryModule,
   },
   getters,
   mutations,

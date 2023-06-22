@@ -1,11 +1,12 @@
 import { Alter, isConnectable } from "@/data/Alter";
 import { Ego } from "@/data/Ego";
-import { NWK, initNWKasJSON, loadNWK } from "@/data/NWK";
+//import { ClientHistory, initNWKasJSON, loadNWK } from "@/data/ClientHistory";
 import { applyAdaptiveNWKDefaults } from "./adaptiveNWKDefaults";
+import { NWK } from "@/data/NWK";
 
 import { loadStateFromStore } from "./localStoragePlugin";
-import { Version } from "@/data/Version";
-import { CurrentVersion } from "@/data/CurrentVersion";
+//import { Version } from "@/data/Version";
+//import { CurrentVersion } from "@/data/CurrentVersion";
 
 // root state object.
 // each Vuex instance is just a single state tree.
@@ -22,24 +23,14 @@ const mutations = {
     state.ego = { ...state.ego, ...payload };
   },
 
-  editCurrentVersion(state: NWK, payload: Partial<CurrentVersion>): void {
-    state.currentVersion = { ...state.currentVersion, ...payload };
-  },
-
-  newNWK(state: NWK): void {
-    loadNWK(state, initNWKasJSON());
-  },
-
-  loadNWK(state: NWK, payload: string): void {
-    loadNWK(state, payload);
-  },
-
-  editVersion(
+  /*editVersion(
     state: NWK,
     payload: { index: number; changes: Partial<Version> }
   ): void {
     editVersion(state, payload.index, payload.changes);
   },
+
+   */
 
   editAlter(
     state: NWK,
@@ -78,7 +69,6 @@ const mutations = {
         state.connections.push({
           id1: payload[i],
           id2: payload[x],
-          version: payload[state.currentVersion.id],
         });
       }
     }
@@ -148,7 +138,7 @@ export function editAlter(
   }
 }
 
-export function editVersion(
+/*export function editVersion(
   state: NWK,
   versionIndex: number | null,
   changes: Partial<Alter>
@@ -170,6 +160,8 @@ export function editVersion(
     console.warn("version index invalid or out of bounds: " + versionIndex);
   }
 }
+
+ */
 
 /**
  * removes all connections to and from an alter

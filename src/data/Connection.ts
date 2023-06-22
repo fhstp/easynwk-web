@@ -7,5 +7,4 @@
 export interface Connection {
   id1: number;
   id2: number;
-  version: number;
 }

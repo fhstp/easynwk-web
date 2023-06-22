@@ -30,7 +30,7 @@
     </p>
 
     <AlteriPanelEntry
-      v-for="(alter, i) in filteredAlteri"
+      v-for="(alter, i) in alteri"
       :key="alter.id"
       :alter="alter"
       :alterIndex="i"
@@ -59,16 +59,10 @@ export default defineComponent({
       store.commit("addAlter");
     };
 
-    const filteredAlteri = computed(() => {
-      const currentVersionId = store.state.nwk.currentVersion.id;
-      return alteri.value.filter((alter) => alter.version === currentVersionId);
-    });
-
     return {
       alteri,
       addAlter,
       isAlterOpsAllowed: computed(() => store.getters.editedAlterValid),
-      filteredAlteri,
     };
   },
 });
