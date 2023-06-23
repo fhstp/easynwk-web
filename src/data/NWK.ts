@@ -23,3 +23,11 @@ export function initNWK(): NWK {
     connections: [],
   };
 }
+
+export function initNWKAsJSON(): string {
+  return JSON.stringify({
+    ego: initEgo(),
+    alteri: [],
+    connections: [],
+  });
+}

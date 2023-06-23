@@ -1,32 +1,26 @@
-import { NWK, loadNWK, initNWK } from "@/data/NWK";
+import { initNWKAsJSON, loadNWK, NWK } from "@/data/NWK";
 import { Ego } from "@/data/Ego";
+import { loadStateFromStore } from "@/store/localStoragePlugin";
 
-const state = {
-  temporaryNWK: initNWK(), // Initialize the temporary NWK object using initNWK() function
-};
+const initialState = JSON.parse(loadStateFromStore());
 
 const mutations = {
-  loadTemporaryNWKData(state: any, loadedText: string) {
-    loadNWK(state.temporaryNWK, loadedText);
+  newTempNWK(state: NWK): void {
+    loadNWK(state, initNWKAsJSON());
   },
-  saveTemporaryNWKData(state: any) {
-    state.version.versions.push({
-      id: state.version.currentVersion.id + 1,
-      title: "",
-      date: "2023-06-15",
-      nwk: state.temporaryNWK,
-    });
-
-    // Reset temporaryNWK to its initial state
-    state.temporaryNWK = initNWK();
-  },
-  editEgo(state: NWK, payload: Partial<Ego>) {
+  editEgo(state: NWK, payload: Partial<Ego>): void {
     state.ego = { ...state.ego, ...payload };
   },
 };
 
 export const temporaryModule = {
   namespaced: true,
-  state,
+  state: {
+    temporaryNWK: {
+      ego: { ...initialState.ego },
+      alteri: [],
+      connections: [],
+    },
+  },
   mutations,
 };
