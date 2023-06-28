@@ -98,7 +98,7 @@ export default defineComponent({
 
     // name field is special because it must not be empty
     // the data item is only used for validity check & never stored
-    const egoName = ref(store.state.version.versions[0].nwk.ego.name);
+    const egoName = ref(store.state.nwk.ego.name);
 
     const egoNameInStore = computed(() => {
       return store.state.nwk.ego.name;

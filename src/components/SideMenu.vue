@@ -136,7 +136,7 @@ export default defineComponent({
     const store = useStore();
 
     const newNWK = () => {
-      store.commit("newNWK");
+      store.commit("newTempNWK");
       emit("new-nwk");
     };
 
@@ -156,7 +156,7 @@ export default defineComponent({
         // TODO format checks & error messages
         // if (savedNWK.alteri && savedNWK.alteri instanceof Array) {
         // if (savedNWK.ego && isEgo(savedNWK.ego)) {
-        store.commit("loadNWK", nwkText);
+        store.commit("loadTempNWK", nwkText);
         emit("open-nwk");
       };
       fr.readAsText(files.item(0));

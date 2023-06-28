@@ -64,10 +64,11 @@ const mutations = {
   },
 
   loadNWK(state: IStoreState, payload: any): void {
-    loadClientHistory(state.version, payload);
+    //loadClientHistory(state.version, payload);
     loadNWK(
       state.nwk,
-      payload.versions.find((d: any) => d.id === payload.currentVersion).nwk
+      //payload.versions.find((d: any) => d.id === payload.currentVersion).nwk
+      payload.versions[0].nwk
     );
     // TODO state.nwk mit payload.versions.find(d=> d.id===payload.currentversion).nwk
   },
