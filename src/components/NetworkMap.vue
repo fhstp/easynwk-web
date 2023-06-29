@@ -226,6 +226,14 @@
       </span>
     </button>
     <button
+      id="zoomButton"
+      class="button is-small"
+      type="button"
+      title="Zoomen"
+    >
+      #
+    </button>
+    <button
       class="button is-small"
       type="button"
       title="Auswahlrechteck schließen"
