@@ -18,5 +18,6 @@ module.exports = defineConfig({
       title: "easyNWK",
     },
   },
+  publicPath: "./",
   transpileDependencies: true,
 });

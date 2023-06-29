@@ -1,10 +1,11 @@
 {
   "name": "easynwk",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "private": true,
   "author": "Alexander Rind (https://github.com/alex-rind/)",
   "repository": "https://github.com/fhstp/easynwk-web/",
   "scripts": {
+    "dev": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
