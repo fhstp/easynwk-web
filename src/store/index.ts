@@ -1,6 +1,6 @@
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { Alter, initAlter } from "@/data/Alter";
-import { initNWK, loadNWK, NWK } from "@/data/NWK";
+import { loadNWK, NWK } from "@/data/NWK";
 import { InjectionKey } from "vue";
 import {
   createLogger,
@@ -64,13 +64,12 @@ const mutations = {
   },
 
   loadNWK(state: IStoreState, payload: any): void {
-    //loadClientHistory(state.version, payload);
+    loadClientHistory(state.version, payload);
     loadNWK(
       state.nwk,
-      //payload.versions.find((d: any) => d.id === payload.currentVersion).nwk
-      payload.versions[0].nwk
+      payload.versions.find((d: any) => d.id === payload.currentVersion).nwk
     );
-    // TODO state.nwk mit payload.versions.find(d=> d.id===payload.currentversion).nwk
+    // state.nwk mit payload.versions.find(d=> d.id===payload.currentversion).nwk
   },
   addAlter(state: IStoreState, initialValues: Partial<Alter> = {}): void {
     // initialize alter with default values and optionally with the passed values
