@@ -1,16 +1,17 @@
 <template>
   <svg id="nwkmap" width="100%" height="100%" viewBox="-106 -106 212 212">
-    <defs>
-      <symbol id="square" viewBox="-1.5 -1.5 3 3">
-        <rect x="-0.886" y="-0.886" width="1.772" height="1.772" />
-      </symbol>
-      <symbol id="circle" viewBox="-1.5 -1.5 3 3">
-        <circle cx="0" cy="0" r="1" />
-      </symbol>
-      <symbol id="triangle" viewBox="-1.5 -1.5 3 3">
-        <path d="M -1.347,0.778 1.347,0.778 0,-1.555 Z" />
-      </symbol>
-      <!--
+    <g id="mapContainer">
+      <defs>
+        <symbol id="square" viewBox="-1.5 -1.5 3 3">
+          <rect x="-0.886" y="-0.886" width="1.772" height="1.772" />
+        </symbol>
+        <symbol id="circle" viewBox="-1.5 -1.5 3 3">
+          <circle cx="0" cy="0" r="1" />
+        </symbol>
+        <symbol id="triangle" viewBox="-1.5 -1.5 3 3">
+          <path d="M -1.347,0.778 1.347,0.778 0,-1.555 Z" />
+        </symbol>
+        <!--
     const R = 1.1495;
     const r = 0.93;
     const a = 1.3513;
@@ -18,175 +19,176 @@
     const y = Math.sqrt(a*a - Math.pow((d-a)/2, 2)) - r;
     console.log(`M ${a/-2},${r} ${a/2},${r} ${d/2},${-1*y} ${0},${-1*R} ${d/-2},${-1*y} Z`);
 -->
-      <symbol id="pentagram" viewBox="-1.5 -1.5 3 3">
-        <path
-          d="M -0.67565,0.93 0.67565,0.93 1.0932,-0.3551706841894581 0,-1.1495 -1.0932,-0.3551706841894581 Z"
-        />
-      </symbol>
-      <symbol id="star" viewBox="-1.5 -1.5 3 3">
-        <path
-          d="M 0.69236155,1.054307 0.00345969,0.69533821 -0.68279921,1.0593342 -0.55428199,0.29322216 -1.1125284,-0.24696789 l 0.76832984,-0.11451451 0.34124363,-0.6978518 0.34633676,0.69533819 0.76914657,0.1088939 -0.55428196,0.54425715 z"
-        />
-      </symbol>
-      <radialGradient id="selected-gradient">
-        <stop offset="60%" stop-color="rgb(0, 80, 150)" stop-opacity="0.25" />
-        <stop offset="100%" stop-color="rgb(0, 80, 150)" stop-opacity="0" />
-      </radialGradient>
-      <filter id="dilate-and-xor">
-        <!-- h/t https://stackoverflow.com/a/63287731/1140589 -->
-        <feMorphology
-          in="SourceGraphic"
-          result="dilate-result"
-          operator="dilate"
-          radius="0.35"
-        />
-        <feComposite
-          in="SourceGraphic"
-          in2="dilate-result"
-          result="xor-result"
-          operator="xor"
-        />
-      </filter>
-    </defs>
+        <symbol id="pentagram" viewBox="-1.5 -1.5 3 3">
+          <path
+            d="M -0.67565,0.93 0.67565,0.93 1.0932,-0.3551706841894581 0,-1.1495 -1.0932,-0.3551706841894581 Z"
+          />
+        </symbol>
+        <symbol id="star" viewBox="-1.5 -1.5 3 3">
+          <path
+            d="M 0.69236155,1.054307 0.00345969,0.69533821 -0.68279921,1.0593342 -0.55428199,0.29322216 -1.1125284,-0.24696789 l 0.76832984,-0.11451451 0.34124363,-0.6978518 0.34633676,0.69533819 0.76914657,0.1088939 -0.55428196,0.54425715 z"
+          />
+        </symbol>
+        <radialGradient id="selected-gradient">
+          <stop offset="60%" stop-color="rgb(0, 80, 150)" stop-opacity="0.25" />
+          <stop offset="100%" stop-color="rgb(0, 80, 150)" stop-opacity="0" />
+        </radialGradient>
+        <filter id="dilate-and-xor">
+          <!-- h/t https://stackoverflow.com/a/63287731/1140589 -->
+          <feMorphology
+            in="SourceGraphic"
+            result="dilate-result"
+            operator="dilate"
+            radius="0.35"
+          />
+          <feComposite
+            in="SourceGraphic"
+            in2="dilate-result"
+            result="xor-result"
+            operator="xor"
+          />
+        </filter>
+      </defs>
 
-    <!-- transform coordinate system to be scale independent -->
-    <g id="coords" v-if="showHorizons">
-      <!-- <rect x="-120" y="-120" width="240" height="240" fill="#bcbddc"/> -->
-      <circle id="horizon-base" cx="0" cy="0" r="100" />
-      <circle id="horizon-overlay" cx="0" cy="0" r="66.67" />
-      <circle id="horizon-overlay" cx="0" cy="0" r="33.33" />
-      <line x1="0" y1="-105" x2="0" y2="105" />
-      <line x1="105" y1="0" x2="-105" y2="0" />
-    </g>
-    <g id="coords-min" v-else>
-      <line
-        vector-effect="non-scaling-stroke"
-        x1="0"
-        y1="-100"
-        x2="0"
-        y2="102"
-      />
-      <line
-        vector-effect="non-scaling-stroke"
-        x1="102"
-        y1="0"
-        x2="-102"
-        y2="0"
-      />
-    </g>
-
-    <g id="sectors">
-      <text x="100" y="-100" text-anchor="end">{{ Sectors[0] }}</text>
-      <text x="-100" y="-100" text-anchor="start">{{ Sectors[1] }}</text>
-      <text x="-100" y="100" text-anchor="start">{{ Sectors[2] }}</text>
-      <text x="100" y="100" text-anchor="end">{{ Sectors[3] }}</text>
-    </g>
-
-    <text v-if="isEditMode" text-anchor="middle" class="edithint">
-      <tspan x="0" y="-1em">Klicke in die Karte, um</tspan>
-      <tspan x="0" dy="2em">die Position festzulegen</tspan>
-    </text>
-
-    <g id="marksBackgroundLayer">
-      <g v-for="mark in alteriMarks" :key="'shadow' + mark.d.id">
-        <circle
-          v-if="mark.selected"
-          :cx="mark.x"
-          :cy="mark.y"
-          r="4"
-          fill="url('#selected-gradient')"
-        />
+      <!-- transform coordinate system to be scale independent -->
+      <g id="coords" v-if="showHorizons">
+        <!-- <rect x="-120" y="-120" width="240" height="240" fill="#bcbddc"/> -->
+        <circle id="horizon-base" cx="0" cy="0" r="100" />
+        <circle id="horizon-overlay" cx="0" cy="0" r="66.67" />
+        <circle id="horizon-overlay" cx="0" cy="0" r="33.33" />
+        <line x1="0" y1="-105" x2="0" y2="105" />
+        <line x1="105" y1="0" x2="-105" y2="0" />
       </g>
-
-      <g v-if="connections">
+      <g id="coords-min" v-else>
         <line
-          v-for="(mark, index) in connectionMarks"
-          :key="'conn' + index"
-          :x1="mark.x1"
-          :y1="mark.y1"
-          :x2="mark.x2"
-          :y2="mark.y2"
-          :class="{ select: mark.selected }"
-        />
-      </g>
-
-      <g v-for="mark in alteriMarks" :key="mark.d.id">
-        <line
-          v-if="connections && mark.d.edgeType >= 1"
-          :class="{ select: mark.selected }"
-          x1="0"
-          y1="0"
-          :x2="mark.x"
-          :y2="mark.y"
-          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
-        />
-        <text
-          v-if="alteriNames && useTextBG"
-          class="textbg"
           vector-effect="non-scaling-stroke"
-          :x="mark.x"
-          :y="mark.y"
-          :text-anchor="mark.x < 0 ? 'end' : 'start'"
-          :dx="mark.x < 0 ? -3 : 3"
-          :dy="mark.y < 0 ? -1 : 4"
-        >
-          {{ mark.label }}
-          {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
-          {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
-        </text>
-        <text
-          v-if="alteriNames"
-          :x="mark.x"
-          :y="mark.y"
-          :text-anchor="mark.x < 0 ? 'end' : 'start'"
-          :dx="mark.x < 0 ? -3 : 3"
-          :dy="mark.y < 0 ? -1 : 4"
-        >
-          {{ mark.label }}
-          {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
-          {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
-        </text>
+          x1="0"
+          y1="-100"
+          x2="0"
+          y2="102"
+        />
+        <line
+          vector-effect="non-scaling-stroke"
+          x1="102"
+          y1="0"
+          x2="-102"
+          y2="0"
+        />
       </g>
-      <use
-        id="ego"
-        :href="'#' + egoShape"
-        x="0"
-        y="0"
-        class="mark"
-        width="4"
-        height="4"
-        transform="translate(-2,-2)"
-      />
-    </g>
-    <g class="brushParent"></g>
-    <g class="marksForegroundLayer">
-      <use
-        v-for="mark in alteriMarks"
-        :key="mark.d.id"
-        :href="'#' + mark.shape"
-        :x="mark.x"
-        :y="mark.y"
-        class="mark clickAble"
-        width="4"
-        height="4"
-        transform="translate(-2,-2)"
-        @click.stop="clickAlter(mark.d)"
-      />
-    </g>
 
-    <!-- a foreground rect is necessary so that the whole display is clickable -->
-    <!-- a foreground rect is useful to prevent text selection -->
-    <rect
-      v-if="isEditMode"
-      id="position"
-      x="-110"
-      y="-110"
-      width="220"
-      height="220"
-    />
-    <text :x="0" y="-102" text-anchor="middle" class="ego">
-      {{ egoLabel }}
-    </text>
+      <g id="sectors">
+        <text x="100" y="-100" text-anchor="end">{{ Sectors[0] }}</text>
+        <text x="-100" y="-100" text-anchor="start">{{ Sectors[1] }}</text>
+        <text x="-100" y="100" text-anchor="start">{{ Sectors[2] }}</text>
+        <text x="100" y="100" text-anchor="end">{{ Sectors[3] }}</text>
+      </g>
+
+      <text v-if="isEditMode" text-anchor="middle" class="edithint">
+        <tspan x="0" y="-1em">Klicke in die Karte, um</tspan>
+        <tspan x="0" dy="2em">die Position festzulegen</tspan>
+      </text>
+
+      <g id="marksBackgroundLayer">
+        <g v-for="mark in alteriMarks" :key="'shadow' + mark.d.id">
+          <circle
+            v-if="mark.selected"
+            :cx="mark.x"
+            :cy="mark.y"
+            r="4"
+            fill="url('#selected-gradient')"
+          />
+        </g>
+
+        <g v-if="connections">
+          <line
+            v-for="(mark, index) in connectionMarks"
+            :key="'conn' + index"
+            :x1="mark.x1"
+            :y1="mark.y1"
+            :x2="mark.x2"
+            :y2="mark.y2"
+            :class="{ select: mark.selected }"
+          />
+        </g>
+
+        <g v-for="mark in alteriMarks" :key="mark.d.id">
+          <line
+            v-if="connections && mark.d.edgeType >= 1"
+            :class="{ select: mark.selected }"
+            x1="0"
+            y1="0"
+            :x2="mark.x"
+            :y2="mark.y"
+            :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          />
+          <text
+            v-if="alteriNames && useTextBG"
+            class="textbg"
+            vector-effect="non-scaling-stroke"
+            :x="mark.x"
+            :y="mark.y"
+            :text-anchor="mark.x < 0 ? 'end' : 'start'"
+            :dx="mark.x < 0 ? -3 : 3"
+            :dy="mark.y < 0 ? -1 : 4"
+          >
+            {{ mark.label }}
+            {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
+            {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
+          </text>
+          <text
+            v-if="alteriNames"
+            :x="mark.x"
+            :y="mark.y"
+            :text-anchor="mark.x < 0 ? 'end' : 'start'"
+            :dx="mark.x < 0 ? -3 : 3"
+            :dy="mark.y < 0 ? -1 : 4"
+          >
+            {{ mark.label }}
+            {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
+            {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
+          </text>
+        </g>
+        <use
+          id="ego"
+          :href="'#' + egoShape"
+          x="0"
+          y="0"
+          class="mark"
+          width="4"
+          height="4"
+          transform="translate(-2,-2)"
+        />
+      </g>
+      <g class="brushParent"></g>
+      <g class="marksForegroundLayer">
+        <use
+          v-for="mark in alteriMarks"
+          :key="mark.d.id"
+          :href="'#' + mark.shape"
+          :x="mark.x"
+          :y="mark.y"
+          class="mark clickAble"
+          width="4"
+          height="4"
+          transform="translate(-2,-2)"
+          @click.stop="clickAlter(mark.d)"
+        />
+      </g>
+
+      <!-- a foreground rect is necessary so that the whole display is clickable -->
+      <!-- a foreground rect is useful to prevent text selection -->
+      <rect
+        v-if="isEditMode"
+        id="position"
+        x="-110"
+        y="-110"
+        width="220"
+        height="220"
+      />
+      <text :x="0" y="-102" text-anchor="middle" class="ego">
+        {{ egoLabel }}
+      </text>
+    </g>
   </svg>
   <div id="brushBtns" ref="brushBtns">
     <!-- <button
@@ -226,14 +228,6 @@
       </span>
     </button>
     <button
-      id="zoomButton"
-      class="button is-small"
-      type="button"
-      title="Zoomen"
-    >
-      #
-    </button>
-    <button
       class="button is-small"
       type="button"
       title="Auswahlrechteck schließen"
@@ -259,6 +253,7 @@ import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { getRoleAbbrev } from "../data/Roles";
 import { D3BrushEvent } from "d3";
+import { zoom } from "d3-zoom";
 
 interface AlterMark {
   d: Alter;
@@ -311,6 +306,20 @@ export default defineComponent({
 
     onMounted(() => {
       // d3.mouse only works if the event is registered using D3 .on
+
+      const svg = d3.select("#nwkmap");
+
+      const zoomBehavior: any = zoom()
+        .scaleExtent([0.5, 10])
+        .on("zoom", zoomed);
+
+      svg.call(zoomBehavior);
+
+      function zoomed(event: any) {
+        const { transform } = event;
+        svg.select("#mapContainer").attr("transform", transform);
+      }
+
       const g = d3.select("#nwkmap");
 
       let clickBackgroundTimeoutId: number | null = null;
