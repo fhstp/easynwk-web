@@ -190,6 +190,16 @@
       </text>
     </g>
   </svg>
+  <button
+    id="zoomResetBtn"
+    class="button is-small"
+    type="button"
+    title="Zoom Zurücksetzen"
+    style="position: absolute; right: 10px; bottom: 3px"
+    @click="reset()"
+  >
+    Reset
+  </button>
   <div id="brushBtns" ref="brushBtns">
     <!-- <button
       id="btnClusterMove"
@@ -227,6 +237,9 @@
         <font-awesome-icon icon="unlink" />
       </span>
     </button>
+    <button id="zoomBtn" class="button is-small" type="button" title="Zoom">
+      +
+    </button>
     <button
       class="button is-small"
       type="button"
@@ -252,7 +265,7 @@ import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { getRoleAbbrev } from "../data/Roles";
-import { D3BrushEvent } from "d3";
+import { brushSelection, D3BrushEvent } from "d3";
 import { zoom } from "d3-zoom";
 
 interface AlterMark {
@@ -313,11 +326,18 @@ export default defineComponent({
         .scaleExtent([0.5, 10])
         .on("zoom", zoomed);
 
-      svg.call(zoomBehavior);
+      svg.call(zoomBehavior).on("mousedown.zoom", null);
 
       function zoomed(event: any) {
         const { transform } = event;
         svg.select("#mapContainer").attr("transform", transform);
+      }
+
+      function reset() {
+        svg
+          .transition()
+          .duration(750)
+          .call(zoomBehavior.transform, d3.zoomIdentity);
       }
 
       const g = d3.select("#nwkmap");
