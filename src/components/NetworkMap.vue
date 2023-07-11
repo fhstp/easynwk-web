@@ -1,5 +1,11 @@
 <template>
-  <svg id="nwkmap" width="100%" height="100%" viewBox="-106 -106 212 212">
+  <svg
+    id="nwkmap"
+    ref="svgElement"
+    width="100%"
+    height="100%"
+    viewBox="-106 -106 212 212"
+  >
     <g id="mapContainer">
       <defs>
         <symbol id="square" viewBox="-1.5 -1.5 3 3">
@@ -196,7 +202,7 @@
     type="button"
     title="Zoom Zurücksetzen"
     style="position: absolute; right: 10px; bottom: 3px"
-    @click="reset()"
+    @click="resetZoom()"
   >
     Reset
   </button>
@@ -237,7 +243,13 @@
         <font-awesome-icon icon="unlink" />
       </span>
     </button>
-    <button id="zoomBtn" class="button is-small" type="button" title="Zoom">
+    <button
+      id="zoomBtn"
+      class="button is-small"
+      type="button"
+      title="Zoom"
+      @click="zoomBrushedArea"
+    >
       +
     </button>
     <button
@@ -331,13 +343,6 @@ export default defineComponent({
       function zoomed(event: any) {
         const { transform } = event;
         svg.select("#mapContainer").attr("transform", transform);
-      }
-
-      function reset() {
-        svg
-          .transition()
-          .duration(750)
-          .call(zoomBehavior.transform, d3.zoomIdentity);
       }
 
       const g = d3.select("#nwkmap");
@@ -501,6 +506,44 @@ export default defineComponent({
       );
     }
 
+    function resetZoom(): void {
+      const svg: HTMLElement | null = document.getElementById("nwkmap");
+      const zoom: d3.ZoomBehavior<Element, unknown> = d3.zoom();
+
+      if (svg) {
+        d3.select(svg)
+          .transition()
+          .duration(100)
+          .call((selection) => {
+            selection.call(zoom.transform as any, d3.zoomIdentity);
+          })
+          .on("end", () => {
+            // Update the SVG elements after the zoom reset
+            updateSVG();
+          });
+      }
+    }
+
+    function updateSVG(): void {
+      const svg: HTMLElement | null = document.getElementById("nwkmap");
+      const mapContainer: HTMLElement | null =
+        document.getElementById("mapContainer");
+
+      const transform = d3.zoomTransform(svg as any);
+      const zoomLevel = transform.k;
+      const translateX = transform.x;
+      const translateY = transform.y;
+
+      if (svg && mapContainer) {
+        d3.select(mapContainer).attr(
+          "transform",
+          `translate(${translateX}, ${translateY}) scale(${zoomLevel})`
+        );
+
+        svg.getBoundingClientRect();
+      }
+    }
+
     function clusterConnect() {
       store.commit("addClusterConnections", connectableIdsInExtent);
       isClusterFullyConnected.value = true;
@@ -649,6 +692,7 @@ export default defineComponent({
       clusterConnect,
       clusterDisconnect,
       clearBrush,
+      resetZoom,
       Sectors,
       SYMBOL_DECEASED,
       // TODO browser detection b/c vector-effect seems not to work in Safari only as of 14 Dec 2021
