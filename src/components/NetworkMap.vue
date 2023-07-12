@@ -201,7 +201,7 @@
     class="button is-small"
     type="button"
     title="Zoom Zurücksetzen"
-    style="position: absolute; right: 10px; bottom: 3px"
+    style="position: absolute; right: -70px; bottom: 35px"
     @click="resetZoom()"
   >
     Reset
@@ -250,7 +250,9 @@
       title="Zoom"
       @click="zoomBrushedArea"
     >
-      +
+      <span class="icon is-small">
+        <font-awesome-icon icon="plus-circle" />
+      </span>
     </button>
     <button
       class="button is-small"
@@ -308,6 +310,8 @@ export default defineComponent({
   setup: function (props, { emit }) {
     const store = useStore();
 
+    const svgElement = ref(null);
+
     const isEditMode = computed(() => {
       return (
         store.state.view.editIndex != null &&
@@ -334,10 +338,9 @@ export default defineComponent({
 
       const svg = d3.select("#nwkmap");
 
-      const zoomBehavior: any = zoom()
-        .scaleExtent([0.5, 10])
-        .on("zoom", zoomed);
+      const zoomBehavior: any = zoom().scaleExtent([1, 10]).on("zoom", zoomed);
 
+      //Zoom with mouse wheel
       svg.call(zoomBehavior).on("mousedown.zoom", null);
 
       function zoomed(event: any) {
@@ -506,6 +509,7 @@ export default defineComponent({
       );
     }
 
+    //functionality of Reset button for zoom
     function resetZoom(): void {
       const svg: HTMLElement | null = document.getElementById("nwkmap");
       const zoom: d3.ZoomBehavior<Element, unknown> = d3.zoom();
@@ -513,17 +517,19 @@ export default defineComponent({
       if (svg) {
         d3.select(svg)
           .transition()
+          //duration of how fast the reset should be visible
           .duration(100)
           .call((selection) => {
             selection.call(zoom.transform as any, d3.zoomIdentity);
           })
           .on("end", () => {
-            // Update the SVG elements after the zoom reset
+            //update svg to make reset visible
             updateSVG();
           });
       }
     }
 
+    // function to update the svg after resetting the zoom
     function updateSVG(): void {
       const svg: HTMLElement | null = document.getElementById("nwkmap");
       const mapContainer: HTMLElement | null =
