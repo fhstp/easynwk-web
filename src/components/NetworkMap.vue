@@ -310,7 +310,7 @@ export default defineComponent({
   setup: function (props, { emit }) {
     const store = useStore();
 
-    //const svgElement = ref(null);
+    const svgRef = ref(null);
 
     const isEditMode = computed(() => {
       return (
@@ -335,11 +335,6 @@ export default defineComponent({
 
     onMounted(() => {
       // d3.mouse only works if the event is registered using D3 .on
-
-      /*
-      const zoomBtn = document.getElementById("zoomBtn");
-      zoomBtn.addEventListener("click", zoomBrushedArea);
-       */
 
       const svg = d3.select("#nwkmap");
 
@@ -451,6 +446,40 @@ export default defineComponent({
     const isClusterConnectPossible = ref(false);
     const isClusterFullyConnected = ref(false);
 
+    const zoomBrushedArea = () => {
+      const svg = d3.select("#nwkmap");
+      const brushSelection = svg.select<SVGGElement>(".brush")?.node();
+
+      if (!brushSelection) return; // No brush element found, do nothing
+
+      const selection = d3.brushSelection(brushSelection) as [number, number][];
+      if (!selection) return; // No selection, do nothing
+
+      const [[x0, y0], [x1, y1]] = selection;
+
+      const centerX = (x0 + x1) / 2;
+      const centerY = (y0 + y1) / 2;
+      const width = x1 - x0;
+      const height = y1 - y0;
+
+      // Calculate the new zoom level based on the selected area dimensions
+      const newZoomLevel = Math.min(212 / width, 212 / height);
+
+      // Calculate the new translation to center the selected area
+      const newTranslateX = 106 - centerX * newZoomLevel;
+      const newTranslateY = 106 - centerY * newZoomLevel;
+
+      // Apply the new zoom transform to the SVG container
+      const zoomBehavior = d3.zoom().scaleExtent([1, 10]);
+      console.log("been here");
+      svg.call(
+        zoomBehavior.transform as any,
+        d3.zoomIdentity
+          .scale(newZoomLevel)
+          .translate(newTranslateX, newTranslateY)
+      );
+    };
+
     function afterBrushChanged(event: D3BrushEvent<unknown>) {
       // console.log(event);
 
@@ -513,30 +542,6 @@ export default defineComponent({
         mark.y <= extent[1][1]
       );
     }
-
-    /*
-    function zoomBrushedArea() {
-      const svg = svgElement.value;
-      const brush = brushSelection(svg);
-
-      if (brush) {
-        // Calculate the new zoom transform based on the brushed area
-        const [[x0, y0], [x1, y1]] = brush;
-        const width = x1 - x0;
-        const height = y1 - y0;
-        const k = Math.min(212 / width, 212 / height); // Adjust the scale to fit within the viewBox
-
-        const zoomTransform = zoomIdentity
-            .translate(-x0, -y0)
-            .scale(k)
-            .translate(-106, -106); // Adjust the translation to fit within the viewBox
-
-        // Apply the zoom transform to the SVG element
-        const zoomBehavior = zoom().on("zoom", null); // Disable the zoom behavior temporarily to prevent recursive zoom
-        d3.select(svg).call(zoomBehavior.transform, zoomTransform);
-      }
-    }
-     */
 
     //functionality of Reset button for zoom
     function resetZoom(): void {
@@ -728,6 +733,7 @@ export default defineComponent({
       clusterDisconnect,
       clearBrush,
       resetZoom,
+      zoomBrushedArea,
       Sectors,
       SYMBOL_DECEASED,
       // TODO browser detection b/c vector-effect seems not to work in Safari only as of 14 Dec 2021
