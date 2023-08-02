@@ -310,9 +310,9 @@ export default defineComponent({
   setup: function (props, { emit }) {
     const store = useStore();
 
-    const zoomBehaviorBrush = ref<d3.ZoomBehavior<Element, unknown> | null>(
-      null
-    );
+    const svg = d3.select("#nwkmap");
+
+    const zoomBehavior: any = zoom().scaleExtent([1, 10]).on("zoom", zoomed);
 
     const isEditMode = computed(() => {
       return (
@@ -337,11 +337,6 @@ export default defineComponent({
 
     onMounted(() => {
       // d3.mouse only works if the event is registered using D3 .on
-
-      // Store the zoom behavior in the reactive variable
-      zoomBehaviorBrush.value = zoom()
-        .scaleExtent([1, 10])
-        .on("zoom", zoomedBrush);
 
       const svg = d3.select("#nwkmap");
 
@@ -453,49 +448,31 @@ export default defineComponent({
     const isClusterConnectPossible = ref(false);
     const isClusterFullyConnected = ref(false);
 
-    function zoomedBrush(event: any) {
+    function zoomed(event: any) {
       const { transform } = event;
-
-      // Apply the new zoom transform to the SVG container
-      if (zoomBehaviorBrush.value) {
-        d3.select("#mapContainer").attr("transform", transform);
-      }
+      svg.select("#mapContainer").attr("transform", transform);
     }
 
     function zoomBrushedArea() {
-      const svg = d3.select("#nwkmap");
-      const brushSelection = svg.select<SVGGElement>(".brush")?.node();
+      const brushElement = d3.select("#brush").node() as SVGGElement | null;
 
-      if (!brushSelection) return; // No brush element found, do nothing
+      if (brushElement) {
+        const extent = brushSelection(brushElement) as [
+          [number, number],
+          [number, number]
+        ];
 
-      // Clear the brush selection before zooming
-      brush.clear(d3.select("#nwkmap .brush"));
+        if (extent) {
+          const { x, y, k } = d3.zoomIdentity
+            .translate(-extent[0][0], -extent[0][1])
+            .scale(212 / (extent[1][0] - extent[0][0]));
 
-      // Get the bounds of the brushed area
-      const bbox = brushSelection?.getBBox();
-      const [x0, y0, x1, y1] = bbox
-        ? [bbox.x, bbox.y, bbox.x + bbox.width, bbox.y + bbox.height]
-        : [0, 0, 0, 0];
-
-      // Calculate the center of the brushed area
-      const centerX = (x0 + x1) / 2;
-      const centerY = (y0 + y1) / 2;
-
-      // Calculate the new zoom level based on the dimensions of the brushed area
-      const newZoomLevel = Math.min(212 / (x1 - x0), 212 / (y1 - y0));
-
-      // Calculate the new translation to center the brushed area
-      const newTranslateX = 106 - centerX * newZoomLevel;
-      const newTranslateY = 106 - centerY * newZoomLevel;
-
-      // Apply the new zoom transform to the SVG container
-      if (zoomBehaviorBrush.value) {
-        svg.call(
-          zoomBehaviorBrush.value.transform as any,
-          d3.zoomIdentity
-            .scale(newZoomLevel)
-            .translate(newTranslateX, newTranslateY)
-        );
+          const mapContainer = d3.select("#mapContainer");
+          mapContainer
+            .transition()
+            .duration(500)
+            .attr("transform", `translate(${x}, ${y}) scale(${k})`);
+        }
       }
     }
 
