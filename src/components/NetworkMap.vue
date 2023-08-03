@@ -454,38 +454,45 @@ export default defineComponent({
     }
 
     function zoomBrushedArea() {
+      // Get the brush element
       const brushElement = d3.select("#brush").node() as SVGGElement | null;
 
       if (brushElement) {
+        // Get the extent of the brush selection
         const extent = brushSelection(brushElement) as [
           [number, number],
           [number, number]
         ];
 
         if (extent) {
-          // Calculate the width and height of the brush
+          // Calculate the center of the brushed area
           const x0 = extent[0][0];
           const y0 = extent[0][1];
           const x1 = extent[1][0];
           const y1 = extent[1][1];
+          const centerX = (x0 + x1) / 2;
+          const centerY = (y0 + y1) / 2;
           const width = x1 - x0;
           const height = y1 - y0;
 
-          // Calculate the scale depending on the size of the brush extent
+          // Calculate the scale factor based on the size of the brush extent
           const maxExtent = Math.max(width, height);
           const maxBrushExtent = 212;
           const scaleFactor = maxBrushExtent / maxExtent;
 
           // Apply the new zoom transformation to the mapContainer
-          const x = -x0 * scaleFactor;
-          const y = -y0 * scaleFactor;
+          const x = -centerX * scaleFactor;
+          const y = -centerY * scaleFactor;
           const k = scaleFactor;
 
           const mapContainer = d3.select("#mapContainer");
           mapContainer
             .transition()
-            .duration(500)
+            .duration(500) //Transition for zooming
             .attr("transform", `translate(${x}, ${y}) scale(${k})`);
+
+          //Clear Brush if zoom --> user does not have to clear brush to brush again
+          clearBrush();
         }
       }
     }
