@@ -463,9 +463,23 @@ export default defineComponent({
         ];
 
         if (extent) {
-          const { x, y, k } = d3.zoomIdentity
-            .translate(-extent[0][0], -extent[0][1])
-            .scale(212 / (extent[1][0] - extent[0][0]));
+          // Calculate the width and height of the brush
+          const x0 = extent[0][0];
+          const y0 = extent[0][1];
+          const x1 = extent[1][0];
+          const y1 = extent[1][1];
+          const width = x1 - x0;
+          const height = y1 - y0;
+
+          // Calculate the scale depending on the size of the brush extent
+          const maxExtent = Math.max(width, height);
+          const maxBrushExtent = 212;
+          const scaleFactor = maxBrushExtent / maxExtent;
+
+          // Apply the new zoom transformation to the mapContainer
+          const x = -x0 * scaleFactor;
+          const y = -y0 * scaleFactor;
+          const k = scaleFactor;
 
           const mapContainer = d3.select("#mapContainer");
           mapContainer
