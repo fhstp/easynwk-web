@@ -310,10 +310,6 @@ export default defineComponent({
   setup: function (props, { emit }) {
     const store = useStore();
 
-    const svg = d3.select("#nwkmap");
-
-    const zoomBehavior: any = zoom().scaleExtent([1, 10]).on("zoom", zoomed);
-
     const isEditMode = computed(() => {
       return (
         store.state.view.editIndex != null &&
@@ -344,11 +340,36 @@ export default defineComponent({
 
       //Zoom with mouse wheel
       svg.call(zoomBehavior).on("mousedown.zoom", null);
+      d3.select(zoomBehavior).on("dblclick.zoom", null);
 
       function zoomed(event: any) {
         const { transform } = event;
         svg.select("#mapContainer").attr("transform", transform);
       }
+
+      /*function zoomed(event: any) {
+        const { transform } = event;
+        const svg = d3.select("#nwkmap");
+        const mapContainer = d3.select("#mapContainer");
+
+        /*const newViewBoxWidth = 212 / transform.k;
+        const newViewBoxHeight = 212 / transform.k;
+        const newViewBoxX = -newViewBoxWidth / 2 + transform.x / transform.k;
+        const newViewBoxY = -newViewBoxHeight / 2 + transform.y / transform.k;
+
+        svg.attr(
+          "viewBox",
+          `${newViewBoxX} ${newViewBoxY} ${newViewBoxWidth} ${newViewBoxHeight}`
+        );
+
+        svg.select("#mapContainer").attr("transform", transform);
+
+        mapContainer.attr(
+          "transform",
+          `translate(${transform.x}, ${transform.y}) scale(${transform.k})`
+        );
+      }
+       */
 
       const g = d3.select("#nwkmap");
 
@@ -447,11 +468,6 @@ export default defineComponent({
 
     const isClusterConnectPossible = ref(false);
     const isClusterFullyConnected = ref(false);
-
-    function zoomed(event: any) {
-      const { transform } = event;
-      svg.select("#mapContainer").attr("transform", transform);
-    }
 
     function zoomBrushedArea() {
       // Get the brush element
@@ -593,6 +609,10 @@ export default defineComponent({
 
       if (svg && mapContainer) {
         d3.select(mapContainer).attr(
+          "transform",
+          `translate(${translateX}, ${translateY}) scale(${zoomLevel})`
+        );
+        d3.select(svg).attr(
           "transform",
           `translate(${translateX}, ${translateY}) scale(${zoomLevel})`
         );
