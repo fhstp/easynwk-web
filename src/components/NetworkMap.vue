@@ -340,7 +340,8 @@ export default defineComponent({
 
       //Zoom with mouse wheel
       svg.call(zoomBehavior).on("mousedown.zoom", null);
-      d3.select(zoomBehavior).on("dblclick.zoom", null);
+      svg.on("dblclick.zoom", null);
+      //d3.select(zoomBehavior).on("dblclick.zoom", null);
 
       function zoomed(event: any) {
         const { transform } = event;
