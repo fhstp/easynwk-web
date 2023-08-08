@@ -135,7 +135,7 @@ export default defineComponent({
   background: $fhstpblue; /* #005096; /* $light; */
   color: white;
   padding: 1vmin 1vmin 0.3rem 1vmin;
-  margin: 0.5rem 1px 0 1px;
+  margin: 1rem 1px 0 1px;
   border-radius: 6px 6px 0 0;
   flex-shrink: 0;
 
@@ -187,6 +187,10 @@ export default defineComponent({
 
   #forms {
     overflow-y: auto;
+  }
+
+  html {
+    overflow-y: hidden !important;
   }
 
   /* Hide scrollbar for Chrome, Safari and Opera */
