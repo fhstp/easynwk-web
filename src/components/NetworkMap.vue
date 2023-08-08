@@ -561,40 +561,29 @@ export default defineComponent({
       if (svg) {
         d3.select(svg)
           .transition()
-          //duration of how fast the reset should be visible
-          .duration(100)
+          .duration(75) // Duration for the zoom reset transition
           .call((selection) => {
             selection.call(zoom.transform as any, d3.zoomIdentity);
           })
           .on("end", () => {
-            //update svg to make reset visible
+            // Update the SVG after reset
             updateSVG();
           });
       }
     }
 
-    // function to update the svg after resetting the zoom
     function updateSVG(): void {
       const svg: HTMLElement | null = document.getElementById("nwkmap");
-      const mapContainer: HTMLElement | null =
-        document.getElementById("mapContainer");
+      if (svg) {
+        const viewBoxWidth = 212;
+        const viewBoxHeight = 212;
 
-      const transform = d3.zoomTransform(svg as any);
-      const zoomLevel = transform.k;
-      const translateX = transform.x;
-      const translateY = transform.y;
-
-      if (svg && mapContainer) {
-        d3.select(mapContainer).attr(
-          "transform",
-          `translate(${translateX}, ${translateY}) scale(${zoomLevel})`
+        svg.setAttribute(
+          "viewBox",
+          `-${viewBoxWidth / 2} -${
+            viewBoxHeight / 2
+          } ${viewBoxWidth} ${viewBoxHeight}`
         );
-        d3.select(svg).attr(
-          "transform",
-          `translate(${translateX}, ${translateY}) scale(${zoomLevel})`
-        );
-
-        svg.getBoundingClientRect();
       }
     }
 
