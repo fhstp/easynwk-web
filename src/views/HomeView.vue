@@ -175,7 +175,7 @@ export default defineComponent({
 }
 */
 
-@media (min-width: 168vh) {
+@media (min-width: 178vh) {
   #main {
     width: 70vmin;
   }
