@@ -12,6 +12,9 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 // NB: import & add each used icon here
 import {
   faBars,
+  faSearchPlus,
+  faBan,
+  faSearchMinus,
   faPencilAlt,
   faUserPlus,
   faMapPin,
@@ -49,6 +52,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
   faBars,
+  faSearchPlus,
+  faBan,
+  faSearchMinus,
   faPencilAlt,
   faUserPlus,
   faMapPin,

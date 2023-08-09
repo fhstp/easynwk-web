@@ -1,12 +1,12 @@
 <template>
-  <svg
-    id="nwkmap"
-    ref="svgElement"
-    width="100%"
-    height="100%"
-    viewBox="-106 -106 212 212"
-  >
-    <g id="mapContainer">
+  <div id="mapContainer">
+    <svg
+      id="nwkmap"
+      ref="svgElement"
+      width="100%"
+      height="100%"
+      viewBox="-106 -106 212 212"
+    >
       <defs>
         <symbol id="square" viewBox="-1.5 -1.5 3 3">
           <rect x="-0.886" y="-0.886" width="1.772" height="1.772" />
@@ -194,18 +194,26 @@
       <text :x="0" y="-102" text-anchor="middle" class="ego">
         {{ egoLabel }}
       </text>
-    </g>
-  </svg>
-  <button
-    id="zoomResetBtn"
-    class="button is-small"
-    type="button"
-    title="Zoom Zurücksetzen"
-    style="position: absolute; right: -70px; bottom: 35px"
-    @click="resetZoom()"
-  >
-    Reset
-  </button>
+    </svg>
+    <button
+      id="zoomResetBtn"
+      class="button is-medium"
+      type="button"
+      title="Zoom Zurücksetzen"
+      style="position: absolute; right: -40px; bottom: 50px"
+      @click="resetZoom()"
+    >
+      <!-- <span class="icon is-large">
+      <span class="fa-stack fa-lg">
+        <font-awesome-icon icon="search-plus" />
+        <font-awesome-icon icon="ban" />
+      </span>
+    </span> -->
+      <span class="icon is-large">
+        <font-awesome-icon icon="search-minus" />
+      </span>
+    </button>
+  </div>
   <div id="brushBtns" ref="brushBtns">
     <!-- <button
       id="btnClusterMove"
@@ -250,8 +258,8 @@
       title="Zoom"
       @click="zoomBrushedArea"
     >
-      <span class="icon is-small">
-        <font-awesome-icon icon="plus-circle" />
+      <span class="icon is-medium">
+        <font-awesome-icon icon="search-plus" />
       </span>
     </button>
     <button
