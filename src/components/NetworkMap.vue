@@ -345,6 +345,17 @@ export default defineComponent({
 
       function zoomed(event: any) {
         const { transform } = event;
+
+        const scaleFactor = 1 / transform.k;
+
+        d3.selectAll(".mark")
+          .attr("width", Math.max(4 * scaleFactor, 4))
+          .attr("height", Math.max(4 * scaleFactor, 4));
+
+        d3.selectAll("line").style("stroke-width", 0.5 * scaleFactor);
+
+        d3.selectAll("text").style("font-size", 4 * scaleFactor);
+
         const mapContainer = d3.select("#nwkmap");
 
         const viewBoxWidth = 212 / transform.k;
