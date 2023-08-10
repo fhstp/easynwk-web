@@ -350,26 +350,19 @@ export default defineComponent({
         const viewBoxWidth = 212 / transform.k;
         const viewBoxHeight = 212 / transform.k;
 
-        const centerX = transform.x / transform.k;
-        const centerY = transform.y / transform.k;
+        if (viewBoxHeight === 212 && viewBoxWidth === 212) {
+          mapContainer.attr("viewBox", `${-106} ${-106} ${212} ${212}`);
+        } else {
+          const centerX = transform.x / transform.k;
+          const centerY = transform.y / transform.k;
 
-        const viewBoxX = -centerX - viewBoxWidth / 2;
-        const viewBoxY = -centerY - viewBoxHeight / 2;
+          const viewBoxX = -centerX - viewBoxWidth / 2;
+          const viewBoxY = -centerY - viewBoxHeight / 2;
 
-        mapContainer.attr(
-          "viewBox",
-          `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`
-        );
-
-        if (viewBoxWidth == 212 && viewBoxWidth == 212) {
-          console.log("Hello");
-
-          updateSVG();
-
-          const viewBoxX = -212 / 2;
-          const viewBoxY = -212 / 2;
-
-          mapContainer.attr("viewBox", `${viewBoxX} ${viewBoxY} ${212} ${212}`);
+          mapContainer.attr(
+            "viewBox",
+            `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`
+          );
         }
       }
 
