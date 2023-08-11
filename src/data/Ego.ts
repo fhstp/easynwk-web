@@ -2,8 +2,8 @@ import { defaultGender } from "./Gender";
 
 export interface Ego {
   name: string;
-  currentGender: string;
   age: string;
+  currentGender: string;
   note: string;
 }
 
@@ -15,6 +15,7 @@ export function initEgo(): Ego {
     note: "",
   };
 }
+
 // eslint-disable-next-line
 export function isEgo(arg: any): arg is Ego {
   return (

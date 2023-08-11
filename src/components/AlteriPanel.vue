@@ -45,16 +45,22 @@ import { useStore } from "@/store";
 
 import AlteriPanelEntry from "@/components/AlteriPanelEntry.vue";
 
+// handle from below: edit, edit-finished, <del>remove-alter</del> --> vuex store
+// manages the edited-alter (from above or by itself) --> vuex store
+
 export default defineComponent({
   components: { AlteriPanelEntry },
   props: {
+    // toogled after each click on the map (resets keyboard cursor)
     mapclicked: Boolean,
   },
   setup() {
     const store = useStore();
 
+    // knows list of Alter from vuex
     const alteri = computed(() => store.state.nwk.alteri);
 
+    // button to add Alter
     const addAlter = () => {
       store.commit("addAlter");
     };
