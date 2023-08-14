@@ -709,9 +709,12 @@ line.select {
 #brushBtns {
   position: absolute;
   visibility: hidden;
+  top: 0;
+  right: 0;
   // display: flex;
   // flex-direction: column;
 }
+
 #brushBtns > button {
   display: block;
   margin-bottom: 0.5rem;
