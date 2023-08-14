@@ -59,20 +59,9 @@
       <line x1="105" y1="0" x2="-105" y2="0" />
     </g>
     <g id="coords-min" v-else>
-      <line
-        vector-effect="non-scaling-stroke"
-        x1="0"
-        y1="-100"
-        x2="0"
-        y2="102"
-      />
-      <line
-        vector-effect="non-scaling-stroke"
-        x1="102"
-        y1="0"
-        x2="-102"
-        y2="0"
-      />
+      <circle cx="0" cy="0" r="100" />
+      <line x1="0" y1="-100" x2="0" y2="100" />
+      <line x1="100" y1="0" x2="-100" y2="0" />
     </g>
 
     <g id="sectors">
@@ -664,8 +653,16 @@ circle#horizon-overlay {
 }
 
 #coords-min line {
+  vector-effect: non-scaling-stroke;
   stroke: lightgray;
   stroke-width: 1;
+}
+
+#coords-min circle {
+  vector-effect: non-scaling-stroke;
+  stroke: #f0f0f0;
+  stroke-width: 2;
+  fill: none;
 }
 
 line {
