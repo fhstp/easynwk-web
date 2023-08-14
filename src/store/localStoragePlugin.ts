@@ -3,7 +3,7 @@
 undo/redo inspired by <https://github.com/factorial-io/undo-redo-vuex>
 and <https://github.com/anthonygore/vuex-undo-redo> */
 
-import { initClientHistoryasJSON } from "@/data/ClientHistory";
+import { initNWKRecordAsJSON } from "@/data/NWKRecord";
 import { MutationPayload, Store } from "vuex";
 import { IStoreState } from ".";
 import { initPseudonymState } from "./pseudonymPlugin";
@@ -22,7 +22,7 @@ export function loadStateFromStore(): string {
   if (storedNWK != null && storedNWK != "undefined") {
     return storedNWK;
   } else {
-    return initClientHistoryasJSON();
+    return initNWKRecordAsJSON();
   }
 }
 
@@ -114,7 +114,8 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         mutation.type.startsWith("view/")
       )
     ) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(stateAfter.nwk));
+      console.log(stateAfter.record);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stateAfter.record));
     }
   });
 };

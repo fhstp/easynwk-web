@@ -1,6 +1,6 @@
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { Alter, initAlter } from "@/data/Alter";
-import { loadNWK, NWK } from "@/data/NWK";
+import { initNWK, loadNWK, NWK } from "@/data/NWK";
 import { InjectionKey } from "vue";
 import {
   createLogger,
@@ -19,19 +19,19 @@ import {
   ViewOptionsState,
 } from "./viewOptionsModule";
 import {
-  initClientHistoryasJSON,
-  loadClientHistory,
-  ClientHistory,
-} from "@/data/ClientHistory";
-import { temporaryModule } from "@/store/temporaryModule";
+  initNWKRecord,
+  initNWKRecordAsJSON,
+  loadNWKRecord,
+  NWKRecord,
+} from "@/data/NWKRecord";
+import { nwkRecordModule } from "@/store/nwkRecordModule";
 
 export interface IStoreState {
   nwk: NWK;
-  version: ClientHistory;
+  record: NWKRecord;
   view: ViewOptionsState;
   unredo: IUnReDoState;
   pseudonym: PseudonymState;
-  temporaryNWK: NWK;
 }
 
 const getters = {
@@ -60,17 +60,25 @@ const getters = {
 
 const mutations = {
   newNWK(state: IStoreState): void {
-    loadClientHistory(state.version, initClientHistoryasJSON());
+    // loadNWKRecord(state.record, initNWKRecordAsJSON());
+    state.record = initNWKRecord();
+    // set nwk as side-effects
+    // assume new history has exactly 1 empty nwk
+    state.nwk = state.record.versions[0].nwk;
   },
 
-  loadNWK(state: IStoreState, payload: any): void {
-    loadClientHistory(state.version, payload);
-    loadNWK(
-      state.nwk,
-      payload.versions.find((d: any) => d.id === payload.currentVersion).nwk
+  loadNWK(state: IStoreState, payload: string): void {
+    // TODO handle loading of JSON with just nwk
+    loadNWKRecord(state.record, payload);
+
+    // set nwk as side-effects
+    // TODO try out if a shared reference to the same nwk object works (otherwise use structuredClone)
+    const version = state.record.versions.find(
+      (d) => d.id === state.record.currentVersion
     );
-    // state.nwk mit payload.versions.find(d=> d.id===payload.currentversion).nwk
+    state.nwk = version ? version.nwk : initNWK();
   },
+
   addAlter(state: IStoreState, initialValues: Partial<Alter> = {}): void {
     // initialize alter with default values and optionally with the passed values
     const newAlter = {
@@ -154,8 +162,8 @@ export const store = createStore<IStoreState>({
   strict: process.env.NODE_ENV !== "production",
   modules: {
     nwk: nwkModule,
+    record: nwkRecordModule,
     view: viewOptionsModule,
-    temporaryNWK: temporaryModule,
   },
   getters,
   mutations,
