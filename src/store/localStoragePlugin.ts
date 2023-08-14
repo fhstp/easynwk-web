@@ -70,9 +70,9 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         history.replaying = true;
         // reset to initial state
         store.state.pseudonym = initPseudonymState();
-        store.commit("loadNWKRecord", history.initialNWKRecordState);
+        store.commit("loadJSON", history.initialNWKRecordState);
         // the cached NWK could be more up to date than the record
-        store.commit("restoreNWK", history.initialNWKState);
+        store.commit("restoreNWKFromJSON", history.initialNWKState);
         store.state.view = initViewOptionsState();
         // replay all mutations (but last)
         for (const c of history.done) {
@@ -129,7 +129,6 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         mutation.type.startsWith("view/")
       )
     ) {
-      console.log(stateAfter.record);
       localStorage.setItem(STORAGE_KEY_NWK, JSON.stringify(stateAfter.nwk));
 
       // TODO persist NWKRecord only for some mutations

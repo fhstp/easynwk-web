@@ -156,14 +156,16 @@ export default defineComponent({
         // TODO format checks & error messages
         // if (savedNWK.alteri && savedNWK.alteri instanceof Array) {
         // if (savedNWK.ego && isEgo(savedNWK.ego)) {
-        store.commit("loadNWK", nwkText);
+        store.commit("loadJSON", nwkText);
         emit("open-nwk");
       };
       fr.readAsText(files.item(0));
     };
 
     const save = () => {
-      let nwkJSON = JSON.stringify(store.state.nwk);
+      store.commit("prepareToSaveJSON");
+
+      let nwkJSON = JSON.stringify(store.state.record);
       let filename = store.state.nwk.ego.name;
 
       if (store.state.pseudonym.active) {
@@ -183,7 +185,7 @@ export default defineComponent({
       fetch(DEMO_URL)
         .then((res) => res.text())
         .then((nwkText) => {
-          store.commit("loadNWK", nwkText);
+          store.commit("loadJSON", nwkText);
           emit("open-nwk");
         })
         .catch((err) => {

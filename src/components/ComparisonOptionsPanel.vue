@@ -14,10 +14,10 @@
     <div class="panel-block form">
       <div class="field is-horizontal">
         <div class="field-body">
-          <div id="view-settings" class="field" v-if="isOpen">
+          <div id="record-settings" class="field" v-if="isOpen">
             <div class="control">
               <div class="buttons">
-                <button class="button">
+                <button class="button" @click="addBlankNWK">
                   <span class="icon">
                     <font-awesome-icon icon="plus-circle" />
                   </span>
@@ -25,7 +25,8 @@
                   <span></span>
                 </button>
 
-                <button class="button" @click="newVersion = !newVersion">
+                <!-- @click="newVersion = !newVersion" -->
+                <button class="button" @click="duplicateNWK">
                   <span class="icon">
                     <font-awesome-icon icon="copy" />
                   </span>
@@ -108,6 +109,13 @@
           </div>
         </div>
       </div>
+      <!-- temporary debug code -->
+      <div class="field is-horizontal">
+        NWKs:&nbsp;
+        <span v-for="ver in versions" :key="ver.id"
+          >{{ ver.id }} ({{ ver.nwk.alteri.length }} alteri),
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -119,12 +127,13 @@ import { useStore } from "@/store";
 //type InputType = HTMLInputElement | HTMLTextAreaElement;
 
 export default defineComponent({
-  props: {
-    version: {
-      type: Object,
-      required: true,
-    },
-  },
+  // AR, 14 Aug 2023: prop version not needed? current version is in state.record
+  // props: {
+  //   version: {
+  //     type: Object,
+  //     required: true,
+  //   },
+  // },
   setup() {
     const store = useStore();
 
@@ -172,7 +181,10 @@ export default defineComponent({
       isOpen: isOpen,
       newVersion: newVersion,
       addNewVersion: addNewVersion,
+      addBlankNWK: () => store.commit("addNWKVersion"),
+      duplicateNWK: () => store.commit("addNWKVersion", true),
       isDisabled: isDisabled,
+      versions: computed(() => store.state.record.versions),
       //commitEdit,
       //cancelAddVersion,
     };

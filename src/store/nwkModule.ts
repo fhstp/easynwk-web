@@ -1,12 +1,9 @@
 import { Alter, isConnectable } from "@/data/Alter";
 import { Ego } from "@/data/Ego";
-//import { ClientHistory, initNWKasJSON, loadNWK } from "@/data/ClientHistory";
 import { applyAdaptiveNWKDefaults } from "./adaptiveNWKDefaults";
-import { NWK } from "@/data/NWK";
+import { NWK, restoreNWK } from "@/data/NWK";
 
 import { loadNWKStateFromStore } from "./localStoragePlugin";
-//import { Version } from "@/data/Version";
-//import { CurrentVersion } from "@/data/CurrentVersion";
 
 // root state object.
 // each Vuex instance is just a single state tree.
@@ -24,14 +21,10 @@ const mutations = {
     state.ego = { ...state.ego, ...payload };
   },
 
-  /*editVersion(
-    state: NWK,
-    payload: { index: number; changes: Partial<Version> }
-  ): void {
-    editVersion(state, payload.index, payload.changes);
+  /** load NWK independently from NWKRecord. Only to restore from localstorage */
+  restoreNWKFromJSON(state: NWK, payload: string): void {
+    restoreNWK(state, payload);
   },
-
-   */
 
   editAlter(
     state: NWK,
@@ -138,31 +131,6 @@ export function editAlter(
     console.warn("alter index invalid or out of bounds: " + alterIndex);
   }
 }
-
-/*export function editVersion(
-  state: NWK,
-  versionIndex: number | null,
-  changes: Partial<Alter>
-): void {
-  // lookup does not work for 2 parallel mutations (form change & map click)
-  if (
-    versionIndex != null &&
-    versionIndex >= 0 &&
-    versionIndex < state.versions.length
-  ) {
-    // based on vuex\examples\composition\todomvc\store\mutations.js
-    // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
-    const changedVersion = {
-      ...state.versions[versionIndex],
-      ...changes,
-    };
-    state.versions.splice(versionIndex, 1, changedVersion);
-  } else {
-    console.warn("version index invalid or out of bounds: " + versionIndex);
-  }
-}
-
- */
 
 /**
  * removes all connections to and from an alter

@@ -1,6 +1,3 @@
-import { SYMBOL_DECEASED } from "@/assets/utils";
-import { Alter, initAlter } from "@/data/Alter";
-import { initNWK, NWK } from "@/data/NWK";
 import { InjectionKey } from "vue";
 import {
   createLogger,
@@ -8,6 +5,12 @@ import {
   useStore as baseUseStore,
   Store,
 } from "vuex";
+
+import { SYMBOL_DECEASED } from "@/assets/utils";
+import { Alter, initAlter } from "@/data/Alter";
+import { NWK } from "@/data/NWK";
+import { NWKRecord } from "@/data/NWKRecord";
+
 import { applyAdaptiveNWKDefaults } from "./adaptiveNWKDefaults";
 
 import { IUnReDoState, localStoragePlugin } from "./localStoragePlugin";
@@ -18,8 +21,10 @@ import {
   viewOptionsModule,
   ViewOptionsState,
 } from "./viewOptionsModule";
-import { initNWKRecord, loadNWKRecord, NWKRecord } from "@/data/NWKRecord";
-import { nwkRecordModule } from "@/store/nwkRecordModule";
+import {
+  nwkRecordModule,
+  nwkRecordMutationsAtRoot,
+} from "@/store/nwkRecordModule";
 
 export interface IStoreState {
   nwk: NWK;
@@ -54,25 +59,7 @@ const getters = {
 };
 
 const mutations = {
-  newNWK(state: IStoreState): void {
-    // loadNWKRecord(state.record, initNWKRecordAsJSON());
-    state.record = initNWKRecord();
-    // set nwk as side-effects
-    // assume new history has exactly 1 empty nwk
-    state.nwk = state.record.versions[0].nwk;
-  },
-
-  loadNWK(state: IStoreState, payload: string): void {
-    // TODO handle loading of JSON with just nwk
-    loadNWKRecord(state.record, payload);
-
-    // set nwk as side-effects
-    // TODO try out if a shared reference to the same nwk object works (otherwise use structuredClone)
-    const version = state.record.versions.find(
-      (d) => d.id === state.record.currentVersion
-    );
-    state.nwk = version ? version.nwk : initNWK();
-  },
+  ...nwkRecordMutationsAtRoot, // import mutations related to NWKRecord
 
   addAlter(state: IStoreState, initialValues: Partial<Alter> = {}): void {
     // initialize alter with default values and optionally with the passed values
