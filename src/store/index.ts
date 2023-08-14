@@ -1,6 +1,6 @@
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { Alter, initAlter } from "@/data/Alter";
-import { initNWK, loadNWK, NWK } from "@/data/NWK";
+import { initNWK, NWK } from "@/data/NWK";
 import { InjectionKey } from "vue";
 import {
   createLogger,
@@ -18,12 +18,7 @@ import {
   viewOptionsModule,
   ViewOptionsState,
 } from "./viewOptionsModule";
-import {
-  initNWKRecord,
-  initNWKRecordAsJSON,
-  loadNWKRecord,
-  NWKRecord,
-} from "@/data/NWKRecord";
+import { initNWKRecord, loadNWKRecord, NWKRecord } from "@/data/NWKRecord";
 import { nwkRecordModule } from "@/store/nwkRecordModule";
 
 export interface IStoreState {

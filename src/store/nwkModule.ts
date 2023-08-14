@@ -4,14 +4,14 @@ import { Ego } from "@/data/Ego";
 import { applyAdaptiveNWKDefaults } from "./adaptiveNWKDefaults";
 import { NWK } from "@/data/NWK";
 
-import { loadStateFromStore } from "./localStoragePlugin";
+import { loadNWKStateFromStore } from "./localStoragePlugin";
 //import { Version } from "@/data/Version";
 //import { CurrentVersion } from "@/data/CurrentVersion";
 
 // root state object.
 // each Vuex instance is just a single state tree.
-const state = JSON.parse(loadStateFromStore()).versions[0].nwk;
-// TODO this creates a different object from the NWK in the records module!
+const state = JSON.parse(loadNWKStateFromStore());
+// TODO this creates a different object from the NWK in the nwkRecords module!
 
 // mutations are operations that actually mutate the state.
 // each mutation handler gets the entire state tree as the

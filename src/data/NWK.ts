@@ -9,10 +9,6 @@ export interface NWK {
   connections: Array<Connection>;
 }
 
-export function initNWKasJSON(): string {
-  return JSON.stringify(initNWK());
-}
-
 export function initNWK(): NWK {
   return {
     ego: initEgo(),
@@ -21,7 +17,8 @@ export function initNWK(): NWK {
   };
 }
 
-export function loadNWK(state: NWK, loadedText: string): void {
+/** load NWK independently from NWKRecord. Only to restore from localstorage */
+export function restoreNWK(state: NWK, loadedText: string): void {
   const loaded = JSON.parse(loadedText);
   state.ego = loaded.ego;
   state.alteri = loaded.alteri;

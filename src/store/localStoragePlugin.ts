@@ -4,12 +4,15 @@ undo/redo inspired by <https://github.com/factorial-io/undo-redo-vuex>
 and <https://github.com/anthonygore/vuex-undo-redo> */
 
 import { initNWKRecordAsJSON } from "@/data/NWKRecord";
+import { initNWK } from "@/data/NWK";
 import { MutationPayload, Store } from "vuex";
 import { IStoreState } from ".";
 import { initPseudonymState } from "./pseudonymPlugin";
 import { initViewOptionsState } from "./viewOptionsModule";
 
 const STORAGE_KEY = "easynwk";
+const STORAGE_KEY_NWK = STORAGE_KEY + "_nwk";
+const STORAGE_KEY_RECORD = STORAGE_KEY + "_record";
 const UNREDO_MODULE = "unredo";
 
 export interface IUnReDoState {
@@ -17,10 +20,19 @@ export interface IUnReDoState {
   redoCount: number;
 }
 
-export function loadStateFromStore(): string {
-  const storedNWK = localStorage.getItem(STORAGE_KEY);
-  if (storedNWK != null && storedNWK != "undefined") {
+export function loadNWKStateFromStore(): string {
+  const storedNWK = localStorage.getItem(STORAGE_KEY_NWK);
+  if (storedNWK && storedNWK != "undefined") {
     return storedNWK;
+  } else {
+    return JSON.stringify(initNWK());
+  }
+}
+
+export function loadNWKRecordStateFromStore(): string {
+  const storedNWKRecord = localStorage.getItem(STORAGE_KEY_RECORD);
+  if (storedNWKRecord && storedNWKRecord != "undefined") {
+    return storedNWKRecord;
   } else {
     return initNWKRecordAsJSON();
   }
@@ -29,7 +41,8 @@ export function loadStateFromStore(): string {
 export const localStoragePlugin = (store: Store<IStoreState>): void => {
   // keep track of undo history as local (non-reactive) vars
   const history = {
-    initialState: loadStateFromStore(),
+    initialNWKState: loadNWKStateFromStore(),
+    initialNWKRecordState: loadNWKRecordStateFromStore(),
     done: [] as Array<MutationPayload>,
     undone: [] as Array<MutationPayload>,
     replaying: false,
@@ -57,7 +70,9 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         history.replaying = true;
         // reset to initial state
         store.state.pseudonym = initPseudonymState();
-        store.commit("loadNWK", history.initialState);
+        store.commit("loadNWKRecord", history.initialNWKRecordState);
+        // the cached NWK could be more up to date than the record
+        store.commit("restoreNWK", history.initialNWKState);
         store.state.view = initViewOptionsState();
         // replay all mutations (but last)
         for (const c of history.done) {
@@ -115,7 +130,13 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
       )
     ) {
       console.log(stateAfter.record);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(stateAfter.record));
+      localStorage.setItem(STORAGE_KEY_NWK, JSON.stringify(stateAfter.nwk));
+
+      // TODO persist NWKRecord only for some mutations
+      localStorage.setItem(
+        STORAGE_KEY_RECORD,
+        JSON.stringify(stateAfter.record)
+      );
     }
   });
 };
