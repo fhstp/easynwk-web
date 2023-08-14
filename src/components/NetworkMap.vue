@@ -8,13 +8,16 @@
   >
     <defs>
       <symbol id="square" viewBox="-1.5 -1.5 3 3">
-        <rect x="-0.886" y="-0.886" width="1.772" height="1.772" />
+        <path
+          id="rectPath"
+          d="M 0.886, 0.886 -0.886, 0.886 -0.886, -0.886 0.886, -0.886 Z"
+        />
       </symbol>
       <symbol id="circle" viewBox="-1.5 -1.5 3 3">
-        <circle cx="0" cy="0" r="1" />
+        <circle id="circlePath" cx="0" cy="0" r="1" />
       </symbol>
       <symbol id="triangle" viewBox="-1.5 -1.5 3 3">
-        <path d="M -1.347,0.778 1.347,0.778 0,-1.555 Z" />
+        <path id="trianglePath" d="M -1.347,0.778 1.347,0.778 0,-1.555 Z" />
       </symbol>
       <!--
     const R = 1.1495;
@@ -26,11 +29,13 @@
 -->
       <symbol id="pentagram" viewBox="-1.5 -1.5 3 3">
         <path
+          id="penPath"
           d="M -0.67565,0.93 0.67565,0.93 1.0932,-0.3551706841894581 0,-1.1495 -1.0932,-0.3551706841894581 Z"
         />
       </symbol>
       <symbol id="star" viewBox="-1.5 -1.5 3 3">
         <path
+          id="starPath"
           d="M 0.69236155,1.054307 0.00345969,0.69533821 -0.68279921,1.0593342 -0.55428199,0.29322216 -1.1125284,-0.24696789 l 0.76832984,-0.11451451 0.34124363,-0.6978518 0.34633676,0.69533819 0.76914657,0.1088939 -0.55428196,0.54425715 z"
         />
       </symbol>
@@ -99,7 +104,6 @@
           v-if="mark.selected"
           :cx="mark.x"
           :cy="mark.y"
-          r="4"
           fill="url('#selected-gradient')"
         />
       </g>
@@ -337,7 +341,7 @@ export default defineComponent({
 
       const svg = d3.select("#nwkmap");
 
-      const zoomBehavior: any = zoom().scaleExtent([1, 10]).on("zoom", zoomed);
+      const zoomBehavior: any = zoom().scaleExtent([1, 7]).on("zoom", zoomed);
 
       //Zoom with mouse wheel
       svg.call(zoomBehavior).on("mousedown.zoom", null);
@@ -347,14 +351,141 @@ export default defineComponent({
         const { transform } = event;
 
         const scaleFactor = 1 / transform.k;
+        const scaleFactorB = 1 / transform.k;
 
-        d3.selectAll(".mark")
-          .attr("width", Math.max(4 * scaleFactor, 4))
-          .attr("height", Math.max(4 * scaleFactor, 4));
+        d3.selectAll("line").style("stroke-width", 0.5 * scaleFactorB);
 
-        d3.selectAll("line").style("stroke-width", 0.5 * scaleFactor);
+        d3.selectAll("text").style("font-size", 4 * scaleFactorB);
 
-        d3.selectAll("text").style("font-size", 4 * scaleFactor);
+        d3.selectAll("#circlePath")
+          .attr("r", 1 * scaleFactor)
+          .style("stroke-width", 0.2 * scaleFactor);
+
+        d3.selectAll("#rectPath")
+          .attr(
+            "d",
+            "M" +
+              " " +
+              0.886 * scaleFactor +
+              "," +
+              0.886 * scaleFactor +
+              "" +
+              -0.886 * scaleFactor +
+              "," +
+              0.886 * scaleFactor +
+              "" +
+              -0.886 * scaleFactor +
+              "," +
+              -0.886 * scaleFactor +
+              "" +
+              0.886 * scaleFactor +
+              "," +
+              -0.886 * scaleFactor +
+              " " +
+              "Z"
+          )
+          .style("stroke-width", 0.2 * scaleFactor);
+
+        d3.selectAll("#trianglePath")
+          .attr(
+            "d",
+            "M" +
+              " " +
+              -1.347 * scaleFactor +
+              "," +
+              0.778 * scaleFactor +
+              " " +
+              1.347 * scaleFactor +
+              "," +
+              0.778 * scaleFactor +
+              " " +
+              0 * scaleFactor +
+              "," +
+              -1.555 * scaleFactor +
+              "" +
+              "Z"
+          )
+          .style("stroke-width", 0.2 * scaleFactor);
+
+        d3.selectAll("#penPath")
+          .attr(
+            "d",
+            "M" +
+              " " +
+              -0.67565 * scaleFactor +
+              "," +
+              0.93 * scaleFactor +
+              " " +
+              0.67565 * scaleFactor +
+              "," +
+              0.93 * scaleFactor +
+              " " +
+              1.0932 * scaleFactor +
+              "," +
+              -0.3551706841894581 * scaleFactor +
+              " " +
+              0 * scaleFactor +
+              "," +
+              -1.1495 * scaleFactor +
+              " " +
+              -1.0932 * scaleFactor +
+              "," +
+              -0.3551706841894581 * scaleFactor +
+              " " +
+              "Z"
+          )
+          .style("stroke-width", 0.2 * scaleFactor);
+
+        d3.selectAll("#starPath")
+          .attr(
+            "d",
+            "M" +
+              " " +
+              0.69236155 * scaleFactor +
+              "," +
+              1.054307 * scaleFactor +
+              " " +
+              0.00345969 * scaleFactor +
+              "," +
+              0.69533821 * scaleFactor +
+              " " +
+              -0.68279921 * scaleFactor +
+              "," +
+              1.0593342 * scaleFactor +
+              " " +
+              -0.55428199 * scaleFactor +
+              "," +
+              0.29322216 * scaleFactor +
+              " " +
+              -1.1125284 * scaleFactor +
+              "," +
+              -0.24696789 * scaleFactor +
+              "" +
+              "l" +
+              "" +
+              0.76832984 * scaleFactor +
+              "," +
+              -0.11451451 * scaleFactor +
+              " " +
+              0.34124363 * scaleFactor +
+              "," +
+              -0.6978518 * scaleFactor +
+              " " +
+              0.34633676 * scaleFactor +
+              "," +
+              0.69533819 * scaleFactor +
+              " " +
+              0.76914657 * scaleFactor +
+              "," +
+              0.1088939 * scaleFactor +
+              " " +
+              -0.55428196 * scaleFactor +
+              "," +
+              0.54425715 * scaleFactor +
+              " " +
+              "Z"
+          )
+          .style("stroke-width", 0.2 * scaleFactor);
 
         const mapContainer = d3.select("#nwkmap");
 
@@ -496,6 +627,151 @@ export default defineComponent({
           const viewBoxWidth = Math.abs(x1 - x0);
           const viewBoxHeight = Math.abs(y1 - y0);
 
+          let transform;
+
+          // Instead of using transform.k
+          if (viewBoxWidth <= viewBoxHeight) {
+            transform = viewBoxHeight;
+          } else {
+            transform = viewBoxWidth;
+          }
+
+          const scaleFactor = (1 / 212) * transform;
+
+          d3.selectAll("line").style("stroke-width", 0.5 * scaleFactor);
+
+          d3.selectAll("text").style("font-size", 4 * scaleFactor);
+
+          d3.selectAll("#circlePath")
+            .attr("r", 1 * scaleFactor)
+            .style("stroke-width", 0.2 * scaleFactor);
+
+          d3.selectAll("#rectPath")
+            .attr(
+              "d",
+              "M" +
+                " " +
+                0.886 * scaleFactor +
+                "," +
+                0.886 * scaleFactor +
+                "" +
+                -0.886 * scaleFactor +
+                "," +
+                0.886 * scaleFactor +
+                "" +
+                -0.886 * scaleFactor +
+                "," +
+                -0.886 * scaleFactor +
+                "" +
+                0.886 * scaleFactor +
+                "," +
+                -0.886 * scaleFactor +
+                " " +
+                "Z"
+            )
+            .style("stroke-width", 0.2 * scaleFactor);
+
+          d3.selectAll("#trianglePath")
+            .attr(
+              "d",
+              "M" +
+                " " +
+                -1.347 * scaleFactor +
+                "," +
+                0.778 * scaleFactor +
+                " " +
+                1.347 * scaleFactor +
+                "," +
+                0.778 * scaleFactor +
+                " " +
+                0 * scaleFactor +
+                "," +
+                -1.555 * scaleFactor +
+                "" +
+                "Z"
+            )
+            .style("stroke-width", 0.2 * scaleFactor);
+
+          d3.selectAll("#penPath")
+            .attr(
+              "d",
+              "M" +
+                " " +
+                -0.67565 * scaleFactor +
+                "," +
+                0.93 * scaleFactor +
+                " " +
+                0.67565 * scaleFactor +
+                "," +
+                0.93 * scaleFactor +
+                " " +
+                1.0932 * scaleFactor +
+                "," +
+                -0.3551706841894581 * scaleFactor +
+                " " +
+                0 * scaleFactor +
+                "," +
+                -1.1495 * scaleFactor +
+                " " +
+                -1.0932 * scaleFactor +
+                "," +
+                -0.3551706841894581 * scaleFactor +
+                " " +
+                "Z"
+            )
+            .style("stroke-width", 0.2 * scaleFactor);
+
+          d3.selectAll("#starPath")
+            .attr(
+              "d",
+              "M" +
+                " " +
+                0.69236155 * scaleFactor +
+                "," +
+                1.054307 * scaleFactor +
+                " " +
+                0.00345969 * scaleFactor +
+                "," +
+                0.69533821 * scaleFactor +
+                " " +
+                -0.68279921 * scaleFactor +
+                "," +
+                1.0593342 * scaleFactor +
+                " " +
+                -0.55428199 * scaleFactor +
+                "," +
+                0.29322216 * scaleFactor +
+                " " +
+                -1.1125284 * scaleFactor +
+                "," +
+                -0.24696789 * scaleFactor +
+                "" +
+                "l" +
+                "" +
+                0.76832984 * scaleFactor +
+                "," +
+                -0.11451451 * scaleFactor +
+                " " +
+                0.34124363 * scaleFactor +
+                "," +
+                -0.6978518 * scaleFactor +
+                " " +
+                0.34633676 * scaleFactor +
+                "," +
+                0.69533819 * scaleFactor +
+                " " +
+                0.76914657 * scaleFactor +
+                "," +
+                0.1088939 * scaleFactor +
+                " " +
+                -0.55428196 * scaleFactor +
+                "," +
+                0.54425715 * scaleFactor +
+                " " +
+                "Z"
+            )
+            .style("stroke-width", 0.2 * scaleFactor);
+
           svg.attr(
             "viewBox",
             `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`
@@ -593,6 +869,37 @@ export default defineComponent({
       if (svg) {
         const viewBoxWidth = 212;
         const viewBoxHeight = 212;
+
+        d3.selectAll("line").style("stroke-width", 0.5);
+
+        d3.selectAll("text").style("font-size", 4);
+
+        d3.selectAll("#circlePath").attr("r", 1).style("stroke-width", 0.2);
+
+        d3.selectAll("#rectPath")
+          .attr(
+            "d",
+            "M 0.886, 0.886 -0.886, 0.886 -0.886, -0.886 0.886, -0.886 Z"
+          )
+          .style("stroke-width", 0.2);
+
+        d3.selectAll("#trianglePath")
+          .attr("d", "M -1.347,0.778 1.347,0.778 0,-1.555 Z")
+          .style("stroke-width", 0.2);
+
+        d3.selectAll("#penPath")
+          .attr(
+            "d",
+            "M -0.67565,0.93 0.67565,0.93 1.0932,-0.3551706841894581 0,-1.1495 -1.0932,-0.3551706841894581 Z"
+          )
+          .style("stroke-width", 0.2);
+
+        d3.selectAll("#starPath")
+          .attr(
+            "d",
+            "M 0.69236155,1.054307 0.00345969,0.69533821 -0.68279921,1.0593342 -0.55428199,0.29322216 -1.1125284,-0.24696789 l 0.76832984,-0.11451451 0.34124363,-0.6978518 0.34633676,0.69533819 0.76914657,0.1088939 -0.55428196,0.54425715 z"
+          )
+          .style("stroke-width", 0.2);
 
         svg.setAttribute(
           "viewBox",
