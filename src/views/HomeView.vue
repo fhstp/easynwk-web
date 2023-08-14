@@ -119,7 +119,7 @@ export default defineComponent({
 }
 
 #chart {
-  width: 97vmin;
+  width: 99vmin;
   height: 100vmin;
   position: relative;
   /* background: aqua; */
@@ -175,9 +175,9 @@ export default defineComponent({
 }
 */
 
-@media (min-width: 168vh) {
+@media (min-width: 133vh) {
   #main {
-    width: 70vmin;
+    width: 33vmin;
   }
 
   .scrollwrapper {
@@ -202,6 +202,18 @@ export default defineComponent({
   body {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+  }
+}
+
+@media (min-width: 145vh) {
+  #main {
+    width: 45vmin;
+  }
+}
+
+@media (min-width: 162vh) {
+  #main {
+    width: 62vmin;
   }
 }
 </style>
