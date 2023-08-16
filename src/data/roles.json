@@ -34,7 +34,7 @@
   { "label": "Großvater", "gender": 1, "abbrev": "GrV" },
   { "label": "Urgroßmutter", "gender": 0, "abbrev": "UGm" },
   { "label": "Urgroßvater", "gender": 1, "abbrev": "UGrv" },
-  { "label": "Schwager/Schwägerin", "gender": 3, "abbrev": "Sw" },
+  { "label": "Schwager/Schwägerin", "gender": 3, "abbrev": "Schw" },
   { "label": "Schwiegermutter", "gender": 0, "abbrev": "SwM" },
   { "label": "Schwiegervater", "gender": 1, "abbrev": "SwV" },
   { "label": "Schwiegertochter", "gender": 0, "abbrev": "SwT" },
@@ -69,5 +69,7 @@
   { "label": "Berater*in / Betreuer*in", "gender": 3, "abbrev": "Be" },
   { "label": "Pfarrer*in", "gender": 3, "abbrev": "Pf" },
   { "label": "Physiotherapeut*in", "gender": 3, "abbrev": "Phy" },
-  { "label": "Ergotherapeut*in", "gender": 3, "abbrev": "Erg" }
+  { "label": "Ergotherapeut*in", "gender": 3, "abbrev": "Erg" },
+  { "label": "Ex-Partner*in", "gender": 3, "abbrev": "ExPr" },
+  { "label": "Mitbewohner*in", "gender": 3, "abbrev": "Mbw" }
 ]

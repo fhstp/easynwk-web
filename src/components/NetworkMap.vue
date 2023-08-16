@@ -7,7 +7,7 @@
       </a>
     </svg>
   </div>
-  <svg id="nwkmap" width="100%" height="100%" viewBox="-105 -105 210 210">
+  <svg id="nwkmap" width="100%" height="100%" viewBox="-106 -106 212 212">
     <defs>
       <symbol id="square" viewBox="-1.5 -1.5 3 3">
         <rect x="-0.886" y="-0.886" width="1.772" height="1.772" />
@@ -56,6 +56,7 @@
         />
       </filter>
     </defs>
+
     <!-- transform coordinate system to be scale independent -->
     <g id="coords" v-if="showHorizons">
       <!-- <rect x="-120" y="-120" width="240" height="240" fill="#bcbddc"/> -->
@@ -66,20 +67,9 @@
       <line x1="105" y1="0" x2="-105" y2="0" />
     </g>
     <g id="coords-min" v-else>
-      <line
-        vector-effect="non-scaling-stroke"
-        x1="0"
-        y1="-102"
-        x2="0"
-        y2="102"
-      />
-      <line
-        vector-effect="non-scaling-stroke"
-        x1="102"
-        y1="0"
-        x2="-102"
-        y2="0"
-      />
+      <circle cx="0" cy="0" r="100" />
+      <line x1="0" y1="-100" x2="0" y2="100" />
+      <line x1="100" y1="0" x2="-100" y2="0" />
     </g>
 
     <g id="sectors">
@@ -191,6 +181,9 @@
       width="220"
       height="220"
     />
+    <text :x="0" y="-102" text-anchor="middle" class="ego">
+      {{ egoLabel }}
+    </text>
   </svg>
   <div id="brushBtns" ref="brushBtns">
     <!-- <button
@@ -589,6 +582,13 @@ export default defineComponent({
     });
 
     return {
+      egoLabel: computed(
+        () =>
+          store.state.nwk.ego.name +
+          (store.state.nwk.ego.age.length > 0
+            ? " (" + store.state.nwk.ego.age + "a)"
+            : "")
+      ),
       egoShape: computed(() =>
         shapeByGender(true, store.state.nwk.ego.currentGender)
       ),
@@ -645,6 +645,10 @@ text {
   user-select: none;
 }
 
+text.ego {
+  font-style: italic;
+}
+
 .textbg {
   stroke: white;
   stroke-width: 3;
@@ -665,8 +669,16 @@ circle#horizon-overlay {
 }
 
 #coords-min line {
+  vector-effect: non-scaling-stroke;
   stroke: lightgray;
   stroke-width: 1;
+}
+
+#coords-min circle {
+  vector-effect: non-scaling-stroke;
+  stroke: #f0f0f0;
+  stroke-width: 2;
+  fill: none;
 }
 
 line {
@@ -710,9 +722,12 @@ line.select {
 #brushBtns {
   position: absolute;
   visibility: hidden;
+  top: 0;
+  right: 0;
   // display: flex;
   // flex-direction: column;
 }
+
 #brushBtns > button {
   display: block;
   margin-bottom: 0.5rem;

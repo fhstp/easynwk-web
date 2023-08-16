@@ -52,9 +52,10 @@
             <div class="control">
               <input
                 class="input"
+                min="0"
                 :value="$store.state.nwk.ego.age"
                 @blur="commitEdit($event, 'age')"
-                type="text"
+                type="number"
               />
             </div>
           </div>

@@ -1,5 +1,22 @@
 # easyNWK Version History
 
+## version 2.0.5, released 14 Aug 2023
+
+* (usability) sort alters in connectionlist form by name alphabethically [#110](https://github.com/fhstp/easynwk-web/issues/110)
+* (usability) show border of outer horizon even in no_horizon mode to indicate border of network  [#130](https://github.com/fhstp/easynwk-web/issues/130)
+* (bugfix) support 4:3 landscape in fullscreen and normal mode using additional media queries [#104](https://github.com/fhstp/easynwk-web/issues/104)
+* (bugfix) prevent scrolling in landscape mode
+* (security) various updates of libraries
+
+## version 2.0.4, released 25 May 2023
+
+* (feature) display ego name and age on top of network map
+* (feature) add roles "Ex-Partner*in", "Mitbewohner*in", change abbreviation for "Schwager/Schwägerin"
+* (usability) do not show horizons by default
+* (usability) enforce that age of ego and alteri is a non-negative number
+* (bugfix) change link to PDF view to relative url [#128](https://github.com/fhstp/easynwk-web/issues/128)
+* (security) various updates of libraries
+
 ## version 2.0.3, released 11 Nov 2022
 
 * (feature) add alter with double click on map [#61](https://github.com/fhstp/easynwk-web/issues/61)
