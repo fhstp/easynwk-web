@@ -182,8 +182,24 @@ export default defineComponent({
   background: none;
 }
 .page {
-  margin: 2em 4em 2em;
+  margin-left: 4em;
+  padding: 2em 0em 0em;
 }
+
+@media screen and (min-width: 133vh) {
+  .page {
+    display: flex;
+    flex-direction: column;
+    height: 100vmin;
+  }
+  #print {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: none;
+    padding-right: 1em;
+  }
+}
+
 @media print {
   #printinfo {
     display: none;
