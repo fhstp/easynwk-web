@@ -68,18 +68,20 @@ export default defineComponent({
 
     // lists of alters are sorted in same order as in the main list
     const altersConnected = computed(() => {
-      return store.state.nwk.alteri.filter((d) =>
-        connectedAlterIds.value.includes(d.id)
-      );
+      return store.state.nwk.alteri
+        .filter((d) => connectedAlterIds.value.includes(d.id))
+        .sort((a, b) => a.name.localeCompare(b.name));
     });
 
     const altersNotConnected = computed(() => {
-      return store.state.nwk.alteri.filter(
-        (d) =>
-          !connectedAlterIds.value.includes(d.id) &&
-          d.id != props.alter.id &&
-          isConnectable(d)
-      );
+      return store.state.nwk.alteri
+        .filter(
+          (d) =>
+            !connectedAlterIds.value.includes(d.id) &&
+            d.id != props.alter.id &&
+            isConnectable(d)
+        )
+        .sort((a, b) => a.name.localeCompare(b.name));
     });
 
     onMounted(() => {
