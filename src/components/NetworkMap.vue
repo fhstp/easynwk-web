@@ -55,6 +55,7 @@
       </filter>
     </defs>
 
+    <!-- TODO extract coords and horizon as a subcomponent -->
     <!-- transform coordinate system to be scale independent -->
     <g id="coords" v-if="showHorizons">
       <!-- <rect x="-120" y="-120" width="240" height="240" fill="#bcbddc"/> -->
@@ -65,16 +66,34 @@
       <line x1="105" y1="0" x2="-105" y2="0" />
     </g>
     <g id="coords-min" v-else>
-      <circle cx="0" cy="0" r="100" />
-      <line x1="0" y1="-100" x2="0" y2="100" />
-      <line x1="100" y1="0" x2="-100" y2="0" />
+      <circle :cx="egoCoords.x" :cy="egoCoords.y" :r="horiRadii.r3" />
+      <line
+        :x1="egoCoords.x"
+        :y1="egoCoords.y - horiRadii.r3"
+        :x2="egoCoords.x"
+        :y2="egoCoords.y + horiRadii.r3"
+      />
+      <line
+        :x1="egoCoords.x - horiRadii.r3"
+        :y1="egoCoords.y"
+        :x2="egoCoords.x + horiRadii.r3"
+        :y2="egoCoords.y"
+      />
     </g>
 
     <g id="sectors">
-      <text x="100" y="-100" text-anchor="end">{{ Sectors[0] }}</text>
-      <text x="-100" y="-100" text-anchor="start">{{ Sectors[1] }}</text>
-      <text x="-100" y="100" text-anchor="start">{{ Sectors[2] }}</text>
-      <text x="100" y="100" text-anchor="end">{{ Sectors[3] }}</text>
+      <text v-if="showSectors[0]" x="100" y="-100" text-anchor="end">
+        {{ Sectors[0] }}
+      </text>
+      <text v-if="showSectors[1]" x="-100" y="-100" text-anchor="start">
+        {{ Sectors[1] }}
+      </text>
+      <text v-if="showSectors[2]" x="-100" y="100" text-anchor="start">
+        {{ Sectors[2] }}
+      </text>
+      <text v-if="showSectors[3]" x="100" y="100" text-anchor="end">
+        {{ Sectors[3] }}
+      </text>
     </g>
 
     <text v-if="isEditMode" text-anchor="middle" class="edithint">
@@ -109,8 +128,8 @@
         <line
           v-if="connections && mark.d.edgeType >= 1"
           :class="{ select: mark.selected }"
-          x1="0"
-          y1="0"
+          :x1="egoCoords.x"
+          :y1="egoCoords.y"
           :x2="mark.x"
           :y2="mark.y"
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
@@ -145,8 +164,8 @@
       <use
         id="ego"
         :href="'#' + egoShape"
-        x="0"
-        y="0"
+        :x="egoCoords.x"
+        :y="egoCoords.y"
         class="mark"
         width="4"
         height="4"
@@ -310,9 +329,13 @@ export default defineComponent({
     const getPositionPolar = (event: UIEvent) => {
       const coords = d3.pointer(event);
 
+      // revert viewport projection
+      const xa = coords[0] * scaleF.value + viewCenterX.value;
+      const ya = coords[1] * scaleF.value + viewCenterY.value;
+
       // cp. https://stackoverflow.com/a/33043899/1140589
-      const distance = Math.sqrt(coords[0] * coords[0] + coords[1] * coords[1]);
-      const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
+      const distance = Math.sqrt(xa * xa + ya * ya);
+      const angle = Math.atan2(-1 * ya, xa) * (180 / Math.PI);
 
       return { distance, angle };
     };
@@ -321,38 +344,50 @@ export default defineComponent({
       () => store.state.view.editTab === TAB_CONNECTIONS
     );
 
+    const scaleF = ref(1);
+    const viewCenterX = ref(0);
+    const viewCenterY = ref(0);
+
     onMounted(() => {
       // d3.mouse only works if the event is registered using D3 .on
 
       const svg = d3.select("#nwkmap");
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const zoomBehavior: any = zoom().scaleExtent([1, 10]).on("zoom", zoomed);
 
       //Zoom with mouse wheel
       svg.call(zoomBehavior).on("mousedown.zoom", null);
       svg.on("dblclick.zoom", null);
 
-      function zoomed(event: any) {
-        const { transform } = event;
-        const mapContainer = d3.select("#nwkmap");
+      function zoomed(event: {
+        transform: { k: number; x: number; y: number };
+      }) {
+        console.log(event.transform);
+        viewCenterX.value = (-1 * event.transform.x) / event.transform.k;
+        viewCenterY.value = (-1 * event.transform.y) / event.transform.k;
+        scaleF.value = 1 / event.transform.k;
 
-        const viewBoxWidth = 212 / transform.k;
-        const viewBoxHeight = 212 / transform.k;
+        // const { transform } = event;
+        // const mapContainer = d3.select("#nwkmap");
 
-        if (viewBoxHeight === 212 && viewBoxWidth === 212) {
-          mapContainer.attr("viewBox", `${-106} ${-106} ${212} ${212}`);
-        } else {
-          const centerX = transform.x / transform.k;
-          const centerY = transform.y / transform.k;
+        // const viewBoxWidth = 212 / transform.k;
+        // const viewBoxHeight = 212 / transform.k;
 
-          const viewBoxX = -centerX - viewBoxWidth / 2;
-          const viewBoxY = -centerY - viewBoxHeight / 2;
+        // if (viewBoxHeight === 212 && viewBoxWidth === 212) {
+        //   mapContainer.attr("viewBox", `${-106} ${-106} ${212} ${212}`);
+        // } else {
+        //   const centerX = transform.x / transform.k;
+        //   const centerY = transform.y / transform.k;
 
-          mapContainer.attr(
-            "viewBox",
-            `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`
-          );
-        }
+        //   const viewBoxX = -centerX - viewBoxWidth / 2;
+        //   const viewBoxY = -centerY - viewBoxHeight / 2;
+
+        //   mapContainer.attr(
+        //     "viewBox",
+        //     `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`
+        //   );
+        // }
       }
 
       const g = d3.select("#nwkmap");
@@ -454,7 +489,6 @@ export default defineComponent({
     const isClusterFullyConnected = ref(false);
 
     function zoomBrushedArea() {
-      const svg = d3.select("#nwkmap");
       const brushElement = d3.select("#brush").node() as SVGGElement | null;
 
       if (brushElement) {
@@ -469,15 +503,15 @@ export default defineComponent({
           const x1 = extent[1][0];
           const y1 = extent[1][1];
 
-          const viewBoxX = x0 < x1 ? x0 : x1;
-          const viewBoxY = y0 < y1 ? y0 : y1;
           const viewBoxWidth = Math.abs(x1 - x0);
           const viewBoxHeight = Math.abs(y1 - y0);
 
-          svg.attr(
-            "viewBox",
-            `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`
-          );
+          viewCenterX.value = (x0 + x1) / 2;
+          viewCenterY.value = (y0 + y1) / 2;
+          scaleF.value = Math.max(viewBoxWidth, viewBoxHeight) / 212;
+
+          // TODO update zoom
+
           // Clear the brush selection
           clearBrush();
         }
@@ -557,6 +591,7 @@ export default defineComponent({
           .transition()
           .duration(75) // Duration for the zoom reset transition
           .call((selection) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             selection.call(zoom.transform as any, d3.zoomIdentity);
           })
           .on("end", () => {
@@ -567,18 +602,21 @@ export default defineComponent({
     }
 
     function updateSVG(): void {
-      const svg: HTMLElement | null = document.getElementById("nwkmap");
-      if (svg) {
-        const viewBoxWidth = 212;
-        const viewBoxHeight = 212;
+      scaleF.value = 1;
+      viewCenterX.value = 0;
+      viewCenterY.value = 0;
+      // const svg: HTMLElement | null = document.getElementById("nwkmap");
+      // if (svg) {
+      //   const viewBoxWidth = 212;
+      //   const viewBoxHeight = 212;
 
-        svg.setAttribute(
-          "viewBox",
-          `-${viewBoxWidth / 2} -${
-            viewBoxHeight / 2
-          } ${viewBoxWidth} ${viewBoxHeight}`
-        );
-      }
+      //   svg.setAttribute(
+      //     "viewBox",
+      //     `-${viewBoxWidth / 2} -${
+      //       viewBoxHeight / 2
+      //     } ${viewBoxWidth} ${viewBoxHeight}`
+      //   );
+      // }
     }
 
     function clusterConnect() {
@@ -646,6 +684,31 @@ export default defineComponent({
       }
     };
 
+    const egoCoords = computed((): { x: number; y: number } => {
+      // project to viewport using center and scaleF
+      const x = (0 - viewCenterX.value) / scaleF.value;
+      const y = (0 - viewCenterY.value) / scaleF.value;
+
+      return { x, y };
+    });
+    const horiRadii = computed((): { r1: number; r2: number; r3: number } => {
+      // project to viewport using center and scaleF
+      return {
+        r1: 33.33 / scaleF.value,
+        r2: 66.67 / scaleF.value,
+        r3: 100 / scaleF.value,
+      };
+    });
+    const showSectors = computed((): boolean[] => {
+      // project to viewport using center and scaleF
+      const right = (10 - viewCenterX.value) / scaleF.value < 100;
+      const left = (-10 - viewCenterX.value) / scaleF.value > -100;
+      const bottom = (10 - viewCenterY.value) / scaleF.value < 100;
+      const top = (-10 - viewCenterY.value) / scaleF.value > -100;
+
+      return [right && top, left && top, left && bottom, right && bottom];
+    });
+
     /**
      * map of cartesian coords by alter.id (not the array index!)
      */
@@ -653,10 +716,15 @@ export default defineComponent({
       const buffer = new Map();
 
       store.state.nwk.alteri.forEach((alter) => {
+        // calculate from polar coordinates
         const x = alter.distance * Math.cos((alter.angle * Math.PI) / 180);
         const y = -1 * alter.distance * Math.sin((alter.angle * Math.PI) / 180);
 
-        buffer.set(alter.id, { x, y });
+        // project to viewport using center and scaleF
+        const xp = (x - viewCenterX.value) / scaleF.value;
+        const yp = (y - viewCenterY.value) / scaleF.value;
+
+        buffer.set(alter.id, { x: xp, y: yp });
       });
 
       return buffer;
@@ -715,6 +783,9 @@ export default defineComponent({
       isEditMode,
       isConnectMode,
       clickAlter,
+      egoCoords,
+      horiRadii,
+      showSectors,
       alteriMarks,
       connectionMarks,
       showAge: computed(() => store.state.view.ageInNwk),
