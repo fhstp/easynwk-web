@@ -111,6 +111,8 @@
       <g v-if="connections">
         <line
           v-for="(mark, index) in connectionMarks"
+          id="lineZoom"
+          style="stroke-width: 0.5"
           :key="'conn' + index"
           :x1="mark.x1"
           :y1="mark.y1"
@@ -123,6 +125,8 @@
       <g v-for="mark in alteriMarks" :key="mark.d.id">
         <line
           v-if="connections && mark.d.edgeType >= 1"
+          id="lineZoom"
+          style="stroke-width: 0.5"
           :class="{ select: mark.selected }"
           x1="0"
           y1="0"
@@ -351,11 +355,10 @@ export default defineComponent({
         const { transform } = event;
 
         const scaleFactor = 1 / transform.k;
-        const scaleFactorB = 1 / transform.k;
 
-        d3.selectAll("line").style("stroke-width", 0.5 * scaleFactorB);
+        d3.selectAll("#lineZoom").style("stroke-width", 0.5 * scaleFactor);
 
-        d3.selectAll("text").style("font-size", 4 * scaleFactorB);
+        d3.selectAll("text").style("font-size", 4 * scaleFactor);
 
         d3.selectAll("#circlePath")
           .attr("r", 1 * scaleFactor)
@@ -567,6 +570,30 @@ export default defineComponent({
       [105, 105],
     ]);
 
+    function alterAdded() {
+      const svg = d3.select("#nwkmap");
+
+      const viewBoxValue = svg.attr("viewBox");
+
+      const [width, height] = viewBoxValue.split(" ").map(Number);
+
+      let transform;
+
+      // Instead of using transform.k
+      if (width <= height) {
+        transform = height;
+      } else {
+        transform = width;
+      }
+      const scaleFactor = (1 / 212) * transform;
+
+      d3.selectAll("#lineZoom").style("stroke-width", 0.5 * scaleFactor);
+
+      d3.selectAll("text")
+        .style("font-size", 4 * scaleFactor)
+        .style("stroke-width", 0.2 * scaleFactor);
+    }
+
     function initBrushBehavior() {
       brush
         .on("start", () => {
@@ -638,12 +665,14 @@ export default defineComponent({
 
           const scaleFactor = (1 / 212) * transform;
 
-          d3.selectAll("line").style("stroke-width", 0.5 * scaleFactor);
+          d3.selectAll("#lineZoom").style("stroke-width", 0.5 * scaleFactor);
 
-          d3.selectAll("text").style("font-size", 4 * scaleFactor);
+          d3.selectAll("text")
+            .style("font-size", 4 * scaleFactor)
+            .style("stroke-width", 0.2 * scaleFactor);
 
           d3.selectAll("#circlePath")
-            .attr("r", 1 * scaleFactor)
+            .attr("r", scaleFactor)
             .style("stroke-width", 0.2 * scaleFactor);
 
           d3.selectAll("#rectPath")
@@ -1060,6 +1089,7 @@ export default defineComponent({
       clearBrush,
       resetZoom,
       zoomBrushedArea,
+      alterAdded,
       Sectors,
       SYMBOL_DECEASED,
       // TODO browser detection b/c vector-effect seems not to work in Safari only as of 14 Dec 2021
