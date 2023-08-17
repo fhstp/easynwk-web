@@ -102,8 +102,9 @@ export default defineComponent({
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let hor: any = useRouter().currentRoute.value.query.hor;
-      hor = /true/i.test(hor);
-      hor ? "" : store.commit("view/toggle", "horizons");
+      if (/true/i.test(hor)) {
+        store.commit("view/enable", "horizons");
+      }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let con: any = useRouter().currentRoute.value.query.con;
