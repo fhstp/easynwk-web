@@ -358,7 +358,7 @@ export default defineComponent({
 
         d3.selectAll("#lineZoom").style("stroke-width", 0.5 * scaleFactor);
 
-        d3.selectAll("text").style("font-size", 4 * scaleFactor);
+        d3.selectAll("svg#nwkmap").style("font-size", 4 * scaleFactor);
 
         d3.selectAll("#circlePath")
           .attr("r", 1 * scaleFactor)
@@ -542,6 +542,7 @@ export default defineComponent({
             store.commit("editAndCloseAlterForm", { changes: posPol });
           } else {
             store.commit("addAlter", posPol);
+            // alterAdded();
           }
           emit("map-click", posPol);
         }
@@ -570,6 +571,7 @@ export default defineComponent({
       [105, 105],
     ]);
 
+    /*
     function alterAdded() {
       const svg = d3.select("#nwkmap");
 
@@ -587,12 +589,15 @@ export default defineComponent({
       }
       const scaleFactor = (1 / 212) * transform;
 
+      console.log("alterAdded() called w" + scaleFactor);
+
       d3.selectAll("#lineZoom").style("stroke-width", 0.5 * scaleFactor);
 
-      d3.selectAll("text")
+      d3.selectAll("svg#nwkmap")
         .style("font-size", 4 * scaleFactor)
         .style("stroke-width", 0.2 * scaleFactor);
     }
+    */
 
     function initBrushBehavior() {
       brush
@@ -667,7 +672,7 @@ export default defineComponent({
 
           d3.selectAll("#lineZoom").style("stroke-width", 0.5 * scaleFactor);
 
-          d3.selectAll("text")
+          d3.selectAll("svg#nwkmap")
             .style("font-size", 4 * scaleFactor)
             .style("stroke-width", 0.2 * scaleFactor);
 
@@ -901,7 +906,7 @@ export default defineComponent({
 
         d3.selectAll("line").style("stroke-width", 0.5);
 
-        d3.selectAll("text").style("font-size", 4);
+        d3.selectAll("svg#nwkmap").style("font-size", 4);
 
         d3.selectAll("#circlePath").attr("r", 1).style("stroke-width", 0.2);
 
@@ -1089,7 +1094,7 @@ export default defineComponent({
       clearBrush,
       resetZoom,
       zoomBrushedArea,
-      alterAdded,
+      // alterAdded,
       Sectors,
       SYMBOL_DECEASED,
       // TODO browser detection b/c vector-effect seems not to work in Safari only as of 14 Dec 2021
@@ -1111,9 +1116,12 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "~bulma/sass/base/_all.sass";
 
+svg#nwkmap {
+  font-size: 4px;
+}
+
 text {
   font-family: $family-primary;
-  font-size: 4px;
   -webkit-user-select: none; /* Safari */
   user-select: none;
 }
@@ -1180,7 +1188,7 @@ line.select {
 
 .edithint {
   fill: rgba(lightgray, 0.5);
-  font-size: 1em;
+  font-size: 16px;
   font-weight: bold;
 }
 
