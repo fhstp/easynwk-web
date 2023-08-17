@@ -119,7 +119,7 @@ export default defineComponent({
 }
 
 #chart {
-  width: 97vmin;
+  width: 99vmin;
   height: 100vmin;
   position: relative;
   /* background: aqua; */
@@ -135,7 +135,7 @@ export default defineComponent({
   background: $fhstpblue; /* #005096; /* $light; */
   color: white;
   padding: 1vmin 1vmin 0.3rem 1vmin;
-  margin: 0.5rem 1px 0 1px;
+  margin: 1rem 1px 0 1px;
   border-radius: 6px 6px 0 0;
   flex-shrink: 0;
 
@@ -175,9 +175,9 @@ export default defineComponent({
 }
 */
 
-@media (min-width: 168vh) {
+@media (min-width: 133vh) {
   #main {
-    width: 70vmin;
+    width: 33vmin;
   }
 
   .scrollwrapper {
@@ -189,6 +189,10 @@ export default defineComponent({
     overflow-y: auto;
   }
 
+  html {
+    overflow-y: hidden !important;
+  }
+
   /* Hide scrollbar for Chrome, Safari and Opera */
   body::-webkit-scrollbar {
     display: none;
@@ -198,6 +202,18 @@ export default defineComponent({
   body {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+  }
+}
+
+@media (min-width: 145vh) {
+  #main {
+    width: 45vmin;
+  }
+}
+
+@media (min-width: 162vh) {
+  #main {
+    width: 62vmin;
   }
 }
 </style>
