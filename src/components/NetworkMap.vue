@@ -55,71 +55,7 @@
       </filter>
     </defs>
 
-    <!-- TODO extract coords and horizon as a subcomponent -->
-    <!-- transform coordinate system to be scale independent -->
-    <g id="coords" v-if="showHorizons">
-      <!-- <rect x="-120" y="-120" width="240" height="240" fill="#bcbddc"/> -->
-      <circle
-        id="horizon-base"
-        :cx="egoCoords[0]"
-        :cy="egoCoords[1]"
-        :r="horiRadii.r3"
-      />
-      <circle
-        id="horizon-overlay"
-        :cx="egoCoords[0]"
-        :cy="egoCoords[1]"
-        :r="horiRadii.r2"
-      />
-      <circle
-        id="horizon-overlay"
-        :cx="egoCoords[0]"
-        :cy="egoCoords[1]"
-        :r="horiRadii.r1"
-      />
-      <line
-        :x1="egoCoords[0]"
-        :y1="egoCoords[1] - horiRadii.r3"
-        :x2="egoCoords[0]"
-        :y2="egoCoords[1] + horiRadii.r3"
-      />
-      <line
-        :x1="egoCoords[0] - horiRadii.r3"
-        :y1="egoCoords[1]"
-        :x2="egoCoords[0] + horiRadii.r3"
-        :y2="egoCoords[1]"
-      />
-    </g>
-    <g id="coords-min" v-else>
-      <circle :cx="egoCoords[0]" :cy="egoCoords[1]" :r="horiRadii.r3" />
-      <line
-        :x1="egoCoords[0]"
-        :y1="egoCoords[1] - horiRadii.r3"
-        :x2="egoCoords[0]"
-        :y2="egoCoords[1] + horiRadii.r3"
-      />
-      <line
-        :x1="egoCoords[0] - horiRadii.r3"
-        :y1="egoCoords[1]"
-        :x2="egoCoords[0] + horiRadii.r3"
-        :y2="egoCoords[1]"
-      />
-    </g>
-
-    <g id="sectors">
-      <text v-if="showSectors[0]" x="100" y="-100" text-anchor="end">
-        {{ Sectors[0] }}
-      </text>
-      <text v-if="showSectors[1]" x="-100" y="-100" text-anchor="start">
-        {{ Sectors[1] }}
-      </text>
-      <text v-if="showSectors[2]" x="-100" y="100" text-anchor="start">
-        {{ Sectors[2] }}
-      </text>
-      <text v-if="showSectors[3]" x="100" y="100" text-anchor="end">
-        {{ Sectors[3] }}
-      </text>
-    </g>
+    <NetworkMapCoordinates :transform="transform" />
 
     <text v-if="isEditMode" text-anchor="middle" class="edithint">
       <tspan x="0" y="-1em">Klicke in die Karte, um</tspan>
@@ -305,10 +241,10 @@
 import { defineComponent, computed, onMounted, ref, watch } from "vue";
 import { useStore } from "@/store";
 
+import NetworkMapCoordinates from "@/components/NetworkMapCoordinates.vue";
+
 import * as d3 from "d3";
-// import { ContainerElement } from "d3";
 import { Alter, isConnectable } from "@/data/Alter";
-import { Sectors } from "@/data/Sectors";
 import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
@@ -338,7 +274,7 @@ interface ConnectionMark {
 // emit "map-click" (which is not currently used)
 
 export default defineComponent({
-  components: {},
+  components: { NetworkMapCoordinates },
   emits: ["map-click"],
 
   setup: function (props, { emit }) {
@@ -679,25 +615,6 @@ export default defineComponent({
 
     const egoCoords = computed(() => transform.value.apply([0, 0]));
 
-    const horiRadii = computed((): { r1: number; r2: number; r3: number } => {
-      // project to viewport using center and scaleF
-      console.log("k: " + transform.value.k);
-      return {
-        r1: 33.33 * transform.value.k,
-        r2: 66.67 * transform.value.k,
-        r3: 100 * transform.value.k,
-      };
-    });
-    const showSectors = computed((): boolean[] => {
-      // project to viewport using zoomBehaviour's transform
-      const right = transform.value.applyX(10) < 100;
-      const left = transform.value.applyX(-10) > -100;
-      const bottom = transform.value.applyY(10) < 100;
-      const top = transform.value.applyY(-10) > -100;
-
-      return [right && top, left && top, left && bottom, right && bottom];
-    });
-
     /**
      * map of cartesian coords by alter.id (not the array index!)
      */
@@ -772,16 +689,14 @@ export default defineComponent({
       isEditMode,
       isConnectMode,
       clickAlter,
+      transform,
       egoCoords,
-      horiRadii,
-      showSectors,
       alteriMarks,
       connectionMarks,
       showAge: computed(() => store.state.view.ageInNwk),
       showRole: computed(() => store.state.view.roleInNwk),
       getRoleShort,
       alteriNames: computed(() => store.state.view.alteriNames),
-      showHorizons: computed(() => store.state.view.horizons),
       connections: computed(() => store.state.view.connections),
       brushBtns,
       isClusterConnectPossible,
@@ -791,7 +706,6 @@ export default defineComponent({
       clearBrush,
       resetZoom,
       zoomBrushedArea,
-      Sectors,
       SYMBOL_DECEASED,
       // TODO browser detection b/c vector-effect seems not to work in Safari only as of 14 Dec 2021
       useTextBG: computed(
@@ -828,33 +742,6 @@ text.ego {
   stroke-width: 3;
 }
 
-circle#horizon-base {
-  // fill: #dadaeb;
-  fill: #c7e9c0;
-}
-
-circle#horizon-overlay {
-  fill: rgb(255, 255, 255, 0.5);
-}
-
-#coords line {
-  stroke: white;
-  stroke-width: 2;
-}
-
-#coords-min line {
-  vector-effect: non-scaling-stroke;
-  stroke: lightgray;
-  stroke-width: 1;
-}
-
-#coords-min circle {
-  vector-effect: non-scaling-stroke;
-  stroke: #f0f0f0;
-  stroke-width: 2;
-  fill: none;
-}
-
 line {
   stroke: #afafaf;
   stroke-width: 0.5;
@@ -880,11 +767,6 @@ line.select {
   fill: rgb(54, 54, 54);
   stroke: white;
   stroke-width: 0.2;
-}
-
-#sectors text {
-  font-weight: bold;
-  fill: gray;
 }
 
 .edithint {
