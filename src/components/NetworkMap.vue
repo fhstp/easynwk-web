@@ -66,18 +66,18 @@
       <line x1="105" y1="0" x2="-105" y2="0" />
     </g>
     <g id="coords-min" v-else>
-      <circle :cx="egoCoords.x" :cy="egoCoords.y" :r="horiRadii.r3" />
+      <circle :cx="egoCoords[0]" :cy="egoCoords[1]" :r="horiRadii.r3" />
       <line
-        :x1="egoCoords.x"
-        :y1="egoCoords.y - horiRadii.r3"
-        :x2="egoCoords.x"
-        :y2="egoCoords.y + horiRadii.r3"
+        :x1="egoCoords[0]"
+        :y1="egoCoords[1] - horiRadii.r3"
+        :x2="egoCoords[0]"
+        :y2="egoCoords[1] + horiRadii.r3"
       />
       <line
-        :x1="egoCoords.x - horiRadii.r3"
-        :y1="egoCoords.y"
-        :x2="egoCoords.x + horiRadii.r3"
-        :y2="egoCoords.y"
+        :x1="egoCoords[0] - horiRadii.r3"
+        :y1="egoCoords[1]"
+        :x2="egoCoords[0] + horiRadii.r3"
+        :y2="egoCoords[1]"
       />
     </g>
 
@@ -128,8 +128,8 @@
         <line
           v-if="connections && mark.d.edgeType >= 1"
           :class="{ select: mark.selected }"
-          :x1="egoCoords.x"
-          :y1="egoCoords.y"
+          :x1="egoCoords[0]"
+          :y1="egoCoords[1]"
           :x2="mark.x"
           :y2="mark.y"
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
@@ -164,8 +164,8 @@
       <use
         id="ego"
         :href="'#' + egoShape"
-        :x="egoCoords.x"
-        :y="egoCoords.y"
+        :x="egoCoords[0]"
+        :y="egoCoords[1]"
         class="mark"
         width="4"
         height="4"
@@ -289,7 +289,7 @@ import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { getRoleAbbrev } from "../data/Roles";
 import { brushSelection, D3BrushEvent } from "d3";
-import { zoom } from "d3-zoom";
+import { zoom, ZoomTransform, zoomIdentity } from "d3-zoom";
 
 interface AlterMark {
   d: Alter;
@@ -330,8 +330,8 @@ export default defineComponent({
       const coords = d3.pointer(event);
 
       // revert viewport projection
-      const xa = coords[0] * scaleF.value + viewCenterX.value;
-      const ya = coords[1] * scaleF.value + viewCenterY.value;
+      const xa = transform.value.invertX(coords[0]);
+      const ya = transform.value.invertY(coords[1]);
 
       // cp. https://stackoverflow.com/a/33043899/1140589
       const distance = Math.sqrt(xa * xa + ya * ya);
@@ -344,9 +344,9 @@ export default defineComponent({
       () => store.state.view.editTab === TAB_CONNECTIONS
     );
 
-    const scaleF = ref(1);
-    const viewCenterX = ref(0);
-    const viewCenterY = ref(0);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const zoomBehavior: any = zoom();
+    const transform = ref<ZoomTransform>(zoomIdentity);
 
     onMounted(() => {
       // d3.mouse only works if the event is registered using D3 .on
@@ -354,40 +354,26 @@ export default defineComponent({
       const svg = d3.select("#nwkmap");
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const zoomBehavior: any = zoom().scaleExtent([1, 10]).on("zoom", zoomed);
+      zoomBehavior
+        .extent([
+          [-106, -106],
+          [212, 212],
+        ])
+        .translateExtent([
+          [-106, -106],
+          [212, 212],
+        ])
+        .scaleExtent([1, 8])
+        .on("zoom", zoomed);
 
-      //Zoom with mouse wheel
       svg.call(zoomBehavior).on("mousedown.zoom", null);
       svg.on("dblclick.zoom", null);
 
-      function zoomed(event: {
-        transform: { k: number; x: number; y: number };
-      }) {
-        console.log(event.transform);
-        viewCenterX.value = (-1 * event.transform.x) / event.transform.k;
-        viewCenterY.value = (-1 * event.transform.y) / event.transform.k;
-        scaleF.value = 1 / event.transform.k;
-
-        // const { transform } = event;
-        // const mapContainer = d3.select("#nwkmap");
-
-        // const viewBoxWidth = 212 / transform.k;
-        // const viewBoxHeight = 212 / transform.k;
-
-        // if (viewBoxHeight === 212 && viewBoxWidth === 212) {
-        //   mapContainer.attr("viewBox", `${-106} ${-106} ${212} ${212}`);
-        // } else {
-        //   const centerX = transform.x / transform.k;
-        //   const centerY = transform.y / transform.k;
-
-        //   const viewBoxX = -centerX - viewBoxWidth / 2;
-        //   const viewBoxY = -centerY - viewBoxHeight / 2;
-
-        //   mapContainer.attr(
-        //     "viewBox",
-        //     `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`
-        //   );
-        // }
+      //Zoom with mouse wheel
+      function zoomed(event: { transform: ZoomTransform }) {
+        // console.log(event.transform);
+        // inform vue's reactivity of updated zoom
+        transform.value = event.transform;
       }
 
       const g = d3.select("#nwkmap");
@@ -503,14 +489,22 @@ export default defineComponent({
           const x1 = extent[1][0];
           const y1 = extent[1][1];
 
-          const viewBoxWidth = Math.abs(x1 - x0);
-          const viewBoxHeight = Math.abs(y1 - y0);
+          const brushWidth = Math.abs(x1 - x0);
+          const brushHeight = Math.abs(y1 - y0);
 
-          viewCenterX.value = (x0 + x1) / 2;
-          viewCenterY.value = (y0 + y1) / 2;
-          scaleF.value = Math.max(viewBoxWidth, viewBoxHeight) / 212;
+          const k =
+            (212 / Math.max(brushWidth, brushHeight)) * transform.value.k;
 
-          // TODO update zoom
+          // brush center in absolute coordinates
+          const tx = transform.value.invertX((x0 + x1) / 2);
+          const ty = transform.value.invertY((y0 + y1) / 2);
+          console.log(`t.x: ${tx}   t.y: ${ty}`);
+
+          const nextTransform = new ZoomTransform(k, tx * k * -1, ty * k * -1);
+          d3.select("#nwkmap")
+            .transition()
+            .duration(750)
+            .call(zoomBehavior.transform, nextTransform);
 
           // Clear the brush selection
           clearBrush();
@@ -584,39 +578,13 @@ export default defineComponent({
     //functionality of Reset button for zoom
     function resetZoom(): void {
       const svg: HTMLElement | null = document.getElementById("nwkmap");
-      const zoom: d3.ZoomBehavior<Element, unknown> = d3.zoom();
 
       if (svg) {
         d3.select(svg)
           .transition()
-          .duration(75) // Duration for the zoom reset transition
-          .call((selection) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            selection.call(zoom.transform as any, d3.zoomIdentity);
-          })
-          .on("end", () => {
-            // Update the SVG after reset
-            updateSVG();
-          });
+          .duration(750)
+          .call(zoomBehavior.transform, d3.zoomIdentity);
       }
-    }
-
-    function updateSVG(): void {
-      scaleF.value = 1;
-      viewCenterX.value = 0;
-      viewCenterY.value = 0;
-      // const svg: HTMLElement | null = document.getElementById("nwkmap");
-      // if (svg) {
-      //   const viewBoxWidth = 212;
-      //   const viewBoxHeight = 212;
-
-      //   svg.setAttribute(
-      //     "viewBox",
-      //     `-${viewBoxWidth / 2} -${
-      //       viewBoxHeight / 2
-      //     } ${viewBoxWidth} ${viewBoxHeight}`
-      //   );
-      // }
     }
 
     function clusterConnect() {
@@ -684,27 +652,23 @@ export default defineComponent({
       }
     };
 
-    const egoCoords = computed((): { x: number; y: number } => {
-      // project to viewport using center and scaleF
-      const x = (0 - viewCenterX.value) / scaleF.value;
-      const y = (0 - viewCenterY.value) / scaleF.value;
+    const egoCoords = computed(() => transform.value.apply([0, 0]));
 
-      return { x, y };
-    });
     const horiRadii = computed((): { r1: number; r2: number; r3: number } => {
       // project to viewport using center and scaleF
+      console.log("k: " + transform.value.k);
       return {
-        r1: 33.33 / scaleF.value,
-        r2: 66.67 / scaleF.value,
-        r3: 100 / scaleF.value,
+        r1: 33.33 * transform.value.k,
+        r2: 66.67 * transform.value.k,
+        r3: 100 * transform.value.k,
       };
     });
     const showSectors = computed((): boolean[] => {
-      // project to viewport using center and scaleF
-      const right = (10 - viewCenterX.value) / scaleF.value < 100;
-      const left = (-10 - viewCenterX.value) / scaleF.value > -100;
-      const bottom = (10 - viewCenterY.value) / scaleF.value < 100;
-      const top = (-10 - viewCenterY.value) / scaleF.value > -100;
+      // project to viewport using zoomBehaviour's transform
+      const right = transform.value.applyX(10) < 100;
+      const left = transform.value.applyX(-10) > -100;
+      const bottom = transform.value.applyY(10) < 100;
+      const top = transform.value.applyY(-10) > -100;
 
       return [right && top, left && top, left && bottom, right && bottom];
     });
@@ -720,9 +684,9 @@ export default defineComponent({
         const x = alter.distance * Math.cos((alter.angle * Math.PI) / 180);
         const y = -1 * alter.distance * Math.sin((alter.angle * Math.PI) / 180);
 
-        // project to viewport using center and scaleF
-        const xp = (x - viewCenterX.value) / scaleF.value;
-        const yp = (y - viewCenterY.value) / scaleF.value;
+        // project to viewport using zoomBehaviour's transform
+        const xp = transform.value.applyX(x);
+        const yp = transform.value.applyY(y);
 
         buffer.set(alter.id, { x: xp, y: yp });
       });
