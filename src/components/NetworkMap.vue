@@ -59,11 +59,36 @@
     <!-- transform coordinate system to be scale independent -->
     <g id="coords" v-if="showHorizons">
       <!-- <rect x="-120" y="-120" width="240" height="240" fill="#bcbddc"/> -->
-      <circle id="horizon-base" cx="0" cy="0" r="100" />
-      <circle id="horizon-overlay" cx="0" cy="0" r="66.67" />
-      <circle id="horizon-overlay" cx="0" cy="0" r="33.33" />
-      <line x1="0" y1="-105" x2="0" y2="105" />
-      <line x1="105" y1="0" x2="-105" y2="0" />
+      <circle
+        id="horizon-base"
+        :cx="egoCoords[0]"
+        :cy="egoCoords[1]"
+        :r="horiRadii.r3"
+      />
+      <circle
+        id="horizon-overlay"
+        :cx="egoCoords[0]"
+        :cy="egoCoords[1]"
+        :r="horiRadii.r2"
+      />
+      <circle
+        id="horizon-overlay"
+        :cx="egoCoords[0]"
+        :cy="egoCoords[1]"
+        :r="horiRadii.r1"
+      />
+      <line
+        :x1="egoCoords[0]"
+        :y1="egoCoords[1] - horiRadii.r3"
+        :x2="egoCoords[0]"
+        :y2="egoCoords[1] + horiRadii.r3"
+      />
+      <line
+        :x1="egoCoords[0] - horiRadii.r3"
+        :y1="egoCoords[1]"
+        :x2="egoCoords[0] + horiRadii.r3"
+        :y2="egoCoords[1]"
+      />
     </g>
     <g id="coords-min" v-else>
       <circle :cx="egoCoords[0]" :cy="egoCoords[1]" :r="horiRadii.r3" />
