@@ -726,6 +726,10 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "~bulma/sass/base/_all.sass";
 
+svg {
+  overflow: visible;
+}
+
 text {
   font-family: $family-primary;
   font-size: 4px;

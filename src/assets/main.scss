@@ -44,6 +44,11 @@ $panel-shadow: none;
   border-right: 1px solid #dbdbdb;
 }
 
+.panel-block,
+.panel-tabs {
+  background-color: white;
+}
+
 .clickAble {
   cursor: pointer;
 }

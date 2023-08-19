@@ -1,6 +1,9 @@
 <template>
   <div id="container">
     <ErrorBoundary>
+      <div id="chart">
+        <NetworkMap @map-click="mapclick" />
+      </div>
       <!-- TODO use slots to separate layout from logic https://vuejs.org/v2/guide/components.html#Content-Distribution-with-Slots -->
       <div id="main">
         <div class="scrollwrapper">
@@ -24,9 +27,6 @@
             <StatisticsPanel v-if="showStatistics" />
           </div>
         </div>
-      </div>
-      <div id="chart">
-        <NetworkMap @map-click="mapclick" />
       </div>
     </ErrorBoundary>
   </div>
@@ -102,7 +102,10 @@ export default defineComponent({
   background: white;
   margin: 0;
   text-align: center;
-  overflow: none;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
 }
 
 #container > div {
@@ -116,6 +119,7 @@ export default defineComponent({
   /*            background: hsl(0, 0%, 96%); /* $light; */
   text-align: left;
   overflow: none;
+  z-index: 2;
 }
 
 #chart {
@@ -123,6 +127,7 @@ export default defineComponent({
   height: 100vmin;
   position: relative;
   /* background: aqua; */
+  z-index: 1;
 }
 
 .scrollwrapper {
@@ -178,6 +183,12 @@ export default defineComponent({
 @media (min-width: 133vh) {
   #main {
     width: 33vmin;
+  }
+
+  #container {
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: normal;
   }
 
   .scrollwrapper {
