@@ -170,6 +170,7 @@
       type="button"
       title="Zoom Zurücksetzen"
       @click="resetZoom()"
+      :disabled="isNotZoomed"
     >
       <span class="icon is-large">
         <font-awesome-icon icon="search-minus" />
@@ -704,6 +705,7 @@ export default defineComponent({
       clusterConnect,
       clusterDisconnect,
       clearBrush,
+      isNotZoomed: computed(() => transform.value.k == 1),
       resetZoom,
       zoomBrushedArea,
       SYMBOL_DECEASED,
