@@ -336,6 +336,9 @@ export default defineComponent({
         // console.log(event.transform);
         // inform vue's reactivity of updated zoom
         transform.value = event.transform;
+
+        // TODO re-scale brush instead of clearing it
+        clearBrush();
       }
 
       const g = d3.select("#nwkmap");
