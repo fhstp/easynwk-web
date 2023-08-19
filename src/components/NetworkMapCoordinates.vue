@@ -58,7 +58,7 @@
     <text v-if="showSectors[2]" x="-100" y="100" text-anchor="start">
       {{ Sectors[2] }}
     </text>
-    <text v-if="showSectors[3]" x="100" y="100" text-anchor="end">
+    <text v-if="showSectors[3]" x="87" y="100" text-anchor="end">
       {{ Sectors[3] }}
     </text>
   </g>

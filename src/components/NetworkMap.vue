@@ -163,7 +163,7 @@
       {{ egoLabel }}
     </text>
   </svg>
-  <div id="mapContainer" style="position: relative; right: -52%; bottom: 10%">
+  <div id="zoomBtns">
     <button
       id="zoomResetBtn"
       class="button is-medium"
@@ -791,5 +791,11 @@ line.select {
 #brushBtns > button {
   display: block;
   margin-bottom: 0.5rem;
+}
+
+#zoomBtns {
+  position: absolute;
+  right: 2px;
+  bottom: 1.5rem;
 }
 </style>
