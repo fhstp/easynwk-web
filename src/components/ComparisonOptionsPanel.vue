@@ -17,7 +17,11 @@
           <div id="record-settings" class="field" v-if="isOpen">
             <div class="control">
               <div class="buttons">
-                <button class="button" @click="addBlankNWK">
+                <button
+                  class="button"
+                  @click="addBlankNWK"
+                  @click.stop="newVersion = true"
+                >
                   <span class="icon">
                     <font-awesome-icon icon="plus-circle" />
                   </span>
@@ -33,7 +37,11 @@
                   <span>Karte duplizieren</span>
                 </button>
 
-                <button class="button" :disabled="isDisabled">
+                <button
+                  class="button"
+                  @click.stop="toggleChange"
+                  :disabled="isDisabled"
+                >
                   <span class="icon">
                     <font-awesome-icon icon="exchange-alt" />
                   </span>
@@ -65,6 +73,7 @@
                           class="input"
                           type="text"
                           placeholder="Titel der aktuellen Version"
+                          v-model="newVersionTitle"
                         />
                       </div>
                     </div>
@@ -80,7 +89,11 @@
                   <div class="field-body">
                     <div class="field">
                       <div class="control">
-                        <input class="input" type="date" />
+                        <input
+                          class="input"
+                          type="date"
+                          v-model="newVersionDate"
+                        />
                       </div>
                     </div>
                   </div>
@@ -123,8 +136,9 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
+import { NWKVersion } from "@/data/NWKVersion";
 
-//type InputType = HTMLInputElement | HTMLTextAreaElement;
+type InputType = HTMLInputElement | HTMLTextAreaElement;
 
 export default defineComponent({
   // AR, 14 Aug 2023: prop version not needed? current version is in state.record
@@ -143,14 +157,32 @@ export default defineComponent({
 
     const isDisabled = ref(true);
 
-    /*if (store.state.nwk.versions.length < 1) {
+    const newNWK = ref(false);
+
+    const newVersionTitle = ref(""); // To capture the "Titel" input value
+    const newVersionDate = ref(""); // To capture the "Datum" input value
+
+    function addNewVersion(): any {
+      const changes: Partial<NWKVersion> = {
+        title: newVersionTitle.value,
+        date: newVersionDate.value,
+      };
+      store.commit("editVersion", {
+        versionIndex: store.state.record.currentVersion,
+        changes,
+      });
+
+      // Reset the input values
+      newVersionTitle.value = "";
+      newVersionDate.value = "";
+    }
+
+    if (store.state.record.versions.length < 2) {
       console.log(isDisabled.value);
       isDisabled.value = true;
     } else {
       isDisabled.value = false;
     }
-
-     */
 
     /*const addingNewVersion = ref(!(props.version?.date.length > 0));
 
@@ -171,18 +203,19 @@ export default defineComponent({
 
      */
 
-    const addNewVersion = () => {
-      store.commit("addVersion");
-    };
-
     return {
       nwkcomparison: computed(() => store.state.view.nwkcomparison),
+      nwkchange: computed(() => store.state.view.nwkchange),
       toggleComparison: () => store.commit("view/toggle", "nwkcomparison"),
+      toggleChange: () => store.commit("view/toggle", "nwkchange"),
       isOpen: isOpen,
       newVersion: newVersion,
+      newNWK: newNWK,
       addNewVersion: addNewVersion,
       addBlankNWK: () => store.commit("addNWKVersion"),
       duplicateNWK: () => store.commit("addNWKVersion", true),
+      newVersionTitle,
+      newVersionDate,
       isDisabled: isDisabled,
       versions: computed(() => store.state.record.versions),
       //commitEdit,

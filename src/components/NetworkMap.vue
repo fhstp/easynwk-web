@@ -1,12 +1,58 @@
 <template>
-  <div style="position: relative" v-if="showComparison">
-    <svg width="50%" height="100">
-      <line x1="5" y1="50" x2="750" y2="50" class="comparisonLine"></line>
-      <a>
-        <circle cx="97.5%" cy="50" r="9" class="comparisonCircle" />
+  <div style="position: relative" v-if="changeNWK">
+    <svg width="400" height="120">
+      <!-- Increased height to accommodate text -->
+      <line x1="5" y1="50" x2="395" y2="50" class="comparisonLine"></line>
+      <a v-for="(version, index) in versions" :key="index">
+        <circle
+          :cx="`${10 + (380 / (versions.length + 1)) * (index + 1)}`"
+          cy="50"
+          r="9"
+          :class="{
+            comparisonCircle: version.id !== currentVersion,
+            'comparisonCircle-selected': version.id === currentVersion,
+          }"
+          @click="handleCircleClick(version.id)"
+        />
+        <text
+          :x="`${10 + (380 / (versions.length + 1)) * (index + 1)}`"
+          y="35"
+          text-anchor="middle"
+          font-size="12"
+          :class="{ 'text-selected': version.id === currentVersion }"
+        >
+          {{ version.name ? version.name : version.date }}
+        </text>
       </a>
     </svg>
   </div>
+  <div style="position: relative" v-if="showComparison">
+    <svg width="400" height="120">
+      <!-- Increased height to accommodate text -->
+      <line x1="5" y1="50" x2="395" y2="50" class="comparisonLine"></line>
+      <a v-for="(version, index) in versions" :key="index">
+        <circle
+          :cx="`${10 + (380 / (versions.length + 1)) * (index + 1)}`"
+          cy="50"
+          r="9"
+          :class="{
+            comparisonCircle: version.id !== currentVersion,
+            'comparisonCircle-selected': version.id === currentVersion,
+          }"
+        />
+        <text
+          :x="`${10 + (380 / (versions.length + 1)) * (index + 1)}`"
+          y="35"
+          text-anchor="middle"
+          font-size="12"
+          :class="{ 'text-selected': version.id === currentVersion }"
+        >
+          {{ version.name ? version.name : version.date }}
+        </text>
+      </a>
+    </svg>
+  </div>
+
   <svg id="nwkmap" width="100%" height="100%" viewBox="-106 -106 212 212">
     <defs>
       <symbol id="square" viewBox="-1.5 -1.5 3 3">
@@ -277,6 +323,10 @@ export default defineComponent({
   setup: function (props, { emit }) {
     const store = useStore();
 
+    const versions = computed(() => store.state.record.versions);
+
+    const currentVersion = computed(() => store.state.record.currentVersion);
+
     const isEditMode = computed(() => {
       return (
         store.state.view.editIndex != null &&
@@ -496,6 +546,13 @@ export default defineComponent({
       return getRoleAbbrev(role);
     };
 
+    function handleCircleClick(versionId: number) {
+      if (versionId !== store.state.record.currentVersion) {
+        store.commit("switchNWK", versionId);
+        console.log("Changed Version");
+      }
+    }
+
     let clickTimeoutId: number | null = null;
     const clickAlter = (alter: Alter) => {
       if (isConnectMode.value && store.state.view.editIndex != null) {
@@ -603,6 +660,7 @@ export default defineComponent({
       alteriNames: computed(() => store.state.view.alteriNames),
       showHorizons: computed(() => store.state.view.horizons),
       showComparison: computed(() => store.state.view.nwkcomparison),
+      changeNWK: computed(() => store.state.view.nwkchange),
       connections: computed(() => store.state.view.connections),
       brushBtns,
       isClusterConnectPossible,
@@ -610,6 +668,9 @@ export default defineComponent({
       clusterConnect,
       clusterDisconnect,
       clearBrush,
+      versions,
+      currentVersion,
+      handleCircleClick,
       Sectors,
       SYMBOL_DECEASED,
       // TODO browser detection b/c vector-effect seems not to work in Safari only as of 14 Dec 2021
@@ -731,5 +792,13 @@ line.select {
 #brushBtns > button {
   display: block;
   margin-bottom: 0.5rem;
+}
+
+.comparisonCircle {
+  fill: #d6dae9;
+}
+
+.comparisonCircle-selected {
+  fill: #ffc37d;
 }
 </style>
