@@ -313,6 +313,14 @@ export default defineComponent({
     const zoomBehavior: any = zoom();
     const transform = ref<ZoomTransform>(zoomIdentity);
 
+    /**
+     * brush selection in unzoomed coordinates
+     */
+    let brushAbsoluteCoords = [
+      [0, 0],
+      [0, 0],
+    ] as [[number, number], [number, number]];
+
     onMounted(() => {
       // d3.mouse only works if the event is registered using D3 .on
 
@@ -340,8 +348,15 @@ export default defineComponent({
         // inform vue's reactivity of updated zoom
         transform.value = event.transform;
 
-        // TODO re-scale brush instead of clearing it
-        clearBrush();
+        // re-scale brush selection
+        const brushElement = d3.select("#nwkmap g#brush").node() as SVGGElement;
+        if (brush && brushElement && brushSelection(brushElement)) {
+          const myExtent = [
+            transform.value.apply(brushAbsoluteCoords[0]),
+            transform.value.apply(brushAbsoluteCoords[1]),
+          ] as d3.BrushSelection;
+          brush.move(d3.select(brushElement), myExtent);
+        }
       }
 
       const g = d3.select("#nwkmap");
@@ -429,7 +444,7 @@ export default defineComponent({
     /** resets the brush to a null selection */
     const clearBrush = () => {
       if (brush) {
-        brush.clear(d3.select("#nwkmap .brush"));
+        brush.clear(d3.select("#nwkmap #brush"));
       }
     };
 
@@ -492,22 +507,34 @@ export default defineComponent({
       // console.log(event);
 
       if (event.selection) {
-        const extent = event.selection as [[number, number], [number, number]];
+        // brush changed can also result from zooming, but then it has no source event
+        if (event.sourceEvent) {
+          const extent = event.selection as [
+            [number, number],
+            [number, number]
+          ];
 
-        const marksInExtent = alteriMarks.value.filter((am) =>
-          isInBrushExtent(am, extent)
-        );
-        markIdsInExtent = marksInExtent.map((am) => am.d.id);
-        store.commit("view/selectAlters", markIdsInExtent);
+          // remember the brush coordinates
+          brushAbsoluteCoords = [
+            transform.value.invert(extent[0]),
+            transform.value.invert(extent[1]),
+          ];
 
-        // check if cluster connect is possible (more than 1 connectable alter)
-        connectableIdsInExtent = marksInExtent
-          .filter((am) => isConnectable(am.d))
-          .map((am) => am.d.id);
-        isClusterConnectPossible.value = connectableIdsInExtent.length >= 2;
-        isClusterFullyConnected.value =
-          isClusterConnectPossible.value &&
-          clusterConnected(connectableIdsInExtent);
+          const marksInExtent = alteriMarks.value.filter((am) =>
+            isInBrushExtent(am, extent)
+          );
+          markIdsInExtent = marksInExtent.map((am) => am.d.id);
+          store.commit("view/selectAlters", markIdsInExtent);
+
+          // check if cluster connect is possible (more than 1 connectable alter)
+          connectableIdsInExtent = marksInExtent
+            .filter((am) => isConnectable(am.d))
+            .map((am) => am.d.id);
+          isClusterConnectPossible.value = connectableIdsInExtent.length >= 2;
+          isClusterFullyConnected.value =
+            isClusterConnectPossible.value &&
+            clusterConnected(connectableIdsInExtent);
+        }
 
         // move buttons relative to selection box as SVG element
         // <https://stackoverflow.com/questions/26049488/how-to-get-absolute-coordinates-of-object-inside-a-g-group>
