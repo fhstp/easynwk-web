@@ -149,6 +149,8 @@
       />
     </g>
 
+    <NetworkMapSectors :transform="transform" @zoom-sector="zoomSector" />
+
     <!-- a foreground rect is necessary so that the whole display is clickable -->
     <!-- a foreground rect is useful to prevent text selection -->
     <rect
@@ -243,6 +245,7 @@ import { defineComponent, computed, onMounted, ref, watch } from "vue";
 import { useStore } from "@/store";
 
 import NetworkMapCoordinates from "@/components/NetworkMapCoordinates.vue";
+import NetworkMapSectors from "@/components/NetworkMapSectors.vue";
 
 import * as d3 from "d3";
 import { Alter, isConnectable } from "@/data/Alter";
@@ -275,7 +278,7 @@ interface ConnectionMark {
 // emit "map-click" (which is not currently used)
 
 export default defineComponent({
-  components: { NetworkMapCoordinates },
+  components: { NetworkMapCoordinates, NetworkMapSectors },
   emits: ["map-click"],
 
   setup: function (props, { emit }) {
@@ -463,7 +466,7 @@ export default defineComponent({
           // brush center in absolute coordinates
           const tx = transform.value.invertX((x0 + x1) / 2);
           const ty = transform.value.invertY((y0 + y1) / 2);
-          console.log(`t.x: ${tx}   t.y: ${ty}`);
+          console.log(`k: ${k}  t.x: ${tx}   t.y: ${ty}`);
 
           const nextTransform = new ZoomTransform(k, tx * k * -1, ty * k * -1);
           d3.select("#nwkmap")
@@ -475,6 +478,14 @@ export default defineComponent({
           clearBrush();
         }
       }
+    }
+
+    function zoomSector(dirX: number, dirY: number) {
+      const nextTransform = new ZoomTransform(1.9, -94.4 * dirX, -94.4 * dirY);
+      d3.select("#nwkmap")
+        .transition()
+        .duration(750)
+        .call(zoomBehavior.transform, nextTransform);
     }
 
     function afterBrushChanged(event: D3BrushEvent<unknown>) {
@@ -518,7 +529,7 @@ export default defineComponent({
           console.warn("Brush rect not found");
         }
       } else {
-        console.log("Brush selection inactive");
+        // console.log("Brush selection inactive");
         if (store.state.view.selected.size > 0) {
           store.commit("view/clearSelectedAlters");
         }
@@ -708,6 +719,7 @@ export default defineComponent({
       clusterConnect,
       clusterDisconnect,
       clearBrush,
+      zoomSector,
       isNotZoomed: computed(() => transform.value.k == 1),
       resetZoom,
       zoomBrushedArea,

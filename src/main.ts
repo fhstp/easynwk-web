@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
   faBars,
   faSearchPlus,
-  faBan,
+  // faBan,
   faSearchMinus,
   faPencilAlt,
   faUserPlus,
@@ -53,7 +53,7 @@ import {
 library.add(
   faBars,
   faSearchPlus,
-  faBan,
+  // faBan,
   faSearchMinus,
   faPencilAlt,
   faUserPlus,

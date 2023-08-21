@@ -47,28 +47,11 @@
       :y2="egoCoords[1]"
     />
   </g>
-
-  <g id="sectors">
-    <text v-if="showSectors[0]" x="100" y="-100" text-anchor="end">
-      {{ Sectors[0] }}
-    </text>
-    <text v-if="showSectors[1]" x="-100" y="-100" text-anchor="start">
-      {{ Sectors[1] }}
-    </text>
-    <text v-if="showSectors[2]" x="-100" y="100" text-anchor="start">
-      {{ Sectors[2] }}
-    </text>
-    <text v-if="showSectors[3]" x="87" y="100" text-anchor="end">
-      {{ Sectors[3] }}
-    </text>
-  </g>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from "vue";
 import { useStore } from "@/store";
-
-import { Sectors } from "@/data/Sectors";
 
 // get Zoom Behavior transform as property
 // emit <nothing>
@@ -86,22 +69,12 @@ export default defineComponent({
     const egoCoords = computed(() => props.transform.apply([0, 0]));
 
     const horiRadii = computed((): { r1: number; r2: number; r3: number } => {
-      // project to viewport using center and scaleF
-      console.log("k: " + props.transform.k);
+      // project to viewport using zoomBehaviour's transform
       return {
         r1: 33.33 * props.transform.k,
         r2: 66.67 * props.transform.k,
         r3: 100 * props.transform.k,
       };
-    });
-    const showSectors = computed((): boolean[] => {
-      // project to viewport using zoomBehaviour's transform
-      const right = props.transform.applyX(10) < 100;
-      const left = props.transform.applyX(-10) > -100;
-      const bottom = props.transform.applyY(10) < 100;
-      const top = props.transform.applyY(-10) > -100;
-
-      return [right && top, left && top, left && bottom, right && bottom];
     });
 
     return {
@@ -117,9 +90,7 @@ export default defineComponent({
       // ),
       egoCoords,
       horiRadii,
-      showSectors,
       showHorizons: computed(() => store.state.view.horizons),
-      Sectors,
     };
   },
 });
@@ -160,10 +131,5 @@ circle#horizon-overlay {
   stroke: #f0f0f0;
   stroke-width: 2;
   fill: none;
-}
-
-#sectors text {
-  font-weight: bold;
-  fill: gray;
 }
 </style>
