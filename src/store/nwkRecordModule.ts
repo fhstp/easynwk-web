@@ -1,7 +1,7 @@
 import { loadNWKRecordStateFromStore } from "@/store/localStoragePlugin";
 import { IStoreState } from ".";
 import { NWKRecord, initNWKRecord, loadNWKRecord } from "@/data/NWKRecord";
-import { initNWK } from "@/data/NWK";
+import { initNWK, NWK } from "@/data/NWK";
 import { NWKVersion, initNWKVersion } from "@/data/NWKVersion";
 
 const state = JSON.parse(loadNWKRecordStateFromStore());
@@ -23,6 +23,11 @@ export const nwkRecordMutationsAtRoot = {
     // set nwk as side-effects
     // assume new history has exactly 1 empty nwk
     state.nwk = state.record.versions[0].nwk;
+  },
+
+  removeVersion(state: IStoreState, versionIndex: number): void {
+    console.log(versionIndex);
+    state.record.versions.splice(versionIndex, 1);
   },
 
   loadJSON(state: IStoreState, payload: string): void {

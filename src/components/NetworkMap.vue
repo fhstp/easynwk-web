@@ -15,24 +15,31 @@
           @click="handleCircleClick(version.id)"
         />
         <text
-          :x="`${10 + (380 / (versions.length + 1)) * (index + 1)}`"
+          :x="`${10 + (800 / (versions.length + 1)) * (index + 1)}`"
           y="35"
           text-anchor="middle"
-          font-size="12"
-          :class="{ 'text-selected': version.id === currentVersion }"
+          class="versionText"
         >
-          {{ version.name ? version.name : version.date }}
+          {{
+            version.title
+              ? version.title
+              : version.date.substring(8, 10) +
+                "." +
+                version.date.substring(5, 7) +
+                "." +
+                version.date.substring(0, 4)
+          }}
         </text>
       </a>
     </svg>
   </div>
   <div style="position: relative" v-if="showComparison">
-    <svg width="400" height="120">
+    <svg width="800" height="120">
       <!-- Increased height to accommodate text -->
-      <line x1="5" y1="50" x2="395" y2="50" class="comparisonLine"></line>
+      <line x1="5" y1="50" x2="800" y2="50" class="comparisonLine"></line>
       <a v-for="(version, index) in versions" :key="index">
         <circle
-          :cx="`${10 + (380 / (versions.length + 1)) * (index + 1)}`"
+          :cx="`${10 + (800 / (versions.length + 1)) * (index + 1)}`"
           cy="50"
           r="9"
           :class="{
@@ -41,13 +48,20 @@
           }"
         />
         <text
-          :x="`${10 + (380 / (versions.length + 1)) * (index + 1)}`"
+          :x="`${10 + (800 / (versions.length + 1)) * (index + 1)}`"
           y="35"
           text-anchor="middle"
-          font-size="12"
-          :class="{ 'text-selected': version.id === currentVersion }"
+          class="versionText"
         >
-          {{ version.name ? version.name : version.date }}
+          {{
+            version.title
+              ? version.title
+              : version.date.substring(8, 10) +
+                "." +
+                version.date.substring(5, 7) +
+                "." +
+                version.date.substring(0, 4)
+          }}
         </text>
       </a>
     </svg>
@@ -704,6 +718,10 @@ text {
   font-size: 4px;
   -webkit-user-select: none; /* Safari */
   user-select: none;
+}
+
+.versionText {
+  font-size: 12px !important;
 }
 
 text.ego {

@@ -30,7 +30,11 @@
                 </button>
 
                 <!-- @click="newVersion = !newVersion" -->
-                <button class="button" @click="duplicateNWK">
+                <button
+                  class="button"
+                  @click="duplicateNWK"
+                  @click.stop="newVersion = true"
+                >
                   <span class="icon">
                     <font-awesome-icon icon="copy" />
                   </span>
@@ -101,8 +105,18 @@
                       <span>Speichern</span>
                     </button>
 
-                    <button class="button is-light">
+                    <button
+                      class="button is-light"
+                      @click.stop="newVersion = false"
+                    >
                       <span>Abbrechen</span>
+                    </button>
+
+                    <button
+                      class="button is-danger"
+                      @click.stop="deleteVersion"
+                    >
+                      <span>Karte Löschen</span>
                     </button>
                   </div>
                 </div>
@@ -111,12 +125,30 @@
           </div>
         </div>
       </div>
-      <!-- temporary debug code -->
+
       <div class="field is-horizontal">
-        NWKs:&nbsp;
-        <span v-for="ver in versions" :key="ver.id"
-          >{{ ver.id }} ({{ ver.nwk.alteri.length }} alteri),
+        Aktuelle Karte:&nbsp;
+        <span>
+          {{ versions[currentVersion - 1].title }}
+          vom
+          {{
+            versions[currentVersion - 1].date.substring(8, 10) +
+            "." +
+            versions[currentVersion - 1].date.substring(5, 7) +
+            "." +
+            versions[currentVersion - 1].date.substring(0, 4)
+          }}&nbsp;
         </span>
+        <button
+          class="button is-small"
+          title="Ankerperson bearbeiten"
+          v-if="isOpen"
+          @click="newVersion = true"
+        >
+          <span class="icon">
+            <font-awesome-icon icon="pencil-alt" />
+          </span>
+        </button>
       </div>
     </div>
   </div>
@@ -170,6 +202,14 @@ export default defineComponent({
       newVersionDate.value = "";
     };
 
+    const deleteVersion = () => {
+      const index: any = currentVersion.value - 1;
+      store.commit("removeVersion", {
+        index,
+      });
+      store.commit("switchNWK", store.state.record.versions.length);
+    };
+
     /*
     if (store.state.record.versions.length < 2) {
       console.log(isDisabled.value);
@@ -209,6 +249,7 @@ export default defineComponent({
       newVersion: newVersion,
       newNWK: newNWK,
       //commitEdit,
+      deleteVersion,
       addNewVersion: editVersion,
       addBlankNWK: () => store.commit("addNWKVersion"),
       duplicateNWK: () => store.commit("addNWKVersion", true),
