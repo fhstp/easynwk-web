@@ -1,11 +1,11 @@
 <template>
   <div style="position: relative" v-if="changeNWK">
-    <svg width="400" height="120">
+    <svg width="800" height="120">
       <!-- Increased height to accommodate text -->
-      <line x1="5" y1="50" x2="395" y2="50" class="comparisonLine"></line>
+      <line x1="0" y1="50" x2="800" y2="50" class="comparisonLine"></line>
       <a v-for="(version, index) in versions" :key="index">
         <circle
-          :cx="`${10 + (380 / (versions.length + 1)) * (index + 1)}`"
+          :cx="`${10 + (800 / (versions.length + 1)) * (index + 1)}`"
           cy="50"
           r="9"
           :class="{
