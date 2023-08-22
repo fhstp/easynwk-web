@@ -53,12 +53,58 @@
                 </button>
 
                 <div v-if="newVersion">
-                  <ComparisonEditForm
-                    v-for="(version, i) in currentVersion"
-                    :key="version.id"
-                    :version="version"
-                    :versionIndex="i"
-                  ></ComparisonEditForm>
+                  <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                      <label class="label">Titel</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <input
+                            class="input"
+                            type="text"
+                            placeholder="Titel der aktuellen Version"
+                            v-model="newVersionTitle"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <br />
+
+                  <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                      <label class="label">Datum</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <input
+                            class="input"
+                            type="date"
+                            v-model="newVersionDate"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <br />
+
+                  <div class="buttons">
+                    <button
+                      class="button is-primary"
+                      @click="addNewVersion()"
+                      @click.stop="newVersion = false"
+                    >
+                      <span>Speichern</span>
+                    </button>
+
+                    <button class="button is-light">
+                      <span>Abbrechen</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -79,13 +125,11 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
-
-import ComparisonEditForm from "@/components/ComparisonEditForm.vue";
+import { NWKVersion } from "@/data/NWKVersion";
 
 type InputType = HTMLInputElement | HTMLTextAreaElement;
 
 export default defineComponent({
-  components: { ComparisonEditForm },
   // AR, 14 Aug 2023: prop version not needed? current version is in state.record
   /*props: {
     version: {
@@ -107,42 +151,26 @@ export default defineComponent({
 
     const newNWK = ref(false);
 
-    /*const newVersionTitle = ref(""); // To capture the "Titel" input value
+    const newVersionTitle = ref(""); // To capture the "Titel" input value
     const newVersionDate = ref(""); // To capture the "Datum" input value
 
-    const addNewVersion = () => {
-      const versionIndex: number = currentVersion.value;
+    const editVersion = () => {
+      const index: any = currentVersion.value - 1;
+      const changes: Partial<NWKVersion> = {
+        title: newVersionTitle.value,
+        date: newVersionDate.value,
+      };
+      store.commit("record/editVersion", {
+        index,
+        changes,
+      });
 
-      if (
-        versionIndex !== undefined &&
-        versionIndex >= 0 &&
-        versionIndex < store.state.record.versions.length
-      ) {
-        const changes: Partial<NWKVersion> = {
-          title: newVersionTitle.value,
-          date: newVersionDate.value,
-        };
-        store.commit("record/editVersion", {
-          versionIndex,
-          changes,
-        });
-
-        // Reset the input values
-        newVersionTitle.value = "";
-        newVersionDate.value = "";
-      } else {
-        console.error(
-          "Invalid version index:",
-          versionIndex,
-          typeof versionIndex
-        );
-        console.log(
-          typeof store.state.record.currentVersion,
-          typeof store.state.record.versions.length
-        );
-      }
+      // Reset the input values
+      newVersionTitle.value = "";
+      newVersionDate.value = "";
     };
 
+    /*
     if (store.state.record.versions.length < 2) {
       console.log(isDisabled.value);
       isDisabled.value = true;
@@ -181,11 +209,11 @@ export default defineComponent({
       newVersion: newVersion,
       newNWK: newNWK,
       //commitEdit,
-      //addNewVersion: addNewVersion,
+      addNewVersion: editVersion,
       addBlankNWK: () => store.commit("addNWKVersion"),
       duplicateNWK: () => store.commit("addNWKVersion", true),
-      //newVersionTitle,
-      //newVersionDate,
+      newVersionTitle,
+      newVersionDate,
       isDisabled: isDisabled,
       currentVersion: currentVersion,
       versions: computed(() => store.state.record.versions),
