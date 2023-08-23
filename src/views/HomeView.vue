@@ -1,9 +1,6 @@
 <template>
   <div id="container">
     <ErrorBoundary>
-      <div id="chart">
-        <NetworkMap @map-click="mapclick" />
-      </div>
       <!-- TODO use slots to separate layout from logic https://vuejs.org/v2/guide/components.html#Content-Distribution-with-Slots -->
       <div id="main">
         <div class="scrollwrapper">
@@ -27,6 +24,9 @@
             <StatisticsPanel v-if="showStatistics" />
           </div>
         </div>
+      </div>
+      <div id="chart">
+        <NetworkMap @map-click="mapclick" />
       </div>
     </ErrorBoundary>
   </div>
@@ -104,12 +104,11 @@ export default defineComponent({
   text-align: center;
   overflow: hidden;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   align-items: center;
 }
 
 #container > div {
-  display: inline-block;
   vertical-align: top;
 }
 
@@ -128,6 +127,7 @@ export default defineComponent({
   position: relative;
   /* background: aqua; */
   z-index: 1;
+  clip-path: inset(0 -100vw -100vw -100vw);
 }
 
 .scrollwrapper {
@@ -169,7 +169,7 @@ export default defineComponent({
 }
 
 #forms {
-  padding: 1px;
+  padding: 1px 3px 7px 0;
   /*            font-size: 120%; */
   flex-grow: 1;
 }
@@ -183,10 +183,12 @@ export default defineComponent({
 @media (min-width: 133vh) {
   #main {
     width: 33vmin;
+    max-width: 42rem;
+    flex: 2;
   }
 
   #container {
-    flex-direction: row-reverse;
+    flex-direction: row;
     justify-content: center;
     align-items: normal;
   }
@@ -198,6 +200,10 @@ export default defineComponent({
 
   #forms {
     overflow-y: auto;
+  }
+
+  #chart {
+    clip-path: inset(-100vw -100vw -100vw 0);
   }
 
   html {
@@ -213,18 +219,6 @@ export default defineComponent({
   body {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
-  }
-}
-
-@media (min-width: 145vh) {
-  #main {
-    width: 45vmin;
-  }
-}
-
-@media (min-width: 162vh) {
-  #main {
-    width: 62vmin;
   }
 }
 </style>
