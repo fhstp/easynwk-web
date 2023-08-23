@@ -16,6 +16,34 @@
         <div class="field-body">
           <div id="record-settings" class="field" v-if="isOpen">
             <div class="control">
+              <div class="field is-horizontal">
+                Aktuelle Karte:&nbsp;
+                <span>
+                  {{ versions[currentVersion - 1].title }}
+                  vom
+                  {{
+                    versions[currentVersion - 1].date.substring(8, 10) +
+                    "." +
+                    versions[currentVersion - 1].date.substring(5, 7) +
+                    "." +
+                    versions[currentVersion - 1].date.substring(0, 4)
+                  }}&nbsp;
+                </span>
+                <button
+                  class="button is-small"
+                  title="Ankerperson bearbeiten"
+                  v-if="isOpen"
+                  @click="
+                    newVersion = true;
+                    editText = true;
+                  "
+                >
+                  <span class="icon">
+                    <font-awesome-icon icon="pencil-alt" />
+                  </span>
+                </button>
+              </div>
+              <br />
               <div class="buttons">
                 <button
                   class="button"
@@ -55,7 +83,6 @@
                   <span v-if="!nwkcomparison">Vergleich ein</span>
                   <span v-else>Vergleich aus</span>
                 </button>
-
                 <div v-if="newVersion">
                   <div class="field is-horizontal">
                     <div class="field-label is-normal">
@@ -115,6 +142,7 @@
                     <button
                       class="button is-danger"
                       @click.stop="deleteVersion"
+                      :disabled="versions.length <= 1"
                     >
                       <span>Karte Löschen</span>
                     </button>
@@ -124,31 +152,6 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="field is-horizontal">
-        Aktuelle Karte:&nbsp;
-        <span>
-          {{ versions[currentVersion - 1].title }}
-          vom
-          {{
-            versions[currentVersion - 1].date.substring(8, 10) +
-            "." +
-            versions[currentVersion - 1].date.substring(5, 7) +
-            "." +
-            versions[currentVersion - 1].date.substring(0, 4)
-          }}&nbsp;
-        </span>
-        <button
-          class="button is-small"
-          title="Ankerperson bearbeiten"
-          v-if="isOpen"
-          @click="newVersion = true"
-        >
-          <span class="icon">
-            <font-awesome-icon icon="pencil-alt" />
-          </span>
-        </button>
       </div>
     </div>
   </div>
@@ -179,12 +182,18 @@ export default defineComponent({
 
     const newVersion = ref(false);
 
+    const editText = ref(false);
+
     const isDisabled = ref(true);
 
     const newNWK = ref(false);
 
-    const newVersionTitle = ref(""); // To capture the "Titel" input value
-    const newVersionDate = ref(""); // To capture the "Datum" input value
+    const newVersionTitle = ref(
+      store.state.record.versions[currentVersion.value - 1].title
+    );
+    const newVersionDate = ref(
+      store.state.record.versions[currentVersion.value - 1].date
+    );
 
     const editVersion = () => {
       const index: any = currentVersion.value - 1;
@@ -196,55 +205,20 @@ export default defineComponent({
         index,
         changes,
       });
-
-      // Reset the input values
-      newVersionTitle.value = "";
       newVersionDate.value = "";
     };
 
     const deleteVersion = () => {
-      const index: any = currentVersion.value - 1;
-      store.commit("removeVersion", {
-        index,
-      });
-      store.commit("switchNWK", store.state.record.versions.length);
+      const index: number = currentVersion.value - 1;
+      store.commit("removeCurrentVersion", index);
     };
-
-    /*
-    if (store.state.record.versions.length < 2) {
-      console.log(isDisabled.value);
-      isDisabled.value = true;
-    } else {
-      isDisabled.value = false;
-    }
-
-    const addingNewVersion = ref(!(props.version?.date.length > 0));
-
-    const cancelAddVersion = () => {
-      if (addingNewVersion.value) {
-        store.commit("cancelAddVersion", store.state.view.editIndex);
-      }
-    };
-
-
-
-
-
-    const commitEdit = (evt: FocusEvent, field: keyof NWKVersion) => {
-      const value = (evt.target as InputType).value.trim();
-      if (props.version && value !== props.version[field]) {
-        const changes = { [field]: value };
-        const payload = { index: store.state.view.editIndex, changes };
-        store.commit("editVersion", payload);
-      }
-    };
-     */
 
     return {
       nwkcomparison: computed(() => store.state.view.nwkcomparison),
       nwkchange: computed(() => store.state.view.nwkchange),
       toggleComparison: () => store.commit("view/toggle", "nwkcomparison"),
       toggleChange: () => store.commit("view/toggle", "nwkchange"),
+      editText: editText,
       isOpen: isOpen,
       newVersion: newVersion,
       newNWK: newNWK,

@@ -25,9 +25,24 @@ export const nwkRecordMutationsAtRoot = {
     state.nwk = state.record.versions[0].nwk;
   },
 
-  removeVersion(state: IStoreState, versionIndex: number): void {
-    console.log(versionIndex);
-    state.record.versions.splice(versionIndex, 1);
+  removeCurrentVersion(state: IStoreState, index: number): void {
+    if (state.record.versions.length > 1) {
+      console.table(state.record.versions);
+      console.log(state.record.currentVersion);
+      state.record.versions.splice(index, 1);
+      console.table(state.record.versions);
+
+      const newVersion = state.record.versions.find(
+        (d) => d.id === state.record.versions.length - 1
+      );
+      if (newVersion) {
+        state.nwk = newVersion.nwk;
+        state.record.currentVersion = newVersion.id;
+        console.log("new version id: " + newVersion.id);
+      }
+    } else {
+      console.log("No version to delete");
+    }
   },
 
   loadJSON(state: IStoreState, payload: string): void {
