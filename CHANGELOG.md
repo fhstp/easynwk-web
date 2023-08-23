@@ -1,5 +1,9 @@
 # easyNWK Version History
 
+## version 2.0.6, released 25 Aug 2023
+
+* (feature) zoom with brushbox, mouse wheel, and sector labels [#103](https://github.com/fhstp/easynwk-web/issues/103)
+
 ## version 2.0.5, released 14 Aug 2023
 
 * (usability) sort alters in connectionlist form by name alphabethically [#110](https://github.com/fhstp/easynwk-web/issues/110)
