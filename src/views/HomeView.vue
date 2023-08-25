@@ -140,7 +140,7 @@ export default defineComponent({
   background: $fhstpblue; /* #005096; /* $light; */
   color: white;
   padding: 1vmin 1vmin 0.3rem 1vmin;
-  margin: 1rem 1px 0 1px;
+  margin: 0.5rem 1px 0 1px;
   border-radius: 6px 6px 0 0;
   flex-shrink: 0;
 
@@ -153,7 +153,7 @@ export default defineComponent({
   font-size: 1rem;
   background: $color-primary-1; /* hsl(32, 100%, 50%); /* $light; */
   padding: 0.5rem 1vmin 1vmin 1vmin;
-  margin: 0 1px 1rem 1px;
+  margin: 0 1px 0.7rem 1px;
   border-radius: 0 0 6px 6px;
 }
 

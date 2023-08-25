@@ -23,8 +23,8 @@
     <button
       class="button is-small"
       title="Vollbildmodus"
-      @click="fullScreen"
-      :v-if="canFullscreen"
+      @click="toggleFullScreen"
+      v-if="canFullscreen()"
     >
       <span class="icon">
         <font-awesome-icon
@@ -53,32 +53,47 @@ export default defineComponent({
 
     const isFullScreen = ref(false);
 
+    const toggleFullScreen = () => {
+      if (isFullScreen.value) {
+        // switch FROM FULLSCREEN TO NORMAL
+        if (document.exitFullscreen) {
+          document.exitFullscreen().then(() => {
+            isFullScreen.value = false;
+          });
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        else if ((document as any).webkitCancelFullScreen) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (document as any).webkitCancelFullScreen();
+          isFullScreen.value = false;
+        }
+      } else {
+        // switch TO FULLSCREEN
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const elem = document.documentElement as any;
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen().then(() => {
+            isFullScreen.value = true;
+          });
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+          isFullScreen.value = true;
+        } else if (elem.webkitEnterFullScreen) {
+          elem.webkitEnterFullScreen();
+        }
+      }
+    };
+
     return {
       canUndo,
       canRedo,
       undo: () => store.commit("unredo/undo"),
       redo: () => store.commit("unredo/redo"),
       isFullScreen,
-      canFullscreen: () => document.fullscreenEnabled,
-      fullScreen: () => {
-        if (
-          window.innerWidth == screen.width &&
-          window.innerHeight == screen.height
-        ) {
-          console.log("from full");
-          document.exitFullscreen().then(() => {
-            isFullScreen.value = false;
-          });
-        } else {
-          console.log("to full");
-          const elem = document.documentElement;
-          if (elem.requestFullscreen) {
-            elem.requestFullscreen().then(() => {
-              isFullScreen.value = true;
-            });
-          }
-        }
-      },
+      canFullscreen: () =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        document.fullscreenEnabled || (document as any).webkitFullscreenEnabled,
+      toggleFullScreen,
     };
   },
 });
