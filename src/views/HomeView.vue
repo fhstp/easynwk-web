@@ -123,7 +123,7 @@ export default defineComponent({
 
 #chart {
   width: 99vmin;
-  height: 100vmin;
+  max-height: 100svh;
   position: relative;
   /* background: aqua; */
   z-index: 1;
@@ -194,7 +194,7 @@ export default defineComponent({
   }
 
   .scrollwrapper {
-    height: 100vmin;
+    height: 100svh;
     flex: 1;
   }
 
