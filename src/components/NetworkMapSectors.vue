@@ -1,41 +1,29 @@
 <template>
   <g id="sectors">
-    <text
-      v-if="showSectors[0]"
-      x="100"
-      y="-100"
-      text-anchor="end"
-      @click="$emit('zoom-sector', 1, -1)"
-    >
-      {{ Sectors[0] }}
-    </text>
-    <text
-      v-if="showSectors[1]"
-      x="-100"
-      y="-100"
-      text-anchor="start"
-      @click="$emit('zoom-sector', -1, -1)"
-    >
-      {{ Sectors[1] }}
-    </text>
-    <text
-      v-if="showSectors[2]"
-      x="-100"
-      y="100"
-      text-anchor="start"
-      @click="$emit('zoom-sector', -1, 1)"
-    >
-      {{ Sectors[2] }}
-    </text>
-    <text
-      v-if="showSectors[3]"
-      x="87"
-      y="100"
-      text-anchor="end"
-      @click="$emit('zoom-sector', 1, 1)"
-    >
-      {{ Sectors[3] }}
-    </text>
+    <g @click="$emit('zoom-sector', 1, -1)" v-if="showSectors[0]">
+      <rect x="80" width="21" y="-106" height="11" />
+      <text x="100" y="-100" text-anchor="end">
+        {{ Sectors[0] }}
+      </text>
+    </g>
+    <g @click="$emit('zoom-sector', -1, -1)" v-if="showSectors[1]">
+      <rect x="-101" width="50" y="-106" height="11" />
+      <text x="-100" y="-100" text-anchor="start">
+        {{ Sectors[1] }}
+      </text>
+    </g>
+    <g @click="$emit('zoom-sector', -1, 1)" v-if="showSectors[2]">
+      <rect x="-101" width="30" y="95" height="11" />
+      <text x="-100" y="101" text-anchor="start">
+        {{ Sectors[2] }}
+      </text>
+    </g>
+    <g @click="$emit('zoom-sector', 1, 1)" v-if="showSectors[3]">
+      <rect x="50" width="40" y="95" height="11" />
+      <text x="87" y="101" text-anchor="end">
+        {{ Sectors[3] }}
+      </text>
+    </g>
   </g>
 </template>
 
@@ -86,6 +74,12 @@ text {
 #sectors text {
   font-weight: bold;
   fill: gray;
+  cursor: zoom-in;
+}
+
+rect {
+  fill: white;
+  fill-opacity: 0.25;
   cursor: zoom-in;
 }
 </style>

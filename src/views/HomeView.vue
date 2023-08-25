@@ -169,7 +169,7 @@ export default defineComponent({
 }
 
 #forms {
-  padding: 1px 3px 7px 0;
+  padding: 1px 3px 7px 1px;
   /*            font-size: 120%; */
   flex-grow: 1;
 }
