@@ -48,6 +48,7 @@ export const nwkRecordMutationsAtRoot = {
         if (newVersion) {
           state.nwk = newVersion.nwk;
           console.log("new version id: " + newVersion.id);
+          console.log("current version id: " + state.record.currentVersion);
         }
       }
     } else {
@@ -125,8 +126,8 @@ function editVersion(
 ): void {
   if (
     versionIndex != null &&
-    versionIndex >= 0 &&
-    versionIndex < state.versions.length
+    versionIndex >= 0
+    //&& versionIndex < state.versions.length
   ) {
     // based on vuex\examples\composition\todomvc\store\mutations.js
     // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>

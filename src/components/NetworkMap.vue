@@ -12,7 +12,7 @@
             comparisonCircle: version.id !== currentVersion,
             'comparisonCircle-selected': version.id === currentVersion,
           }"
-          @click="handleCircleClick(version.id)"
+          @click="() => handleCircleClick(version.id)"
         />
         <text
           :x="`${10 + (800 / (versions.length + 1)) * (index + 1)}`"
@@ -561,7 +561,13 @@ export default defineComponent({
     };
 
     function handleCircleClick(versionId: number) {
-      if (versionId !== store.state.record.currentVersion) {
+      const clickedVersion = versions.value.find(
+        (version) =>
+          version.id === versionId &&
+          versionId !== store.state.record.currentVersion
+      );
+      if (clickedVersion) {
+        console.log(`Clicked version: ${clickedVersion.title}`);
         store.commit("switchNWK", versionId);
         console.log("Changed Version");
       }

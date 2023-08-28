@@ -19,14 +19,14 @@
               <div class="field is-horizontal">
                 Aktuelle Karte:&nbsp;
                 <span v-if="versions.length && currentVersion > 0">
-                  {{ versions[currentVersion - 1]?.title || "" }}
+                  {{ versions[visibleVersion]?.title || "" }}
                   vom
                   {{
-                    versions[currentVersion - 1]?.date?.substring(8, 10) +
+                    versions[visibleVersion]?.date?.substring(8, 10) +
                     "." +
-                    versions[currentVersion - 1]?.date?.substring(5, 7) +
+                    versions[visibleVersion]?.date?.substring(5, 7) +
                     "." +
-                    versions[currentVersion - 1]?.date?.substring(0, 4)
+                    versions[visibleVersion]?.date?.substring(0, 4)
                   }}&nbsp;
                 </span>
                 <button
@@ -178,6 +178,12 @@ export default defineComponent({
 
     const currentVersion = computed(() => store.state.record.currentVersion);
 
+    const visibleVersion = computed(() =>
+      store.state.record.versions.findIndex(
+        (version) => version.id === currentVersion.value
+      )
+    );
+
     const isOpen = ref(false);
 
     const newVersion = ref(false);
@@ -188,16 +194,22 @@ export default defineComponent({
 
     const newNWK = ref(false);
 
+    const versions = computed(() => store.state.record.versions);
+
     const newVersionTitle = ref(
-      store.state.record.versions[currentVersion.value - 1].title
+      store.state.record.versions[
+        versions.value.findIndex(
+          (version) => version.id === currentVersion.value
+        )
+      ].title
     );
     const today = new Date().toISOString().substr(0, 10);
     let newVersionDate = ref(today);
 
-    const versions = computed(() => store.state.record.versions);
-
     watch(currentVersion, () => {
-      const versionIndex = currentVersion.value - 1;
+      const versionIndex = versions.value.findIndex(
+        (version) => version.id === currentVersion.value
+      );
       if (versionIndex >= 0 && versionIndex < versions.value.length) {
         newVersionTitle.value = versions.value[versionIndex].title;
         if (versions.value[versionIndex].date) {
@@ -244,6 +256,7 @@ export default defineComponent({
       newVersionDate,
       isDisabled: isDisabled,
       currentVersion: currentVersion,
+      visibleVersion: visibleVersion,
       versions: computed(() => store.state.record.versions),
       //commitEdit,
       //cancelAddVersion,
