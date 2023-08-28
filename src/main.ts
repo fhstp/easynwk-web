@@ -14,6 +14,9 @@ import {
   faBars,
   faFileAlt,
   faPlusCircle,
+  faSearchPlus,
+  // faBan,
+  faSearchMinus,
   faPencilAlt,
   faUserPlus,
   faMapPin,
@@ -34,6 +37,8 @@ import {
   // faRedoAlt,
   faUndo,
   faRedo,
+  faExpandArrowsAlt,
+  faCompressArrowsAlt,
   faChartBar,
   faUserSecret,
   faRss,
@@ -47,13 +52,15 @@ import {
   faLink,
   faUnlink,
   faArrowsAlt,
-  faCompressArrowsAlt,
   faCopy,
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
   faBars,
   faExchangeAlt,
   faFileAlt,
+  faSearchPlus,
+  // faBan,
+  faSearchMinus,
   faPencilAlt,
   faPlusCircle,
   faCopy,
@@ -76,6 +83,8 @@ library.add(
   // faRedoAlt,
   faUndo,
   faRedo,
+  faExpandArrowsAlt,
+  faCompressArrowsAlt,
   faChartBar,
   faUserSecret,
   faRss,
@@ -88,8 +97,7 @@ library.add(
   faInfo,
   faLink,
   faUnlink,
-  faArrowsAlt,
-  faCompressArrowsAlt
+  faArrowsAlt
 );
 
 // Vue.component("font-awesome-icon", FontAwesomeIcon);

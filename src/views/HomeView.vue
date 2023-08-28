@@ -105,11 +105,13 @@ export default defineComponent({
   background: white;
   margin: 0;
   text-align: center;
-  overflow: none;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #container > div {
-  display: inline-block;
   vertical-align: top;
 }
 
@@ -119,13 +121,16 @@ export default defineComponent({
   /*            background: hsl(0, 0%, 96%); /* $light; */
   text-align: left;
   overflow: none;
+  z-index: 2;
 }
 
 #chart {
   width: 99vmin;
-  height: 100vmin;
+  max-height: 100svh;
   position: relative;
   /* background: aqua; */
+  z-index: 1;
+  clip-path: inset(0 -100vw -100vw -100vw);
 }
 
 .scrollwrapper {
@@ -138,7 +143,7 @@ export default defineComponent({
   background: $fhstpblue; /* #005096; /* $light; */
   color: white;
   padding: 1vmin 1vmin 0.3rem 1vmin;
-  margin: 1rem 1px 0 1px;
+  margin: 0.5rem 1px 0 1px;
   border-radius: 6px 6px 0 0;
   flex-shrink: 0;
 
@@ -151,7 +156,7 @@ export default defineComponent({
   font-size: 1rem;
   background: $color-primary-1; /* hsl(32, 100%, 50%); /* $light; */
   padding: 0.5rem 1vmin 1vmin 1vmin;
-  margin: 0 1px 1rem 1px;
+  margin: 0 1px 0.7rem 1px;
   border-radius: 0 0 6px 6px;
 }
 
@@ -167,7 +172,7 @@ export default defineComponent({
 }
 
 #forms {
-  padding: 1px;
+  padding: 1px 3px 7px 1px;
   /*            font-size: 120%; */
   flex-grow: 1;
 }
@@ -181,15 +186,27 @@ export default defineComponent({
 @media (min-width: 133vh) {
   #main {
     width: 33vmin;
+    max-width: 42rem;
+    flex: 2;
+  }
+
+  #container {
+    flex-direction: row;
+    justify-content: center;
+    align-items: normal;
   }
 
   .scrollwrapper {
-    height: 100vmin;
+    height: 100svh;
     flex: 1;
   }
 
   #forms {
     overflow-y: auto;
+  }
+
+  #chart {
+    clip-path: inset(-100vw -100vw -100vw 0);
   }
 
   html {
@@ -205,18 +222,6 @@ export default defineComponent({
   body {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
-  }
-}
-
-@media (min-width: 145vh) {
-  #main {
-    width: 45vmin;
-  }
-}
-
-@media (min-width: 162vh) {
-  #main {
-    width: 62vmin;
   }
 }
 </style>

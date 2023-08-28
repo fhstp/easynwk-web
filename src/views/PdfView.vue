@@ -102,8 +102,9 @@ export default defineComponent({
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let hor: any = useRouter().currentRoute.value.query.hor;
-      hor = /true/i.test(hor);
-      hor ? "" : store.commit("view/toggle", "horizons");
+      if (/true/i.test(hor)) {
+        store.commit("view/enable", "horizons");
+      }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let con: any = useRouter().currentRoute.value.query.con;
@@ -182,8 +183,24 @@ export default defineComponent({
   background: none;
 }
 .page {
-  margin: 2em 4em 2em;
+  margin-left: 4em;
+  padding: 2em 0em 0em;
 }
+
+@media screen and (min-width: 133vh) {
+  .page {
+    display: flex;
+    flex-direction: column;
+    height: 100vmin;
+  }
+  #print {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: none;
+    padding-right: 1em;
+  }
+}
+
 @media print {
   #printinfo {
     display: none;
