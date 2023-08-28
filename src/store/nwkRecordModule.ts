@@ -25,20 +25,30 @@ export const nwkRecordMutationsAtRoot = {
     state.nwk = state.record.versions[0].nwk;
   },
 
-  removeCurrentVersion(state: IStoreState, index: number): void {
-    if (state.record.versions.length > 1) {
-      console.table(state.record.versions);
-      console.log(state.record.currentVersion);
-      state.record.versions.splice(index, 1);
-      console.table(state.record.versions);
+  removeCurrentVersion(state: IStoreState): void {
+    const versionsLength = state.record.versions.length;
 
-      const newVersion = state.record.versions.find(
-        (d) => d.id === state.record.versions.length - 1
+    if (versionsLength > 1) {
+      const currentVersionIndex = state.record.versions.findIndex(
+        (d) => d.id === state.record.currentVersion
       );
-      if (newVersion) {
-        state.nwk = newVersion.nwk;
-        state.record.currentVersion = newVersion.id;
-        console.log("new version id: " + newVersion.id);
+
+      if (currentVersionIndex >= 0) {
+        state.record.versions.splice(currentVersionIndex, 1);
+
+        // Update currentVersion to the last available version
+        state.record.currentVersion =
+          state.record.versions[versionsLength - 2].id;
+
+        // Update nwk with the new current version's data
+        const newVersion = state.record.versions.find(
+          (d) => d.id === state.record.currentVersion
+        );
+
+        if (newVersion) {
+          state.nwk = newVersion.nwk;
+          console.log("new version id: " + newVersion.id);
+        }
       }
     } else {
       console.log("No version to delete");

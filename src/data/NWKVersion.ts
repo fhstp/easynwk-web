@@ -13,7 +13,7 @@ export function initNWKVersion(): NWKVersion {
   return {
     id: DEFAULT_NWK_VERSION,
     title: "",
-    date: "2023-08-23",
+    date: "",
     nwk: initNWK(),
   };
 }

@@ -18,15 +18,15 @@
             <div class="control">
               <div class="field is-horizontal">
                 Aktuelle Karte:&nbsp;
-                <span>
-                  {{ versions[currentVersion - 1].title }}
+                <span v-if="versions.length && currentVersion > 0">
+                  {{ versions[currentVersion - 1]?.title || "" }}
                   vom
                   {{
-                    versions[currentVersion - 1].date.substring(8, 10) +
+                    versions[currentVersion - 1]?.date?.substring(8, 10) +
                     "." +
-                    versions[currentVersion - 1].date.substring(5, 7) +
+                    versions[currentVersion - 1]?.date?.substring(5, 7) +
                     "." +
-                    versions[currentVersion - 1].date.substring(0, 4)
+                    versions[currentVersion - 1]?.date?.substring(0, 4)
                   }}&nbsp;
                 </span>
                 <button
@@ -158,7 +158,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useStore } from "@/store";
 import { NWKVersion } from "@/data/NWKVersion";
 
@@ -191,9 +191,22 @@ export default defineComponent({
     const newVersionTitle = ref(
       store.state.record.versions[currentVersion.value - 1].title
     );
-    const newVersionDate = ref(
-      store.state.record.versions[currentVersion.value - 1].date
-    );
+    const today = new Date().toISOString().substr(0, 10);
+    let newVersionDate = ref(today);
+
+    const versions = computed(() => store.state.record.versions);
+
+    watch(currentVersion, () => {
+      const versionIndex = currentVersion.value - 1;
+      if (versionIndex >= 0 && versionIndex < versions.value.length) {
+        newVersionTitle.value = versions.value[versionIndex].title;
+        if (versions.value[versionIndex].date) {
+          newVersionDate.value = versions.value[versionIndex].date;
+        } else {
+          newVersionDate.value = today;
+        }
+      }
+    });
 
     const editVersion = () => {
       const index: any = currentVersion.value - 1;
