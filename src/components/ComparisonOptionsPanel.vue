@@ -19,19 +19,20 @@
               <div class="field is-horizontal">
                 Aktuelle Karte:&nbsp;
                 <span v-if="versions.length && currentVersion >= 0">
-                  {{ versions[visibleVersion]?.title || "" }}
+                  {{ visibleNWKVersion?.title || "" }}
                   vom
+                  <!-- TODO use internationalizable date formater -->
                   {{
-                    versions[visibleVersion]?.date?.substring(8, 10) +
+                    visibleNWKVersion?.date?.substring(8, 10) +
                     "." +
-                    versions[visibleVersion]?.date?.substring(5, 7) +
+                    visibleNWKVersion?.date?.substring(5, 7) +
                     "." +
-                    versions[visibleVersion]?.date?.substring(0, 4)
+                    visibleNWKVersion?.date?.substring(0, 4)
                   }}&nbsp;
                 </span>
                 <button
                   class="button is-small"
-                  title="Ankerperson bearbeiten"
+                  title="Metadaten der Karte bearbeiten"
                   v-if="isOpen"
                   @click="
                     newVersion = true;
@@ -76,6 +77,7 @@
                   <span>Karte wechseln</span>
                 </button>
 
+                <!-- TODO hide comparison button before merging into main -->
                 <button class="button" @click.stop="toggleComparison">
                   <span class="icon">
                     <font-awesome-icon icon="compress-arrows-alt" />
@@ -138,9 +140,11 @@
                     class="button is-light"
                     @click.stop="newVersion = false"
                   >
+                    <!-- TODO Abbrechen does not clear the refs used in the text fields -->
                     <span>Abbrechen</span>
                   </button>
 
+                  <!-- TODO move state updates into handler functions? -->
                   <button
                     class="button is-danger"
                     @click="deleteVersion"
@@ -180,8 +184,9 @@ export default defineComponent({
 
     const currentVersion = computed(() => store.state.record.currentVersion);
 
-    const visibleVersion = computed(() =>
-      store.state.record.versions.findIndex(
+    /** the NWKVersion object of the currently visible version */
+    const visibleNWKVersion = computed(() =>
+      store.state.record.versions.find(
         (version) => version.id === currentVersion.value
       )
     );
@@ -194,32 +199,17 @@ export default defineComponent({
 
     const isDisabled = ref(true);
 
-    const newNWK = ref(false);
+    const newNWK = ref(false); // TODO needed?
 
     const versions = computed(() => store.state.record.versions);
 
-    const newVersionTitle = ref(
-      store.state.record.versions[
-        versions.value.findIndex(
-          (version) => version.id === currentVersion.value
-        )
-      ].title
-    );
-    const today = new Date().toISOString().substr(0, 10);
-    let newVersionDate = ref(today);
+    const newVersionTitle = ref(visibleNWKVersion.value?.title);
+    const newVersionDate = ref(visibleNWKVersion.value?.date);
 
-    watch(currentVersion, () => {
-      const versionIndex = versions.value.findIndex(
-        (version) => version.id === currentVersion.value
-      );
-      if (versionIndex >= 0 && versionIndex < versions.value.length) {
-        newVersionTitle.value = versions.value[versionIndex].title;
-        if (versions.value[versionIndex].date) {
-          newVersionDate.value = versions.value[versionIndex].date;
-        } else {
-          newVersionDate.value = today;
-        }
-      }
+    // local copy of NWKVersion metadata needs to be updated
+    watch(visibleNWKVersion, () => {
+      newVersionTitle.value = visibleNWKVersion.value?.title;
+      newVersionDate.value = visibleNWKVersion.value?.date;
     });
 
     const editVersion = () => {
@@ -234,11 +224,11 @@ export default defineComponent({
         index,
         changes,
       });
-      newVersionDate.value = "";
+      // newVersionDate.value = ""; // TODO AR 29 Aug 2023 why???
     };
 
     const deleteVersion = () => {
-      const index: number = currentVersion.value - 1;
+      const index: number = currentVersion.value - 1; // TODO AR 29 Aug 2023 bad smell, check!
       store.commit("removeCurrentVersion", index);
     };
 
@@ -260,7 +250,7 @@ export default defineComponent({
       newVersionDate,
       isDisabled: isDisabled,
       currentVersion: currentVersion,
-      visibleVersion: visibleVersion,
+      visibleNWKVersion,
       versions: computed(() => store.state.record.versions),
       //commitEdit,
       //cancelAddVersion,

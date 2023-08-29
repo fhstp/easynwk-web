@@ -13,7 +13,7 @@ export function initNWKVersion(): NWKVersion {
   return {
     id: DEFAULT_NWK_VERSION,
     title: "",
-    date: "",
+    date: new Date().toISOString().substring(0, 10),
     nwk: initNWK(),
   };
 }
