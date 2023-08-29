@@ -18,7 +18,7 @@
             <div class="control">
               <div class="field is-horizontal">
                 Aktuelle Karte:&nbsp;
-                <span v-if="versions.length && currentVersion >= 0">
+                <span v-if="versions.length && currentVersion > 0">
                   {{ versions[visibleVersion]?.title || "" }}
                   vom
                   {{

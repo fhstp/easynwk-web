@@ -1,6 +1,6 @@
 <template>
-  <div style="position: relative" v-if="changeNWK || showComparison">
-    <svg width="100%" height="120">
+  <div style="position: relative" v-if="changeNWK">
+    <svg width="100%" height="80">
       <!-- Increased height to accommodate text -->
       <line x1="0" y1="50" x2="100%" y2="50" class="comparisonLine"></line>
       <a v-for="(version, index) in versions" :key="index">
@@ -14,17 +14,6 @@
             'comparisonCircle-selected': version.id === currentVersion,
           }"
           @click="() => handleCircleClick(version.id)"
-        />
-        <circle
-          v-if="showComparison"
-          :cx="`${1 + (100 / (versions.length + 1)) * (index + 1)}` + '%'"
-          cy="50"
-          r="9"
-          :class="{
-            comparisonCircle: version.id !== currentVersion,
-            'comparisonCircle-selected': version.id === currentVersion,
-          }"
-          @click="() => handleComparisonClick(version.id)"
         />
         <text
           :x="`${1 + (100 / (versions.length + 1)) * (index + 1)}` + '%'"
@@ -45,7 +34,16 @@
       </a>
     </svg>
   </div>
-  <svg id="nwkmap" width="100%" height="100%" viewBox="-106 -106 212 212">
+  <div v-if="showComparison">
+    <ComparisonNWK />
+  </div>
+  <svg
+    id="nwkmap"
+    width="100%"
+    height="100%"
+    viewBox="-106 -106 212 212"
+    v-if="!showComparison"
+  >
     <defs>
       <symbol id="square" viewBox="-1.5 -1.5 3 3">
         <rect x="-0.886" y="-0.886" width="1.772" height="1.772" />
@@ -295,6 +293,7 @@ import { SYMBOL_DECEASED } from "@/assets/utils";
 import { getRoleAbbrev } from "../data/Roles";
 import { brushSelection, D3BrushEvent } from "d3";
 import { zoom, ZoomTransform, zoomIdentity } from "d3-zoom";
+import ComparisonNWK from "@/components/ComparisonNWK.vue";
 
 interface AlterMark {
   d: Alter;
@@ -318,7 +317,7 @@ interface ConnectionMark {
 // emit "map-click" (which is not currently used)
 
 export default defineComponent({
-  components: { NetworkMapCoordinates, NetworkMapSectors },
+  components: { ComparisonNWK, NetworkMapCoordinates, NetworkMapSectors },
   emits: ["map-click"],
 
   setup: function (props, { emit }) {
