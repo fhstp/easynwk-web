@@ -56,7 +56,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
   faBars,
-  faExchangeAlt,
   faFileAlt,
   faSearchPlus,
   // faBan,
