@@ -18,7 +18,7 @@
             <div class="control">
               <div class="field is-horizontal">
                 Aktuelle Karte:&nbsp;
-                <span v-if="versions.length && currentVersion > 0">
+                <span v-if="versions.length && currentVersion >= 0">
                   {{ versions[visibleVersion]?.title || "" }}
                   vom
                   {{
@@ -44,7 +44,7 @@
                 </button>
               </div>
               <br />
-              <div class="buttons">
+              <div class="buttons" v-if="!newVersion">
                 <button
                   class="button"
                   @click="addBlankNWK"
@@ -83,70 +83,72 @@
                   <span v-if="!nwkcomparison">Vergleich ein</span>
                   <span v-else>Vergleich aus</span>
                 </button>
-                <div v-if="newVersion">
-                  <div class="field is-horizontal">
-                    <div class="field-label is-normal">
-                      <label class="label">Titel</label>
-                    </div>
-                    <div class="field-body">
-                      <div class="field">
-                        <div class="control">
-                          <input
-                            class="input"
-                            type="text"
-                            placeholder="Titel der aktuellen Version"
-                            v-model="newVersionTitle"
-                          />
-                        </div>
+              </div>
+
+              <div v-if="newVersion">
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Titel</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <input
+                          class="input"
+                          type="text"
+                          placeholder="Titel der aktuellen Version"
+                          v-model="newVersionTitle"
+                        />
                       </div>
                     </div>
                   </div>
+                </div>
 
-                  <br />
+                <br />
 
-                  <div class="field is-horizontal">
-                    <div class="field-label is-normal">
-                      <label class="label">Datum</label>
-                    </div>
-                    <div class="field-body">
-                      <div class="field">
-                        <div class="control">
-                          <input
-                            class="input"
-                            type="date"
-                            v-model="newVersionDate"
-                          />
-                        </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Datum</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <input
+                          class="input"
+                          type="date"
+                          v-model="newVersionDate"
+                        />
                       </div>
                     </div>
                   </div>
+                </div>
 
-                  <br />
+                <br />
 
-                  <div class="buttons">
-                    <button
-                      class="button is-primary"
-                      @click="addNewVersion()"
-                      @click.stop="newVersion = false"
-                    >
-                      <span>Speichern</span>
-                    </button>
+                <div class="buttons">
+                  <button
+                    class="button is-primary"
+                    @click="addNewVersion()"
+                    @click.stop="newVersion = false"
+                  >
+                    <span>Speichern</span>
+                  </button>
 
-                    <button
-                      class="button is-light"
-                      @click.stop="newVersion = false"
-                    >
-                      <span>Abbrechen</span>
-                    </button>
+                  <button
+                    class="button is-light"
+                    @click.stop="newVersion = false"
+                  >
+                    <span>Abbrechen</span>
+                  </button>
 
-                    <button
-                      class="button is-danger"
-                      @click.stop="deleteVersion"
-                      :disabled="versions.length <= 1"
-                    >
-                      <span>Karte Löschen</span>
-                    </button>
-                  </div>
+                  <button
+                    class="button is-danger"
+                    @click="deleteVersion"
+                    @click.stop="newVersion = false"
+                    :disabled="versions.length <= 1"
+                  >
+                    <span>Karte Löschen</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -158,11 +160,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, watch } from "vue";
+import { defineComponent, ref, computed, watch } from "vue";
 import { useStore } from "@/store";
 import { NWKVersion } from "@/data/NWKVersion";
 
-type InputType = HTMLInputElement | HTMLTextAreaElement;
+//type InputType = HTMLInputElement | HTMLTextAreaElement;
 
 export default defineComponent({
   // AR, 14 Aug 2023: prop version not needed? current version is in state.record
@@ -221,7 +223,9 @@ export default defineComponent({
     });
 
     const editVersion = () => {
-      const index: any = currentVersion.value - 1;
+      const index: number = versions.value.findIndex(
+        (version) => version.id === currentVersion.value
+      );
       const changes: Partial<NWKVersion> = {
         title: newVersionTitle.value,
         date: newVersionDate.value,

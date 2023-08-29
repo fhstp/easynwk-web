@@ -1,11 +1,12 @@
 <template>
-  <div style="position: relative" v-if="changeNWK">
-    <svg width="800" height="120">
+  <div style="position: relative" v-if="changeNWK || showComparison">
+    <svg width="100%" height="120">
       <!-- Increased height to accommodate text -->
-      <line x1="0" y1="50" x2="800" y2="50" class="comparisonLine"></line>
+      <line x1="0" y1="50" x2="100%" y2="50" class="comparisonLine"></line>
       <a v-for="(version, index) in versions" :key="index">
         <circle
-          :cx="`${10 + (800 / (versions.length + 1)) * (index + 1)}`"
+          v-if="changeNWK"
+          :cx="`${1 + (100 / (versions.length + 1)) * (index + 1)}` + '%'"
           cy="50"
           r="9"
           :class="{
@@ -14,41 +15,19 @@
           }"
           @click="() => handleCircleClick(version.id)"
         />
-        <text
-          :x="`${10 + (800 / (versions.length + 1)) * (index + 1)}`"
-          y="35"
-          text-anchor="middle"
-          class="versionText"
-        >
-          {{
-            version.title
-              ? version.title
-              : version.date.substring(8, 10) +
-                "." +
-                version.date.substring(5, 7) +
-                "." +
-                version.date.substring(0, 4)
-          }}
-        </text>
-      </a>
-    </svg>
-  </div>
-  <div style="position: relative" v-if="showComparison">
-    <svg width="800" height="120">
-      <!-- Increased height to accommodate text -->
-      <line x1="5" y1="50" x2="800" y2="50" class="comparisonLine"></line>
-      <a v-for="(version, index) in versions" :key="index">
         <circle
-          :cx="`${10 + (800 / (versions.length + 1)) * (index + 1)}`"
+          v-if="showComparison"
+          :cx="`${1 + (100 / (versions.length + 1)) * (index + 1)}` + '%'"
           cy="50"
           r="9"
           :class="{
             comparisonCircle: version.id !== currentVersion,
             'comparisonCircle-selected': version.id === currentVersion,
           }"
+          @click="() => handleComparisonClick(version.id)"
         />
         <text
-          :x="`${10 + (800 / (versions.length + 1)) * (index + 1)}`"
+          :x="`${1 + (100 / (versions.length + 1)) * (index + 1)}` + '%'"
           y="35"
           text-anchor="middle"
           class="versionText"
@@ -66,7 +45,6 @@
       </a>
     </svg>
   </div>
-
   <svg id="nwkmap" width="100%" height="100%" viewBox="-106 -106 212 212">
     <defs>
       <symbol id="square" viewBox="-1.5 -1.5 3 3">
@@ -416,7 +394,7 @@ export default defineComponent({
 
         // re-scale brush selection
         const brushElement = d3.select("#nwkmap g#brush").node() as SVGGElement;
-        if (brush && brushElement && brushSelection(brushElement)) {
+        if (brushElement && brushSelection(brushElement)) {
           const myExtent = [
             transform.value.apply(brushAbsoluteCoords[0]),
             transform.value.apply(brushAbsoluteCoords[1]),
@@ -704,6 +682,18 @@ export default defineComponent({
       }
     }
 
+    function handleComparisonClick(versionId: number) {
+      const clickedVersion = versions.value.find(
+        (version) =>
+          version.id === versionId &&
+          versionId !== store.state.record.currentVersion
+      );
+      console.log(
+        "Click for Comparison - not yet implemented! Clicked Version: " +
+          clickedVersion
+      );
+    }
+
     let clickTimeoutId: number | null = null;
     const clickAlter = (alter: Alter) => {
       if (isConnectMode.value && store.state.view.editIndex != null) {
@@ -830,6 +820,7 @@ export default defineComponent({
       versions,
       currentVersion,
       handleCircleClick,
+      handleComparisonClick,
       zoomSector,
       isNotZoomed: computed(() => transform.value.k == 1),
       resetZoom,
