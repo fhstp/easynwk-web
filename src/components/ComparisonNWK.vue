@@ -33,27 +33,34 @@
       </a>
     </svg>
   </div>
-  <svg
-    id="nwkmap"
-    ref="svgElement"
-    width="100%"
-    height="100%"
-    viewBox="-106 -106 212 212"
+  <div
+    class="version-container"
+    v-for="(version, index) in versions"
+    :key="index"
   >
-    <defs>
-      <symbol id="square" viewBox="-1.5 -1.5 3 3">
-        <path
-          id="rectPath"
-          d="M 0.886, 0.886 -0.886, 0.886 -0.886, -0.886 0.886, -0.886 Z"
-        />
-      </symbol>
-      <symbol id="circle" viewBox="-1.5 -1.5 3 3">
-        <circle id="circlePath" cx="0" cy="0" r="1" />
-      </symbol>
-      <symbol id="triangle" viewBox="-1.5 -1.5 3 3">
-        <path id="trianglePath" d="M -1.347,0.778 1.347,0.778 0,-1.555 Z" />
-      </symbol>
-      <!--
+    <!-- Display the version information (e.g., title) -->
+    <p>{{ version.title }}</p>
+    <svg
+      v-if="version.nwk"
+      :id="'nwkmap_' + index"
+      width="25%"
+      height="25%"
+      viewBox="-106 -106 212 212"
+    >
+      <defs>
+        <symbol id="square" viewBox="-1.5 -1.5 3 3">
+          <path
+            id="rectPath"
+            d="M 0.886, 0.886 -0.886, 0.886 -0.886, -0.886 0.886, -0.886 Z"
+          />
+        </symbol>
+        <symbol id="circle" viewBox="-1.5 -1.5 3 3">
+          <circle id="circlePath" cx="0" cy="0" r="1" />
+        </symbol>
+        <symbol id="triangle" viewBox="-1.5 -1.5 3 3">
+          <path id="trianglePath" d="M -1.347,0.778 1.347,0.778 0,-1.555 Z" />
+        </symbol>
+        <!--
     const R = 1.1495;
     const r = 0.93;
     const a = 1.3513;
@@ -61,169 +68,170 @@
     const y = Math.sqrt(a*a - Math.pow((d-a)/2, 2)) - r;
     console.log(`M ${a/-2},${r} ${a/2},${r} ${d/2},${-1*y} ${0},${-1*R} ${d/-2},${-1*y} Z`);
 -->
-      <symbol id="pentagram" viewBox="-1.5 -1.5 3 3">
-        <path
-          id="penPath"
-          d="M -0.67565,0.93 0.67565,0.93 1.0932,-0.3551706841894581 0,-1.1495 -1.0932,-0.3551706841894581 Z"
-        />
-      </symbol>
-      <symbol id="star" viewBox="-1.5 -1.5 3 3">
-        <path
-          id="starPath"
-          d="M 0.69236155,1.054307 0.00345969,0.69533821 -0.68279921,1.0593342 -0.55428199,0.29322216 -1.1125284,-0.24696789 l 0.76832984,-0.11451451 0.34124363,-0.6978518 0.34633676,0.69533819 0.76914657,0.1088939 -0.55428196,0.54425715 z"
-        />
-      </symbol>
-      <radialGradient id="selected-gradient">
-        <stop offset="60%" stop-color="rgb(0, 80, 150)" stop-opacity="0.25" />
-        <stop offset="100%" stop-color="rgb(0, 80, 150)" stop-opacity="0" />
-      </radialGradient>
-      <filter id="dilate-and-xor">
-        <!-- h/t https://stackoverflow.com/a/63287731/1140589 -->
-        <feMorphology
-          in="SourceGraphic"
-          result="dilate-result"
-          operator="dilate"
-          radius="0.35"
-        />
-        <feComposite
-          in="SourceGraphic"
-          in2="dilate-result"
-          result="xor-result"
-          operator="xor"
-        />
-      </filter>
-    </defs>
+        <symbol id="pentagram" viewBox="-1.5 -1.5 3 3">
+          <path
+            id="penPath"
+            d="M -0.67565,0.93 0.67565,0.93 1.0932,-0.3551706841894581 0,-1.1495 -1.0932,-0.3551706841894581 Z"
+          />
+        </symbol>
+        <symbol id="star" viewBox="-1.5 -1.5 3 3">
+          <path
+            id="starPath"
+            d="M 0.69236155,1.054307 0.00345969,0.69533821 -0.68279921,1.0593342 -0.55428199,0.29322216 -1.1125284,-0.24696789 l 0.76832984,-0.11451451 0.34124363,-0.6978518 0.34633676,0.69533819 0.76914657,0.1088939 -0.55428196,0.54425715 z"
+          />
+        </symbol>
+        <radialGradient id="selected-gradient">
+          <stop offset="60%" stop-color="rgb(0, 80, 150)" stop-opacity="0.25" />
+          <stop offset="100%" stop-color="rgb(0, 80, 150)" stop-opacity="0" />
+        </radialGradient>
+        <filter id="dilate-and-xor">
+          <!-- h/t https://stackoverflow.com/a/63287731/1140589 -->
+          <feMorphology
+            in="SourceGraphic"
+            result="dilate-result"
+            operator="dilate"
+            radius="0.35"
+          />
+          <feComposite
+            in="SourceGraphic"
+            in2="dilate-result"
+            result="xor-result"
+            operator="xor"
+          />
+        </filter>
+      </defs>
 
-    <!-- transform coordinate system to be scale independent -->
-    <g id="coords" v-if="showHorizons">
-      <!-- <rect x="-120" y="-120" width="240" height="240" fill="#bcbddc"/> -->
-      <circle id="horizon-base" cx="0" cy="0" r="100" />
-      <circle id="horizon-overlay" cx="0" cy="0" r="66.67" />
-      <circle id="horizon-overlay" cx="0" cy="0" r="33.33" />
-      <line x1="0" y1="-105" x2="0" y2="105" />
-      <line x1="105" y1="0" x2="-105" y2="0" />
-    </g>
-    <g id="coords-min" v-else>
-      <line
-        vector-effect="non-scaling-stroke"
-        x1="0"
-        y1="-100"
-        x2="0"
-        y2="102"
-      />
-      <line
-        vector-effect="non-scaling-stroke"
-        x1="102"
-        y1="0"
-        x2="-102"
-        y2="0"
-      />
-    </g>
-
-    <g id="sectors">
-      <text x="100" y="-100" text-anchor="end">{{ Sectors[0] }}</text>
-      <text x="-100" y="-100" text-anchor="start">{{ Sectors[1] }}</text>
-      <text x="-100" y="100" text-anchor="start">{{ Sectors[2] }}</text>
-      <text x="100" y="100" text-anchor="end">{{ Sectors[3] }}</text>
-    </g>
-
-    <g id="marksBackgroundLayer">
-      <g v-for="mark in alteriMarks" :key="'shadow' + mark.d.id">
-        <circle
-          v-if="mark.selected"
-          :cx="mark.x"
-          :cy="mark.y"
-          fill="url('#selected-gradient')"
-        />
+      <!-- transform coordinate system to be scale independent -->
+      <!-- <g id="coords" v-if="showHorizons">
+        <rect x="-120" y="-120" width="240" height="240" fill="#bcbddc"/>
+        <circle id="horizon-base" cx="0" cy="0" r="100" />
+        <circle id="horizon-overlay" cx="0" cy="0" r="66.67" />
+        <circle id="horizon-overlay" cx="0" cy="0" r="33.33" />
+        <line x1="0" y1="-105" x2="0" y2="105" />
+        <line x1="105" y1="0" x2="-105" y2="0" />
       </g>
-
-      <g v-if="connections">
+      <g id="coords-min" v-else>
         <line
-          v-for="(mark, index) in connectionMarks"
-          id="lineZoom"
-          style="stroke-width: 0.5"
-          :key="'conn' + index"
-          :x1="mark.x1"
-          :y1="mark.y1"
-          :x2="mark.x2"
-          :y2="mark.y2"
-          :class="{ select: mark.selected }"
-        />
-      </g>
-
-      <g v-for="mark in alteriMarks" :key="mark.d.id">
-        <line
-          v-if="connections && mark.d.edgeType >= 1"
-          id="lineZoom"
-          style="stroke-width: 0.5"
-          :class="{ select: mark.selected }"
-          x1="0"
-          y1="0"
-          :x2="mark.x"
-          :y2="mark.y"
-          :filter="mark.d.edgeType === 2 ? 'url(#dilate-and-xor)' : undefined"
-        />
-        <text
-          v-if="alteriNames && useTextBG"
-          class="textbg"
           vector-effect="non-scaling-stroke"
-          :x="mark.x"
-          :y="mark.y"
-          :text-anchor="mark.x < 0 ? 'end' : 'start'"
-          :dx="mark.x < 0 ? -3 : 3"
-          :dy="mark.y < 0 ? -1 : 4"
-        >
-          {{ mark.label }}
-          {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
-          {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
-        </text>
-        <text
-          v-if="alteriNames"
-          :x="mark.x"
-          :y="mark.y"
-          :text-anchor="mark.x < 0 ? 'end' : 'start'"
-          :dx="mark.x < 0 ? -3 : 3"
-          :dy="mark.y < 0 ? -1 : 4"
-        >
-          {{ mark.label }}
-          {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
-          {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
-        </text>
+          x1="0"
+          y1="-100"
+          x2="0"
+          y2="102"
+        />
+        <line
+          vector-effect="non-scaling-stroke"
+          x1="102"
+          y1="0"
+          x2="-102"
+          y2="0"
+        />
       </g>
-      <use
-        id="ego"
-        :href="'#' + egoShape"
-        x="0"
-        y="0"
-        class="mark"
-        width="4"
-        height="4"
-        transform="translate(-2,-2)"
-      />
-    </g>
-    <g class="brushParent"></g>
-    <g class="marksForegroundLayer">
-      <use
-        v-for="mark in alteriMarks"
-        :key="mark.d.id"
-        :href="'#' + mark.shape"
-        :x="mark.x"
-        :y="mark.y"
-        class="mark clickAble"
-        width="4"
-        height="4"
-        transform="translate(-2,-2)"
-      />
-    </g>
-    <text :x="0" y="-102" text-anchor="middle" class="ego">
-      {{ egoLabel }}
-    </text>
-  </svg>
+      -->
+      <g id="sectors">
+        <text x="100" y="-100" text-anchor="end">{{ Sectors[0] }}</text>
+        <text x="-100" y="-100" text-anchor="start">{{ Sectors[1] }}</text>
+        <text x="-100" y="100" text-anchor="start">{{ Sectors[2] }}</text>
+        <text x="100" y="100" text-anchor="end">{{ Sectors[3] }}</text>
+      </g>
+
+      <g id="marksBackgroundLayer">
+        <g v-for="mark in alteriMarks" :key="'shadow' + mark.d.id">
+          <circle
+            v-if="mark.selected"
+            :cx="mark.x"
+            :cy="mark.y"
+            fill="url('#selected-gradient')"
+          />
+        </g>
+
+        <g v-if="connections">
+          <line
+            v-for="(mark, index) in connectionMarks"
+            id="lineZoom"
+            style="stroke-width: 0.5"
+            :key="'conn' + index"
+            :x1="mark.x1"
+            :y1="mark.y1"
+            :x2="mark.x2"
+            :y2="mark.y2"
+            :class="{ select: mark.selected }"
+          />
+        </g>
+
+        <g v-for="mark in alteriMarks" :key="mark.d.id">
+          <line
+            v-if="connections && mark.d.edgeType >= 1"
+            id="lineZoom"
+            style="stroke-width: 0.5"
+            :class="{ select: mark.selected }"
+            x1="0"
+            y1="0"
+            :x2="mark.x"
+            :y2="mark.y"
+            :filter="mark.d.edgeType === 2 ? 'url(#dilate-and-xor)' : undefined"
+          />
+          <text
+            v-if="alteriNames && useTextBG"
+            class="textbg"
+            vector-effect="non-scaling-stroke"
+            :x="mark.x"
+            :y="mark.y"
+            :text-anchor="mark.x < 0 ? 'end' : 'start'"
+            :dx="mark.x < 0 ? -3 : 3"
+            :dy="mark.y < 0 ? -1 : 4"
+          >
+            {{ mark.label }}
+            {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
+            {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
+          </text>
+          <text
+            v-if="alteriNames"
+            :x="mark.x"
+            :y="mark.y"
+            :text-anchor="mark.x < 0 ? 'end' : 'start'"
+            :dx="mark.x < 0 ? -3 : 3"
+            :dy="mark.y < 0 ? -1 : 4"
+          >
+            {{ mark.label }}
+            {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
+            {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
+          </text>
+        </g>
+        <use
+          id="ego"
+          :href="'#' + egoShape"
+          x="0"
+          y="0"
+          class="mark"
+          width="4"
+          height="4"
+          transform="translate(-2,-2)"
+        />
+      </g>
+      <g class="brushParent"></g>
+      <g class="marksForegroundLayer">
+        <use
+          v-for="mark in alteriMarks"
+          :key="mark.d.id"
+          :href="'#' + mark.shape"
+          :x="mark.x"
+          :y="mark.y"
+          class="mark clickAble"
+          width="4"
+          height="4"
+          transform="translate(-2,-2)"
+        />
+      </g>
+      <text :x="0" y="-102" text-anchor="middle" class="ego">
+        {{ egoLabel }}
+      </text>
+    </svg>
+  </div>
 </template>
 
 <script lang="ts">
 import { useStore } from "@/store";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { Sectors } from "@/data/Sectors";
 
 import { shapeByGender } from "@/data/Gender";
