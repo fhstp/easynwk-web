@@ -1,7 +1,6 @@
 <template>
   <div style="position: relative">
     <svg width="100%" height="120">
-      <!-- Increased height to accommodate text -->
       <line x1="0" y1="50" x2="100%" y2="50" class="comparisonLine"></line>
       <a v-for="(version, index) in versions" :key="index">
         <circle
@@ -33,16 +32,12 @@
       </a>
     </svg>
   </div>
-  <div
-    class="version-container"
-    v-for="(version, index) in versions"
-    :key="index"
-  >
-    <!-- Display the version information (e.g., title) -->
-    <p>{{ version.title }}</p>
+  <div v-for="index in selectedCircles" :key="index">
+    <p>{{ versions[index].title }}</p>
     <svg
-      v-if="version.nwk"
-      :id="'nwkmap_' + index"
+      v-if="versions[index] && versions[index].nwk"
+      id="nwkmap"
+      ref="svgElement"
       width="25%"
       height="25%"
       viewBox="-106 -106 212 212"
@@ -267,13 +262,21 @@ export default {
 
     const selectedCircles = ref<number[]>([]);
 
+    let selectedVersion = 1;
+
     const toggleCircle = (index: number) => {
       if (selectedCircles.value.includes(index)) {
         selectedCircles.value = selectedCircles.value.filter(
           (i) => i !== index
         );
+        console.log(index);
       } else {
         selectedCircles.value.push(index);
+        selectedVersion = index;
+        console.log(index);
+        return {
+          selectedVersion,
+        };
       }
     };
 
@@ -284,12 +287,17 @@ export default {
     const alteriCoords = computed((): Map<number, { x: number; y: number }> => {
       const buffer = new Map();
 
-      store.state.nwk.alteri.forEach((alter) => {
-        const x = alter.distance * Math.cos((alter.angle * Math.PI) / 180);
-        const y = -1 * alter.distance * Math.sin((alter.angle * Math.PI) / 180);
+      console.log(selectedVersion);
 
-        buffer.set(alter.id, { x, y });
-      });
+      store.state.record.versions[selectedVersion].nwk.alteri.forEach(
+        (alter) => {
+          const x = alter.distance * Math.cos((alter.angle * Math.PI) / 180);
+          const y =
+            -1 * alter.distance * Math.sin((alter.angle * Math.PI) / 180);
+
+          buffer.set(alter.id, { x, y });
+        }
+      );
 
       return buffer;
     });
@@ -297,7 +305,7 @@ export default {
     const alteriMarks = computed((): Array<AlterMark> => {
       // console.log("in computed alteri marks");
       const buffer: Array<AlterMark> = [];
-      store.state.nwk.alteri.forEach((el) => {
+      store.state.record.versions[selectedVersion].nwk.alteri.forEach((el) => {
         // console.log("alter: " + el.name);
         const coords = alteriCoords.value.get(el.id);
 
@@ -315,22 +323,24 @@ export default {
     });
 
     const connectionMarks = computed((): Array<ConnectionMark> => {
-      return store.state.nwk.connections.map((conn) => {
-        const coords1 = alteriCoords.value.get(conn.id1);
-        const coords2 = alteriCoords.value.get(conn.id2);
+      return store.state.record.versions[selectedVersion].nwk.connections.map(
+        (conn) => {
+          const coords1 = alteriCoords.value.get(conn.id1);
+          const coords2 = alteriCoords.value.get(conn.id2);
 
-        const selected =
-          store.getters["view/isSelected"](conn.id1) ||
-          store.getters["view/isSelected"](conn.id2);
+          const selected =
+            store.getters["view/isSelected"](conn.id1) ||
+            store.getters["view/isSelected"](conn.id2);
 
-        return {
-          x1: coords1 ? coords1.x : 0,
-          y1: coords1 ? coords1.y : 0,
-          x2: coords2 ? coords2.x : 0,
-          y2: coords2 ? coords2.y : 0,
-          selected,
-        };
-      });
+          return {
+            x1: coords1 ? coords1.x : 0,
+            y1: coords1 ? coords1.y : 0,
+            x2: coords2 ? coords2.x : 0,
+            y2: coords2 ? coords2.y : 0,
+            selected,
+          };
+        }
+      );
     });
 
     return {
