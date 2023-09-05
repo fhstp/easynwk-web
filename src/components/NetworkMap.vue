@@ -1,5 +1,11 @@
 <template>
-  <svg id="nwkmap" width="100%" height="100%" viewBox="-106 -106 212 212">
+  <svg
+    id="nwkmap"
+    ref="svgElement"
+    width="100%"
+    height="100%"
+    viewBox="-106 -106 212 212"
+  >
     <defs>
       <symbol id="square" viewBox="-1.5 -1.5 3 3">
         <rect x="-0.886" y="-0.886" width="1.772" height="1.772" />
@@ -49,27 +55,7 @@
       </filter>
     </defs>
 
-    <!-- transform coordinate system to be scale independent -->
-    <g id="coords" v-if="showHorizons">
-      <!-- <rect x="-120" y="-120" width="240" height="240" fill="#bcbddc"/> -->
-      <circle id="horizon-base" cx="0" cy="0" r="100" />
-      <circle id="horizon-overlay" cx="0" cy="0" r="66.67" />
-      <circle id="horizon-overlay" cx="0" cy="0" r="33.33" />
-      <line x1="0" y1="-105" x2="0" y2="105" />
-      <line x1="105" y1="0" x2="-105" y2="0" />
-    </g>
-    <g id="coords-min" v-else>
-      <circle cx="0" cy="0" r="100" />
-      <line x1="0" y1="-100" x2="0" y2="100" />
-      <line x1="100" y1="0" x2="-100" y2="0" />
-    </g>
-
-    <g id="sectors">
-      <text x="100" y="-100" text-anchor="end">{{ Sectors[0] }}</text>
-      <text x="-100" y="-100" text-anchor="start">{{ Sectors[1] }}</text>
-      <text x="-100" y="100" text-anchor="start">{{ Sectors[2] }}</text>
-      <text x="100" y="100" text-anchor="end">{{ Sectors[3] }}</text>
-    </g>
+    <NetworkMapCoordinates :transform="transform" />
 
     <text v-if="isEditMode" text-anchor="middle" class="edithint">
       <tspan x="0" y="-1em">Klicke in die Karte, um</tspan>
@@ -103,8 +89,8 @@
         <line
           v-if="connections && mark.d.edgeType >= 1"
           :class="{ select: mark.selected }"
-          x1="0"
-          y1="0"
+          :x1="egoCoords[0]"
+          :y1="egoCoords[1]"
           :x2="mark.x"
           :y2="mark.y"
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
@@ -139,8 +125,8 @@
       <use
         id="ego"
         :href="'#' + egoShape"
-        x="0"
-        y="0"
+        :x="egoCoords[0]"
+        :y="egoCoords[1]"
         class="mark"
         width="4"
         height="4"
@@ -163,6 +149,8 @@
       />
     </g>
 
+    <NetworkMapSectors :transform="transform" @zoom-sector="zoomSector" />
+
     <!-- a foreground rect is necessary so that the whole display is clickable -->
     <!-- a foreground rect is useful to prevent text selection -->
     <rect
@@ -177,6 +165,20 @@
       {{ egoLabel }}
     </text>
   </svg>
+  <div id="zoomBtns">
+    <button
+      id="zoomResetBtn"
+      class="button is-medium"
+      type="button"
+      title="Zoom Zurücksetzen"
+      @click="resetZoom()"
+      :disabled="isNotZoomed"
+    >
+      <span class="icon is-large">
+        <font-awesome-icon icon="search-minus" />
+      </span>
+    </button>
+  </div>
   <div id="brushBtns" ref="brushBtns">
     <!-- <button
       id="btnClusterMove"
@@ -215,6 +217,17 @@
       </span>
     </button>
     <button
+      id="zoomBtn"
+      class="button is-small"
+      type="button"
+      title="Zoom"
+      @click="zoomBrushedArea"
+    >
+      <span class="icon is-medium">
+        <font-awesome-icon icon="search-plus" />
+      </span>
+    </button>
+    <button
       class="button is-small"
       type="button"
       title="Auswahlrechteck schließen"
@@ -231,15 +244,17 @@
 import { defineComponent, computed, onMounted, ref, watch } from "vue";
 import { useStore } from "@/store";
 
+import NetworkMapCoordinates from "@/components/NetworkMapCoordinates.vue";
+import NetworkMapSectors from "@/components/NetworkMapSectors.vue";
+
 import * as d3 from "d3";
-// import { ContainerElement } from "d3";
 import { Alter, isConnectable } from "@/data/Alter";
-import { Sectors } from "@/data/Sectors";
 import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { getRoleAbbrev } from "../data/Roles";
-import { D3BrushEvent } from "d3";
+import { brushSelection, D3BrushEvent } from "d3";
+import { zoom, ZoomTransform, zoomIdentity } from "d3-zoom";
 
 interface AlterMark {
   d: Alter;
@@ -263,7 +278,7 @@ interface ConnectionMark {
 // emit "map-click" (which is not currently used)
 
 export default defineComponent({
-  components: {},
+  components: { NetworkMapCoordinates, NetworkMapSectors },
   emits: ["map-click"],
 
   setup: function (props, { emit }) {
@@ -279,9 +294,13 @@ export default defineComponent({
     const getPositionPolar = (event: UIEvent) => {
       const coords = d3.pointer(event);
 
+      // revert viewport projection
+      const xa = transform.value.invertX(coords[0]);
+      const ya = transform.value.invertY(coords[1]);
+
       // cp. https://stackoverflow.com/a/33043899/1140589
-      const distance = Math.sqrt(coords[0] * coords[0] + coords[1] * coords[1]);
-      const angle = Math.atan2(-1 * coords[1], coords[0]) * (180 / Math.PI);
+      const distance = Math.sqrt(xa * xa + ya * ya);
+      const angle = Math.atan2(-1 * ya, xa) * (180 / Math.PI);
 
       return { distance, angle };
     };
@@ -290,8 +309,56 @@ export default defineComponent({
       () => store.state.view.editTab === TAB_CONNECTIONS
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const zoomBehavior: any = zoom();
+    const transform = ref<ZoomTransform>(zoomIdentity);
+
+    /**
+     * brush selection in unzoomed coordinates
+     */
+    let brushAbsoluteCoords = [
+      [0, 0],
+      [0, 0],
+    ] as [[number, number], [number, number]];
+
     onMounted(() => {
       // d3.mouse only works if the event is registered using D3 .on
+
+      const svg = d3.select("#nwkmap");
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      zoomBehavior
+        .extent([
+          [-106, -106],
+          [212, 212],
+        ])
+        .translateExtent([
+          [-106, -106],
+          [212, 212],
+        ])
+        .scaleExtent([1, 8])
+        .on("zoom", zoomed);
+
+      svg.call(zoomBehavior).on("mousedown.zoom", null);
+      svg.on("dblclick.zoom", null);
+
+      //Zoom with mouse wheel
+      function zoomed(event: { transform: ZoomTransform }) {
+        // console.log(event.transform);
+        // inform vue's reactivity of updated zoom
+        transform.value = event.transform;
+
+        // re-scale brush selection
+        const brushElement = d3.select("#nwkmap g#brush").node() as SVGGElement;
+        if (brush && brushElement && brushSelection(brushElement)) {
+          const myExtent = [
+            transform.value.apply(brushAbsoluteCoords[0]),
+            transform.value.apply(brushAbsoluteCoords[1]),
+          ] as d3.BrushSelection;
+          brush.move(d3.select(brushElement), myExtent);
+        }
+      }
+
       const g = d3.select("#nwkmap");
 
       let clickBackgroundTimeoutId: number | null = null;
@@ -377,7 +444,7 @@ export default defineComponent({
     /** resets the brush to a null selection */
     const clearBrush = () => {
       if (brush) {
-        brush.clear(d3.select("#nwkmap .brush"));
+        brush.clear(d3.select("#nwkmap #brush"));
       }
     };
 
@@ -390,26 +457,84 @@ export default defineComponent({
     const isClusterConnectPossible = ref(false);
     const isClusterFullyConnected = ref(false);
 
+    function zoomBrushedArea() {
+      const brushElement = d3.select("#brush").node() as SVGGElement | null;
+
+      if (brushElement) {
+        const extent = brushSelection(brushElement) as [
+          [number, number],
+          [number, number]
+        ];
+
+        if (extent) {
+          const x0 = extent[0][0];
+          const y0 = extent[0][1];
+          const x1 = extent[1][0];
+          const y1 = extent[1][1];
+
+          const brushWidth = Math.abs(x1 - x0);
+          const brushHeight = Math.abs(y1 - y0);
+
+          const k =
+            (212 / Math.max(brushWidth, brushHeight)) * transform.value.k;
+
+          // brush center in absolute coordinates
+          const tx = transform.value.invertX((x0 + x1) / 2);
+          const ty = transform.value.invertY((y0 + y1) / 2);
+          console.log(`k: ${k}  t.x: ${tx}   t.y: ${ty}`);
+
+          const nextTransform = new ZoomTransform(k, tx * k * -1, ty * k * -1);
+          d3.select("#nwkmap")
+            .transition()
+            .duration(750)
+            .call(zoomBehavior.transform, nextTransform);
+
+          // Clear the brush selection
+          clearBrush();
+        }
+      }
+    }
+
+    function zoomSector(dirX: number, dirY: number) {
+      const nextTransform = new ZoomTransform(1.9, -94.4 * dirX, -94.4 * dirY);
+      d3.select("#nwkmap")
+        .transition()
+        .duration(750)
+        .call(zoomBehavior.transform, nextTransform);
+    }
+
     function afterBrushChanged(event: D3BrushEvent<unknown>) {
       // console.log(event);
 
       if (event.selection) {
-        const extent = event.selection as [[number, number], [number, number]];
+        // brush changed can also result from zooming, but then it has no source event
+        if (event.sourceEvent) {
+          const extent = event.selection as [
+            [number, number],
+            [number, number]
+          ];
 
-        const marksInExtent = alteriMarks.value.filter((am) =>
-          isInBrushExtent(am, extent)
-        );
-        markIdsInExtent = marksInExtent.map((am) => am.d.id);
-        store.commit("view/selectAlters", markIdsInExtent);
+          // remember the brush coordinates
+          brushAbsoluteCoords = [
+            transform.value.invert(extent[0]),
+            transform.value.invert(extent[1]),
+          ];
 
-        // check if cluster connect is possible (more than 1 connectable alter)
-        connectableIdsInExtent = marksInExtent
-          .filter((am) => isConnectable(am.d))
-          .map((am) => am.d.id);
-        isClusterConnectPossible.value = connectableIdsInExtent.length >= 2;
-        isClusterFullyConnected.value =
-          isClusterConnectPossible.value &&
-          clusterConnected(connectableIdsInExtent);
+          const marksInExtent = alteriMarks.value.filter((am) =>
+            isInBrushExtent(am, extent)
+          );
+          markIdsInExtent = marksInExtent.map((am) => am.d.id);
+          store.commit("view/selectAlters", markIdsInExtent);
+
+          // check if cluster connect is possible (more than 1 connectable alter)
+          connectableIdsInExtent = marksInExtent
+            .filter((am) => isConnectable(am.d))
+            .map((am) => am.d.id);
+          isClusterConnectPossible.value = connectableIdsInExtent.length >= 2;
+          isClusterFullyConnected.value =
+            isClusterConnectPossible.value &&
+            clusterConnected(connectableIdsInExtent);
+        }
 
         // move buttons relative to selection box as SVG element
         // <https://stackoverflow.com/questions/26049488/how-to-get-absolute-coordinates-of-object-inside-a-g-group>
@@ -431,7 +556,7 @@ export default defineComponent({
           console.warn("Brush rect not found");
         }
       } else {
-        console.log("Brush selection inactive");
+        // console.log("Brush selection inactive");
         if (store.state.view.selected.size > 0) {
           store.commit("view/clearSelectedAlters");
         }
@@ -451,6 +576,18 @@ export default defineComponent({
         mark.y >= extent[0][1] &&
         mark.y <= extent[1][1]
       );
+    }
+
+    //functionality of Reset button for zoom
+    function resetZoom(): void {
+      const svg: HTMLElement | null = document.getElementById("nwkmap");
+
+      if (svg) {
+        d3.select(svg)
+          .transition()
+          .duration(750)
+          .call(zoomBehavior.transform, d3.zoomIdentity);
+      }
     }
 
     function clusterConnect() {
@@ -518,6 +655,8 @@ export default defineComponent({
       }
     };
 
+    const egoCoords = computed(() => transform.value.apply([0, 0]));
+
     /**
      * map of cartesian coords by alter.id (not the array index!)
      */
@@ -525,10 +664,15 @@ export default defineComponent({
       const buffer = new Map();
 
       store.state.nwk.alteri.forEach((alter) => {
+        // calculate from polar coordinates
         const x = alter.distance * Math.cos((alter.angle * Math.PI) / 180);
         const y = -1 * alter.distance * Math.sin((alter.angle * Math.PI) / 180);
 
-        buffer.set(alter.id, { x, y });
+        // project to viewport using zoomBehaviour's transform
+        const xp = transform.value.applyX(x);
+        const yp = transform.value.applyY(y);
+
+        buffer.set(alter.id, { x: xp, y: yp });
       });
 
       return buffer;
@@ -587,13 +731,14 @@ export default defineComponent({
       isEditMode,
       isConnectMode,
       clickAlter,
+      transform,
+      egoCoords,
       alteriMarks,
       connectionMarks,
       showAge: computed(() => store.state.view.ageInNwk),
       showRole: computed(() => store.state.view.roleInNwk),
       getRoleShort,
       alteriNames: computed(() => store.state.view.alteriNames),
-      showHorizons: computed(() => store.state.view.horizons),
       connections: computed(() => store.state.view.connections),
       brushBtns,
       isClusterConnectPossible,
@@ -601,7 +746,10 @@ export default defineComponent({
       clusterConnect,
       clusterDisconnect,
       clearBrush,
-      Sectors,
+      zoomSector,
+      isNotZoomed: computed(() => transform.value.k == 1),
+      resetZoom,
+      zoomBrushedArea,
       SYMBOL_DECEASED,
       // TODO browser detection b/c vector-effect seems not to work in Safari only as of 14 Dec 2021
       useTextBG: computed(
@@ -622,6 +770,10 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "~bulma/sass/base/_all.sass";
 
+svg {
+  overflow: visible;
+}
+
 text {
   font-family: $family-primary;
   font-size: 4px;
@@ -636,33 +788,6 @@ text.ego {
 .textbg {
   stroke: white;
   stroke-width: 3;
-}
-
-circle#horizon-base {
-  // fill: #dadaeb;
-  fill: #c7e9c0;
-}
-
-circle#horizon-overlay {
-  fill: rgb(255, 255, 255, 0.5);
-}
-
-#coords line {
-  stroke: white;
-  stroke-width: 2;
-}
-
-#coords-min line {
-  vector-effect: non-scaling-stroke;
-  stroke: lightgray;
-  stroke-width: 1;
-}
-
-#coords-min circle {
-  vector-effect: non-scaling-stroke;
-  stroke: #f0f0f0;
-  stroke-width: 2;
-  fill: none;
 }
 
 line {
@@ -692,11 +817,6 @@ line.select {
   stroke-width: 0.2;
 }
 
-#sectors text {
-  font-weight: bold;
-  fill: gray;
-}
-
 .edithint {
   fill: rgba(lightgray, 0.5);
   font-size: 1em;
@@ -715,5 +835,11 @@ line.select {
 #brushBtns > button {
   display: block;
   margin-bottom: 0.5rem;
+}
+
+#zoomBtns {
+  position: absolute;
+  right: 2px;
+  bottom: 1.5rem;
 }
 </style>
