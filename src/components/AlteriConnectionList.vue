@@ -44,8 +44,22 @@ import { defineComponent, computed, onMounted } from "vue";
 import { useStore } from "@/store";
 import { isConnectable } from "@/data/Alter";
 import { TAB_CONNECTIONS } from "@/store/viewOptionsModule";
+import de from "@/de";
+import en from "@/en";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
+  data() {
+    return {
+      lang: "de",
+    };
+  },
   props: {
     alter: {
       type: Object,
