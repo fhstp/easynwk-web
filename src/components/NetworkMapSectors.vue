@@ -3,25 +3,25 @@
     <g @click="$emit('zoom-sector', 1, -1)" v-if="showSectors[0]">
       <rect x="80" width="21" y="-106" height="11" />
       <text x="100" y="-100" text-anchor="end">
-        {{ Sectors[0] }}
+        {{ langIsGerman() ? Sectors[0] : SectorsEng[0] }}
       </text>
     </g>
     <g @click="$emit('zoom-sector', -1, -1)" v-if="showSectors[1]">
       <rect x="-101" width="50" y="-106" height="11" />
       <text x="-100" y="-100" text-anchor="start">
-        {{ Sectors[1] }}
+        {{ langIsGerman() ? Sectors[1] : SectorsEng[1] }}
       </text>
     </g>
     <g @click="$emit('zoom-sector', -1, 1)" v-if="showSectors[2]">
       <rect x="-101" width="30" y="95" height="11" />
       <text x="-100" y="101" text-anchor="start">
-        {{ Sectors[2] }}
+        {{ langIsGerman() ? Sectors[2] : SectorsEng[2] }}
       </text>
     </g>
     <g @click="$emit('zoom-sector', 1, 1)" v-if="showSectors[3]">
       <rect x="50" width="40" y="95" height="11" />
       <text x="87" y="101" text-anchor="end">
-        {{ Sectors[3] }}
+        {{ langIsGerman() ? Sectors[3] : SectorsEng[3] }}
       </text>
     </g>
   </g>
@@ -30,12 +30,30 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
 
-import { Sectors } from "@/data/Sectors";
+import { Sectors, SectorsEng } from "@/data/Sectors";
+import de from "@/de";
+import en from "@/en";
 
 // get Zoom Behavior transform as property
 // emit 'zoom-sector' with index of sector
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+    langIsGerman() {
+      if (document.documentElement.lang == "de") return true;
+      else return false;
+    },
+  },
+  data() {
+    return {
+      lang: "de",
+    };
+  },
   props: {
     transform: {
       type: Object,
@@ -56,6 +74,7 @@ export default defineComponent({
     return {
       showSectors,
       Sectors,
+      SectorsEng,
     };
   },
 });

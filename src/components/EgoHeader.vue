@@ -1,6 +1,6 @@
 <template>
   <div id="ego">
-    Ankerperson:&nbsp;
+    {{ t("ego") }}:&nbsp;
     <b>{{ displayName }}</b>
     &nbsp;
     <span v-if="egoAge">/ {{ egoAge }} </span>
@@ -20,9 +20,18 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
 import { useStore } from "@/store";
+import de from "@/de";
+import en from "@/en";
 // import { Ego } from "@/data/Ego";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
   setup() {
     const store = useStore();
 

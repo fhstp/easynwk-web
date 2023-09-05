@@ -1,12 +1,12 @@
 <template>
   <nav class="panel">
     <p class="panel-heading">
-      <span>Ankerperson</span>
+      <span>{{ t("ego") }}</span>
     </p>
     <form class="panel-block form" @submit.prevent="editEgoFinished">
       <div class="field is-horizontal">
         <div class="field-label is-normal">
-          <label class="label">Name</label>
+          <label class="label">{{ t("name") }}</label>
         </div>
         <div class="field-body">
           <div class="field">
@@ -21,14 +21,14 @@
                 placeholder="Wer steht im Zentrum der NWK?"
               />
             </div>
-            <p class="help">Pflichtfeld</p>
+            <p class="help">{{ t("mandatoryfield") }}</p>
           </div>
         </div>
       </div>
 
       <div class="field is-horizontal">
         <div class="field-label is-normal">
-          <label class="label">Geschlecht</label>
+          <label class="label">{{ t("genders") }}</label>
         </div>
         <div class="field-body">
           <div class="control">
@@ -45,7 +45,7 @@
 
       <div class="field is-horizontal">
         <div class="field-label is-normal">
-          <label class="label">Alter</label>
+          <label class="label">{{ t("age") }}</label>
         </div>
         <div class="field-body">
           <div class="field">
@@ -76,7 +76,7 @@
       <div class="field is-grouped is-grouped-centered">
         <p class="control">
           <button class="button is-primary" :disabled="invalidName">
-            Schließen
+            {{ t("done") }}
           </button>
         </p>
       </div>
@@ -90,10 +90,19 @@ import { useStore } from "@/store";
 
 import { Ego } from "@/data/Ego";
 import { Gender } from "@/data/Gender";
+import de from "@/de";
+import en from "@/en";
 
 type InputType = HTMLInputElement | HTMLTextAreaElement;
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
   setup(props, { emit }) {
     const store = useStore();
 

@@ -58,8 +58,8 @@
     <NetworkMapCoordinates :transform="transform" />
 
     <text v-if="isEditMode" text-anchor="middle" class="edithint">
-      <tspan x="0" y="-1em">Klicke in die Karte, um</tspan>
-      <tspan x="0" dy="2em">die Position festzulegen</tspan>
+      <tspan x="0" y="-1em">{{ t("maptext") }}</tspan>
+      <tspan x="0" dy="2em">{{ t("maptext2") }}</tspan>
     </text>
 
     <g id="marksBackgroundLayer">
@@ -255,6 +255,8 @@ import { SYMBOL_DECEASED } from "@/assets/utils";
 import { getRoleAbbrev } from "../data/Roles";
 import { brushSelection, D3BrushEvent } from "d3";
 import { zoom, ZoomTransform, zoomIdentity } from "d3-zoom";
+import de from "@/de";
+import en from "@/en";
 
 interface AlterMark {
   d: Alter;
@@ -278,6 +280,13 @@ interface ConnectionMark {
 // emit "map-click" (which is not currently used)
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
   components: { NetworkMapCoordinates, NetworkMapSectors },
   emits: ["map-click"],
 

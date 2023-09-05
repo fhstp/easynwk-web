@@ -7,7 +7,8 @@ export default {
         friends: "Freund*innen/Bekannte",
         colleagues: "Kolleg*innen",
         professionals: "prof. Helfer*innen",
-        maptext: "Klicke in die Karte um die Position festzulegen",
+        maptext: "Klicke in die Karte, um",
+        maptext2: " die Position festzulegen",
         //},
         //sideMenu: {
         newNWK: "Neue NWK",
@@ -19,7 +20,7 @@ export default {
         createPDF: "PDF erstellen",
         keyfigures: "Kennzahlen",
         abouteasyNWK: "Über die easyNWK",
-        sourcecode: "Source Code (Version 2.0.5)",
+        sourcecode: "Source Code ",
         imprint: "Impressum",
         //},
         //statisticPanel: {
@@ -30,9 +31,11 @@ export default {
         horizoncumulative: "Horizont (kumulativ)",
         gender: "Geschlecht",
         networksize: "Netzwerkgröße",
-        realtionshipweight: "Beziehungsgewicht",
+        relationshipweight: "Beziehungsgewicht",
         totaldensity: "Dichte gesamt",
+        categorydensity: "Dichte der Kategorie",
         stars: "Star(s)",
+        categorystar: "Star(s) (pro Kategorie)",
         bridges: "Brücken",
         bridgepersons: "Brückenperson(en)",
         isolatedpersons: "Isolierte",
@@ -82,10 +85,12 @@ export default {
         //},
         //alterEdit: {
         addcontact: "Kontakt hinzufügen",
+        editcontact: "Kontakt bearbeiten",
+        category: "Kategorie",
         positiononmap: "Die Position in der Karte muss noch festgelegt werden.",
         role: "Rolle",
         human: "Mensch",
-        deceased: "+verstorben",
+        deceased: "verstorben",
         relationship: "Beziehung",
         existing: "besteht",
         multiplex: "multiplex",
@@ -97,8 +102,9 @@ export default {
         //},
         //alterConnections: {
         relationshipsof: "Beziehungen von",
-        clickoncontacttoconnect:
-          "Klicke auf einen Kontakt um diesen mit  zu verbinden bzw. die Verbindung zu lösen.",
+        clickoncontacttoconnect: "Klicke auf einen Kontakt um diesen mit",
+        clickoncontacttoconnect2:
+          "  zu verbinden bzw. die Verbindung zu lösen.",
         possiblecontacts: "Mögliche Kontakte",
         connectedcontacts: "Verbundene Kontakte",
         //},

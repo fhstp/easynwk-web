@@ -12,7 +12,7 @@
           <th
             title="Anzahl der Kontakte im Netzwerk exklusive Ankerperson und exklusive Personen ohne Kante zur Ankerperson"
           >
-            Netzwerkgröße
+            {{ t("networksize") }}
             <!-- <span class="icon">
             <font-awesome-icon icon="info-circle" />
           </span> -->
@@ -25,7 +25,7 @@
           <th
             title="summierte Nähe bzw. Distanz der Kontakte zur Ankerperson. Je höher die Kennzahl, umso näher stehen die Personen der Ankerperson."
           >
-            Beziehungsgewicht
+            {{ t("relationshipweight") }}
           </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">
             {{ naehenSum[i] }}
@@ -35,7 +35,7 @@
           <th
             title="Verhältnis der tatsächlich vorhandenen zu den theoretisch möglichen Verbindungen (exklusive der Verbindungen zwischen Anker- und Kontaktpersonen, inklusive Personen ohne Kante zur Ankerperson). Optional: Maßzahl liegt zwischen 0 (nur isolierte Kontakte) und 1 (jede Person im Netzwerk ist mit jeder anderen verbunden)."
           >
-            Dichte der Kategorie
+            {{ t("categorydensity") }}
           </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">{{ density[i] }}</td>
         </tr>
@@ -49,7 +49,7 @@
           <th
             title="Kontakt(e) mit den meisten Verbindungen im Netzwerk (neben der Ankerperson)"
           >
-            Star(s) (pro Kategorie)
+            {{ t("categorystar") }}
           </th>
           <td
             v-for="(cat, i) in categoryLabels"
@@ -62,7 +62,7 @@
         </tr>
         <tr>
           <th title="Anzahl der Verbindungen zwischen den Sektoren im Netzwerk">
-            Brücken
+            {{ t("bridges") }}
           </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">
             {{ bridgesCount[i] }}
@@ -72,7 +72,7 @@
           <th
             title="Kontakt(e), die einzelne Sektoren im Netzwerk miteinander verbinden"
           >
-            Brückenperson(en)
+            {{ t("bridgepersons") }}
           </th>
           <td
             v-for="(cat, i) in categoryLabels"
@@ -87,7 +87,7 @@
           <th
             title="Kontakt(e), die ausschließlich mit der Ankerperson verbunden sind"
           >
-            Isolierte
+            {{ t("isolatedpersons") }}
           </th>
           <td
             v-for="(cat, i) in categoryLabels"
@@ -102,7 +102,7 @@
           <th
             title="Lebende Personen ohne aktualisierte Verbindung zur Ankerperson. Verbindungen mit anderen Personen im Netzwerk und damit indirekte Verbindung zur Ankerperson sind möglich."
           >
-            Personen ohne Kante zur Ankerperson
+            {{ t("personswithoutedgetotheego") }}
           </th>
           <td
             v-for="(cat, i) in categoryLabels"
@@ -129,8 +129,17 @@ import {
   NetworkAnalysis,
 } from "@/data/NetworkAnalysis";
 import { getAlterCategorization } from "@/data/AlterCategories";
+import de from "@/de";
+import en from "@/en";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
   props: {
     categories: {
       type: String,

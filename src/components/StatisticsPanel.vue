@@ -4,7 +4,7 @@
       <span class="icon is-medium">
         <font-awesome-icon icon="chart-bar" size="lg" />
       </span>
-      <span>Kennzahlen</span>
+      <span>{{ t("keyfigures") }}</span>
       <span style="flex: 1">&nbsp;</span>
       <span class="icon is-medium clickAble" @click="hideStatistics">
         <font-awesome-icon icon="times" size="1x" />
@@ -37,8 +37,17 @@ import {
   allAlterCategorizationKeys,
   getAlterCategorization,
 } from "@/data/AlterCategories";
+import de from "@/de";
+import en from "@/en";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
   components: { StatisticsTable, StatisticsTableCategories },
   setup() {
     const store = useStore();

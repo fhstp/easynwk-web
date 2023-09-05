@@ -1,17 +1,17 @@
 <template>
-  <p class="label" v-if="addingNewAlter">Kontakt hinzufügen</p>
-  <p class="label" v-else>Kontakt bearbeiten</p>
+  <p class="label" v-if="addingNewAlter">{{ t("addcontact") }}</p>
+  <p class="label" v-else>{{ t("editcontact") }}</p>
   <form class="form" @submit.prevent="editAlterFinished">
     <div class="field has-text-danger" v-if="invalidPosition">
       <span class="icon is-small">
         <font-awesome-icon icon="exclamation-triangle" />
       </span>
-      Die Position in der Karte muss noch festgelegt werden.
+      {{ t("positiononmap") }}
     </div>
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label">Name</label>
+        <label class="label">{{ t("name") }}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -26,7 +26,7 @@
               placeholder="Vorname oder Spitzname"
             />
           </div>
-          <p class="help">Pflichtfeld</p>
+          <p class="help">{{ t("mandatoryfield") }}</p>
         </div>
       </div>
     </div>
@@ -36,7 +36,7 @@
         <label
           class="label"
           title="Soziale Rolle des Kontakts, Auswahlmöglichkeiten"
-          >Rolle</label
+          >{{ t("role") }}</label
         >
       </div>
       <div class="field-body">
@@ -62,7 +62,7 @@
 
     <div class="field is-horizontal">
       <div class="field-label">
-        <label class="label checkbox" for="chk-human">Mensch</label>
+        <label class="label checkbox" for="chk-human">{{ t("human") }}</label>
       </div>
       <div class="field-body">
         <label>
@@ -76,7 +76,7 @@
         <label
           class="label"
           title="biologisches und/oder soziales Geschlecht; Kategorisierung obliegt der Ankerperson"
-          >Geschlecht</label
+          >{{ t("gender") }}</label
         >
       </div>
       <div class="field-body">
@@ -97,7 +97,7 @@
 
     <div v-else class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label">Kategorie</label>
+        <label class="label">{{ t("category") }}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -115,8 +115,10 @@
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" title="Optional,soziales Alter der Kontaktperson"
-          >Alter</label
+        <label
+          class="label"
+          title="Optional,soziales Alter der Kontaktperson"
+          >{{ t("age") }}</label
         >
       </div>
       <div class="field-body">
@@ -139,16 +141,16 @@
       <div class="field-body">
         <label class="checkbox" title="Häkchen, falls Kontaktperson verstorben">
           <input type="checkbox" v-model="alterDeceased" />
-          {{ SYMBOL_DECEASED }}verstorben
+          {{ SYMBOL_DECEASED }}{{ t("deceased") }}
         </label>
       </div>
     </div>
 
     <div class="field is-horizontal">
       <div class="field-label">
-        <label class="label" title="Aktualisierung der Verbindung"
-          >Beziehung</label
-        >
+        <label class="label" title="Aktualisierung der Verbindung">{{
+          t("relationship")
+        }}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -158,21 +160,21 @@
               title="Beziehung wird aktuell gepflegt, aktualisierte Verbindung."
             >
               <input type="radio" v-model="alterEdgeType" value="1" />
-              besteht
+              {{ t("existing") }}
             </label>
             <label
               class="radio"
               title="Anker- und Kontaktperson begegnen sich in mehreren sozialen Rollen. Beziehung erfüllt mehrere Funktionen."
             >
               <input type="radio" v-model="alterEdgeType" value="2" />
-              multiplex
+              {{ t("multiplex") }}
             </label>
             <label
               class="radio"
               title="Ankerperson und diese Person pflegen zurzeit keinen Kontakt, Beziehung ist nicht aktualisiert (sondern beendet/unterbrochen)."
             >
               <input type="radio" v-model="alterEdgeType" value="0" />
-              keine aktuelle Beziehung
+              {{ t("nocurrentrelationship") }}
             </label>
           </fieldset>
         </div>
@@ -202,7 +204,7 @@
           ref="domButton"
           :disabled="invalidName || invalidPosition"
         >
-          {{ addingNewAlter ? "Nächster Kontakt" : "Schließen" }}
+          {{ addingNewAlter ? t("nextcontact") : t("close") }}
         </button>
       </p>
       <p class="control">
@@ -213,7 +215,7 @@
           type="button"
           @mouseup.prevent="editAlterFinished($event, false)"
         >
-          Schließen
+          {{ t("close") }}
         </button>
       </p>
       <p class="control">
@@ -223,7 +225,7 @@
           type="button"
           @mouseup.prevent="cancelAddAlter"
         >
-          Abbrechen
+          {{ t("cancel") }}
         </button>
       </p>
     </div>
@@ -239,6 +241,8 @@ import { Gender } from "@/data/Gender";
 import { Roles } from "@/data/Roles";
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { TAB_BASE } from "@/store/viewOptionsModule";
+import de from "@/de";
+import en from "@/en";
 
 type InputType = HTMLInputElement | HTMLTextAreaElement;
 
@@ -249,6 +253,13 @@ type InputType = HTMLInputElement | HTMLTextAreaElement;
 // emit edit-finished
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
   props: {
     // gets Alter as prop cp. ToDo demo
     alter: {

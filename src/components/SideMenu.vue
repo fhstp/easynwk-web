@@ -29,7 +29,7 @@
           <span class="icon">
             <font-awesome-icon icon="file" />
           </span>
-          <span>Neue NWK</span>
+          <span>{{ t("newNWK") }}</span>
         </button>
 
         <div class="file">
@@ -39,7 +39,7 @@
               <span class="file-icon">
                 <font-awesome-icon icon="folder-open" />
               </span>
-              <span class="file-label"> Öffnen </span>
+              <span class="file-label"> {{ t("open") }} </span>
             </span>
           </label>
         </div>
@@ -48,14 +48,14 @@
           <span class="icon">
             <font-awesome-icon icon="save" />
           </span>
-          <span>Speichern</span>
+          <span>{{ t("save") }}</span>
         </button>
 
         <button class="button" @click="openDemoData">
           <!-- <span class="icon">
             <font-awesome-icon icon="save" />
           </span> -->
-          <span>Demo laden</span>
+          <span>{{ t("openDemo") }}</span>
         </button>
 
         <p><br /></p>
@@ -64,14 +64,14 @@
           <span class="icon">
             <font-awesome-icon icon="file-image" />
           </span>
-          <span>PNG exportieren</span>
+          <span>{{ t("exportPNG") }}</span>
         </button>
 
         <button class="button" @click="exportCSV">
           <span class="icon">
             <font-awesome-icon icon="file-csv" />
           </span>
-          <span>Kennzahlen exportieren</span>
+          <span>{{ t("exportkeyfigures") }}</span>
         </button>
 
         <a
@@ -96,7 +96,7 @@
           <span class="icon">
             <font-awesome-icon icon="file-pdf" />
           </span>
-          <span>PDF erstellen</span>
+          <span>{{ t("createPDF") }}</span>
         </a>
 
         <p><br /></p>
@@ -105,16 +105,18 @@
           <span class="icon">
             <font-awesome-icon icon="chart-bar" />
           </span>
-          <span>Kennzahlen</span>
+          <span>{{ t("keyfigures") }}</span>
         </button>
       </div>
 
       <div class="links">
-        <a href="http://www.easynwk.com/" target="_blank">Über die easyNWK</a>
+        <a href="http://www.easynwk.com/" target="_blank">{{
+          t("abouteasyNWK")
+        }}</a>
         <a href="https://github.com/fhstp/easynwk-web" target="_blank"
-          >Source Code (Version {{ appVersion }})</a
+          >{{ t("sourcecode") }} (Version {{ appVersion }})</a
         >
-        <a href="http://www.easynwk.com/impressum/">Impressum</a>
+        <a href="http://www.easynwk.com/impressum/">{{ t("imprint") }}</a>
         <img src="fhstp_sw_pos.png" width="80" height="80" />
       </div>
     </div>
@@ -128,8 +130,17 @@ import { useStore } from "@/store";
 import { downloadSVGasPNG, downloadText } from "@/assets/utils";
 import { statisticsCSV } from "@/data/statisticsCSV";
 import { NWK } from "@/data/NWK";
+import de from "@/de";
+import en from "@/en";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
   setup(props, { emit }) {
     const menuOpen = ref(false);
 

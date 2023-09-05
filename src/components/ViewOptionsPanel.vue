@@ -1,7 +1,7 @@
 <template>
   <div class="panel">
     <p class="panel-heading" @click.stop="isOpen = !isOpen">
-      <span>Ansichtseinstellungen</span>
+      <span>{{ t("viewsettings") }}</span>
       <span class="icon is-medium clickAble right">
         <font-awesome-icon v-if="isOpen" icon="chevron-up" />
         <font-awesome-icon v-else icon="chevron-down" size="1x" />
@@ -17,8 +17,8 @@
                   <span class="icon">
                     <font-awesome-icon icon="user-secret" />
                   </span>
-                  <span v-if="pseudonyms">De-Anonymisieren</span>
-                  <span v-else>Anonymisieren</span>
+                  <span v-if="pseudonyms">{{ t("anonymiseoff") }}</span>
+                  <span v-else>{{ t("anonymiseon") }}</span>
                   <span></span>
                 </button>
 
@@ -26,8 +26,8 @@
                   <span class="icon">
                     <font-awesome-icon icon="rss" />
                   </span>
-                  <span v-if="horizons">Horizonte aus</span>
-                  <span v-else>Horizonte ein</span>
+                  <span v-if="horizons">{{ t("horizonsoff") }}</span>
+                  <span v-else>{{ t("horizonson") }}</span>
                 </button>
 
                 <br />
@@ -36,32 +36,32 @@
                   <span class="icon">
                     <font-awesome-icon icon="project-diagram" />
                   </span>
-                  <span v-if="connections">Verbindungen aus</span>
-                  <span v-else>Verbindungen ein</span>
+                  <span v-if="connections">{{ t("connectionsoff") }}</span>
+                  <span v-else>{{ t("connectionson") }}</span>
                 </button>
 
                 <button class="button" @click.stop="toggleAlteriNames">
                   <span class="icon">
                     <font-awesome-icon icon="font" />
                   </span>
-                  <span v-if="alteriNames">Kontaktnamen aus</span>
-                  <span v-else>Kontaktnamen ein</span>
+                  <span v-if="alteriNames">{{ t("namesofcontactsoff") }}</span>
+                  <span v-else>{{ t("namesofcontactson") }}</span>
                 </button>
 
                 <button class="button" @click.stop="toggleAge">
                   <span class="icon">
                     <font-awesome-icon icon="info" />
                   </span>
-                  <span v-if="showAge">Alter der Kontakte aus</span>
-                  <span v-else>Alter der Kontakte ein</span>
+                  <span v-if="showAge">{{ t("ageofcontactsoff") }}</span>
+                  <span v-else>{{ t("ageofcontactson") }}</span>
                 </button>
 
                 <button class="button" @click.stop="toggleRoleShort">
                   <span class="icon">
                     <font-awesome-icon icon="info" />
                   </span>
-                  <span v-if="showRole">Rolle der Kontakte aus</span>
-                  <span v-else>Rolle der Kontakte ein</span>
+                  <span v-if="showRole">{{ t("roleofcontactsoff") }}</span>
+                  <span v-else>{{ t("roleofcontactson") }}</span>
                 </button>
               </div>
             </div>
@@ -75,8 +75,17 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
+import de from "@/de";
+import en from "@/en";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
   setup() {
     const store = useStore();
 

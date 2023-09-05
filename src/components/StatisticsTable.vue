@@ -12,7 +12,7 @@
           <th
             title="Anzahl der Kontakte im Netzwerk exklusive Ankerperson und exklusive Personen ohne Kante zur Ankerperson"
           >
-            Netzwerkgröße
+            {{ t("networksize") }}
             <!-- <span class="icon">
             <font-awesome-icon icon="info-circle" />
           </span> -->
@@ -23,7 +23,7 @@
           <th
             title="Summierte Nähe bzw. Distanz der Kontakte zur Ankerperson. Je höher die Kennzahl, umso näher stehen die Personen der Ankerperson."
           >
-            Beziehungsgewicht
+            {{ t("relationshipweight") }}
           </th>
           <td>{{ naehenSum }}</td>
         </tr>
@@ -31,7 +31,7 @@
           <th
             title="Verhältnis der tatsächlich vorhandenen zu den theoretisch möglichen Verbindungen (exklusive der Verbindungen zwischen Anker- und Kontaktpersonen, inklusive Personen ohne Kante zur Ankerperson). Optional: Maßzahl liegt zwischen 0 (nur isolierte Kontakte) und 1 (jede Person im Netzwerk ist mit jeder anderen verbunden)."
           >
-            Dichte gesamt
+            {{ t("totaldensity") }}
           </th>
           <td>
             {{
@@ -46,7 +46,7 @@
           <th
             title="Kontakt(e) mit den meisten Verbindungen im Netzwerk (neben der Ankerperson)"
           >
-            Star(s)
+            {{ t("stars") }}
           </th>
           <td @click="clickCell('stars')" :class="{ clickAble: stars != '-' }">
             {{ stars }}
@@ -54,7 +54,7 @@
         </tr>
         <tr>
           <th title="Anzahl der Verbindungen zwischen den Sektoren im Netzwerk">
-            Brücken
+            {{ t("bridges") }}
           </th>
           <td>{{ bridgesCount }}</td>
         </tr>
@@ -62,7 +62,7 @@
           <th
             title="Kontakt(e), die einzelne Sektoren im Netzwerk miteinander verbinden"
           >
-            Brückenperson(en)
+            {{ t("bridgepersons") }}
           </th>
           <td
             @click="clickCell('bridgePersons')"
@@ -75,7 +75,7 @@
           <th
             title="Kontakt(e), die ausschließlich mit der Ankerperson verbunden sind"
           >
-            Isolierte
+            {{ t("isolatedpersons") }}
           </th>
           <td
             @click="clickCell('isolated')"
@@ -88,7 +88,7 @@
           <th
             title="Lebende Personen ohne aktualisierte Verbindung zur Ankerperson. Verbindungen mit anderen Personen im Netzwerk und damit indirekte Verbindung zur Ankerperson sind möglich."
           >
-            Personen ohne Kante zur Ankerperson
+            {{ t("personswithoutedgetotheego") }}
           </th>
           <td
             @click="clickCell('alterZeroEdge')"
@@ -112,8 +112,17 @@ import {
   NetworkAnalysis,
 } from "@/data/NetworkAnalysis";
 import { getAlterCategorization } from "@/data/AlterCategories";
+import de from "@/de";
+import en from "@/en";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
   setup() {
     const store = useStore();
 
