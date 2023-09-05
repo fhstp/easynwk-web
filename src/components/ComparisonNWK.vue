@@ -255,14 +255,14 @@ export default {
   name: "ComparisonNWK",
 
   setup: function () {
+    let selectedVersion: any = ref(0);
+
     const store = useStore();
 
     const versions = computed(() => store.state.record.versions);
     const currentVersion = computed(() => store.state.record.currentVersion);
 
     const selectedCircles = ref<number[]>([]);
-
-    let selectedVersion = 1;
 
     const toggleCircle = (index: number) => {
       if (selectedCircles.value.includes(index)) {
@@ -273,12 +273,27 @@ export default {
       } else {
         selectedCircles.value.push(index);
         selectedVersion = index;
-        console.log(index);
         return {
           selectedVersion,
         };
       }
     };
+    /*const calculateViewBox = (index: number) => {
+      const gridSize = 400; // Adjust the size of each grid cell as needed
+      const numRows = 2; // Number of rows
+      const numCols = 2; // Number of columns
+
+      const row = Math.floor(index / numCols);
+      const col = index % numCols;
+
+      const minX = -106 + col * gridSize;
+      const minY = -90 + row * gridSize;
+      //console.log(minX, minY, gridSize);
+
+      return `${minX} ${minY} ${gridSize} ${gridSize}`;
+    };
+
+     */
 
     const getRoleShort = (role: string) => {
       return getRoleAbbrev(role);
@@ -360,6 +375,7 @@ export default {
       selectedCircles,
       toggleCircle,
       getRoleShort,
+      //calculateViewBox,
       alteriCoords,
       alteriMarks,
       connectionMarks,
