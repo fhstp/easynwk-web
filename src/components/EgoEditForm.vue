@@ -18,7 +18,7 @@
                 v-model="egoName"
                 @blur="commitEdit($event, 'name')"
                 type="text"
-                placeholder="Wer steht im Zentrum der NWK?"
+                :placeholder="t('whoisinthecenter')"
               />
             </div>
             <p class="help">{{ t("mandatoryfield") }}</p>

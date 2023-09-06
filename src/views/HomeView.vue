@@ -1,8 +1,4 @@
 <template>
-  <select name="lang" v-model="lang" @change="onLangChange($event)">
-    <option value="de">Deutsch</option>
-    <option value="en">English</option>
-  </select>
   <div id="container">
     <ErrorBoundary>
       <!-- TODO use slots to separate layout from logic https://vuejs.org/v2/guide/components.html#Content-Distribution-with-Slots -->
@@ -14,6 +10,10 @@
               @open-nwk="editEgoFinished"
             />
             <div id="brand"><i>easy</i>NWK</div>
+            <select name="lang" v-model="lang" @change="onLangChange($event)">
+              <option value="de">Deutsch</option>
+              <option value="en">English</option>
+            </select>
             <UndoRedo />
           </div>
           <div id="egobar">

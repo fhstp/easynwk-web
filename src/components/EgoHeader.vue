@@ -7,7 +7,7 @@
     &nbsp;
     <button
       class="button is-small"
-      title="Ankerperson bearbeiten"
+      :title="t('editego')"
       v-on:click="$emit('edit')"
     >
       <span class="icon">

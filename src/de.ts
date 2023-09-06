@@ -65,6 +65,7 @@ export default {
         //egoPanel: {},
         //egoEdit: {
         ego: "Ankerperson",
+        editego: "Ankerperson bearbeiten",
         name: "Name",
         genders: "Geschlecht",
         male: "männlich",
@@ -73,7 +74,7 @@ export default {
         notspecified: "not nicht festgelegt",
         age: "Alter",
         notesaboutego: "Notizen zum Kontakt",
-        Whoisinthecenter: "Wer steht im Zentrum der NWK?",
+        whoisinthecenter: "Wer steht im Zentrum der NWK?",
         mandatoryfield: "Pflichtfeld",
         done: "Schließen",
         //},

@@ -65,6 +65,7 @@ export default {
         //egoPanel: {},
         //egoEdit: {
         ego: "Ego",
+        editego: "Edit ego",
         name: "Name",
         genders: "Gender",
         male: "male",
@@ -73,7 +74,7 @@ export default {
         notspecified: "not specified",
         age: "Age",
         notesaboutego: "notes about ego",
-        Whoisinthecenter: "Who is in the center of the NWK?",
+        whoisinthecenter: "Who is in the center of the NWK?",
         mandatoryfield: "Mandatory field",
         done: "Done",
         //},
