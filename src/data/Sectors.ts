@@ -14,8 +14,8 @@ export const SectorDefaultRoles = [
 ];
 
 export const SectorDefaultRolesEng = [
-  "Familienangehörige*r",
-  "Freund*in",
-  "Kolleg*in",
-  "prof. Helfer*in",
+  "Family member",
+  "Friend",
+  "Colleague",
+  "prof. Help",
 ];

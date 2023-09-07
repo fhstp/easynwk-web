@@ -10,11 +10,16 @@
               @open-nwk="editEgoFinished"
             />
             <div id="brand"><i>easy</i>NWK</div>
-            <select name="lang" v-model="lang" @change="onLangChange($event)">
+            <UndoRedo />
+            <select
+              id="langselect"
+              name="lang"
+              v-model="lang"
+              @change="onLangChange($event)"
+            >
               <option value="de">Deutsch</option>
               <option value="en">English</option>
             </select>
-            <UndoRedo />
           </div>
           <div id="egobar">
             <EgoHeader
@@ -162,6 +167,11 @@ export default defineComponent({
 .scrollwrapper {
   display: flex;
   flex-direction: column;
+}
+
+#langselect {
+  height: 2.25em;
+  margin-left: 0.5em;
 }
 
 #titlebar {

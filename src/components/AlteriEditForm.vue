@@ -23,7 +23,7 @@
               v-model="alterNameInUI"
               @blur="commitEdit($event, 'name')"
               type="text"
-              placeholder="Vorname oder Spitzname"
+              :placeholder="t('nickname')"
             />
           </div>
           <p class="help">{{ t("mandatoryfield") }}</p>
@@ -33,11 +33,7 @@
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label
-          class="label"
-          title="Soziale Rolle des Kontakts, Auswahlmöglichkeiten"
-          >{{ t("role") }}</label
-        >
+        <label class="label" :title="t('socialrole')">{{ t("role") }}</label>
       </div>
       <div class="field-body">
         <div class="control">
@@ -73,11 +69,7 @@
 
     <div v-if="alterHuman" class="field is-horizontal">
       <div class="field-label is-normal">
-        <label
-          class="label"
-          title="biologisches und/oder soziales Geschlecht; Kategorisierung obliegt der Ankerperson"
-          >{{ t("gender") }}</label
-        >
+        <label class="label" :title="t('altergender')">{{ t("gender") }}</label>
       </div>
       <div class="field-body">
         <div class="control">
@@ -115,11 +107,7 @@
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label
-          class="label"
-          title="Optional,soziales Alter der Kontaktperson"
-          >{{ t("age") }}</label
-        >
+        <label class="label" :title="t('agetitle')">{{ t("age") }}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -139,7 +127,7 @@
     <div class="field is-horizontal">
       <div class="field-label is-normal"></div>
       <div class="field-body">
-        <label class="checkbox" title="Häkchen, falls Kontaktperson verstorben">
+        <label class="checkbox" :title="t('deceasedcheck')">
           <input type="checkbox" v-model="alterDeceased" />
           {{ SYMBOL_DECEASED }}{{ t("deceased") }}
         </label>
@@ -148,31 +136,22 @@
 
     <div class="field is-horizontal">
       <div class="field-label">
-        <label class="label" title="Aktualisierung der Verbindung">{{
+        <label class="label" :title="t('relationtitle')">{{
           t("relationship")
         }}</label>
       </div>
       <div class="field-body">
         <div class="field">
           <fieldset :disabled="!isConnectable" class="control radio-group">
-            <label
-              class="radio"
-              title="Beziehung wird aktuell gepflegt, aktualisierte Verbindung."
-            >
+            <label class="radio" :title="t('existingtitle')">
               <input type="radio" v-model="alterEdgeType" value="1" />
               {{ t("existing") }}
             </label>
-            <label
-              class="radio"
-              title="Anker- und Kontaktperson begegnen sich in mehreren sozialen Rollen. Beziehung erfüllt mehrere Funktionen."
-            >
+            <label class="radio" :title="t('multititle')">
               <input type="radio" v-model="alterEdgeType" value="2" />
               {{ t("multiplex") }}
             </label>
-            <label
-              class="radio"
-              title="Ankerperson und diese Person pflegen zurzeit keinen Kontakt, Beziehung ist nicht aktualisiert (sondern beendet/unterbrochen)."
-            >
+            <label class="radio" :title="t('norelationtitle')">
               <input type="radio" v-model="alterEdgeType" value="0" />
               {{ t("nocurrentrelationship") }}
             </label>
@@ -187,7 +166,7 @@
           class="textarea is-small"
           :value="alter.note"
           @blur="commitEdit($event, 'note')"
-          placeholder="Notizen zum Kontakt"
+          :placeholder="t('notesaboutcontact')"
         ></textarea>
       </div>
     </div>
@@ -256,7 +235,6 @@ export default defineComponent({
   mixins: [de, en],
   methods: {
     t(prop: string) {
-      console.log(document.documentElement.lang);
       return this[document.documentElement.lang][prop];
     },
   },

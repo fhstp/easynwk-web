@@ -44,7 +44,6 @@ export default defineComponent({
   mixins: [de, en],
   methods: {
     t(prop: string) {
-      console.log(document.documentElement.lang);
       return this[document.documentElement.lang][prop];
     },
   },

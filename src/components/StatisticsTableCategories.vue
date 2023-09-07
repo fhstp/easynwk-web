@@ -9,9 +9,7 @@
       </thead>
       <tbody>
         <tr>
-          <th
-            title="Anzahl der Kontakte im Netzwerk exklusive Ankerperson und exklusive Personen ohne Kante zur Ankerperson"
-          >
+          <th :title="t('networkmsg')">
             {{ t("networksize") }}
             <!-- <span class="icon">
             <font-awesome-icon icon="info-circle" />
@@ -22,9 +20,7 @@
           </td>
         </tr>
         <tr>
-          <th
-            title="summierte Nähe bzw. Distanz der Kontakte zur Ankerperson. Je höher die Kennzahl, umso näher stehen die Personen der Ankerperson."
-          >
+          <th :title="t('relationshipmsg')">
             {{ t("relationshipweight") }}
           </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">
@@ -32,9 +28,7 @@
           </td>
         </tr>
         <tr>
-          <th
-            title="Verhältnis der tatsächlich vorhandenen zu den theoretisch möglichen Verbindungen (exklusive der Verbindungen zwischen Anker- und Kontaktpersonen, inklusive Personen ohne Kante zur Ankerperson). Optional: Maßzahl liegt zwischen 0 (nur isolierte Kontakte) und 1 (jede Person im Netzwerk ist mit jeder anderen verbunden)."
-          >
+          <th :title="t('densitymsg')">
             {{ t("categorydensity") }}
           </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">{{ density[i] }}</td>
@@ -46,9 +40,7 @@
         </td>
       </tr> -->
         <tr>
-          <th
-            title="Kontakt(e) mit den meisten Verbindungen im Netzwerk (neben der Ankerperson)"
-          >
+          <th :title="t('starsmsg')">
             {{ t("categorystar") }}
           </th>
           <td
@@ -61,7 +53,7 @@
           </td>
         </tr>
         <tr>
-          <th title="Anzahl der Verbindungen zwischen den Sektoren im Netzwerk">
+          <th :title="t('bridgemsg')">
             {{ t("bridges") }}
           </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">
@@ -69,9 +61,7 @@
           </td>
         </tr>
         <tr>
-          <th
-            title="Kontakt(e), die einzelne Sektoren im Netzwerk miteinander verbinden"
-          >
+          <th :title="t('bridgesmsg2')">
             {{ t("bridgepersons") }}
           </th>
           <td
@@ -84,9 +74,7 @@
           </td>
         </tr>
         <tr>
-          <th
-            title="Kontakt(e), die ausschließlich mit der Ankerperson verbunden sind"
-          >
+          <th :title="t('isolatedmsg')">
             {{ t("isolatedpersons") }}
           </th>
           <td
@@ -99,9 +87,7 @@
           </td>
         </tr>
         <tr>
-          <th
-            title="Lebende Personen ohne aktualisierte Verbindung zur Ankerperson. Verbindungen mit anderen Personen im Netzwerk und damit indirekte Verbindung zur Ankerperson sind möglich."
-          >
+          <th :title="t('noedgemsg')">
             {{ t("personswithoutedgetotheego") }}
           </th>
           <td
@@ -136,7 +122,6 @@ export default defineComponent({
   mixins: [de, en],
   methods: {
     t(prop: string) {
-      console.log(document.documentElement.lang);
       return this[document.documentElement.lang][prop];
     },
   },

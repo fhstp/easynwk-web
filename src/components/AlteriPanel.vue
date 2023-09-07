@@ -5,7 +5,7 @@
       <span class="buttons are-small">
         <button
           class="button"
-          title="Kontakt hinzufügen"
+          :title="t('addcontact')"
           @click.stop="addAlter"
           :disabled="!isAlterOpsAllowed"
         >
@@ -54,7 +54,6 @@ export default defineComponent({
   mixins: [de, en],
   methods: {
     t(prop: string) {
-      console.log(document.documentElement.lang);
       return this[document.documentElement.lang][prop];
     },
   },

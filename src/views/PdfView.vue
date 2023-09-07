@@ -6,23 +6,21 @@
           <span class="icon">
             <font-awesome-icon icon="file-pdf" />
           </span>
-          <span>Drucken bzw. als PDF drucken</span>
+          <span>{{ t("printorpdf") }}</span>
         </button>
 
         <button class="button" onclick="window.close()">
           <span class="icon">
             <font-awesome-icon icon="arrow-left" />
           </span>
-          <span>Schließen & zur easyNWK zurückkehren</span>
+          <span>{{ t("closeandback") }}</span>
         </button>
       </div>
       <p>
-        Wenn Sie eine PDF Datei dieser Ansicht erzeugen, indem Sie im
-        Druckdialog "Als PDF speichern" auswählen.
+        {{ t("printtext") }}
       </p>
       <p>
-        Sie können die Daten der Kontakte auch markieren, kopieren und in einem
-        Textverarbeitungsprogramm einfügen.
+        {{ t("printtext2") }}
       </p>
     </div>
 
@@ -79,8 +77,17 @@ import NetworkMap from "@/components/NetworkMap.vue";
 import { useStore } from "@/store";
 import { defineComponent, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import de from "@/de";
+import en from "@/en";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      console.log(document.documentElement.lang);
+      return this[document.documentElement.lang][prop];
+    },
+  },
   name: "PdfView",
   components: { NetworkMap },
   setup: function () {

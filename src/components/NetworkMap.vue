@@ -170,7 +170,7 @@
       id="zoomResetBtn"
       class="button is-medium"
       type="button"
-      title="Zoom Zurücksetzen"
+      :title="t('zoomreset')"
       @click="resetZoom()"
       :disabled="isNotZoomed"
     >
@@ -195,7 +195,7 @@
       id="btnClusterConnect"
       class="button is-small"
       type="button"
-      title="komplett verbinden (Clique erzeugen)"
+      :title="t('clusterconnect')"
       @click="clusterConnect"
       v-if="!isClusterFullyConnected"
       :disabled="!isClusterConnectPossible"
@@ -208,7 +208,7 @@
       id="btnClusterUnConnect"
       class="button is-small"
       type="button"
-      title="alle Beziehungen lösen"
+      :title="t('deconnect')"
       @click="clusterDisconnect"
       v-else
     >
@@ -230,7 +230,7 @@
     <button
       class="button is-small"
       type="button"
-      title="Auswahlrechteck schließen"
+      :title="t('closebrush')"
       @click="clearBrush"
     >
       <span class="icon is-small">
@@ -283,7 +283,6 @@ export default defineComponent({
   mixins: [de, en],
   methods: {
     t(prop: string) {
-      console.log(document.documentElement.lang);
       return this[document.documentElement.lang][prop];
     },
   },
