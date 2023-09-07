@@ -1,50 +1,4 @@
 <template>
-  <div style="position: relative" v-if="changeNWK || showComparison">
-    <svg width="100%" height="120">
-      <!-- Increased height to accommodate text -->
-      <line x1="0" y1="50" x2="100%" y2="50" class="comparisonLine"></line>
-      <a v-for="(version, index) in versions" :key="index">
-        <circle
-          v-if="changeNWK"
-          :cx="`${1 + (100 / (versions.length + 1)) * (index + 1)}` + '%'"
-          cy="50"
-          r="9"
-          :class="{
-            comparisonCircle: version.id !== currentVersion,
-            'comparisonCircle-selected': version.id === currentVersion,
-          }"
-          @click="() => handleCircleClick(version.id)"
-        />
-        <circle
-          v-if="showComparison"
-          :cx="`${1 + (100 / (versions.length + 1)) * (index + 1)}` + '%'"
-          cy="50"
-          r="9"
-          :class="{
-            comparisonCircle: version.id !== currentVersion,
-            'comparisonCircle-selected': version.id === currentVersion,
-          }"
-          @click="() => handleComparisonClick(version.id)"
-        />
-        <text
-          :x="`${1 + (100 / (versions.length + 1)) * (index + 1)}` + '%'"
-          y="35"
-          text-anchor="middle"
-          class="versionText"
-        >
-          {{
-            version.title
-              ? version.title
-              : version.date.substring(8, 10) +
-                "." +
-                version.date.substring(5, 7) +
-                "." +
-                version.date.substring(0, 4)
-          }}
-        </text>
-      </a>
-    </svg>
-  </div>
   <svg id="nwkmap" width="100%" height="100%" viewBox="-106 -106 212 212">
     <defs>
       <symbol id="square" viewBox="-1.5 -1.5 3 3">
@@ -323,10 +277,6 @@ export default defineComponent({
 
   setup: function (props, { emit }) {
     const store = useStore();
-
-    const versions = computed(() => store.state.record.versions);
-
-    const currentVersion = computed(() => store.state.record.currentVersion);
 
     const isEditMode = computed(() => {
       return (
@@ -669,31 +619,6 @@ export default defineComponent({
       return getRoleAbbrev(role);
     };
 
-    function handleCircleClick(versionId: number) {
-      const clickedVersion = versions.value.find(
-        (version) =>
-          version.id === versionId &&
-          versionId !== store.state.record.currentVersion
-      );
-      if (clickedVersion) {
-        console.log(`Clicked version: ${clickedVersion.title}`);
-        store.commit("switchNWK", versionId);
-        console.log("Changed Version");
-      }
-    }
-
-    function handleComparisonClick(versionId: number) {
-      const clickedVersion = versions.value.find(
-        (version) =>
-          version.id === versionId &&
-          versionId !== store.state.record.currentVersion
-      );
-      console.log(
-        "Click for Comparison - not yet implemented! Clicked Version: " +
-          clickedVersion
-      );
-    }
-
     let clickTimeoutId: number | null = null;
     const clickAlter = (alter: Alter) => {
       if (isConnectMode.value && store.state.view.editIndex != null) {
@@ -808,8 +733,6 @@ export default defineComponent({
       showRole: computed(() => store.state.view.roleInNwk),
       getRoleShort,
       alteriNames: computed(() => store.state.view.alteriNames),
-      showComparison: computed(() => store.state.view.nwkcomparison),
-      changeNWK: computed(() => store.state.view.nwkchange),
       connections: computed(() => store.state.view.connections),
       brushBtns,
       isClusterConnectPossible,
@@ -817,10 +740,6 @@ export default defineComponent({
       clusterConnect,
       clusterDisconnect,
       clearBrush,
-      versions,
-      currentVersion,
-      handleCircleClick,
-      handleComparisonClick,
       zoomSector,
       isNotZoomed: computed(() => transform.value.k == 1),
       resetZoom,
@@ -845,12 +764,6 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "~bulma/sass/base/_all.sass";
 
-.comparisonLine {
-  stroke: black !important;
-}
-.comparisonCircle {
-  fill: #ffc37d;
-}
 svg {
   overflow: visible;
 }
@@ -860,10 +773,6 @@ text {
   font-size: 4px;
   -webkit-user-select: none; /* Safari */
   user-select: none;
-}
-
-.versionText {
-  font-size: 12px !important;
 }
 
 text.ego {
@@ -920,14 +829,6 @@ line.select {
 #brushBtns > button {
   display: block;
   margin-bottom: 0.5rem;
-}
-
-.comparisonCircle {
-  fill: #d6dae9;
-}
-
-.comparisonCircle-selected {
-  fill: #ffc37d;
 }
 
 #zoomBtns {
