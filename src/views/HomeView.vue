@@ -27,7 +27,6 @@
         </div>
       </div>
       <div id="chart">
-        <ComparisonSlider />
         <NetworkMap @map-click="mapclick" />
       </div>
     </ErrorBoundary>
@@ -48,12 +47,10 @@ import NetworkMap from "@/components/NetworkMap.vue";
 import UndoRedo from "@/components/UndoRedo.vue";
 import StatisticsPanel from "@/components/StatisticsPanel.vue";
 import ViewOptionsPanel from "@/components/ViewOptionsPanel.vue";
-import ComparisonSlider from "@/components/ComparisonSlider.vue";
 import ComparisonOptionsPanel from "@/components/ComparisonOptionsPanel.vue";
 
 export default defineComponent({
   components: {
-    ComparisonSlider,
     ComparisonOptionsPanel,
     ErrorBoundary,
     EgoHeader,

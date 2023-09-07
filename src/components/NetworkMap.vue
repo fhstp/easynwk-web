@@ -1,5 +1,8 @@
 <template>
-  <svg id="nwkmap" width="100%" height="100%" viewBox="-106 -106 212 212">
+  <svg
+    id="nwkmap"
+    :viewBox="showComparisonSlider ? '-110 -117 220 220' : '-106 -106 212 212'"
+  >
     <defs>
       <symbol id="square" viewBox="-1.5 -1.5 3 3">
         <rect x="-0.886" y="-0.886" width="1.772" height="1.772" />
@@ -158,6 +161,7 @@
     <text :x="0" y="-102" text-anchor="middle" class="ego">
       {{ egoLabel }}
     </text>
+    <ComparisonSlider v-if="showComparisonSlider" />
   </svg>
   <div id="zoomBtns">
     <button
@@ -240,6 +244,7 @@ import { useStore } from "@/store";
 
 import NetworkMapCoordinates from "@/components/NetworkMapCoordinates.vue";
 import NetworkMapSectors from "@/components/NetworkMapSectors.vue";
+import ComparisonSlider from "@/components/ComparisonSlider.vue";
 
 import * as d3 from "d3";
 import { Alter, isConnectable } from "@/data/Alter";
@@ -272,7 +277,7 @@ interface ConnectionMark {
 // emit "map-click" (which is not currently used)
 
 export default defineComponent({
-  components: { NetworkMapCoordinates, NetworkMapSectors },
+  components: { NetworkMapCoordinates, NetworkMapSectors, ComparisonSlider },
   emits: ["map-click"],
 
   setup: function (props, { emit }) {
@@ -752,6 +757,9 @@ export default defineComponent({
             /Safari/.test(navigator.userAgent) &&
             /Apple Computer/.test(navigator.vendor)
           )
+      ),
+      showComparisonSlider: computed(
+        () => store.state.view.nwkchange || store.state.view.nwkcomparison
       ),
     };
   },
