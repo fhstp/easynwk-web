@@ -9,7 +9,8 @@
     <a
       v-for="(mark, index) in versionMarks"
       :key="index"
-      @click="() => handleCircleClick(mark.d.id)">
+      @click="() => handleCircleClick(mark.d.id)"
+    >
       <circle
         v-if="changeNWK"
         :cx="mark.x"

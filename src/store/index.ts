@@ -71,10 +71,24 @@ const mutations = {
 
     // set id depending on alteri in list
     // bugfix: if any id is undefined, NaN, or null --> default to 1
-    newAlter.id =
+    const maxIdNWK =
       state.nwk.alteri.length > 0
-        ? Math.max(...state.nwk.alteri.map((v) => (v.id ? v.id : 1))) + 1
-        : 1;
+        ? Math.max(...state.nwk.alteri.map((v) => (v.id ? v.id : 1)))
+        : 0;
+
+    const maxIdRecord =
+      state.record.versions.length > 0
+        ? Math.max(
+            ...state.record.versions.map((v) =>
+              v.nwk.alteri.length > 0
+                ? Math.max(...v.nwk.alteri.map((v) => (v.id ? v.id : 1)))
+                : 0
+            )
+          )
+        : 0;
+
+    // console.log(`max id nwk:  ${maxIdNWK}  -- max id record:  ${maxIdRecord} `);
+    newAlter.id = Math.max(maxIdNWK, maxIdRecord) + 1;
 
     // new alter is always added on top of list
     state.nwk.alteri.unshift(newAlter);
