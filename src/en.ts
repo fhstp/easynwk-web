@@ -160,6 +160,13 @@ export default {
         tempdata: "Cached data: ",
         tempdata2: "(can be copied)",
         deletetempdata: "Delete cache",
+        profi: "Professional Help",
+        horizon_cum: "Horizon (cumulative)",
+        circle3: "Circle 3",
+        circle2: "Circle 2",
+        circle1: "Circle 1",
+        networkwithoutprofhelp: "Network without professional help",
+        entirenetwork: "Entire Network",
       },
     };
   },

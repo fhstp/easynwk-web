@@ -49,8 +49,12 @@
           <!-- <span class="icon is-small is-right has-text-link">
             <font-awesome-icon icon="chevron-down" />
           </span> -->
-          <datalist id="predefined-roles">
-            <option v-for="value in roleOptions" :key="value" :value="value" />
+          <datalist id="predefined-roles" :key="langIsGerman() ? 'de' : 'en'">
+            <option
+              v-for="value in langIsGerman() ? roleOptions : engRoleOptions"
+              :key="value"
+              :value="value"
+            />
           </datalist>
         </div>
       </div>
@@ -78,9 +82,10 @@
               :class="{ autovalue: alter.genderDefault }"
               v-model="alterGender"
             >
-              <option v-for="value in genderOptions" :key="value">
-                {{ value }}
-              </option>
+              <option value="weiblich">{{ t("female") }}</option>
+              <option value="männlich">{{ t("male") }}</option>
+              <option value="divers">{{ t("diverse") }}</option>
+              <option value="nicht festgelegt">{{ t("notspecified") }}</option>
             </select>
           </div>
         </div>
@@ -217,7 +222,7 @@ import { useStore } from "@/store";
 
 import { Alter, hasOptionalChanges, isConnectable } from "@/data/Alter";
 import { Gender } from "@/data/Gender";
-import { Roles } from "@/data/Roles";
+import { Roles, RolesEng } from "@/data/Roles";
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { TAB_BASE } from "@/store/viewOptionsModule";
 import de from "@/de";
@@ -236,6 +241,10 @@ export default defineComponent({
   methods: {
     t(prop: string) {
       return this[document.documentElement.lang][prop];
+    },
+    langIsGerman() {
+      if (document.documentElement.lang == "de") return true;
+      else return false;
     },
   },
   props: {
@@ -317,6 +326,7 @@ export default defineComponent({
     // apparently v-for needs this to be a data item
     const genderOptions = ref(Gender);
     const roleOptions = ref(Roles);
+    const engRoleOptions = ref(RolesEng);
 
     // we need a DOM ref in order to focus
     const altername = ref<InstanceType<typeof HTMLInputElement> | null>(null);
@@ -404,6 +414,7 @@ export default defineComponent({
       blurRole,
       genderOptions,
       roleOptions,
+      engRoleOptions,
       editAlterFinished,
       cancelAddAlter,
       altername,

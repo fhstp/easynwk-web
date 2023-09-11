@@ -1,9 +1,9 @@
 import { Gender, defaultGender } from "./Gender";
 import roles from "./roles_en.json";
 
-export const Roles = roles.map((role) => {
-  return document.documentElement.lang === "de" ? role.german : role.label;
-});
+export const RolesEng = roles.map((d) => d.label);
+
+export const Roles = roles.map((d) => d.german);
 
 const DEFAULT_ABBREV = "X";
 
