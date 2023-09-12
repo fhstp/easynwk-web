@@ -169,6 +169,12 @@ export default {
         circle1: "Kreis 1",
         networkwithoutprofhelp: "Netzwerk ohne prof. Hilfe",
         entirenetwork: "gesamtes Netzwerk",
+        circle_3: "Kreis 3",
+        circle_3_2: "Kreis 3 + 2",
+        circle_3_2_1: "Kreis 3 + 2 + 1",
+        professional_help: "Prof. Hilfe",
+        network_without_professional_help: "Netzwerk ohne prof. Hilfe",
+        entire_network: "gesamtes Netzwerk",
       },
     };
   },

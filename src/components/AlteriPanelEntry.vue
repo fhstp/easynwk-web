@@ -11,7 +11,7 @@
     <span v-if="!isEditMode" class="contact">
       {{ displayName }}
       <span v-if="alter.age">/ {{ alter.age + " " }}</span>
-      <span :class="{ autovalue: getTranslatedRole(alter.roleDefault) }">
+      <span :class="{ autovalue: getTranslatedDefault(alter.roleDefault) }">
         / {{ getTranslatedRole(alter.role) }}
       </span>
     </span>
@@ -87,15 +87,51 @@ export default defineComponent({
       return (role: any) => {
         const translatedRole = roles.find((r) => r.label === role);
 
+        console.log(translatedRole);
+
+        if (translatedRole) {
+          return this.langIsGerman()
+            ? translatedRole.german
+            : translatedRole.label;
+        } else {
+          return role;
+        }
+      };
+    },
+    getTranslatedDefault() {
+      return (role: string) => {
+        if (role === "Familienangehörige*r" && !this.langIsGerman()) {
+          console.log("here");
+          return "Family member";
+        } else if (role === "Family member" && this.langIsGerman()) {
+          return "Familienangehörige*r";
+        } else if (role === "Freund*in" && !this.langIsGerman()) {
+          return "Friend";
+        } else if (role === "Friend" && this.langIsGerman()) {
+          return "Freund*in";
+        } else if (role === "Kolleg*in" && !this.langIsGerman()) {
+          return "Colleague";
+        } else if (role === "Colleague" && this.langIsGerman()) {
+          return "Kolleg*in";
+        } else if (role === "prof. Helfer*in" && !this.langIsGerman()) {
+          return "prof. Help";
+        } else if (role === "prof. Help" && this.langIsGerman()) {
+          return "prof. Helfer*in";
+        }
+
+        const translatedRole = roles.find((r) => r.label === role);
+
         if (translatedRole) {
           return this.langIsGerman()
             ? translatedRole.german
             : translatedRole.label;
         }
+
         return role;
       };
     },
   },
+
   props: {
     // gets Alter as prop cp. ToDo demo
     alter: {

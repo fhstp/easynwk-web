@@ -167,6 +167,12 @@ export default {
         circle1: "Circle 1",
         networkwithoutprofhelp: "Network without professional help",
         entirenetwork: "Entire Network",
+        circle_3: "Circle 3",
+        circle_3_2: "Circle 3 + 2",
+        circle_3_2_1: "Circle 3 + 2 + 1",
+        professional_help: "Professional Help",
+        network_without_professional_help: "Network without Professional Help",
+        entire_network: "Entire Network",
       },
     };
   },
