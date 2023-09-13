@@ -29,14 +29,16 @@
         <div id="brand"><i>easy</i>NWK</div>
       </div>
       <div id="egobar">
-        <p class="name">{{ "Ankerperson: " + ego.name }}</p>
-        <p>{{ ego.currentGender ? "Geschlecht: " + ego.currentGender : "" }}</p>
-        <p>{{ ego.age.length >= 1 ? "Alter: " + ego.age : "" }}</p>
-        <p>{{ ego.note.length >= 1 ? "Notiz: " + ego.note : "" }}</p>
+        <p class="name">{{ t("ego") + ": " + ego.name }}</p>
+        <p>
+          {{ ego.currentGender ? t("genders") + ": " + ego.currentGender : "" }}
+        </p>
+        <p>{{ ego.age.length >= 1 ? t("age") + ": " + ego.age : "" }}</p>
+        <p>{{ ego.note.length >= 1 ? t("note") + ": " + ego.note : "" }}</p>
       </div>
       <div class="columns">
         <div class="column">
-          <p class="panel-heading">Kontakte</p>
+          <p class="panel-heading">{{ t("contacts") }}</p>
           <div
             v-for="(alter, index) in alteri"
             v-bind:key="index"
@@ -44,31 +46,35 @@
           >
             <p class="name">{{ alter.name }}</p>
             <p>{{ alter.role }}</p>
-            <p>{{ alter.age.length >= 1 ? "Alter: " + alter.age : "" }}</p>
-            <p>{{ alter.human ? "" : "Mensch: Nein" }}</p>
+            <p>
+              {{ alter.age.length >= 1 ? t("age") + ": " + alter.age : "" }}
+            </p>
+            <p>{{ alter.human ? "" : t("humanno") }}</p>
             <p>
               {{
                 alter.human
-                  ? "Geschlecht: " + alter.currentGender
-                  : "Kategorie: " + alter.currentGender
+                  ? t("genders") + ": " + alter.currentGender
+                  : t("category") + ": " + alter.currentGender
               }}
             </p>
-            <p>{{ alter.deceased ? "Verstorben: Ja" : "" }}</p>
+            <p>{{ alter.deceased ? t("deceasedyes") : "" }}</p>
             <p>
-              Beziehung:
+              {{ t("relationship") }}:
               {{
                 alter.edgeType == 1
-                  ? "besteht"
+                  ? t("existing")
                   : alter.edgeType == 2
-                  ? "multiplex"
-                  : "keine aktuelle Beziehung"
+                  ? t("multiplex")
+                  : t("nocurrentrelationship")
               }}
             </p>
-            <p>{{ alter.note.length >= 1 ? "Notiz: " + alter.note : "" }}</p>
+            <p>
+              {{ alter.note.length >= 1 ? t("note") + ": " + alter.note : "" }}
+            </p>
           </div>
         </div>
       </div>
-      <NetworkMap />
+      <NetworkMap :key="t('lang')" />
     </div>
   </div>
 </template>
@@ -84,8 +90,14 @@ export default defineComponent({
   mixins: [de, en],
   methods: {
     t(prop: string) {
-      console.log(document.documentElement.lang);
-      return this[document.documentElement.lang][prop];
+      const langParam = useRouter().currentRoute.value.query.lang;
+
+      const lang =
+        typeof langParam === "string"
+          ? langParam
+          : document.documentElement.lang;
+
+      return this[lang][prop];
     },
   },
   name: "PdfView",

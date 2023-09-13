@@ -87,7 +87,9 @@
             '&age=' +
             showAge +
             '&role=' +
-            showRole
+            showRole +
+            '&lang=' +
+            t('lang')
           "
           target="_blank"
           class="button"
@@ -219,7 +221,6 @@ export default defineComponent({
       },
 
       showStatistics: () => store.commit("view/enable", "statistics"),
-
       pseudonyms: computed(() => store.state.pseudonym.active),
       togglePseudonyms: () => store.commit("pseudonym/toggle"),
       horizons: computed(() => store.state.view.horizons),

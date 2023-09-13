@@ -1,20 +1,21 @@
 import { Gender, defaultGender } from "./Gender";
-import roles from "./roles_en.json";
+import rolesEN from "./roles_en.json";
+import rolesDE from "./roles_de.json";
 
-export const RolesEng = roles.map((d) => d.label);
+export const RolesEng = rolesEN.map((d) => d.german);
 
-export const Roles = roles.map((d) => d.german);
+export const Roles = rolesDE.map((d) => d.german);
 
 const DEFAULT_ABBREV = "X";
 
 export function getGenderDefaultByRole(role: string): string {
-  const roleInfo = roles.find((d) => d.label == role);
+  const roleInfo = rolesDE.find((d) => d.german == role);
   if (roleInfo) return Gender[roleInfo.gender];
   else return defaultGender;
 }
 
 export function getRoleAbbrev(role: string): string {
-  const roleInfo = roles.find((d) => d.label == role);
+  const roleInfo = rolesDE.find((d) => d.german == role);
   if (roleInfo) return roleInfo.abbrev;
   else return DEFAULT_ABBREV;
 }

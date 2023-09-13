@@ -11,7 +11,7 @@
     <span v-if="!isEditMode" class="contact">
       {{ displayName }}
       <span v-if="alter.age">/ {{ alter.age + " " }}</span>
-      <span :class="{ autovalue: getTranslatedRole(alter.roleDefault) }">
+      <span :class="{ autovalue: alter.roleDefault }">
         / {{ getTranslatedRole(alter.role) }}
       </span>
     </span>
