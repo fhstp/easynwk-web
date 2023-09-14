@@ -31,7 +31,11 @@
       <div id="egobar">
         <p class="name">{{ t("ego") + ": " + ego.name }}</p>
         <p>
-          {{ ego.currentGender ? t("genders") + ": " + ego.currentGender : "" }}
+          {{
+            ego.currentGender
+              ? t("genders") + ": " + getGenderTranslation(ego.currentGender)
+              : ""
+          }}
         </p>
         <p>{{ ego.age.length >= 1 ? t("age") + ": " + ego.age : "" }}</p>
         <p>{{ ego.note.length >= 1 ? t("note") + ": " + ego.note : "" }}</p>
@@ -53,7 +57,9 @@
             <p>
               {{
                 alter.human
-                  ? t("genders") + ": " + alter.currentGender
+                  ? t("genders") +
+                    ": " +
+                    getGenderTranslation(alter.currentGender)
                   : t("category") + ": " + alter.currentGender
               }}
             </p>
@@ -74,7 +80,7 @@
           </div>
         </div>
       </div>
-      <NetworkMap :key="t('lang')" />
+      <NetworkMap />
     </div>
   </div>
 </template>
@@ -97,7 +103,23 @@ export default defineComponent({
           ? langParam
           : document.documentElement.lang;
 
+      document.documentElement.lang = lang;
+
       return this[lang][prop];
+    },
+    getGenderTranslation(gender: string) {
+      switch (gender) {
+        case "weiblich":
+          return this.t("female");
+        case "männlich":
+          return this.t("male");
+        case "divers":
+          return this.t("diverse");
+        case "nicht festgelegt":
+          return this.t("notspecified");
+        default:
+          return "";
+      }
     },
   },
   name: "PdfView",

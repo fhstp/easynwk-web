@@ -52,9 +52,11 @@
           <datalist id="predefined-roles" :key="langIsGerman() ? 'de' : 'en'">
             <option
               v-for="value in langIsGerman() ? roleOptions : engRoleOptions"
-              :key="value"
-              :value="value"
-            />
+              :key="value.german"
+              :data-value="value.german"
+            >
+              {{ value.label }}
+            </option>
           </datalist>
         </div>
       </div>
@@ -260,6 +262,8 @@ export default defineComponent({
     const store = useStore();
 
     const addingNewAlter = ref(!(props.alter?.name.length > 0));
+
+    const selectedRoleLabel = ref(props.alter?.role);
 
     // name field is special because it must not be empty
     // the data item is only used for validity check & never stored

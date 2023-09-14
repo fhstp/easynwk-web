@@ -48,11 +48,6 @@ export default defineComponent({
       else return false;
     },
   },
-  data() {
-    return {
-      lang: "de",
-    };
-  },
   props: {
     transform: {
       type: Object,
