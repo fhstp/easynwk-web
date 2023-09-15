@@ -17,7 +17,7 @@
         :class="{ 'is-active': tab === cat }"
         @click="go(cat)"
       >
-        {{ categoryLabel(cat) }}</a
+        {{ translateCategoryKey(categoryLabel(cat)) }}</a
       >
     </p>
     <StatisticsTable v-if="tab === ''"></StatisticsTable>
@@ -39,12 +39,23 @@ import {
 } from "@/data/AlterCategories";
 import de from "@/de";
 import en from "@/en";
+import { CATEGORY_TRANSLATIONS } from "@/data/AlterCategories";
 
 export default defineComponent({
   mixins: [de, en],
   methods: {
     t(prop: string) {
       return this[document.documentElement.lang][prop];
+    },
+    translateCategoryKey(categoryKey: any) {
+      const lang = document.documentElement.lang;
+      const translation = CATEGORY_TRANSLATIONS[categoryKey];
+
+      if (translation && translation[lang]) {
+        return translation[lang];
+      } else {
+        return categoryKey;
+      }
     },
   },
   components: { StatisticsTable, StatisticsTableCategories },

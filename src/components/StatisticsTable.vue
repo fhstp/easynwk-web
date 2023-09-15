@@ -125,14 +125,17 @@ export default defineComponent({
     const stars = computed(() => {
       const alteri = networkAnalysis.value.stars;
       if (alteri.length > 0 && networkAnalysis.value.maxDegree > 0) {
-        return (
-          alteri.map((a) => store.getters["displayName"](a)).join(", ") +
-          " (" +
-          networkAnalysis.value.maxDegree +
-          " Beziehungen)"
-        );
+        return document.documentElement.lang == "de"
+          ? alteri.map((a) => store.getters["displayName"](a)).join(", ") +
+              " (" +
+              networkAnalysis.value.maxDegree +
+              " Beziehungen)"
+          : alteri.map((a) => store.getters["displayName"](a)).join(", ") +
+              " (" +
+              networkAnalysis.value.maxDegree +
+              " relations)";
       } else {
-        return "keine";
+        return document.documentElement.lang == "de" ? "keine" : "none";
       }
     });
 

@@ -4,7 +4,9 @@
       <thead>
         <tr>
           <th></th>
-          <th v-for="(cat, i) in categoryLabels" :key="i">{{ cat }}</th>
+          <th v-for="(cat, i) in categoryLabels" :key="i">
+            {{ translateCategoryKey(cat) }}
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -114,7 +116,10 @@ import {
   getOrInit,
   NetworkAnalysis,
 } from "@/data/NetworkAnalysis";
-import { getAlterCategorization } from "@/data/AlterCategories";
+import {
+  CATEGORY_TRANSLATIONS,
+  getAlterCategorization,
+} from "@/data/AlterCategories";
 import de from "@/de";
 import en from "@/en";
 
@@ -124,7 +129,18 @@ export default defineComponent({
     t(prop: string) {
       return this[document.documentElement.lang][prop];
     },
+    translateCategoryKey(categoryKey: any) {
+      const lang = document.documentElement.lang;
+      const translation = CATEGORY_TRANSLATIONS[categoryKey];
+
+      if (translation && translation[lang]) {
+        return translation[lang];
+      } else {
+        return categoryKey;
+      }
+    },
   },
+
   props: {
     categories: {
       type: String,
