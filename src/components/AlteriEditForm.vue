@@ -41,11 +41,12 @@
             class="input"
             :class="{ autovalue: alter.roleDefault }"
             type="text"
-            :value="alter.role"
+            :value="alterRole"
             list="predefined-roles"
             @blur="blurRole"
             @focus="focusRole"
           />
+
           <!-- <span class="icon is-small is-right has-text-link">
             <font-awesome-icon icon="chevron-down" />
           </span> -->
@@ -317,12 +318,24 @@ export default defineComponent({
 
     const blurRole = (evt: FocusEvent) => {
       const value = (evt.target as InputType).value.trim();
-      if (props.alter.roleDefault && value == "") {
-        (evt.target as InputType).value = props.alter.role;
+
+      const roles = roleOptions.value;
+      const role = roles.find((r) => r.label === value);
+
+      if (role) {
+        const germanValue = role.german;
+        const payload = {
+          index: store.state.view.editIndex,
+          changes: { role: germanValue },
+        };
+        store.commit("editAlter", payload);
       } else {
         commitEdit(evt, "role");
       }
     };
+
+    const alterRole = accessor<string>("role");
+
     const invalidName = computed(() => {
       return alterNameInUI.value.trim().length === 0;
     });
@@ -406,6 +419,7 @@ export default defineComponent({
     return {
       addingNewAlter,
       alterNameInUI,
+      alterRole,
       invalidName,
       invalidPosition,
       alterHuman: accessor<boolean>("human"),
