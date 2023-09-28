@@ -319,7 +319,10 @@ export default defineComponent({
     const blurRole = (evt: FocusEvent) => {
       const value = (evt.target as InputType).value.trim();
 
-      const roles = roleOptions.value;
+      const roles =
+        document.documentElement.lang == "de"
+          ? roleOptions.value
+          : engRoleOptions.value;
       const role = roles.find((r) => r.label === value);
 
       if (role) {
