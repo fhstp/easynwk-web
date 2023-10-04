@@ -41,7 +41,7 @@
             class="input"
             :class="{ autovalue: alter.roleDefault }"
             type="text"
-            :value="alterRole"
+            :value="localizedRole"
             list="predefined-roles"
             @blur="blurRole"
             @focus="focusRole"
@@ -54,7 +54,6 @@
             <option
               v-for="value in langIsGerman() ? roleOptions : engRoleOptions"
               :key="value.german"
-              :data-value="value.german"
             >
               {{ value.label }}
             </option>
@@ -337,6 +336,13 @@ export default defineComponent({
       }
     };
 
+    const localizedRole = computed(() => {
+      const lang = document.documentElement.lang;
+      const roles = lang === "de" ? roleOptions.value : engRoleOptions.value;
+      const role = roles.find((r) => r.german === alterRole.value);
+      return role ? role.label : alterRole.value;
+    });
+
     const alterRole = accessor<string>("role");
 
     const invalidName = computed(() => {
@@ -423,6 +429,7 @@ export default defineComponent({
       addingNewAlter,
       alterNameInUI,
       alterRole,
+      localizedRole,
       invalidName,
       invalidPosition,
       alterHuman: accessor<boolean>("human"),
