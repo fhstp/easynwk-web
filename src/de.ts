@@ -86,7 +86,7 @@ export default {
         //},
         //egoPanel: {},
         //egoEdit: {
-        ego: "Ankerperson",
+        ego: "Ego",
         editego: "Ankerperson bearbeiten",
         name: "Name",
         genders: "Geschlecht",

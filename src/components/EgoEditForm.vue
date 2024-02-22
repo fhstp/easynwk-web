@@ -34,8 +34,11 @@
           <div class="control">
             <div class="select is-fullwidth">
               <select v-model="egoGender">
-                <option v-for="value in genderOptions" :key="value">
-                  {{ value }}
+                <option value="weiblich">{{ t("female") }}</option>
+                <option value="männlich">{{ t("male") }}</option>
+                <option value="divers">{{ t("diverse") }}</option>
+                <option value="nicht festgelegt">
+                  {{ t("notspecified") }}
                 </option>
               </select>
             </div>
