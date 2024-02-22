@@ -32,6 +32,18 @@
       </div>
       <div id="egobar">
         <p class="name">{{ "Ankerperson: " + ego.name }}</p>
+        <span v-if="versions.length && currentVersion >= 0">
+          Gedruckte Version: {{ visibleNWKVersion?.title || "" }}
+          vom
+          <!-- TODO use internationalizable date formater -->
+          {{
+            visibleNWKVersion?.date?.substring(8, 10) +
+            "." +
+            visibleNWKVersion?.date?.substring(5, 7) +
+            "." +
+            visibleNWKVersion?.date?.substring(0, 4)
+          }}&nbsp;
+        </span>
         <p>{{ ego.currentGender ? "Geschlecht: " + ego.currentGender : "" }}</p>
         <p>{{ ego.age.length >= 1 ? "Alter: " + ego.age : "" }}</p>
         <p>{{ ego.note.length >= 1 ? "Notiz: " + ego.note : "" }}</p>
@@ -93,6 +105,14 @@ export default defineComponent({
       window.print();
     };
 
+    const currentVersion = computed(() => store.state.record.currentVersion);
+
+    const visibleNWKVersion = computed(() =>
+      store.state.record.versions.find(
+        (version) => version.id === currentVersion.value
+      )
+    );
+
     // TODO currently: workaround -> schönere Lösung
     const readHttpGet = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -137,6 +157,9 @@ export default defineComponent({
       alteri,
       ego,
       createPdf,
+      visibleNWKVersion,
+      currentVersion: currentVersion,
+      versions: computed(() => store.state.record.versions),
     };
   },
 });

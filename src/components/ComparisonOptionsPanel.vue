@@ -49,7 +49,7 @@
                 <button
                   class="button"
                   @click="addBlankNWK"
-                  @click.stop="newVersion = true"
+                  @click.stop="(newVersion = true), (firstCreation = true)"
                 >
                   <span class="icon">
                     <font-awesome-icon icon="plus-circle" />
@@ -62,7 +62,7 @@
                 <button
                   class="button"
                   @click="duplicateNWK"
-                  @click.stop="newVersion = true"
+                  @click.stop="(newVersion = true), (firstCreation = true)"
                 >
                   <span class="icon">
                     <font-awesome-icon icon="copy" />
@@ -78,7 +78,7 @@
                 </button>
 
                 <!-- TODO hide comparison button before merging into main -->
-                <button class="button" @click.stop="toggleComparison">
+                <button class="button" @click.stop="toggleComparison" disabled>
                   <span class="icon">
                     <font-awesome-icon icon="compress-arrows-alt" />
                   </span>
@@ -131,14 +131,16 @@
                   <button
                     class="button is-primary"
                     @click="addNewVersion()"
-                    @click.stop="newVersion = false"
+                    @click.stop="(newVersion = false), (firstCreation = false)"
                   >
                     <span>Speichern</span>
                   </button>
 
                   <button
+                    v-if="firstCreation"
                     class="button is-light"
-                    @click.stop="newVersion = false"
+                    @click="deleteVersion"
+                    @click.stop="(newVersion = false), (firstCreation = false)"
                   >
                     <!-- TODO Abbrechen does not clear the refs used in the text fields -->
                     <span>Abbrechen</span>
@@ -146,6 +148,7 @@
 
                   <!-- TODO move state updates into handler functions? -->
                   <button
+                    v-if="!firstCreation"
                     class="button is-danger"
                     @click="deleteVersion"
                     @click.stop="newVersion = false"
@@ -195,6 +198,8 @@ export default defineComponent({
 
     const newVersion = ref(false);
 
+    const firstCreation = ref(false);
+
     const editText = ref(false);
 
     const isDisabled = ref(true);
@@ -241,6 +246,7 @@ export default defineComponent({
       isOpen: isOpen,
       newVersion: newVersion,
       newNWK: newNWK,
+      firstCreation: firstCreation,
       //commitEdit,
       deleteVersion,
       addNewVersion: editVersion,

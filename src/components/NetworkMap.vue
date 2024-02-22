@@ -1,7 +1,11 @@
 <template>
   <svg
     id="nwkmap"
-    :viewBox="showComparisonSlider ? '-110 -117 220 220' : '-106 -106 212 212'"
+    :viewBox="
+      showComparisonSlider && !isEditMode
+        ? '-110 -117 220 220'
+        : '-106 -106 212 212'
+    "
   >
     <defs>
       <symbol id="square" viewBox="-1.5 -1.5 3 3">
@@ -161,7 +165,7 @@
     <text :x="0" y="-102" text-anchor="middle" class="ego">
       {{ egoLabel }}
     </text>
-    <ComparisonSlider v-if="showComparisonSlider" />
+    <ComparisonSlider v-if="showComparisonSlider && !isEditMode" />
   </svg>
   <div id="zoomBtns">
     <button
