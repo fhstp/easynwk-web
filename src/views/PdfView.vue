@@ -30,6 +30,19 @@
       </div>
       <div id="egobar">
         <p class="name">{{ t("ego") + ": " + ego.name }}</p>
+        <span v-if="versions.length && currentVersion >= 0">
+          <!-- TODO translate -->
+          Gedruckte Karte: {{ visibleNWKVersion?.title || "" }}
+          vom
+          <!-- TODO use internationalizable date formater -->
+          {{
+            visibleNWKVersion?.date?.substring(8, 10) +
+            "." +
+            visibleNWKVersion?.date?.substring(5, 7) +
+            "." +
+            visibleNWKVersion?.date?.substring(0, 4)
+          }}&nbsp;
+        </span>
         <p>
           {{
             ego.currentGender
@@ -131,8 +144,27 @@ export default defineComponent({
     const ego = computed(() => store.state.nwk.ego);
 
     const createPdf = () => {
-      window.print();
+      (document.title =
+        store.state.nwk.ego.name +
+        " " +
+        visibleNWKVersion.value?.title +
+        " " +
+        visibleNWKVersion.value?.date?.substring(8, 10) +
+        "." +
+        visibleNWKVersion.value?.date?.substring(5, 7) +
+        "." +
+        visibleNWKVersion.value?.date?.substring(0, 4) +
+        ".pdf"),
+        window.print();
     };
+
+    const currentVersion = computed(() => store.state.record.currentVersion);
+
+    const visibleNWKVersion = computed(() =>
+      store.state.record.versions.find(
+        (version) => version.id === currentVersion.value
+      )
+    );
 
     // TODO currently: workaround -> schönere Lösung
     const readHttpGet = () => {
@@ -178,6 +210,9 @@ export default defineComponent({
       alteri,
       ego,
       createPdf,
+      visibleNWKVersion,
+      currentVersion: currentVersion,
+      versions: computed(() => store.state.record.versions),
     };
   },
 });

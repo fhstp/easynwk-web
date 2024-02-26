@@ -42,6 +42,7 @@
               :key="langKey"
             />
             <ViewOptionsPanel :key="langKey" />
+            <ComparisonOptionsPanel :key="langKey" />
             <StatisticsPanel v-if="showStatistics" :key="langKey" />
           </div>
         </div>
@@ -67,9 +68,11 @@ import NetworkMap from "@/components/NetworkMap.vue";
 import UndoRedo from "@/components/UndoRedo.vue";
 import StatisticsPanel from "@/components/StatisticsPanel.vue";
 import ViewOptionsPanel from "@/components/ViewOptionsPanel.vue";
+import ComparisonOptionsPanel from "@/components/ComparisonOptionsPanel.vue";
 
 export default defineComponent({
   components: {
+    ComparisonOptionsPanel,
     ErrorBoundary,
     EgoHeader,
     EgoEditForm,

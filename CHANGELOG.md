@@ -1,5 +1,10 @@
 # easyNWK Version History
 
+## version 2.1.0, released 26 Feb 2024
+
+* (feature) create or duplicate network maps to document change over time [#118](https://github.com/fhstp/easynwk-web/issues/118)
+  * warning: new JSON file format (network maps saved in previous versions can be opened in 2.1.0)
+
 ## version 2.0.6, released 25 Aug 2023
 
 * (feature) zoom with brushbox, mouse wheel, and sector labels [#103](https://github.com/fhstp/easynwk-web/issues/103)

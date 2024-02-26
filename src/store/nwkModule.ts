@@ -1,13 +1,14 @@
 import { Alter, isConnectable } from "@/data/Alter";
 import { Ego } from "@/data/Ego";
-import { NWK, initNWKasJSON, loadNWK } from "@/data/NWK";
 import { applyAdaptiveNWKDefaults } from "./adaptiveNWKDefaults";
+import { NWK, restoreNWK } from "@/data/NWK";
 
-import { loadStateFromStore } from "./localStoragePlugin";
+import { loadNWKStateFromStore } from "./localStoragePlugin";
 
 // root state object.
 // each Vuex instance is just a single state tree.
-const state = JSON.parse(loadStateFromStore());
+const state = JSON.parse(loadNWKStateFromStore());
+// TODO this creates a different object from the NWK in the nwkRecords module!
 
 // mutations are operations that actually mutate the state.
 // each mutation handler gets the entire state tree as the
@@ -20,12 +21,9 @@ const mutations = {
     state.ego = { ...state.ego, ...payload };
   },
 
-  newNWK(state: NWK): void {
-    loadNWK(state, initNWKasJSON());
-  },
-
-  loadNWK(state: NWK, payload: string): void {
-    loadNWK(state, payload);
+  /** load NWK independently from NWKRecord. Only to restore from localstorage */
+  restoreNWKFromJSON(state: NWK, payload: string): void {
+    restoreNWK(state, payload);
   },
 
   editAlter(
@@ -52,7 +50,10 @@ const mutations = {
     state.alteri.splice(alterIndex, 1);
   },
 
-  addConnection(state: NWK, payload: { id1: number; id2: number }): void {
+  addConnection(
+    state: NWK,
+    payload: { id1: number; id2: number; version: number }
+  ): void {
     state.connections.push(payload);
   },
 
@@ -82,7 +83,10 @@ const mutations = {
     );
   },
 
-  toggleConnection(state: NWK, payload: { id1: number; id2: number }): void {
+  toggleConnection(
+    state: NWK,
+    payload: { id1: number; id2: number; version: number }
+  ): void {
     const index = state.connections.findIndex(
       (c) => c.id1 === payload.id1 && c.id2 === payload.id2
     );
