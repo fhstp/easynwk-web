@@ -77,14 +77,14 @@
                   <span>Karte wechseln</span>
                 </button>
 
-                <!-- TODO hide comparison button before merging into main -->
+                <!-- TODO hide comparison button in the production code in main branch
                 <button class="button" @click.stop="toggleComparison" disabled>
                   <span class="icon">
                     <font-awesome-icon icon="compress-arrows-alt" />
                   </span>
                   <span v-if="!nwkcomparison">Vergleich ein</span>
                   <span v-else>Vergleich aus</span>
-                </button>
+                </button> -->
               </div>
 
               <div v-if="newVersion">
@@ -233,8 +233,7 @@ export default defineComponent({
     };
 
     const deleteVersion = () => {
-      const index: number = currentVersion.value - 1; // TODO AR 29 Aug 2023 bad smell, check!
-      store.commit("removeCurrentVersion", index);
+      store.commit("removeCurrentVersion");
     };
 
     return {

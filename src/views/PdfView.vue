@@ -33,7 +33,7 @@
       <div id="egobar">
         <p class="name">{{ "Ankerperson: " + ego.name }}</p>
         <span v-if="versions.length && currentVersion >= 0">
-          Gedruckte Version: {{ visibleNWKVersion?.title || "" }}
+          Gedruckte Karte: {{ visibleNWKVersion?.title || "" }}
           vom
           <!-- TODO use internationalizable date formater -->
           {{

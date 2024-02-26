@@ -174,16 +174,7 @@ export default defineComponent({
       store.commit("prepareToSaveJSON");
 
       let nwkJSON = JSON.stringify(store.state.record);
-      let filename =
-        store.state.nwk.ego.name +
-        " " +
-        visibleNWKVersion.value?.title +
-        " " +
-        visibleNWKVersion.value?.date?.substring(8, 10) +
-        "." +
-        visibleNWKVersion.value?.date?.substring(5, 7) +
-        "." +
-        visibleNWKVersion.value?.date?.substring(0, 4);
+      let filename = store.state.nwk.ego.name;
 
       if (store.state.pseudonym.active) {
         const tempNWK = JSON.parse(nwkJSON) as NWK;
