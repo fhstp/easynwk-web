@@ -1,6 +1,3 @@
-import { SYMBOL_DECEASED } from "@/assets/utils";
-import { Alter, initAlter } from "@/data/Alter";
-import { NWK } from "@/data/NWK";
 import { InjectionKey } from "vue";
 import {
   createLogger,
@@ -8,6 +5,12 @@ import {
   useStore as baseUseStore,
   Store,
 } from "vuex";
+
+import { SYMBOL_DECEASED } from "@/assets/utils";
+import { Alter, initAlter } from "@/data/Alter";
+import { NWK } from "@/data/NWK";
+import { NWKRecord } from "@/data/NWKRecord";
+
 import { applyAdaptiveNWKDefaults } from "./adaptiveNWKDefaults";
 
 import { IUnReDoState, localStoragePlugin } from "./localStoragePlugin";
@@ -18,9 +21,14 @@ import {
   viewOptionsModule,
   ViewOptionsState,
 } from "./viewOptionsModule";
+import {
+  nwkRecordModule,
+  nwkRecordMutationsAtRoot,
+} from "@/store/nwkRecordModule";
 
 export interface IStoreState {
   nwk: NWK;
+  record: NWKRecord;
   view: ViewOptionsState;
   unredo: IUnReDoState;
   pseudonym: PseudonymState;
@@ -51,6 +59,8 @@ const getters = {
 };
 
 const mutations = {
+  ...nwkRecordMutationsAtRoot, // import mutations related to NWKRecord
+
   addAlter(state: IStoreState, initialValues: Partial<Alter> = {}): void {
     // initialize alter with default values and optionally with the passed values
     const newAlter = {
@@ -61,16 +71,31 @@ const mutations = {
 
     // set id depending on alteri in list
     // bugfix: if any id is undefined, NaN, or null --> default to 1
-    newAlter.id =
+    const maxIdNWK =
       state.nwk.alteri.length > 0
-        ? Math.max(...state.nwk.alteri.map((v) => (v.id ? v.id : 1))) + 1
-        : 1;
+        ? Math.max(...state.nwk.alteri.map((v) => (v.id ? v.id : 1)))
+        : 0;
+
+    const maxIdRecord =
+      state.record.versions.length > 0
+        ? Math.max(
+            ...state.record.versions.map((v) =>
+              v.nwk.alteri.length > 0
+                ? Math.max(...v.nwk.alteri.map((v) => (v.id ? v.id : 1)))
+                : 0
+            )
+          )
+        : 0;
+
+    // console.log(`max id nwk:  ${maxIdNWK}  -- max id record:  ${maxIdRecord} `);
+    newAlter.id = Math.max(maxIdNWK, maxIdRecord) + 1;
 
     // new alter is always added on top of list
     state.nwk.alteri.unshift(newAlter);
     state.view.editIndex = 0;
     state.view.editTab = TAB_BASE;
   },
+
   // removes a newly added alter from the list
   cancelAddAlter(state: IStoreState, alterIndex: number): void {
     // console.log("cancel " + alterIndex);
@@ -84,6 +109,18 @@ const mutations = {
     state.view.editIndex = null;
     state.view.editTab = "";
   },
+  /*cancelAddVersion(state: IStoreState, versionIndex: number): void {
+    // canceled alter is new and therefore cannot have connections
+    // don't delete with index null value (see #97)
+    if (versionIndex !== null) {
+      state.nwk.versions.splice(versionIndex, 1);
+    }
+
+    state.view.editIndex = null;
+    state.view.editTab = "";
+  },
+
+   */
   openAlterFormById(
     state: IStoreState,
     payload: { alterId: number; tab?: string }
@@ -121,6 +158,7 @@ export const store = createStore<IStoreState>({
   strict: process.env.NODE_ENV !== "production",
   modules: {
     nwk: nwkModule,
+    record: nwkRecordModule,
     view: viewOptionsModule,
   },
   getters,

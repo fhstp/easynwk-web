@@ -9,15 +9,16 @@ export interface NWK {
   connections: Array<Connection>;
 }
 
-export function initNWKasJSON(): string {
-  return JSON.stringify({
+export function initNWK(): NWK {
+  return {
     ego: initEgo(),
     alteri: [],
     connections: [],
-  });
+  };
 }
 
-export function loadNWK(state: NWK, loadedText: string): void {
+/** load NWK independently from NWKRecord. Only to restore from localstorage */
+export function restoreNWK(state: NWK, loadedText: string): void {
   const loaded = JSON.parse(loadedText);
   state.ego = loaded.ego;
   state.alteri = loaded.alteri;
