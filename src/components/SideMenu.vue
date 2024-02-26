@@ -162,11 +162,28 @@ export default defineComponent({
       fr.readAsText(files.item(0));
     };
 
+    const currentVersion = computed(() => store.state.record.currentVersion);
+
+    const visibleNWKVersion = computed(() =>
+      store.state.record.versions.find(
+        (version) => version.id === currentVersion.value
+      )
+    );
+
     const save = () => {
       store.commit("prepareToSaveJSON");
 
       let nwkJSON = JSON.stringify(store.state.record);
-      let filename = store.state.nwk.ego.name;
+      let filename =
+        store.state.nwk.ego.name +
+        " " +
+        visibleNWKVersion.value?.title +
+        " " +
+        visibleNWKVersion.value?.date?.substring(8, 10) +
+        "." +
+        visibleNWKVersion.value?.date?.substring(5, 7) +
+        "." +
+        visibleNWKVersion.value?.date?.substring(0, 4);
 
       if (store.state.pseudonym.active) {
         const tempNWK = JSON.parse(nwkJSON) as NWK;
@@ -201,11 +218,32 @@ export default defineComponent({
       openDemoData,
       appVersion: computed(() => process.env.VUE_APP_VERSION),
       exportPNG: () => {
-        downloadSVGasPNG(store.state.nwk.ego.name + ".png", "svg#nwkmap");
+        downloadSVGasPNG(
+          store.state.nwk.ego.name +
+            " " +
+            visibleNWKVersion.value?.title +
+            " " +
+            visibleNWKVersion.value?.date?.substring(8, 10) +
+            "." +
+            visibleNWKVersion.value?.date?.substring(5, 7) +
+            "." +
+            visibleNWKVersion.value?.date?.substring(0, 4) +
+            ".png",
+          "svg#nwkmap"
+        );
       },
       exportCSV: () => {
         downloadText(
-          store.state.nwk.ego.name + ".csv",
+          store.state.nwk.ego.name +
+            " " +
+            visibleNWKVersion.value?.title +
+            " " +
+            visibleNWKVersion.value?.date?.substring(8, 10) +
+            "." +
+            visibleNWKVersion.value?.date?.substring(5, 7) +
+            "." +
+            visibleNWKVersion.value?.date?.substring(0, 4) +
+            ".csv",
           statisticsCSV(store.state.nwk, store.getters["displayName"])
         );
       },

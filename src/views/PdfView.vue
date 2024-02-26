@@ -102,7 +102,18 @@ export default defineComponent({
     const ego = computed(() => store.state.nwk.ego);
 
     const createPdf = () => {
-      window.print();
+      (document.title =
+        store.state.nwk.ego.name +
+        " " +
+        visibleNWKVersion.value?.title +
+        " " +
+        visibleNWKVersion.value?.date?.substring(8, 10) +
+        "." +
+        visibleNWKVersion.value?.date?.substring(5, 7) +
+        "." +
+        visibleNWKVersion.value?.date?.substring(0, 4) +
+        ".pdf"),
+        window.print();
     };
 
     const currentVersion = computed(() => store.state.record.currentVersion);
