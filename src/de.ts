@@ -179,6 +179,17 @@ export default {
         network_without_professional_help: "Netzwerk ohne prof. Hilfe",
         entire_network: "gesamtes Netzwerk",
         lang: "de",
+        //Karten und Verläufe:
+        versiontitle: "Karten und Verläufe",
+        currentversion: "Aktuelle Karte: ",
+        versionfrom: " vom ",
+        newemptyversion: "Neue leere Karte",
+        duplicateversion: "Karte duplizieren",
+        changeversion: "Karte wechseln",
+        title: "Titel",
+        date: "Datum",
+        deleteversion: "Karte löschen",
+        titleplaceholder: "Titel der aktuellen Version",
       },
     };
   },

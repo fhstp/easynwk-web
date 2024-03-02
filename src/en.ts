@@ -177,6 +177,17 @@ export default {
         network_without_professional_help: "Network without Professional Help",
         entire_network: "Entire Network",
         lang: "en",
+        //Karten und Verläufe:
+        versiontitle: "Maps and versions",
+        currentversion: "Current map:  ",
+        versionfrom: " from ",
+        newemptyversion: "New empty map",
+        duplicateversion: "Duplicate map",
+        changeversion: "Change map",
+        title: "Title",
+        date: "Date",
+        deleteversion: "Delete map",
+        titleplaceholder: "Title of the current version",
       },
     };
   },

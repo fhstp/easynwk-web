@@ -5,7 +5,7 @@
       @click.stop="isOpen = !isOpen"
       @click="newVersion = false"
     >
-      <span>Karten und Verlauf</span>
+      <span>{{ t("versiontitle") }}</span>
       <span class="icon is-medium clickAble right">
         <font-awesome-icon v-if="isOpen" icon="chevron-up" />
         <font-awesome-icon v-else icon="chevron-down" size="1x" />
@@ -17,10 +17,10 @@
           <div id="record-settings" class="field" v-if="isOpen">
             <div class="control">
               <div class="field is-horizontal">
-                Aktuelle Karte:&nbsp;
+                {{ t("currentversion") }}
                 <span v-if="versions.length && currentVersion >= 0">
                   {{ visibleNWKVersion?.title || "" }}
-                  vom
+                  {{ t("versionfrom") }}
                   <!-- TODO use internationalizable date formater -->
                   {{
                     visibleNWKVersion?.date?.substring(8, 10) +
@@ -54,7 +54,7 @@
                   <span class="icon">
                     <font-awesome-icon icon="plus-circle" />
                   </span>
-                  <span>Neue leere Karte</span>
+                  <span>{{ t("newemptyversion") }}</span>
                   <span></span>
                 </button>
 
@@ -67,14 +67,14 @@
                   <span class="icon">
                     <font-awesome-icon icon="copy" />
                   </span>
-                  <span>Karte duplizieren</span>
+                  <span>{{ t("duplicateversion") }}</span>
                 </button>
 
                 <button class="button" @click.stop="toggleChange">
                   <span class="icon">
                     <font-awesome-icon icon="exchange-alt" />
                   </span>
-                  <span>Karte wechseln</span>
+                  <span>{{ t("changeversion") }}</span>
                 </button>
 
                 <!-- TODO hide comparison button in the production code in main branch
@@ -90,7 +90,7 @@
               <div v-if="newVersion">
                 <div class="field is-horizontal">
                   <div class="field-label is-normal">
-                    <label class="label">Titel</label>
+                    <label class="label">{{ t("title") }}</label>
                   </div>
                   <div class="field-body">
                     <div class="field">
@@ -98,7 +98,7 @@
                         <input
                           class="input"
                           type="text"
-                          placeholder="Titel der aktuellen Version"
+                          :placeholder="t('titleplaceholder')"
                           v-model="newVersionTitle"
                         />
                       </div>
@@ -110,7 +110,7 @@
 
                 <div class="field is-horizontal">
                   <div class="field-label is-normal">
-                    <label class="label">Datum</label>
+                    <label class="label">{{ t("date") }}</label>
                   </div>
                   <div class="field-body">
                     <div class="field">
@@ -133,7 +133,7 @@
                     @click="addNewVersion()"
                     @click.stop="(newVersion = false), (firstCreation = false)"
                   >
-                    <span>Speichern</span>
+                    <span>{{ t("save") }}</span>
                   </button>
 
                   <button
@@ -143,7 +143,7 @@
                     @click.stop="(newVersion = false), (firstCreation = false)"
                   >
                     <!-- TODO Abbrechen does not clear the refs used in the text fields -->
-                    <span>Abbrechen</span>
+                    <span>{{ t("cancel") }}</span>
                   </button>
 
                   <!-- TODO move state updates into handler functions? -->
@@ -154,7 +154,7 @@
                     @click.stop="newVersion = false"
                     :disabled="versions.length <= 1"
                   >
-                    <span>Karte Löschen</span>
+                    <span>{{ t("deleteversion") }}</span>
                   </button>
                 </div>
               </div>
@@ -170,6 +170,8 @@
 import { defineComponent, ref, computed, watch } from "vue";
 import { useStore } from "@/store";
 import { NWKVersion } from "@/data/NWKVersion";
+import de from "@/de";
+import en from "@/en";
 
 //type InputType = HTMLInputElement | HTMLTextAreaElement;
 
@@ -182,6 +184,12 @@ export default defineComponent({
     },
   },
    */
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      return this[document.documentElement.lang][prop];
+    },
+  },
   setup() {
     const store = useStore();
 
