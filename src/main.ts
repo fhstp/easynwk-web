@@ -12,6 +12,8 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 // NB: import & add each used icon here
 import {
   faBars,
+  faFileAlt,
+  faPlusCircle,
   faSearchPlus,
   // faBan,
   faSearchMinus,
@@ -50,14 +52,17 @@ import {
   faLink,
   faUnlink,
   faArrowsAlt,
-  faPlusCircle,
+  faCopy,
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
   faBars,
+  faFileAlt,
   faSearchPlus,
   // faBan,
   faSearchMinus,
   faPencilAlt,
+  faPlusCircle,
+  faCopy,
   faUserPlus,
   faMapPin,
   faUserMinus,
@@ -91,8 +96,7 @@ library.add(
   faInfo,
   faLink,
   faUnlink,
-  faArrowsAlt,
-  faPlusCircle
+  faArrowsAlt
 );
 
 // Vue.component("font-awesome-icon", FontAwesomeIcon);

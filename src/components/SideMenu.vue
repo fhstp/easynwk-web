@@ -156,14 +156,24 @@ export default defineComponent({
         // TODO format checks & error messages
         // if (savedNWK.alteri && savedNWK.alteri instanceof Array) {
         // if (savedNWK.ego && isEgo(savedNWK.ego)) {
-        store.commit("loadNWK", nwkText);
+        store.commit("loadJSON", nwkText);
         emit("open-nwk");
       };
       fr.readAsText(files.item(0));
     };
 
+    const currentVersion = computed(() => store.state.record.currentVersion);
+
+    const visibleNWKVersion = computed(() =>
+      store.state.record.versions.find(
+        (version) => version.id === currentVersion.value
+      )
+    );
+
     const save = () => {
-      let nwkJSON = JSON.stringify(store.state.nwk);
+      store.commit("prepareToSaveJSON");
+
+      let nwkJSON = JSON.stringify(store.state.record);
       let filename = store.state.nwk.ego.name;
 
       if (store.state.pseudonym.active) {
@@ -183,7 +193,7 @@ export default defineComponent({
       fetch(DEMO_URL)
         .then((res) => res.text())
         .then((nwkText) => {
-          store.commit("loadNWK", nwkText);
+          store.commit("loadJSON", nwkText);
           emit("open-nwk");
         })
         .catch((err) => {
@@ -199,11 +209,32 @@ export default defineComponent({
       openDemoData,
       appVersion: computed(() => process.env.VUE_APP_VERSION),
       exportPNG: () => {
-        downloadSVGasPNG(store.state.nwk.ego.name + ".png", "svg#nwkmap");
+        downloadSVGasPNG(
+          store.state.nwk.ego.name +
+            " " +
+            visibleNWKVersion.value?.title +
+            " " +
+            visibleNWKVersion.value?.date?.substring(8, 10) +
+            "." +
+            visibleNWKVersion.value?.date?.substring(5, 7) +
+            "." +
+            visibleNWKVersion.value?.date?.substring(0, 4) +
+            ".png",
+          "svg#nwkmap"
+        );
       },
       exportCSV: () => {
         downloadText(
-          store.state.nwk.ego.name + ".csv",
+          store.state.nwk.ego.name +
+            " " +
+            visibleNWKVersion.value?.title +
+            " " +
+            visibleNWKVersion.value?.date?.substring(8, 10) +
+            "." +
+            visibleNWKVersion.value?.date?.substring(5, 7) +
+            "." +
+            visibleNWKVersion.value?.date?.substring(0, 4) +
+            ".csv",
           statisticsCSV(store.state.nwk, store.getters["displayName"])
         );
       },

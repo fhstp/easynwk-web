@@ -21,6 +21,7 @@
 
             <AlteriPanel v-if="!egoEditMode" :mapclicked="mapclicked" />
             <ViewOptionsPanel />
+            <ComparisonOptionsPanel />
             <StatisticsPanel v-if="showStatistics" />
           </div>
         </div>
@@ -46,9 +47,11 @@ import NetworkMap from "@/components/NetworkMap.vue";
 import UndoRedo from "@/components/UndoRedo.vue";
 import StatisticsPanel from "@/components/StatisticsPanel.vue";
 import ViewOptionsPanel from "@/components/ViewOptionsPanel.vue";
+import ComparisonOptionsPanel from "@/components/ComparisonOptionsPanel.vue";
 
 export default defineComponent({
   components: {
+    ComparisonOptionsPanel,
     ErrorBoundary,
     EgoHeader,
     EgoEditForm,
