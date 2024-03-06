@@ -95,6 +95,7 @@
           :x2="mark.x"
           :y2="mark.y"
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          :style="mark.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
         />
         <text
           v-if="alteriNames && useTextBG"

@@ -167,6 +167,121 @@
       </div>
     </div>
 
+    <div class="field is-horizontal">
+      <div class="field-label">
+        <label class="label" for="chk-new-checkbox">Qualitäten</label>
+      </div>
+      <div class="field-body">
+        <label>
+          <input
+            id="chk-new-checkbox"
+            type="checkbox"
+            v-model="newCheckboxModel"
+          />
+        </label>
+      </div>
+    </div>
+
+    <div class="field is-horizontal">
+      <div class="field-label">
+        <label class="label" for="chk-new-checkbox">Konflikthaft</label>
+      </div>
+      <div class="field-body">
+        <label>
+          <input
+            id="chk-new-checkbox"
+            type="checkbox"
+            v-model="alterConflict"
+          />
+        </label>
+      </div>
+    </div>
+
+    <div v-if="newCheckboxModel" class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Emotional</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="dropdownEmotional">
+              <option value="ego">Ich unterstütze {{ alter.name }}</option>
+              <option value="alter">{{ alter.name }} unterstützt mich</option>
+              <option value="beide">Wir unterstützen uns</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="newCheckboxModel" class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Kognitiv</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="dropdownKognitiv">
+              <option value="ego">Ich unterstütze {{ alter.name }}</option>
+              <option value="alter">{{ alter.name }} unterstützt mich</option>
+              <option value="beide">Wir unterstützen uns</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="newCheckboxModel" class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Sozial</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="dropdownSozial">
+              <option value="ego">Ich unterstütze {{ alter.name }}</option>
+              <option value="alter">{{ alter.name }} unterstützt mich</option>
+              <option value="beide">Wir unterstützen uns</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="newCheckboxModel" class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Materiell</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="dropdownMateriell">
+              <option value="ego">Ich unterstütze {{ alter.name }}</option>
+              <option value="alter">{{ alter.name }} unterstützt mich</option>
+              <option value="beide">Wir unterstützen uns</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="newCheckboxModel" class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Praktisch</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="dropdownPraktisch">
+              <option value="ego">Ich unterstütze {{ alter.name }}</option>
+              <option value="alter">{{ alter.name }} unterstützt mich</option>
+              <option value="beide">Wir unterstützen uns</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="field">
       <div class="control">
         <textarea
@@ -264,6 +379,13 @@ export default defineComponent({
     const addingNewAlter = ref(!(props.alter?.name.length > 0));
 
     const selectedRoleLabel = ref(props.alter?.role);
+
+    const newCheckboxModel = ref(false);
+    const dropdownEmotional = ref(null);
+    const dropdownKognitiv = ref(null);
+    const dropdownSozial = ref(null);
+    const dropdownMateriell = ref(null);
+    const dropdownPraktisch = ref(null);
 
     // name field is special because it must not be empty
     // the data item is only used for validity check & never stored
@@ -429,12 +551,19 @@ export default defineComponent({
       addingNewAlter,
       alterNameInUI,
       alterRole,
+      newCheckboxModel,
+      dropdownEmotional,
+      dropdownKognitiv,
+      dropdownSozial,
+      dropdownMateriell,
+      dropdownPraktisch,
       localizedRole,
       invalidName,
       invalidPosition,
       alterHuman: accessor<boolean>("human"),
       alterGender: accessor<string>("currentGender"),
       alterDeceased: accessor<boolean>("deceased"),
+      alterConflict: accessor<boolean>("conflict"),
       alterEdgeType: accessor<number>("edgeType"),
       isConnectable: computed(() => isConnectable(props.alter as Alter)),
       commitEdit,
