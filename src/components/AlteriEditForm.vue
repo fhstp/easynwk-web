@@ -167,22 +167,7 @@
       </div>
     </div>
 
-    <div class="field is-horizontal">
-      <div class="field-label">
-        <label class="label" for="chk-new-checkbox">Qualitäten</label>
-      </div>
-      <div class="field-body">
-        <label>
-          <input
-            id="chk-new-checkbox"
-            type="checkbox"
-            v-model="newCheckboxModel"
-          />
-        </label>
-      </div>
-    </div>
-
-    <div class="field is-horizontal">
+    <div v-if="showQuality" class="field is-horizontal">
       <div class="field-label">
         <label class="label" for="chk-new-checkbox">Konflikthaft</label>
       </div>
@@ -197,7 +182,7 @@
       </div>
     </div>
 
-    <div v-if="newCheckboxModel" class="field is-horizontal">
+    <div v-if="showQuality" class="field is-horizontal">
       <div class="field-label is-normal">
         <label class="label">Emotional</label>
       </div>
@@ -205,16 +190,17 @@
         <div class="control">
           <div class="select is-fullwidth">
             <select v-model="dropdownEmotional">
-              <option value="ego">Ich unterstütze {{ alter.name }}</option>
-              <option value="alter">{{ alter.name }} unterstützt mich</option>
-              <option value="beide">Wir unterstützen uns</option>
+              <option value="0">Keine Unterstützung</option>
+              <option value="1">Ich unterstütze {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} unterstützt mich</option>
+              <option value="3">Wir unterstützen uns</option>
             </select>
           </div>
         </div>
       </div>
     </div>
 
-    <div v-if="newCheckboxModel" class="field is-horizontal">
+    <div v-if="showQuality" class="field is-horizontal">
       <div class="field-label is-normal">
         <label class="label">Kognitiv</label>
       </div>
@@ -222,16 +208,17 @@
         <div class="control">
           <div class="select is-fullwidth">
             <select v-model="dropdownKognitiv">
-              <option value="ego">Ich unterstütze {{ alter.name }}</option>
-              <option value="alter">{{ alter.name }} unterstützt mich</option>
-              <option value="beide">Wir unterstützen uns</option>
+              <option value="0">Keine Unterstützung</option>
+              <option value="1">Ich unterstütze {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} unterstützt mich</option>
+              <option value="3">Wir unterstützen uns</option>
             </select>
           </div>
         </div>
       </div>
     </div>
 
-    <div v-if="newCheckboxModel" class="field is-horizontal">
+    <div v-if="showQuality" class="field is-horizontal">
       <div class="field-label is-normal">
         <label class="label">Sozial</label>
       </div>
@@ -239,16 +226,17 @@
         <div class="control">
           <div class="select is-fullwidth">
             <select v-model="dropdownSozial">
-              <option value="ego">Ich unterstütze {{ alter.name }}</option>
-              <option value="alter">{{ alter.name }} unterstützt mich</option>
-              <option value="beide">Wir unterstützen uns</option>
+              <option value="0">Keine Unterstützung</option>
+              <option value="1">Ich unterstütze {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} unterstützt mich</option>
+              <option value="3">Wir unterstützen uns</option>
             </select>
           </div>
         </div>
       </div>
     </div>
 
-    <div v-if="newCheckboxModel" class="field is-horizontal">
+    <div v-if="showQuality" class="field is-horizontal">
       <div class="field-label is-normal">
         <label class="label">Materiell</label>
       </div>
@@ -256,16 +244,17 @@
         <div class="control">
           <div class="select is-fullwidth">
             <select v-model="dropdownMateriell">
-              <option value="ego">Ich unterstütze {{ alter.name }}</option>
-              <option value="alter">{{ alter.name }} unterstützt mich</option>
-              <option value="beide">Wir unterstützen uns</option>
+              <option value="0">Keine Unterstützung</option>
+              <option value="1">Ich unterstütze {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} unterstützt mich</option>
+              <option value="3">Wir unterstützen uns</option>
             </select>
           </div>
         </div>
       </div>
     </div>
 
-    <div v-if="newCheckboxModel" class="field is-horizontal">
+    <div v-if="showQuality" class="field is-horizontal">
       <div class="field-label is-normal">
         <label class="label">Praktisch</label>
       </div>
@@ -273,9 +262,10 @@
         <div class="control">
           <div class="select is-fullwidth">
             <select v-model="dropdownPraktisch">
-              <option value="ego">Ich unterstütze {{ alter.name }}</option>
-              <option value="alter">{{ alter.name }} unterstützt mich</option>
-              <option value="beide">Wir unterstützen uns</option>
+              <option value="0">Keine Unterstützung</option>
+              <option value="1">Ich unterstütze {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} unterstützt mich</option>
+              <option value="3">Wir unterstützen uns</option>
             </select>
           </div>
         </div>
@@ -566,6 +556,7 @@ export default defineComponent({
       alterConflict: accessor<boolean>("conflict"),
       alterEdgeType: accessor<number>("edgeType"),
       isConnectable: computed(() => isConnectable(props.alter as Alter)),
+      showQuality: computed(() => store.state.view.qualityRelationship),
       commitEdit,
       focusRole,
       blurRole,

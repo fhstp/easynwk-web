@@ -63,6 +63,14 @@
                   <span v-if="showRole">{{ t("roleofcontactsoff") }}</span>
                   <span v-else>{{ t("roleofcontactson") }}</span>
                 </button>
+
+                <button class="button" @click.stop="toggleQuality">
+                  <span class="icon">
+                    <font-awesome-icon icon="info" />
+                  </span>
+                  <span v-if="showQuality">Qualitäten aus</span>
+                  <span v-else>Qualitäten an</span>
+                </button>
               </div>
             </div>
           </div>
@@ -104,6 +112,8 @@ export default defineComponent({
       toggleAge: () => store.commit("view/toggle", "ageInNwk"),
       showRole: computed(() => store.state.view.roleInNwk),
       toggleRoleShort: () => store.commit("view/toggle", "roleInNwk"),
+      showQuality: computed(() => store.state.view.qualityRelationship),
+      toggleQuality: () => store.commit("view/toggle", "qualityRelationship"),
     };
   },
 });
