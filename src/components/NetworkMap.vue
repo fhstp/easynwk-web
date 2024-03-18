@@ -124,6 +124,53 @@
           {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
       </g>
+      <g v-for="mark in alteriMarks" :key="mark.d.id">
+        <font-awesome-icon
+          v-if="mark.d.supportEmotional >= 1"
+          icon="heart"
+          height="3"
+          width="3"
+          style="color: #afafaf"
+          :x="mark.x < 0 ? mark.x - 20 : mark.x + 2"
+          :y="mark.y"
+        />
+        <font-awesome-icon
+          v-if="mark.d.supportCognitive >= 1"
+          icon="brain"
+          height="3"
+          width="3"
+          style="color: #afafaf"
+          :x="mark.x < 0 ? mark.x - 16 : mark.x + 6"
+          :y="mark.y"
+        />
+        <font-awesome-icon
+          v-if="mark.d.supportSocial >= 1"
+          icon="comments"
+          height="3"
+          width="3"
+          style="color: #afafaf"
+          :x="mark.x < 0 ? mark.x - 12 : mark.x + 10"
+          :y="mark.y"
+        />
+        <font-awesome-icon
+          v-if="mark.d.supportMaterial >= 1"
+          icon="money-bill-wave"
+          height="3"
+          width="3"
+          style="color: #afafaf"
+          :x="mark.x < 0 ? mark.x - 8 : mark.x + 14"
+          :y="mark.y"
+        />
+        <font-awesome-icon
+          v-if="mark.d.supportPractical >= 1"
+          icon="hard-hat"
+          height="3"
+          width="3"
+          style="color: #afafaf"
+          :x="mark.x < 0 ? mark.x - 4 : mark.x + 18"
+          :y="mark.y"
+        />
+      </g>
       <use
         id="ego"
         :href="'#' + egoShape"

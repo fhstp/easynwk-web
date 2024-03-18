@@ -189,7 +189,7 @@
       <div class="field-body">
         <div class="control">
           <div class="select is-fullwidth">
-            <select v-model="dropdownEmotional">
+            <select v-model="alterEmotional">
               <option value="0">Keine Unterstützung</option>
               <option value="1">Ich unterstütze {{ alter.name }}</option>
               <option value="2">{{ alter.name }} unterstützt mich</option>
@@ -207,7 +207,7 @@
       <div class="field-body">
         <div class="control">
           <div class="select is-fullwidth">
-            <select v-model="dropdownKognitiv">
+            <select v-model="alterCognitive">
               <option value="0">Keine Unterstützung</option>
               <option value="1">Ich unterstütze {{ alter.name }}</option>
               <option value="2">{{ alter.name }} unterstützt mich</option>
@@ -225,7 +225,7 @@
       <div class="field-body">
         <div class="control">
           <div class="select is-fullwidth">
-            <select v-model="dropdownSozial">
+            <select v-model="alterSocial">
               <option value="0">Keine Unterstützung</option>
               <option value="1">Ich unterstütze {{ alter.name }}</option>
               <option value="2">{{ alter.name }} unterstützt mich</option>
@@ -243,7 +243,7 @@
       <div class="field-body">
         <div class="control">
           <div class="select is-fullwidth">
-            <select v-model="dropdownMateriell">
+            <select v-model="alterMaterial">
               <option value="0">Keine Unterstützung</option>
               <option value="1">Ich unterstütze {{ alter.name }}</option>
               <option value="2">{{ alter.name }} unterstützt mich</option>
@@ -261,7 +261,7 @@
       <div class="field-body">
         <div class="control">
           <div class="select is-fullwidth">
-            <select v-model="dropdownPraktisch">
+            <select v-model="alterPractical">
               <option value="0">Keine Unterstützung</option>
               <option value="1">Ich unterstütze {{ alter.name }}</option>
               <option value="2">{{ alter.name }} unterstützt mich</option>
@@ -371,11 +371,6 @@ export default defineComponent({
     const selectedRoleLabel = ref(props.alter?.role);
 
     const newCheckboxModel = ref(false);
-    const dropdownEmotional = ref(null);
-    const dropdownKognitiv = ref(null);
-    const dropdownSozial = ref(null);
-    const dropdownMateriell = ref(null);
-    const dropdownPraktisch = ref(null);
 
     // name field is special because it must not be empty
     // the data item is only used for validity check & never stored
@@ -542,11 +537,11 @@ export default defineComponent({
       alterNameInUI,
       alterRole,
       newCheckboxModel,
-      dropdownEmotional,
-      dropdownKognitiv,
-      dropdownSozial,
-      dropdownMateriell,
-      dropdownPraktisch,
+      alterEmotional: accessor<number>("supportEmotional"),
+      alterCognitive: accessor<number>("supportCognitive"),
+      alterSocial: accessor<number>("supportSocial"),
+      alterMaterial: accessor<number>("supportMaterial"),
+      alterPractical: accessor<number>("supportPractical"),
       localizedRole,
       invalidName,
       invalidPosition,

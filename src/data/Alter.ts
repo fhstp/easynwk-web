@@ -24,7 +24,11 @@ export interface Alter {
   /** distance from center normalized to 100 for the outer horizont.  */
   distance: number;
   conflict: boolean;
-  quality: number;
+  supportEmotional: number;
+  supportCognitive: number;
+  supportSocial: number;
+  supportMaterial: number;
+  supportPractical: number;
 }
 
 export function initAlter(): Alter {
@@ -44,7 +48,11 @@ export function initAlter(): Alter {
     angle: 0,
     distance: 0,
     conflict: false,
-    quality: -1,
+    supportEmotional: 0,
+    supportCognitive: 0,
+    supportSocial: 0,
+    supportMaterial: 0,
+    supportPractical: 0,
   };
 }
 
