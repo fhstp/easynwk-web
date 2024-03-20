@@ -4,40 +4,41 @@
     <div class="modal-content">
       <!-- Any other Bulma elements you want -->
       <div class="notification is-warning">
-        <h3 class="title">Irgendetwas ist schief gelaufen :-(</h3>
+        <h3 class="title">{{ t("sthwentwrong") }}</h3>
 
         <p class="block" v-if="canUndo">
-          Mit <b>"Rückgängig"</b> kann der Fehler möglicherweiser behoben
-          werden.
+          {{ t("withmsg") }} <b>"{{ t("canundo") }}"</b> {{ t("canundo2") }}
         </p>
 
         <p class="block">
-          Mit <b>"Zwischenspeicher löschen"</b> können Sie easyNWK in den
-          Auslieferungszustand zurücksetzen. <i>Achtung:</i> Dabei gehen die
-          momentan bearbeiteten Daten verloren.
+          {{ t("withmsg2") }} <b>"{{ t("deletedata") }}"</b>
+          {{ t("deletedata2") }} <i>{{ t("attention") }}</i>
+          {{ t("attention2") }}
         </p>
 
-        <p><b>Zwischengespeicherte Daten:</b> (können kopiert werden)</p>
+        <p>
+          <b>{{ t("tempdata") }}</b> {{ t("tempdata2") }}
+        </p>
         <pre class="block">{{ vuexDump }}</pre>
 
         <div class="buttons">
           <button
             class="button"
-            title="Rückgängig"
+            :title="t('canundo')"
             @click="undo"
             :disabled="!canUndo"
           >
             <span class="icon">
               <font-awesome-icon icon="undo" />
             </span>
-            <span>Rückgängig</span>
+            <span>{{ t("canundo") }}</span>
           </button>
 
           <button class="button is-danger" @click="resetLocalData">
             <span class="icon">
               <font-awesome-icon icon="trash-alt" />
             </span>
-            <span>Zwischenspeicher löschen</span>
+            <span>{{ t("deletetempdata") }}</span>
           </button>
         </div>
       </div>
@@ -49,8 +50,16 @@
 <script lang="ts">
 import { defineComponent, onErrorCaptured, ref, computed } from "vue";
 import { useStore } from "@/store";
+import de from "@/de";
+import en from "@/en";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      return this[document.documentElement.lang][prop];
+    },
+  },
   setup() {
     const store = useStore();
 

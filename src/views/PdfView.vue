@@ -6,23 +6,21 @@
           <span class="icon">
             <font-awesome-icon icon="file-pdf" />
           </span>
-          <span>Drucken bzw. als PDF drucken</span>
+          <span>{{ t("printorpdf") }}</span>
         </button>
 
         <button class="button" onclick="window.close()">
           <span class="icon">
             <font-awesome-icon icon="arrow-left" />
           </span>
-          <span>Schließen & zur easyNWK zurückkehren</span>
+          <span>{{ t("closeandback") }}</span>
         </button>
       </div>
       <p>
-        Wenn Sie eine PDF Datei dieser Ansicht erzeugen, indem Sie im
-        Druckdialog "Als PDF speichern" auswählen.
+        {{ t("printtext") }}
       </p>
       <p>
-        Sie können die Daten der Kontakte auch markieren, kopieren und in einem
-        Textverarbeitungsprogramm einfügen.
+        {{ t("printtext2") }}
       </p>
     </div>
 
@@ -31,8 +29,9 @@
         <div id="brand"><i>easy</i>NWK</div>
       </div>
       <div id="egobar">
-        <p class="name">{{ "Ankerperson: " + ego.name }}</p>
+        <p class="name">{{ t("ego") + ": " + ego.name }}</p>
         <span v-if="versions.length && currentVersion >= 0">
+          <!-- TODO translate -->
           Gedruckte Karte: {{ visibleNWKVersion?.title || "" }}
           vom
           <!-- TODO use internationalizable date formater -->
@@ -44,13 +43,19 @@
             visibleNWKVersion?.date?.substring(0, 4)
           }}&nbsp;
         </span>
-        <p>{{ ego.currentGender ? "Geschlecht: " + ego.currentGender : "" }}</p>
-        <p>{{ ego.age.length >= 1 ? "Alter: " + ego.age : "" }}</p>
-        <p>{{ ego.note.length >= 1 ? "Notiz: " + ego.note : "" }}</p>
+        <p>
+          {{
+            ego.currentGender
+              ? t("genders") + ": " + getGenderTranslation(ego.currentGender)
+              : ""
+          }}
+        </p>
+        <p>{{ ego.age.length >= 1 ? t("age") + ": " + ego.age : "" }}</p>
+        <p>{{ ego.note.length >= 1 ? t("note") + ": " + ego.note : "" }}</p>
       </div>
       <div class="columns">
         <div class="column">
-          <p class="panel-heading">Kontakte</p>
+          <p class="panel-heading">{{ t("contacts") }}</p>
           <div
             v-for="(alter, index) in alteri"
             v-bind:key="index"
@@ -58,27 +63,33 @@
           >
             <p class="name">{{ alter.name }}</p>
             <p>{{ alter.role }}</p>
-            <p>{{ alter.age.length >= 1 ? "Alter: " + alter.age : "" }}</p>
-            <p>{{ alter.human ? "" : "Mensch: Nein" }}</p>
+            <p>
+              {{ alter.age.length >= 1 ? t("age") + ": " + alter.age : "" }}
+            </p>
+            <p>{{ alter.human ? "" : t("humanno") }}</p>
             <p>
               {{
                 alter.human
-                  ? "Geschlecht: " + alter.currentGender
-                  : "Kategorie: " + alter.currentGender
+                  ? t("genders") +
+                    ": " +
+                    getGenderTranslation(alter.currentGender)
+                  : t("category") + ": " + alter.currentGender
               }}
             </p>
-            <p>{{ alter.deceased ? "Verstorben: Ja" : "" }}</p>
+            <p>{{ alter.deceased ? t("deceasedyes") : "" }}</p>
             <p>
-              Beziehung:
+              {{ t("relationship") }}:
               {{
                 alter.edgeType == 1
-                  ? "besteht"
+                  ? t("existing")
                   : alter.edgeType == 2
-                  ? "multiplex"
-                  : "keine aktuelle Beziehung"
+                  ? t("multiplex")
+                  : t("nocurrentrelationship")
               }}
             </p>
-            <p>{{ alter.note.length >= 1 ? "Notiz: " + alter.note : "" }}</p>
+            <p>
+              {{ alter.note.length >= 1 ? t("note") + ": " + alter.note : "" }}
+            </p>
           </div>
         </div>
       </div>
@@ -91,8 +102,39 @@ import NetworkMap from "@/components/NetworkMap.vue";
 import { useStore } from "@/store";
 import { defineComponent, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import de from "@/de";
+import en from "@/en";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      const langParam = useRouter().currentRoute.value.query.lang;
+
+      const lang =
+        typeof langParam === "string"
+          ? langParam
+          : document.documentElement.lang;
+
+      document.documentElement.lang = lang;
+
+      return this[lang][prop];
+    },
+    getGenderTranslation(gender: string) {
+      switch (gender) {
+        case "weiblich":
+          return this.t("female");
+        case "männlich":
+          return this.t("male");
+        case "divers":
+          return this.t("diverse");
+        case "nicht festgelegt":
+          return this.t("notspecified");
+        default:
+          return "";
+      }
+    },
+  },
   name: "PdfView",
   components: { NetworkMap },
   setup: function () {

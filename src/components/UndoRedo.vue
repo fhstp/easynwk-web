@@ -2,7 +2,7 @@
   <div class="buttons">
     <button
       class="button is-small"
-      title="Rückgängig"
+      :title="t('canundo')"
       @click="undo"
       :disabled="!canUndo"
     >
@@ -12,7 +12,7 @@
     </button>
     <button
       class="button is-small"
-      title="Wiederherstellen"
+      :title="t('restore')"
       @click="redo"
       :disabled="!canRedo"
     >
@@ -22,7 +22,7 @@
     </button>
     <button
       class="button is-small"
-      title="Vollbildmodus"
+      :title="t('fullscreen')"
       @click="toggleFullScreen"
       v-if="canFullscreen()"
     >
@@ -38,8 +38,16 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
 import { useStore } from "@/store";
+import de from "@/de";
+import en from "@/en";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      return this[document.documentElement.lang][prop];
+    },
+  },
   setup() {
     const store = useStore();
 

@@ -11,23 +11,44 @@
             />
             <div id="brand"><i>easy</i>NWK</div>
             <UndoRedo />
+            <select
+              id="langselect"
+              name="lang"
+              v-model="lang"
+              @change="onLangChange($event)"
+            >
+              <option value="de">Deutsch</option>
+              <option value="en">English</option>
+            </select>
           </div>
           <div id="egobar">
-            <EgoHeader v-if="!egoEditMode" @edit="egoEditMode = true" />
+            <EgoHeader
+              v-if="!egoEditMode"
+              @edit="egoEditMode = true"
+              :key="langKey"
+            />
           </div>
 
           <div id="forms">
-            <EgoEditForm v-if="egoEditMode" @edit-finished="editEgoFinished" />
+            <EgoEditForm
+              v-if="egoEditMode"
+              @edit-finished="editEgoFinished"
+              :key="langKey"
+            />
 
-            <AlteriPanel v-if="!egoEditMode" :mapclicked="mapclicked" />
-            <ViewOptionsPanel />
-            <ComparisonOptionsPanel />
-            <StatisticsPanel v-if="showStatistics" />
+            <AlteriPanel
+              v-if="!egoEditMode"
+              :mapclicked="mapclicked"
+              :key="langKey"
+            />
+            <ViewOptionsPanel :key="langKey" />
+            <ComparisonOptionsPanel :key="langKey" />
+            <StatisticsPanel v-if="showStatistics" :key="langKey" />
           </div>
         </div>
       </div>
       <div id="chart">
-        <NetworkMap @map-click="mapclick" />
+        <NetworkMap @map-click="mapclick" :key="langKey" />
       </div>
     </ErrorBoundary>
   </div>
@@ -61,6 +82,19 @@ export default defineComponent({
     UndoRedo,
     StatisticsPanel,
     ViewOptionsPanel,
+  },
+
+  methods: {
+    onLangChange(event: any) {
+      document.documentElement.setAttribute("lang", event.target.value);
+      this.langKey = document.documentElement.lang;
+    },
+  },
+  data: function () {
+    return {
+      lang: "de",
+      langKey: "de",
+    };
   },
 
   setup() {
@@ -136,6 +170,11 @@ export default defineComponent({
 .scrollwrapper {
   display: flex;
   flex-direction: column;
+}
+
+#langselect {
+  height: 2.25em;
+  margin-left: 0.5em;
 }
 
 #titlebar {

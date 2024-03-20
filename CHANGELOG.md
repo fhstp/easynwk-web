@@ -1,5 +1,9 @@
 # easyNWK Version History
 
+## version 2.2.0, released xx xxx 2024
+
+* (feature) make the web app multi-linugal [#83](https://github.com/fhstp/easynwk-web/issues/83)
+
 ## version 2.1.0, released 26 Feb 2024
 
 * (feature) create or duplicate network maps to document change over time [#118](https://github.com/fhstp/easynwk-web/issues/118)
