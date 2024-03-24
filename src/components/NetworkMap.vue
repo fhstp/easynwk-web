@@ -97,6 +97,74 @@
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
           :style="mark.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
         />
+        <marker
+          id="arrowheadMe"
+          markerWidth="10"
+          markerHeight="7"
+          refX="20"
+          refY="3.5"
+          orient="auto"
+        >
+          <polygon points="0 0, 10 3.5, 0 7" fill="#afafaf" />
+        </marker>
+        <marker
+          id="arrowheadAlter"
+          markerWidth="10"
+          markerHeight="7"
+          refX="30"
+          refY="3.5"
+          orient="auto"
+        >
+          <polygon points="10 0, 0 3.5, 10 7" fill="#afafaf" />
+        </marker>
+        <line
+          v-if="
+            connections &&
+            mark.d.edgeType >= 1 &&
+            (mark.d.supportPractical == 2 ||
+              mark.d.supportPractical == 3 ||
+              mark.d.supportSocial == 2 ||
+              mark.d.supportSocial == 3 ||
+              mark.d.supportMaterial == 2 ||
+              mark.d.supportMaterial == 3 ||
+              mark.d.supportEmotional == 2 ||
+              mark.d.supportEmotional == 3 ||
+              mark.d.supportCognitive == 2 ||
+              mark.d.supportCognitive == 3)
+          "
+          :class="{ select: mark.selected }"
+          :x1="egoCoords[0]"
+          :y1="egoCoords[1]"
+          :x2="mark.x"
+          :y2="mark.y"
+          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          :style="mark.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
+          marker-end="url(#arrowheadAlter)"
+        />
+        <line
+          v-if="
+            connections &&
+            mark.d.edgeType >= 1 &&
+            (mark.d.supportPractical == 1 ||
+              mark.d.supportPractical == 3 ||
+              mark.d.supportSocial == 1 ||
+              mark.d.supportSocial == 3 ||
+              mark.d.supportMaterial == 1 ||
+              mark.d.supportMaterial == 3 ||
+              mark.d.supportEmotional == 1 ||
+              mark.d.supportEmotional == 3 ||
+              mark.d.supportCognitive == 1 ||
+              mark.d.supportCognitive == 3)
+          "
+          :class="{ select: mark.selected }"
+          :x1="egoCoords[0]"
+          :y1="egoCoords[1]"
+          :x2="mark.x"
+          :y2="mark.y"
+          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          :style="mark.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
+          marker-end="url(#arrowheadMe)"
+        />
         <text
           v-if="alteriNames && useTextBG"
           class="textbg"
@@ -132,7 +200,7 @@
           width="3"
           style="color: #afafaf"
           :x="mark.x < 0 ? mark.x - 20 : mark.x + 2"
-          :y="mark.y"
+          :y="mark.y < 0 ? mark.y : mark.y + 5"
         />
         <font-awesome-icon
           v-if="mark.d.supportCognitive >= 1"
@@ -141,7 +209,7 @@
           width="3"
           style="color: #afafaf"
           :x="mark.x < 0 ? mark.x - 16 : mark.x + 6"
-          :y="mark.y"
+          :y="mark.y < 0 ? mark.y : mark.y + 5"
         />
         <font-awesome-icon
           v-if="mark.d.supportSocial >= 1"
@@ -150,7 +218,7 @@
           width="3"
           style="color: #afafaf"
           :x="mark.x < 0 ? mark.x - 12 : mark.x + 10"
-          :y="mark.y"
+          :y="mark.y < 0 ? mark.y : mark.y + 5"
         />
         <font-awesome-icon
           v-if="mark.d.supportMaterial >= 1"
@@ -159,7 +227,7 @@
           width="3"
           style="color: #afafaf"
           :x="mark.x < 0 ? mark.x - 8 : mark.x + 14"
-          :y="mark.y"
+          :y="mark.y < 0 ? mark.y : mark.y + 5"
         />
         <font-awesome-icon
           v-if="mark.d.supportPractical >= 1"
@@ -168,7 +236,7 @@
           width="3"
           style="color: #afafaf"
           :x="mark.x < 0 ? mark.x - 4 : mark.x + 18"
-          :y="mark.y"
+          :y="mark.y < 0 ? mark.y : mark.y + 5"
         />
       </g>
       <use
@@ -903,5 +971,8 @@ line.select {
   position: absolute;
   right: 2px;
   bottom: 1.5rem;
+}
+.fa {
+  display: flex;
 }
 </style>

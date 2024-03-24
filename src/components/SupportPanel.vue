@@ -13,23 +13,26 @@
           <div id="view-settings" class="field" v-if="isOpen">
             <div class="control">
               <div class="box">
-                <font-awesome-icon icon="heart" />
+                <font-awesome-icon icon="heart" style="color: #afafaf" />
                 Emotional:
               </div>
               <div class="box">
-                <font-awesome-icon icon="brain" />
+                <font-awesome-icon icon="brain" style="color: #afafaf" />
                 Kognitiv:
               </div>
               <div class="box">
-                <font-awesome-icon icon="comments" />
+                <font-awesome-icon icon="comments" style="color: #afafaf" />
                 Sozial:
               </div>
               <div class="box">
-                <font-awesome-icon icon="money-bill-wave" />
+                <font-awesome-icon
+                  icon="money-bill-wave"
+                  style="color: #afafaf"
+                />
                 Materiell:
               </div>
               <div class="box">
-                <font-awesome-icon icon="hard-hat" />
+                <font-awesome-icon icon="hard-hat" style="color: #afafaf" />
                 Praktisch:
               </div>
             </div>
@@ -45,6 +48,7 @@ import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
 import de from "@/de";
 import en from "@/en";
+import { isConnectable } from "@/data/Alter";
 
 export default defineComponent({
   mixins: [de, en],
@@ -58,8 +62,11 @@ export default defineComponent({
 
     const isOpen = ref(false);
 
+    const alteri = computed(() => store.state.nwk.alteri);
+
     return {
       isOpen: isOpen,
+      alteri: alteri,
     };
   },
 });
