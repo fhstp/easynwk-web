@@ -111,7 +111,7 @@
           id="arrowheadAlter"
           markerWidth="10"
           markerHeight="7"
-          refX="30"
+          refX="35"
           refY="3.5"
           orient="auto"
         >

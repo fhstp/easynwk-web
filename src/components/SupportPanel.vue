@@ -13,7 +13,13 @@
           <div id="view-settings" class="field" v-if="isOpen">
             <div class="control">
               <div class="box">
-                <font-awesome-icon icon="heart" style="color: #afafaf" />
+                <font-awesome-icon
+                  icon="heart"
+                  style="color: #afafaf"
+                  class="clickAble"
+                  :class="{ clicked: heartClicked }"
+                  @click.stop="toggleHeart"
+                />
                 Emotional:
               </div>
               <div class="box">
@@ -56,16 +62,23 @@ export default defineComponent({
     t(prop: string) {
       return this[document.documentElement.lang][prop];
     },
+    toggleHeart() {
+      this.heartClicked = !this.heartClicked;
+      console.log("Clicked");
+    },
+    // Add toggle methods for other icons if needed
   },
   setup() {
     const store = useStore();
 
     const isOpen = ref(false);
+    const heartClicked = ref(false); // Add ref for other icons if needed
 
     const alteri = computed(() => store.state.nwk.alteri);
 
     return {
       isOpen: isOpen,
+      heartClicked: heartClicked,
       alteri: alteri,
     };
   },
@@ -75,5 +88,9 @@ export default defineComponent({
 <style lang="scss">
 .right {
   float: right;
+}
+
+.clicked {
+  color: lightsalmon; // Change to your desired color
 }
 </style>

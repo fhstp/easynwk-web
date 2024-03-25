@@ -44,7 +44,8 @@
             <ViewOptionsPanel :key="langKey" />
             <ComparisonOptionsPanel :key="langKey" />
             <StatisticsPanel v-if="showStatistics" :key="langKey" />
-            <support-panel v-if="showQuality" />
+            <support-panel />
+            <!-- v-if="showQuality" -->
           </div>
         </div>
       </div>
