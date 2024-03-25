@@ -59,8 +59,8 @@
     <NetworkMapCoordinates :transform="transform" />
 
     <text v-if="isEditMode" text-anchor="middle" class="edithint">
-      <tspan x="0" y="-1em">Klicke in die Karte, um</tspan>
-      <tspan x="0" dy="2em">die Position festzulegen</tspan>
+      <tspan x="0" y="-1em">{{ t("maptext") }}</tspan>
+      <tspan x="0" dy="2em">{{ t("maptext2") }}</tspan>
     </text>
 
     <g id="marksBackgroundLayer">
@@ -95,6 +95,75 @@
           :x2="mark.x"
           :y2="mark.y"
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          :style="mark.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
+        />
+        <marker
+          id="arrowheadMe"
+          markerWidth="10"
+          markerHeight="7"
+          refX="20"
+          refY="3.5"
+          orient="auto"
+        >
+          <polygon points="0 0, 10 3.5, 0 7" fill="#afafaf" />
+        </marker>
+        <marker
+          id="arrowheadAlter"
+          markerWidth="10"
+          markerHeight="7"
+          refX="30"
+          refY="3.5"
+          orient="auto"
+        >
+          <polygon points="10 0, 0 3.5, 10 7" fill="#afafaf" />
+        </marker>
+        <line
+          v-if="
+            connections &&
+            mark.d.edgeType >= 1 &&
+            (mark.d.supportPractical == 2 ||
+              mark.d.supportPractical == 3 ||
+              mark.d.supportSocial == 2 ||
+              mark.d.supportSocial == 3 ||
+              mark.d.supportMaterial == 2 ||
+              mark.d.supportMaterial == 3 ||
+              mark.d.supportEmotional == 2 ||
+              mark.d.supportEmotional == 3 ||
+              mark.d.supportCognitive == 2 ||
+              mark.d.supportCognitive == 3)
+          "
+          :class="{ select: mark.selected }"
+          :x1="egoCoords[0]"
+          :y1="egoCoords[1]"
+          :x2="mark.x"
+          :y2="mark.y"
+          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          :style="mark.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
+          marker-end="url(#arrowheadAlter)"
+        />
+        <line
+          v-if="
+            connections &&
+            mark.d.edgeType >= 1 &&
+            (mark.d.supportPractical == 1 ||
+              mark.d.supportPractical == 3 ||
+              mark.d.supportSocial == 1 ||
+              mark.d.supportSocial == 3 ||
+              mark.d.supportMaterial == 1 ||
+              mark.d.supportMaterial == 3 ||
+              mark.d.supportEmotional == 1 ||
+              mark.d.supportEmotional == 3 ||
+              mark.d.supportCognitive == 1 ||
+              mark.d.supportCognitive == 3)
+          "
+          :class="{ select: mark.selected }"
+          :x1="egoCoords[0]"
+          :y1="egoCoords[1]"
+          :x2="mark.x"
+          :y2="mark.y"
+          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          :style="mark.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
+          marker-end="url(#arrowheadMe)"
         />
         <text
           v-if="alteriNames && useTextBG"
@@ -122,6 +191,53 @@
           {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
           {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
+      </g>
+      <g v-for="mark in alteriMarks" :key="mark.d.id">
+        <font-awesome-icon
+          v-if="mark.d.supportEmotional >= 1"
+          icon="heart"
+          height="3"
+          width="3"
+          style="color: #afafaf"
+          :x="mark.x < 0 ? mark.x - 20 : mark.x + 2"
+          :y="mark.y < 0 ? mark.y : mark.y + 5"
+        />
+        <font-awesome-icon
+          v-if="mark.d.supportCognitive >= 1"
+          icon="brain"
+          height="3"
+          width="3"
+          style="color: #afafaf"
+          :x="mark.x < 0 ? mark.x - 16 : mark.x + 6"
+          :y="mark.y < 0 ? mark.y : mark.y + 5"
+        />
+        <font-awesome-icon
+          v-if="mark.d.supportSocial >= 1"
+          icon="comments"
+          height="3"
+          width="3"
+          style="color: #afafaf"
+          :x="mark.x < 0 ? mark.x - 12 : mark.x + 10"
+          :y="mark.y < 0 ? mark.y : mark.y + 5"
+        />
+        <font-awesome-icon
+          v-if="mark.d.supportMaterial >= 1"
+          icon="money-bill-wave"
+          height="3"
+          width="3"
+          style="color: #afafaf"
+          :x="mark.x < 0 ? mark.x - 8 : mark.x + 14"
+          :y="mark.y < 0 ? mark.y : mark.y + 5"
+        />
+        <font-awesome-icon
+          v-if="mark.d.supportPractical >= 1"
+          icon="hard-hat"
+          height="3"
+          width="3"
+          style="color: #afafaf"
+          :x="mark.x < 0 ? mark.x - 4 : mark.x + 18"
+          :y="mark.y < 0 ? mark.y : mark.y + 5"
+        />
       </g>
       <use
         id="ego"
@@ -172,7 +288,7 @@
       id="zoomResetBtn"
       class="button is-medium"
       type="button"
-      title="Zoom Zurücksetzen"
+      :title="t('zoomreset')"
       @click="resetZoom()"
       :disabled="isNotZoomed"
     >
@@ -197,7 +313,7 @@
       id="btnClusterConnect"
       class="button is-small"
       type="button"
-      title="komplett verbinden (Clique erzeugen)"
+      :title="t('clusterconnect')"
       @click="clusterConnect"
       v-if="!isClusterFullyConnected"
       :disabled="!isClusterConnectPossible"
@@ -210,7 +326,7 @@
       id="btnClusterUnConnect"
       class="button is-small"
       type="button"
-      title="alle Beziehungen lösen"
+      :title="t('deconnect')"
       @click="clusterDisconnect"
       v-else
     >
@@ -232,7 +348,7 @@
     <button
       class="button is-small"
       type="button"
-      title="Auswahlrechteck schließen"
+      :title="t('closebrush')"
       @click="clearBrush"
     >
       <span class="icon is-small">
@@ -258,6 +374,8 @@ import { SYMBOL_DECEASED } from "@/assets/utils";
 import { getRoleAbbrev } from "../data/Roles";
 import { brushSelection, D3BrushEvent } from "d3";
 import { zoom, ZoomTransform, zoomIdentity } from "d3-zoom";
+import de from "@/de";
+import en from "@/en";
 
 interface AlterMark {
   d: Alter;
@@ -281,6 +399,12 @@ interface ConnectionMark {
 // emit "map-click" (which is not currently used)
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      return this[document.documentElement.lang][prop];
+    },
+  },
   components: { NetworkMapCoordinates, NetworkMapSectors, ComparisonSlider },
   emits: ["map-click"],
 
@@ -847,5 +971,8 @@ line.select {
   position: absolute;
   right: 2px;
   bottom: 1.5rem;
+}
+.fa {
+  display: flex;
 }
 </style>

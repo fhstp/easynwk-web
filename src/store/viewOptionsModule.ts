@@ -8,6 +8,7 @@ export interface ViewOptionsFlags {
   statistics: boolean;
   ageInNwk: boolean;
   roleInNwk: boolean;
+  qualityRelationship: boolean;
   nwkcomparison: boolean;
   nwkchange: boolean;
 }
@@ -27,6 +28,7 @@ export function initViewOptionsState(): ViewOptionsState {
     statistics: false,
     ageInNwk: false,
     roleInNwk: false,
+    qualityRelationship: false,
     nwkcomparison: false,
     nwkchange: false,
 

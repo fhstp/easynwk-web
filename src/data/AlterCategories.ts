@@ -10,6 +10,85 @@ export interface AlterCategorization {
   categories: string[];
 }
 
+export const CATEGORY_TRANSLATIONS: Record<string, Record<string, string>> = {
+  Sektor: {
+    de: "Sektor",
+    en: "Sector",
+  },
+  "Kreis 3": {
+    de: "Kreis 3",
+    en: "Circle 3",
+  },
+  "Kreis 3 + 2": {
+    de: "Kreis 3 + 2",
+    en: "Circle 3 + 2",
+  },
+  "Kreis 3 + 2 + 1": {
+    de: "Kreis 3 + 2 + 1",
+    en: "Circle 3 + 2 + 1",
+  },
+  "prof. Hilfe": {
+    de: "Prof. Hilfe",
+    en: "Professional Help",
+  },
+  "Netzwerk ohne prof. Hilfe": {
+    de: "Netzwerk ohne prof. Hilfe",
+    en: "Network without Professional Help",
+  },
+  "gesamtes Netzwerk": {
+    de: "gesamtes Netzwerk",
+    en: "Entire Network",
+  },
+  Geschlecht: {
+    de: "Geschlecht",
+    en: "Gender",
+  },
+  Überblick: {
+    de: "Überblick",
+    en: "Overview",
+  },
+  "Horizont (kumulativ)": {
+    de: "Horizont (kumulativ)",
+    en: "Cumulative Horizon",
+  },
+  Horizont: {
+    de: "Horizont",
+    en: "Horizon",
+  },
+  Familie: {
+    de: "Familie",
+    en: "Family",
+  },
+  "Freund*innen / Bekannte": {
+    de: "Freund*innen / Bekannte",
+    en: "Friends / Acquaintances",
+  },
+  "Kolleg*innen": {
+    de: "Kolleg*innen",
+    en: "Colleagues",
+  },
+  "prof. Helfer*innen": {
+    de: "prof. Helfer*innen",
+    en: "Professional Helpers",
+  },
+  weiblich: {
+    de: "weiblich",
+    en: "Female",
+  },
+  männlich: {
+    de: "männlich",
+    en: "Male",
+  },
+  divers: {
+    de: "divers",
+    en: "Diverse",
+  },
+  "nicht festgelegt": {
+    de: "nicht festgelegt",
+    en: "Not Specified",
+  },
+};
+
 export function sectorIndex(alter: Alter): number | null {
   if (alter.distance <= 0) return null;
 
@@ -36,7 +115,12 @@ const SECTOR: AlterCategorization = {
   label: "Sektor",
   inCategory: (catIndex: number, a: Alter): boolean =>
     sectorIndex(a) === catIndex,
-  categories: Sectors,
+  categories: [
+    "Familie",
+    "Freund*innen / Bekannte",
+    "Kolleg*innen",
+    "prof. Helfer*innen",
+  ],
 };
 
 const PROFI: AlterCategorization = {
@@ -45,11 +129,7 @@ const PROFI: AlterCategorization = {
     (catIndex === 0 && sectorIndex(a) === 3) ||
     (catIndex === 1 && sectorIndex(a) != 3) ||
     catIndex === 2,
-  categories: [
-    "prof. Hilfe",
-    "Netzwerk ohne prof.\xa0Hilfe",
-    "gesamtes Netzwerk",
-  ],
+  categories: ["prof. Hilfe", "Netzwerk ohne prof. Hilfe", "gesamtes Netzwerk"],
 };
 
 const HORIZON_CUM: AlterCategorization = {
@@ -70,7 +150,7 @@ const GENDER: AlterCategorization = {
   label: "Geschlecht",
   inCategory: (catIndex: number, a: Alter): boolean =>
     a.currentGender === Gender[catIndex],
-  categories: Gender,
+  categories: ["weiblich", "männlich", "divers", "nicht festgelegt,"],
 };
 
 // const AGE: AlterCategorization = {

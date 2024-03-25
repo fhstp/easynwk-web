@@ -1,11 +1,11 @@
 <template>
   <nav class="panel">
     <p class="panel-heading">
-      <span>Kontakte</span>
+      <span>{{ t("contacts") }}</span>
       <span class="buttons are-small">
         <button
           class="button"
-          title="Kontakt hinzufügen"
+          :title="t('addcontact')"
           @click.stop="addAlter"
           :disabled="!isAlterOpsAllowed"
         >
@@ -21,12 +21,12 @@
       </span>
     </p>
     <p class="panel-block" style="display: block" v-if="alteri.length < 1">
-      Noch keine Kontakte vorhanden.<br />
-      Klicken Sie auf den Button mit dem
+      {{ t("nocontactsyet1") }}<br />
+      {{ t("nocontactsyet2") }}
       <span class="icon is-small">
         <font-awesome-icon icon="user-plus" />
       </span>
-      Symbol, um Kontakte in der Netzwerkkarte anzulegen.
+      {{ t("nocontactsyet3") }}
     </p>
 
     <AlteriPanelEntry
@@ -42,6 +42,8 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
 import { useStore } from "@/store";
+import de from "@/de";
+import en from "@/en";
 
 import AlteriPanelEntry from "@/components/AlteriPanelEntry.vue";
 
@@ -49,6 +51,17 @@ import AlteriPanelEntry from "@/components/AlteriPanelEntry.vue";
 // manages the edited-alter (from above or by itself) --> vuex store
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      return this[document.documentElement.lang][prop];
+    },
+  },
+  data() {
+    return {
+      lang: "de",
+    };
+  },
   components: { AlteriPanelEntry },
   props: {
     // toogled after each click on the map (resets keyboard cursor)

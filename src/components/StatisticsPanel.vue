@@ -4,7 +4,7 @@
       <span class="icon is-medium">
         <font-awesome-icon icon="chart-bar" size="lg" />
       </span>
-      <span>Kennzahlen</span>
+      <span>{{ t("keyfigures") }}</span>
       <span style="flex: 1">&nbsp;</span>
       <span class="icon is-medium clickAble" @click="hideStatistics">
         <font-awesome-icon icon="times" size="1x" />
@@ -17,7 +17,7 @@
         :class="{ 'is-active': tab === cat }"
         @click="go(cat)"
       >
-        {{ categoryLabel(cat) }}</a
+        {{ translateCategoryKey(categoryLabel(cat)) }}</a
       >
     </p>
     <StatisticsTable v-if="tab === ''"></StatisticsTable>
@@ -37,8 +37,27 @@ import {
   allAlterCategorizationKeys,
   getAlterCategorization,
 } from "@/data/AlterCategories";
+import de from "@/de";
+import en from "@/en";
+import { CATEGORY_TRANSLATIONS } from "@/data/AlterCategories";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      return this[document.documentElement.lang][prop];
+    },
+    translateCategoryKey(categoryKey: any) {
+      const lang = document.documentElement.lang;
+      const translation = CATEGORY_TRANSLATIONS[categoryKey];
+
+      if (translation && translation[lang]) {
+        return translation[lang];
+      } else {
+        return categoryKey;
+      }
+    },
+  },
   components: { StatisticsTable, StatisticsTableCategories },
   setup() {
     const store = useStore();

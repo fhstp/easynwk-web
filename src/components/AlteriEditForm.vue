@@ -1,17 +1,17 @@
 <template>
-  <p class="label" v-if="addingNewAlter">Kontakt hinzufügen</p>
-  <p class="label" v-else>Kontakt bearbeiten</p>
+  <p class="label" v-if="addingNewAlter">{{ t("addcontact") }}</p>
+  <p class="label" v-else>{{ t("editcontact") }}</p>
   <form class="form" @submit.prevent="editAlterFinished">
     <div class="field has-text-danger" v-if="invalidPosition">
       <span class="icon is-small">
         <font-awesome-icon icon="exclamation-triangle" />
       </span>
-      Die Position in der Karte muss noch festgelegt werden.
+      {{ t("positiononmap") }}
     </div>
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label">Name</label>
+        <label class="label">{{ t("name") }}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -23,21 +23,17 @@
               v-model="alterNameInUI"
               @blur="commitEdit($event, 'name')"
               type="text"
-              placeholder="Vorname oder Spitzname"
+              :placeholder="t('nickname')"
             />
           </div>
-          <p class="help">Pflichtfeld</p>
+          <p class="help">{{ t("mandatoryfield") }}</p>
         </div>
       </div>
     </div>
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label
-          class="label"
-          title="Soziale Rolle des Kontakts, Auswahlmöglichkeiten"
-          >Rolle</label
-        >
+        <label class="label" :title="t('socialrole')">{{ t("role") }}</label>
       </div>
       <div class="field-body">
         <div class="control">
@@ -45,16 +41,22 @@
             class="input"
             :class="{ autovalue: alter.roleDefault }"
             type="text"
-            :value="alter.role"
+            :value="localizedRole"
             list="predefined-roles"
             @blur="blurRole"
             @focus="focusRole"
           />
+
           <!-- <span class="icon is-small is-right has-text-link">
             <font-awesome-icon icon="chevron-down" />
           </span> -->
-          <datalist id="predefined-roles">
-            <option v-for="value in roleOptions" :key="value" :value="value" />
+          <datalist id="predefined-roles" :key="langIsGerman() ? 'de' : 'en'">
+            <option
+              v-for="value in langIsGerman() ? roleOptions : engRoleOptions"
+              :key="value.german"
+            >
+              {{ value.label }}
+            </option>
           </datalist>
         </div>
       </div>
@@ -62,7 +64,7 @@
 
     <div class="field is-horizontal">
       <div class="field-label">
-        <label class="label checkbox" for="chk-human">Mensch</label>
+        <label class="label checkbox" for="chk-human">{{ t("human") }}</label>
       </div>
       <div class="field-body">
         <label>
@@ -73,11 +75,7 @@
 
     <div v-if="alterHuman" class="field is-horizontal">
       <div class="field-label is-normal">
-        <label
-          class="label"
-          title="biologisches und/oder soziales Geschlecht; Kategorisierung obliegt der Ankerperson"
-          >Geschlecht</label
-        >
+        <label class="label" :title="t('altergender')">{{ t("gender") }}</label>
       </div>
       <div class="field-body">
         <div class="control">
@@ -86,9 +84,10 @@
               :class="{ autovalue: alter.genderDefault }"
               v-model="alterGender"
             >
-              <option v-for="value in genderOptions" :key="value">
-                {{ value }}
-              </option>
+              <option value="weiblich">{{ t("female") }}</option>
+              <option value="männlich">{{ t("male") }}</option>
+              <option value="divers">{{ t("diverse") }}</option>
+              <option value="nicht festgelegt">{{ t("notspecified") }}</option>
             </select>
           </div>
         </div>
@@ -97,7 +96,7 @@
 
     <div v-else class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label">Kategorie</label>
+        <label class="label">{{ t("category") }}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -115,9 +114,7 @@
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" title="Optional,soziales Alter der Kontaktperson"
-          >Alter</label
-        >
+        <label class="label" :title="t('agetitle')">{{ t("age") }}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -137,44 +134,140 @@
     <div class="field is-horizontal">
       <div class="field-label is-normal"></div>
       <div class="field-body">
-        <label class="checkbox" title="Häkchen, falls Kontaktperson verstorben">
+        <label class="checkbox" :title="t('deceasedcheck')">
           <input type="checkbox" v-model="alterDeceased" />
-          {{ SYMBOL_DECEASED }}verstorben
+          {{ SYMBOL_DECEASED }}{{ t("deceased") }}
         </label>
       </div>
     </div>
 
     <div class="field is-horizontal">
       <div class="field-label">
-        <label class="label" title="Aktualisierung der Verbindung"
-          >Beziehung</label
-        >
+        <label class="label" :title="t('relationtitle')">{{
+          t("relationship")
+        }}</label>
       </div>
       <div class="field-body">
         <div class="field">
           <fieldset :disabled="!isConnectable" class="control radio-group">
-            <label
-              class="radio"
-              title="Beziehung wird aktuell gepflegt, aktualisierte Verbindung."
-            >
+            <label class="radio" :title="t('existingtitle')">
               <input type="radio" v-model="alterEdgeType" value="1" />
-              besteht
+              {{ t("existing") }}
             </label>
-            <label
-              class="radio"
-              title="Anker- und Kontaktperson begegnen sich in mehreren sozialen Rollen. Beziehung erfüllt mehrere Funktionen."
-            >
+            <label class="radio" :title="t('multititle')">
               <input type="radio" v-model="alterEdgeType" value="2" />
-              multiplex
+              {{ t("multiplex") }}
             </label>
-            <label
-              class="radio"
-              title="Ankerperson und diese Person pflegen zurzeit keinen Kontakt, Beziehung ist nicht aktualisiert (sondern beendet/unterbrochen)."
-            >
+            <label class="radio" :title="t('norelationtitle')">
               <input type="radio" v-model="alterEdgeType" value="0" />
-              keine aktuelle Beziehung
+              {{ t("nocurrentrelationship") }}
             </label>
           </fieldset>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showQuality" class="field is-horizontal">
+      <div class="field-label">
+        <label class="label" for="chk-new-checkbox">Konflikthaft</label>
+      </div>
+      <div class="field-body">
+        <label>
+          <input
+            id="chk-new-checkbox"
+            type="checkbox"
+            v-model="alterConflict"
+          />
+        </label>
+      </div>
+    </div>
+
+    <div v-if="showQuality" class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Emotional</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="alterEmotional">
+              <option value="0">Keine Unterstützung</option>
+              <option value="1">Ich unterstütze {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} unterstützt mich</option>
+              <option value="3">Wir unterstützen uns</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showQuality" class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Kognitiv</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="alterCognitive">
+              <option value="0">Keine Unterstützung</option>
+              <option value="1">Ich unterstütze {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} unterstützt mich</option>
+              <option value="3">Wir unterstützen uns</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showQuality" class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Sozial</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="alterSocial">
+              <option value="0">Keine Unterstützung</option>
+              <option value="1">Ich unterstütze {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} unterstützt mich</option>
+              <option value="3">Wir unterstützen uns</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showQuality" class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Materiell</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="alterMaterial">
+              <option value="0">Keine Unterstützung</option>
+              <option value="1">Ich unterstütze {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} unterstützt mich</option>
+              <option value="3">Wir unterstützen uns</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showQuality" class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Praktisch</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="alterPractical">
+              <option value="0">Keine Unterstützung</option>
+              <option value="1">Ich unterstütze {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} unterstützt mich</option>
+              <option value="3">Wir unterstützen uns</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
@@ -185,7 +278,7 @@
           class="textarea is-small"
           :value="alter.note"
           @blur="commitEdit($event, 'note')"
-          placeholder="Notizen zum Kontakt"
+          :placeholder="t('notesaboutcontact')"
         ></textarea>
       </div>
     </div>
@@ -202,7 +295,7 @@
           ref="domButton"
           :disabled="invalidName || invalidPosition"
         >
-          {{ addingNewAlter ? "Nächster Kontakt" : "Schließen" }}
+          {{ addingNewAlter ? t("nextcontact") : t("close") }}
         </button>
       </p>
       <p class="control">
@@ -213,7 +306,7 @@
           type="button"
           @mouseup.prevent="editAlterFinished($event, false)"
         >
-          Schließen
+          {{ t("close") }}
         </button>
       </p>
       <p class="control">
@@ -223,7 +316,7 @@
           type="button"
           @mouseup.prevent="cancelAddAlter"
         >
-          Abbrechen
+          {{ t("cancel") }}
         </button>
       </p>
     </div>
@@ -236,9 +329,11 @@ import { useStore } from "@/store";
 
 import { Alter, hasOptionalChanges, isConnectable } from "@/data/Alter";
 import { Gender } from "@/data/Gender";
-import { Roles } from "@/data/Roles";
+import { Roles, RolesEng } from "@/data/Roles";
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { TAB_BASE } from "@/store/viewOptionsModule";
+import de from "@/de";
+import en from "@/en";
 
 type InputType = HTMLInputElement | HTMLTextAreaElement;
 
@@ -249,6 +344,16 @@ type InputType = HTMLInputElement | HTMLTextAreaElement;
 // emit edit-finished
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      return this[document.documentElement.lang][prop];
+    },
+    langIsGerman() {
+      if (document.documentElement.lang == "de") return true;
+      else return false;
+    },
+  },
   props: {
     // gets Alter as prop cp. ToDo demo
     alter: {
@@ -262,6 +367,10 @@ export default defineComponent({
     const store = useStore();
 
     const addingNewAlter = ref(!(props.alter?.name.length > 0));
+
+    const selectedRoleLabel = ref(props.alter?.role);
+
+    const newCheckboxModel = ref(false);
 
     // name field is special because it must not be empty
     // the data item is only used for validity check & never stored
@@ -315,12 +424,34 @@ export default defineComponent({
 
     const blurRole = (evt: FocusEvent) => {
       const value = (evt.target as InputType).value.trim();
-      if (props.alter.roleDefault && value == "") {
-        (evt.target as InputType).value = props.alter.role;
+
+      const roles =
+        document.documentElement.lang == "de"
+          ? roleOptions.value
+          : engRoleOptions.value;
+      const role = roles.find((r) => r.label === value);
+
+      if (role) {
+        const germanValue = role.german;
+        const payload = {
+          index: store.state.view.editIndex,
+          changes: { role: germanValue },
+        };
+        store.commit("editAlter", payload);
       } else {
         commitEdit(evt, "role");
       }
     };
+
+    const localizedRole = computed(() => {
+      const lang = document.documentElement.lang;
+      const roles = lang === "de" ? roleOptions.value : engRoleOptions.value;
+      const role = roles.find((r) => r.german === alterRole.value);
+      return role ? role.label : alterRole.value;
+    });
+
+    const alterRole = accessor<string>("role");
+
     const invalidName = computed(() => {
       return alterNameInUI.value.trim().length === 0;
     });
@@ -328,6 +459,7 @@ export default defineComponent({
     // apparently v-for needs this to be a data item
     const genderOptions = ref(Gender);
     const roleOptions = ref(Roles);
+    const engRoleOptions = ref(RolesEng);
 
     // we need a DOM ref in order to focus
     const altername = ref<InstanceType<typeof HTMLInputElement> | null>(null);
@@ -403,18 +535,29 @@ export default defineComponent({
     return {
       addingNewAlter,
       alterNameInUI,
+      alterRole,
+      newCheckboxModel,
+      alterEmotional: accessor<number>("supportEmotional"),
+      alterCognitive: accessor<number>("supportCognitive"),
+      alterSocial: accessor<number>("supportSocial"),
+      alterMaterial: accessor<number>("supportMaterial"),
+      alterPractical: accessor<number>("supportPractical"),
+      localizedRole,
       invalidName,
       invalidPosition,
       alterHuman: accessor<boolean>("human"),
       alterGender: accessor<string>("currentGender"),
       alterDeceased: accessor<boolean>("deceased"),
+      alterConflict: accessor<boolean>("conflict"),
       alterEdgeType: accessor<number>("edgeType"),
       isConnectable: computed(() => isConnectable(props.alter as Alter)),
+      showQuality: computed(() => store.state.view.qualityRelationship),
       commitEdit,
       focusRole,
       blurRole,
       genderOptions,
       roleOptions,
+      engRoleOptions,
       editAlterFinished,
       cancelAddAlter,
       altername,
