@@ -66,7 +66,7 @@
 
                 <button class="button" @click.stop="toggleQuality">
                   <span class="icon">
-                    <font-awesome-icon icon="info" />
+                    <font-awesome-icon icon="hand-holding-heart" />
                   </span>
                   <span v-if="showQuality">Qualitäten aus</span>
                   <span v-else>Qualitäten an</span>

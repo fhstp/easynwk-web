@@ -58,6 +58,7 @@ import {
   faComments,
   faMoneyBillWave,
   faHardHat,
+  faHandHoldingHeart,
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
   faBars,
@@ -106,7 +107,8 @@ library.add(
   faBrain,
   faComments,
   faMoneyBillWave,
-  faHardHat
+  faHardHat,
+  faHandHoldingHeart
 );
 
 // Vue.component("font-awesome-icon", FontAwesomeIcon);

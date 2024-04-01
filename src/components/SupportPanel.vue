@@ -20,26 +20,26 @@
                   :class="{ clicked: heartClicked }"
                   @click.stop="toggleHeart"
                 />
-                Emotional:
+                Emotional: {{ alteriEmotional }}
               </div>
               <div class="box">
                 <font-awesome-icon icon="brain" style="color: #afafaf" />
-                Kognitiv:
+                Kognitiv: {{ alteriCognitive }}
               </div>
               <div class="box">
                 <font-awesome-icon icon="comments" style="color: #afafaf" />
-                Sozial:
+                Sozial: {{ alteriSocial }}
               </div>
               <div class="box">
                 <font-awesome-icon
                   icon="money-bill-wave"
                   style="color: #afafaf"
                 />
-                Materiell:
+                Materiell: {{ alteriMaterial }}
               </div>
               <div class="box">
                 <font-awesome-icon icon="hard-hat" style="color: #afafaf" />
-                Praktisch:
+                Praktisch: {{ alteriPractical }}
               </div>
             </div>
           </div>
@@ -54,7 +54,6 @@ import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
 import de from "@/de";
 import en from "@/en";
-import { isConnectable } from "@/data/Alter";
 
 export default defineComponent({
   mixins: [de, en],
@@ -76,10 +75,50 @@ export default defineComponent({
 
     const alteri = computed(() => store.state.nwk.alteri);
 
+    const alteriEmotional = computed(() => {
+      const emotionalAlteri = store.state.nwk.alteri.filter(
+        (alter) => alter.supportEmotional >= 1 && alter.supportEmotional <= 3
+      );
+      return emotionalAlteri.map((alter) => alter.name).join(", ");
+    });
+
+    const alteriMaterial = computed(() => {
+      const emotionalAlteri = store.state.nwk.alteri.filter(
+        (alter) => alter.supportMaterial >= 1 && alter.supportMaterial <= 3
+      );
+      return emotionalAlteri.map((alter) => alter.name).join(", ");
+    });
+
+    const alteriCognitive = computed(() => {
+      const emotionalAlteri = store.state.nwk.alteri.filter(
+        (alter) => alter.supportCognitive >= 1 && alter.supportCognitive <= 3
+      );
+      return emotionalAlteri.map((alter) => alter.name).join(", ");
+    });
+
+    const alteriPractical = computed(() => {
+      const emotionalAlteri = store.state.nwk.alteri.filter(
+        (alter) => alter.supportPractical >= 1 && alter.supportPractical <= 3
+      );
+      return emotionalAlteri.map((alter) => alter.name).join(", ");
+    });
+
+    const alteriSocial = computed(() => {
+      const emotionalAlteri = store.state.nwk.alteri.filter(
+        (alter) => alter.supportSocial >= 1 && alter.supportSocial <= 3
+      );
+      return emotionalAlteri.map((alter) => alter.name).join(", ");
+    });
+
     return {
       isOpen: isOpen,
       heartClicked: heartClicked,
       alteri: alteri,
+      alteriEmotional: alteriEmotional,
+      alteriCognitive: alteriCognitive,
+      alteriSocial: alteriSocial,
+      alteriMaterial: alteriMaterial,
+      alteriPractical: alteriPractical,
     };
   },
 });
