@@ -855,6 +855,7 @@ export default defineComponent({
       egoShape: computed(() =>
         shapeByGender(true, store.state.nwk.ego.currentGender)
       ),
+      emotional: computed(() => store.state.view.emotional),
       isEditMode,
       isConnectMode,
       clickAlter,

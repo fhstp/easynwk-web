@@ -18,7 +18,7 @@
                   style="color: #afafaf"
                   class="clickAble"
                   :class="{ clicked: heartClicked }"
-                  @click.stop="toggleHeart"
+                  @click.stop="toggleEmotional"
                 />
                 Emotional: {{ alteriEmotional }}
               </div>
@@ -119,6 +119,7 @@ export default defineComponent({
       alteriSocial: alteriSocial,
       alteriMaterial: alteriMaterial,
       alteriPractical: alteriPractical,
+      toggleEmotional: () => store.commit("view/toggle", "horizons"),
     };
   },
 });
