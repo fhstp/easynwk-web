@@ -101,21 +101,21 @@
           id="arrowheadMe"
           markerWidth="10"
           markerHeight="7"
-          refX="20"
+          refX="12"
           refY="3.5"
           orient="auto"
         >
-          <polygon points="0 0, 10 3.5, 0 7" fill="#afafaf" />
+          <polygon points="0 0, 10 3.5, 0 7" stroke="#afafaf" fill="none" />
         </marker>
         <marker
           id="arrowheadAlter"
           markerWidth="10"
           markerHeight="7"
-          refX="35"
+          refX="25"
           refY="3.5"
           orient="auto"
         >
-          <polygon points="10 0, 0 3.5, 10 7" fill="#afafaf" />
+          <polygon points="10 0, 0 3.5, 10 7" stroke="#afafaf" fill="none" />
         </marker>
         <line
           v-if="
