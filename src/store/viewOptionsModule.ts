@@ -12,6 +12,10 @@ export interface ViewOptionsFlags {
   nwkcomparison: boolean;
   nwkchange: boolean;
   emotional: boolean;
+  cognitive: boolean;
+  social: boolean;
+  material: boolean;
+  practical: boolean;
 }
 
 export interface ViewOptionsState extends ViewOptionsFlags {
@@ -33,6 +37,10 @@ export function initViewOptionsState(): ViewOptionsState {
     nwkcomparison: false,
     nwkchange: false,
     emotional: false,
+    cognitive: false,
+    social: false,
+    material: false,
+    practical: false,
 
     selected: new Set<number>(),
     editIndex: null,

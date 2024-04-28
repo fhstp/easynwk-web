@@ -23,22 +23,39 @@
                 Emotional: {{ alteriEmotional }}
               </div>
               <div class="box">
-                <font-awesome-icon icon="brain" style="color: #afafaf" />
+                <font-awesome-icon
+                  icon="brain"
+                  style="color: #afafaf"
+                  class="clickAble"
+                  @click.stop="toggleCognitive"
+                />
                 Kognitiv: {{ alteriCognitive }}
               </div>
               <div class="box">
-                <font-awesome-icon icon="comments" style="color: #afafaf" />
+                <font-awesome-icon
+                  icon="comments"
+                  style="color: #afafaf"
+                  class="clickAble"
+                  @click.stop="toggleSocial"
+                />
                 Sozial: {{ alteriSocial }}
               </div>
               <div class="box">
                 <font-awesome-icon
                   icon="money-bill-wave"
                   style="color: #afafaf"
+                  class="clickAble"
+                  @click.stop="toggleMaterial"
                 />
                 Materiell: {{ alteriMaterial }}
               </div>
               <div class="box">
-                <font-awesome-icon icon="hard-hat" style="color: #afafaf" />
+                <font-awesome-icon
+                  icon="hard-hat"
+                  style="color: #afafaf"
+                  class="clickAble"
+                  @click.stop="togglePractical"
+                />
                 Praktisch: {{ alteriPractical }}
               </div>
             </div>
@@ -65,13 +82,12 @@ export default defineComponent({
       this.heartClicked = !this.heartClicked;
       console.log("Clicked");
     },
-    // Add toggle methods for other icons if needed
   },
   setup() {
     const store = useStore();
 
     const isOpen = ref(false);
-    const heartClicked = ref(false); // Add ref for other icons if needed
+    const heartClicked = ref(false);
 
     const alteri = computed(() => store.state.nwk.alteri);
 
@@ -119,7 +135,11 @@ export default defineComponent({
       alteriSocial: alteriSocial,
       alteriMaterial: alteriMaterial,
       alteriPractical: alteriPractical,
-      toggleEmotional: () => store.commit("view/toggle", "horizons"),
+      toggleEmotional: () => store.commit("view/toggle", "emotional"),
+      toggleCognitive: () => store.commit("view/toggle", "cognitive"),
+      toggleSocial: () => store.commit("view/toggle", "cognitive"),
+      toggleMaterial: () => store.commit("view/toggle", "cognitive"),
+      togglePractical: () => store.commit("view/toggle", "cognitive"),
     };
   },
 });

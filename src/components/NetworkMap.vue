@@ -86,7 +86,22 @@
         />
       </g>
 
-      <g v-for="mark in alteriMarks" :key="mark.d.id">
+      <g
+        v-for="mark in alteriMarks.filter((mark) =>
+          emotional
+            ? mark.d.supportEmotional >= 1
+            : false || cognitive
+            ? mark.d.supportCognitive >= 1
+            : false || social
+            ? mark.d.supportSocial >= 1
+            : false || material
+            ? mark.d.supportMaterial >= 1
+            : false || practical
+            ? mark.d.supportPractical >= 1
+            : true
+        )"
+        :key="mark.d.id"
+      >
         <line
           v-if="connections && mark.d.edgeType >= 1"
           :class="{ select: mark.selected }"
@@ -192,53 +207,75 @@
           {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
       </g>
-      <g v-for="mark in alteriMarks" :key="mark.d.id">
-        <font-awesome-icon
-          v-if="mark.d.supportEmotional >= 1"
-          icon="heart"
-          height="3"
-          width="3"
-          style="color: #afafaf"
-          :x="mark.x < 0 ? mark.x - 20 : mark.x + 2"
-          :y="mark.y < 0 ? mark.y : mark.y + 5"
-        />
-        <font-awesome-icon
-          v-if="mark.d.supportCognitive >= 1"
-          icon="brain"
-          height="3"
-          width="3"
-          style="color: #afafaf"
-          :x="mark.x < 0 ? mark.x - 16 : mark.x + 6"
-          :y="mark.y < 0 ? mark.y : mark.y + 5"
-        />
-        <font-awesome-icon
-          v-if="mark.d.supportSocial >= 1"
-          icon="comments"
-          height="3"
-          width="3"
-          style="color: #afafaf"
-          :x="mark.x < 0 ? mark.x - 12 : mark.x + 10"
-          :y="mark.y < 0 ? mark.y : mark.y + 5"
-        />
-        <font-awesome-icon
-          v-if="mark.d.supportMaterial >= 1"
-          icon="money-bill-wave"
-          height="3"
-          width="3"
-          style="color: #afafaf"
-          :x="mark.x < 0 ? mark.x - 8 : mark.x + 14"
-          :y="mark.y < 0 ? mark.y : mark.y + 5"
-        />
-        <font-awesome-icon
-          v-if="mark.d.supportPractical >= 1"
-          icon="hard-hat"
-          height="3"
-          width="3"
-          style="color: #afafaf"
-          :x="mark.x < 0 ? mark.x - 4 : mark.x + 18"
-          :y="mark.y < 0 ? mark.y : mark.y + 5"
-        />
+      <g
+        v-for="mark in alteriMarks.filter((mark) =>
+          emotional
+            ? mark.d.supportEmotional >= 1
+            : false || cognitive
+            ? mark.d.supportCognitive >= 1
+            : false || social
+            ? mark.d.supportSocial >= 1
+            : false || material
+            ? mark.d.supportMaterial >= 1
+            : false || practical
+            ? mark.d.supportPractical >= 1
+            : true
+        )"
+        :key="mark.d.id"
+      >
+        <!-- Hier werden die Icons für jedes Alter platziert -->
+        <template v-if="mark.d.supportEmotional >= 1">
+          <font-awesome-icon
+            icon="heart"
+            height="3"
+            width="3"
+            style="color: #afafaf"
+            :x="mark.x < 0 ? mark.x - 20 : mark.x + 2"
+            :y="mark.y < 0 ? mark.y : mark.y + 5"
+          />
+        </template>
+        <template v-if="mark.d.supportCognitive >= 1">
+          <font-awesome-icon
+            icon="brain"
+            height="3"
+            width="3"
+            style="color: #afafaf"
+            :x="mark.x < 0 ? mark.x - 16 : mark.x + 6"
+            :y="mark.y < 0 ? mark.y : mark.y + 5"
+          />
+        </template>
+        <template v-if="mark.d.supportSocial >= 1">
+          <font-awesome-icon
+            icon="comments"
+            height="3"
+            width="3"
+            style="color: #afafaf"
+            :x="mark.x < 0 ? mark.x - 12 : mark.x + 10"
+            :y="mark.y < 0 ? mark.y : mark.y + 5"
+          />
+        </template>
+        <template v-if="mark.d.supportMaterial >= 1">
+          <font-awesome-icon
+            icon="money-bill-wave"
+            height="3"
+            width="3"
+            style="color: #afafaf"
+            :x="mark.x < 0 ? mark.x - 8 : mark.x + 14"
+            :y="mark.y < 0 ? mark.y : mark.y + 5"
+          />
+        </template>
+        <template v-if="mark.d.supportPractical >= 1">
+          <font-awesome-icon
+            icon="hard-hat"
+            height="3"
+            width="3"
+            style="color: #afafaf"
+            :x="mark.x < 0 ? mark.x - 4 : mark.x + 18"
+            :y="mark.y < 0 ? mark.y : mark.y + 5"
+          />
+        </template>
       </g>
+
       <use
         id="ego"
         :href="'#' + egoShape"
@@ -253,7 +290,19 @@
     <g class="brushParent"></g>
     <g class="marksForegroundLayer">
       <use
-        v-for="mark in alteriMarks"
+        v-for="mark in alteriMarks.filter((mark) =>
+          emotional
+            ? mark.d.supportEmotional >= 1
+            : false || cognitive
+            ? mark.d.supportCognitive >= 1
+            : false || social
+            ? mark.d.supportSocial >= 1
+            : false || material
+            ? mark.d.supportMaterial >= 1
+            : false || practical
+            ? mark.d.supportPractical >= 1
+            : true
+        )"
         :key="mark.d.id"
         :href="'#' + mark.shape"
         :x="mark.x"
@@ -856,6 +905,10 @@ export default defineComponent({
         shapeByGender(true, store.state.nwk.ego.currentGender)
       ),
       emotional: computed(() => store.state.view.emotional),
+      cognitive: computed(() => store.state.view.cognitive),
+      social: computed(() => store.state.view.social),
+      material: computed(() => store.state.view.material),
+      practical: computed(() => store.state.view.practical),
       isEditMode,
       isConnectMode,
       clickAlter,
