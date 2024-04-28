@@ -11,25 +11,67 @@
       <div class="field is-horizontal">
         <div class="field-body">
           <div id="view-settings" class="field" v-if="isOpen">
-            <div class="control">
-              <div class="buttons">
-                <button class="button" @click.stop="togglePseudonyms">
+            <div class="field is-grouped is-grouped-multiline">
+              <div class="control">
+                <label class="checkbox">
+                  <input
+                    type="checkbox"
+                    v-model="pseudonyms"
+                    @change="togglePseudonyms"
+                  />
                   <span class="icon">
                     <font-awesome-icon icon="user-secret" />
                   </span>
-                  <span v-if="pseudonyms">De-Anonymisieren</span>
-                  <span v-else>Anonymisieren</span>
-                  <span></span>
-                </button>
+                  <span>{{
+                    pseudonyms ? "De-Anonymisieren" : "Anonymisieren"
+                  }}</span>
+                </label>
 
-                <button class="button" @click.stop="toggleHorizons">
+                <br />
+
+                <label class="checkbox">
+                  <input type="checkbox" @click.stop="toggleHorizons" />
                   <span class="icon">
                     <font-awesome-icon icon="rss" />
                   </span>
                   <span v-if="horizons">Horizonte aus</span>
                   <span v-else>Horizonte ein</span>
-                </button>
+                </label>
 
+                <br />
+
+                <label class="checkbox">
+                  <input type="checkbox" @click.stop="toggleAlteriNames" />
+                  <span class="icon">
+                    <font-awesome-icon icon="font" />
+                  </span>
+                  <span v-if="alteriNames">Kontaktnamen aus</span>
+                  <span v-else>Kontaktnamen ein</span>
+                </label>
+
+                <br />
+
+                <label class="checkbox">
+                  <input type="checkbox" @click.stop="toggleAge" />
+                  <span class="icon">
+                    <font-awesome-icon icon="info" />
+                  </span>
+                  <span v-if="showAge">Alter der Kontakte aus</span>
+                  <span v-else>Alter der Kontakte ein</span>
+                </label>
+
+                <br />
+
+                <label class="checkbox">
+                  <input type="checkbox" @click.stop="toggleRoleShort" />
+                  <span class="icon">
+                    <font-awesome-icon icon="info" />
+                  </span>
+                  <span v-if="showRole">Rolle der Kontakte aus</span>
+                  <span v-else>Rolle der Kontakte ein</span>
+                </label>
+
+                <br />
                 <br />
 
                 <button class="button" @click.stop="toggleConnections">
@@ -38,30 +80,6 @@
                   </span>
                   <span v-if="connections">Verbindungen aus</span>
                   <span v-else>Verbindungen ein</span>
-                </button>
-
-                <button class="button" @click.stop="toggleAlteriNames">
-                  <span class="icon">
-                    <font-awesome-icon icon="font" />
-                  </span>
-                  <span v-if="alteriNames">Kontaktnamen aus</span>
-                  <span v-else>Kontaktnamen ein</span>
-                </button>
-
-                <button class="button" @click.stop="toggleAge">
-                  <span class="icon">
-                    <font-awesome-icon icon="info" />
-                  </span>
-                  <span v-if="showAge">Alter der Kontakte aus</span>
-                  <span v-else>Alter der Kontakte ein</span>
-                </button>
-
-                <button class="button" @click.stop="toggleRoleShort">
-                  <span class="icon">
-                    <font-awesome-icon icon="info" />
-                  </span>
-                  <span v-if="showRole">Rolle der Kontakte aus</span>
-                  <span v-else>Rolle der Kontakte ein</span>
                 </button>
               </div>
             </div>
