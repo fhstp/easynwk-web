@@ -76,7 +76,10 @@
 
       <g v-if="connections">
         <line
-          v-for="(mark, index) in connectionMarks"
+          v-for="(mark, index) in connectionMarks.filter(
+            (mark) =>
+              !emotional && !cognitive && !social && !material && !practical
+          )"
           :key="'conn' + index"
           :x1="mark.x1"
           :y1="mark.y1"
@@ -87,18 +90,14 @@
       </g>
 
       <g
-        v-for="mark in alteriMarks.filter((mark) =>
-          emotional
-            ? mark.d.supportEmotional >= 1
-            : false || cognitive
-            ? mark.d.supportCognitive >= 1
-            : false || social
-            ? mark.d.supportSocial >= 1
-            : false || material
-            ? mark.d.supportMaterial >= 1
-            : false || practical
-            ? mark.d.supportPractical >= 1
-            : true
+        v-for="mark in alteriMarks.filter(
+          (mark) =>
+            (emotional && mark.d.supportEmotional >= 1) ||
+            (cognitive && mark.d.supportCognitive >= 1) ||
+            (social && mark.d.supportSocial >= 1) ||
+            (material && mark.d.supportMaterial >= 1) ||
+            (practical && mark.d.supportPractical >= 1) ||
+            (!emotional && !cognitive && !social && !material && !practical)
         )"
         :key="mark.d.id"
       >
@@ -208,18 +207,14 @@
         </text>
       </g>
       <g
-        v-for="mark in alteriMarks.filter((mark) =>
-          emotional
-            ? mark.d.supportEmotional >= 1
-            : false || cognitive
-            ? mark.d.supportCognitive >= 1
-            : false || social
-            ? mark.d.supportSocial >= 1
-            : false || material
-            ? mark.d.supportMaterial >= 1
-            : false || practical
-            ? mark.d.supportPractical >= 1
-            : true
+        v-for="mark in alteriMarks.filter(
+          (mark) =>
+            (emotional && mark.d.supportEmotional >= 1) ||
+            (cognitive && mark.d.supportCognitive >= 1) ||
+            (social && mark.d.supportSocial >= 1) ||
+            (material && mark.d.supportMaterial >= 1) ||
+            (practical && mark.d.supportPractical >= 1) ||
+            (!emotional && !cognitive && !social && !material && !practical)
         )"
         :key="mark.d.id"
       >
@@ -290,18 +285,14 @@
     <g class="brushParent"></g>
     <g class="marksForegroundLayer">
       <use
-        v-for="mark in alteriMarks.filter((mark) =>
-          emotional
-            ? mark.d.supportEmotional >= 1
-            : false || cognitive
-            ? mark.d.supportCognitive >= 1
-            : false || social
-            ? mark.d.supportSocial >= 1
-            : false || material
-            ? mark.d.supportMaterial >= 1
-            : false || practical
-            ? mark.d.supportPractical >= 1
-            : true
+        v-for="mark in alteriMarks.filter(
+          (mark) =>
+            (emotional && mark.d.supportEmotional >= 1) ||
+            (cognitive && mark.d.supportCognitive >= 1) ||
+            (social && mark.d.supportSocial >= 1) ||
+            (material && mark.d.supportMaterial >= 1) ||
+            (practical && mark.d.supportPractical >= 1) ||
+            (!emotional && !cognitive && !social && !material && !practical)
         )"
         :key="mark.d.id"
         :href="'#' + mark.shape"
