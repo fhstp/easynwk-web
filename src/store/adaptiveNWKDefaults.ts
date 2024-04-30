@@ -1,7 +1,7 @@
 import { Alter, isConnectable } from "@/data/Alter";
 import { sectorIndex } from "@/data/AlterCategories";
 import { getGenderDefaultByRole } from "@/data/Roles";
-import { SectorDefaultRoles } from "@/data/Sectors";
+import { SectorDefaultRoles, SectorDefaultRolesEng } from "@/data/Sectors";
 
 export function applyAdaptiveNWKDefaults(
   changedAlter: Alter,
