@@ -71,6 +71,17 @@
                 </div>
               </div>
             </div>
+            <div class="control">
+              <label for="text-size">Textgröße ändern:</label>
+              <input
+                type="range"
+                id="text-size"
+                min="5"
+                max="40"
+                v-model="textSize"
+                @input="changeTextSize"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -85,8 +96,15 @@ import { useStore } from "@/store";
 export default defineComponent({
   setup() {
     const store = useStore();
-
     const isOpen = ref(false);
+    const textSize = ref(100);
+
+    const changeTextSize = () => {
+      document.documentElement.style.setProperty(
+        "--text-size",
+        `${textSize.value}px`
+      );
+    };
 
     return {
       pseudonyms: computed(() => store.state.pseudonym.active),
@@ -97,11 +115,13 @@ export default defineComponent({
       toggleConnections: () => store.commit("view/toggle", "connections"),
       alteriNames: computed(() => store.state.view.alteriNames),
       toggleAlteriNames: () => store.commit("view/toggle", "alteriNames"),
-      isOpen: isOpen,
+      isOpen,
       showAge: computed(() => store.state.view.ageInNwk),
       toggleAge: () => store.commit("view/toggle", "ageInNwk"),
       showRole: computed(() => store.state.view.roleInNwk),
       toggleRoleShort: () => store.commit("view/toggle", "roleInNwk"),
+      textSize,
+      changeTextSize,
     };
   },
 });
@@ -110,5 +130,12 @@ export default defineComponent({
 <style scoped>
 .right {
   float: right;
+}
+
+:root {
+  --text-size: 16px;
+}
+* {
+  font-size: var(--text-size);
 }
 </style>
