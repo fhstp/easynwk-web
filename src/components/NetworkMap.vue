@@ -76,7 +76,10 @@
 
       <g v-if="connections">
         <line
-          v-for="(mark, index) in connectionMarks"
+          v-for="(mark, index) in connectionMarks.filter(
+            (mark) =>
+              !emotional && !cognitive && !social && !material && !practical
+          )"
           :key="'conn' + index"
           :x1="mark.x1"
           :y1="mark.y1"
@@ -86,7 +89,18 @@
         />
       </g>
 
-      <g v-for="mark in alteriMarks" :key="mark.d.id">
+      <g
+        v-for="mark in alteriMarks.filter(
+          (mark) =>
+            (emotional && mark.d.supportEmotional >= 1) ||
+            (cognitive && mark.d.supportCognitive >= 1) ||
+            (social && mark.d.supportSocial >= 1) ||
+            (material && mark.d.supportMaterial >= 1) ||
+            (practical && mark.d.supportPractical >= 1) ||
+            (!emotional && !cognitive && !social && !material && !practical)
+        )"
+        :key="mark.d.id"
+      >
         <line
           v-if="connections && mark.d.edgeType >= 1"
           :class="{ select: mark.selected }"
@@ -95,6 +109,75 @@
           :x2="mark.x"
           :y2="mark.y"
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          :style="mark.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
+        />
+        <marker
+          id="arrowheadMe"
+          markerWidth="10"
+          markerHeight="7"
+          refX="12"
+          refY="3.5"
+          orient="auto"
+        >
+          <polygon points="0 0, 10 3.5, 0 7" stroke="#afafaf" fill="none" />
+        </marker>
+        <marker
+          id="arrowheadAlter"
+          markerWidth="10"
+          markerHeight="7"
+          refX="25"
+          refY="3.5"
+          orient="auto"
+        >
+          <polygon points="10 0, 0 3.5, 10 7" stroke="#afafaf" fill="none" />
+        </marker>
+        <line
+          v-if="
+            connections &&
+            mark.d.edgeType >= 1 &&
+            (mark.d.supportPractical == 2 ||
+              mark.d.supportPractical == 3 ||
+              mark.d.supportSocial == 2 ||
+              mark.d.supportSocial == 3 ||
+              mark.d.supportMaterial == 2 ||
+              mark.d.supportMaterial == 3 ||
+              mark.d.supportEmotional == 2 ||
+              mark.d.supportEmotional == 3 ||
+              mark.d.supportCognitive == 2 ||
+              mark.d.supportCognitive == 3)
+          "
+          :class="{ select: mark.selected }"
+          :x1="egoCoords[0]"
+          :y1="egoCoords[1]"
+          :x2="mark.x"
+          :y2="mark.y"
+          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          :style="mark.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
+          marker-end="url(#arrowheadAlter)"
+        />
+        <line
+          v-if="
+            connections &&
+            mark.d.edgeType >= 1 &&
+            (mark.d.supportPractical == 1 ||
+              mark.d.supportPractical == 3 ||
+              mark.d.supportSocial == 1 ||
+              mark.d.supportSocial == 3 ||
+              mark.d.supportMaterial == 1 ||
+              mark.d.supportMaterial == 3 ||
+              mark.d.supportEmotional == 1 ||
+              mark.d.supportEmotional == 3 ||
+              mark.d.supportCognitive == 1 ||
+              mark.d.supportCognitive == 3)
+          "
+          :class="{ select: mark.selected }"
+          :x1="egoCoords[0]"
+          :y1="egoCoords[1]"
+          :x2="mark.x"
+          :y2="mark.y"
+          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          :style="mark.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
+          marker-end="url(#arrowheadMe)"
         />
         <text
           v-if="alteriNames && useTextBG"
@@ -123,6 +206,71 @@
           {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
       </g>
+      <g
+        v-for="mark in alteriMarks.filter(
+          (mark) =>
+            (emotional && mark.d.supportEmotional >= 1) ||
+            (cognitive && mark.d.supportCognitive >= 1) ||
+            (social && mark.d.supportSocial >= 1) ||
+            (material && mark.d.supportMaterial >= 1) ||
+            (practical && mark.d.supportPractical >= 1) ||
+            (!emotional && !cognitive && !social && !material && !practical)
+        )"
+        :key="mark.d.id"
+      >
+        <!-- Hier werden die Icons für jedes Alter platziert -->
+        <template v-if="mark.d.supportEmotional >= 1">
+          <font-awesome-icon
+            icon="heart"
+            height="3"
+            width="3"
+            style="color: #afafaf"
+            :x="mark.x < 0 ? mark.x - 20 : mark.x + 2"
+            :y="mark.y < 0 ? mark.y : mark.y + 5"
+          />
+        </template>
+        <template v-if="mark.d.supportCognitive >= 1">
+          <font-awesome-icon
+            icon="brain"
+            height="3"
+            width="3"
+            style="color: #afafaf"
+            :x="mark.x < 0 ? mark.x - 16 : mark.x + 6"
+            :y="mark.y < 0 ? mark.y : mark.y + 5"
+          />
+        </template>
+        <template v-if="mark.d.supportSocial >= 1">
+          <font-awesome-icon
+            icon="comments"
+            height="3"
+            width="3"
+            style="color: #afafaf"
+            :x="mark.x < 0 ? mark.x - 12 : mark.x + 10"
+            :y="mark.y < 0 ? mark.y : mark.y + 5"
+          />
+        </template>
+        <template v-if="mark.d.supportMaterial >= 1">
+          <font-awesome-icon
+            icon="money-bill-wave"
+            height="3"
+            width="3"
+            style="color: #afafaf"
+            :x="mark.x < 0 ? mark.x - 8 : mark.x + 14"
+            :y="mark.y < 0 ? mark.y : mark.y + 5"
+          />
+        </template>
+        <template v-if="mark.d.supportPractical >= 1">
+          <font-awesome-icon
+            icon="hard-hat"
+            height="3"
+            width="3"
+            style="color: #afafaf"
+            :x="mark.x < 0 ? mark.x - 4 : mark.x + 18"
+            :y="mark.y < 0 ? mark.y : mark.y + 5"
+          />
+        </template>
+      </g>
+
       <use
         id="ego"
         :href="'#' + egoShape"
@@ -137,7 +285,15 @@
     <g class="brushParent"></g>
     <g class="marksForegroundLayer">
       <use
-        v-for="mark in alteriMarks"
+        v-for="mark in alteriMarks.filter(
+          (mark) =>
+            (emotional && mark.d.supportEmotional >= 1) ||
+            (cognitive && mark.d.supportCognitive >= 1) ||
+            (social && mark.d.supportSocial >= 1) ||
+            (material && mark.d.supportMaterial >= 1) ||
+            (practical && mark.d.supportPractical >= 1) ||
+            (!emotional && !cognitive && !social && !material && !practical)
+        )"
         :key="mark.d.id"
         :href="'#' + mark.shape"
         :x="mark.x"
@@ -739,6 +895,11 @@ export default defineComponent({
       egoShape: computed(() =>
         shapeByGender(true, store.state.nwk.ego.currentGender)
       ),
+      emotional: computed(() => store.state.view.emotional),
+      cognitive: computed(() => store.state.view.cognitive),
+      social: computed(() => store.state.view.social),
+      material: computed(() => store.state.view.material),
+      practical: computed(() => store.state.view.practical),
       isEditMode,
       isConnectMode,
       clickAlter,
@@ -855,5 +1016,8 @@ line.select {
   position: absolute;
   right: 2px;
   bottom: 1.5rem;
+}
+.fa {
+  display: flex;
 }
 </style>

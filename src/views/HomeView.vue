@@ -44,6 +44,8 @@
             <ViewOptionsPanel :key="langKey" />
             <ComparisonOptionsPanel :key="langKey" />
             <StatisticsPanel v-if="showStatistics" :key="langKey" />
+            <support-panel />
+            <!-- v-if="showQuality" -->
           </div>
         </div>
       </div>
@@ -69,9 +71,11 @@ import UndoRedo from "@/components/UndoRedo.vue";
 import StatisticsPanel from "@/components/StatisticsPanel.vue";
 import ViewOptionsPanel from "@/components/ViewOptionsPanel.vue";
 import ComparisonOptionsPanel from "@/components/ComparisonOptionsPanel.vue";
+import SupportPanel from "@/components/SupportPanel.vue";
 
 export default defineComponent({
   components: {
+    SupportPanel,
     ComparisonOptionsPanel,
     ErrorBoundary,
     EgoHeader,
@@ -129,6 +133,7 @@ export default defineComponent({
       editEgoFinished,
       mapclick,
       showStatistics: computed(() => store.state.view.statistics),
+      showQuality: computed(() => store.state.view.qualityRelationship),
     };
   },
 });
