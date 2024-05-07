@@ -98,6 +98,7 @@
         />
         <text
           v-if="alteriNames && useTextBG"
+          :style="{ 'font-size': $store.state.nwk.ego.size + 'px' }"
           class="textbg"
           vector-effect="non-scaling-stroke"
           :x="mark.x"
@@ -112,6 +113,7 @@
         </text>
         <text
           v-if="alteriNames"
+          :style="{ 'font-size': $store.state.nwk.ego.size + 'px' }"
           :x="mark.x"
           :y="mark.y"
           :text-anchor="mark.x < 0 ? 'end' : 'start'"

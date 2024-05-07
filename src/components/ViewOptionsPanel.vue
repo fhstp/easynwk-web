@@ -76,8 +76,9 @@
               <input
                 type="range"
                 id="text-size"
-                min="5"
-                max="40"
+                placeholder="1"
+                min="1"
+                max="10"
                 v-model="textSize"
                 @input="changeTextSize"
               />
@@ -100,10 +101,14 @@ export default defineComponent({
     const textSize = ref(100);
 
     const changeTextSize = () => {
-      document.documentElement.style.setProperty(
-        "--text-size",
-        `${textSize.value}px`
-      );
+      const payload = {
+        size: textSize.value,
+      };
+      store.commit("editEgo", payload);
+      /*document.documentElement.style.setProperty(
+            "--text-size",
+            `${textSize.value}px`
+          );*/
     };
 
     return {
