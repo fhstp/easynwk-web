@@ -83,7 +83,7 @@
                 @input="changeTextSize"
               />
             </div>
-            <div class="control">
+            <!--<div class="control">
               <label for="text-size">Knotengröße ändern:</label>
               <input
                 type="range"
@@ -94,7 +94,7 @@
                 v-model="MarkSize"
                 @input="changeMarkSize"
               />
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -111,7 +111,7 @@ export default defineComponent({
     const store = useStore();
     const isOpen = ref(false);
     const textSize = ref(5);
-    const markSize = ref(5);
+    //const markSize = ref(5);
 
     const changeTextSize = () => {
       const payload = {
@@ -123,12 +123,12 @@ export default defineComponent({
             `${textSize.value}px`
           );*/
     };
-    const changeMarkSize = () => {
+    /*const changeMarkSize = () => {
       const payload = {
         sizeMark: markSize.value,
       };
       store.commit("editEgo", payload);
-    };
+    };*/
 
     return {
       pseudonyms: computed(() => store.state.pseudonym.active),
@@ -146,8 +146,8 @@ export default defineComponent({
       toggleRoleShort: () => store.commit("view/toggle", "roleInNwk"),
       textSize,
       changeTextSize,
-      markSize,
-      changeMarkSize,
+      //markSize,
+      //changeMarkSize,
     };
   },
 });

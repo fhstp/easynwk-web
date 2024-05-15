@@ -6,7 +6,6 @@ export interface Ego {
   currentGender: string;
   note: string;
   size: string;
-  sizeMark: string;
 }
 
 export function initEgo(): Ego {
@@ -16,7 +15,6 @@ export function initEgo(): Ego {
     age: "",
     note: "",
     size: "",
-    sizeMark: "",
   };
 }
 

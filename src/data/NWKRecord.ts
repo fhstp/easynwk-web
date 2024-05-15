@@ -9,7 +9,10 @@ export function initNWKRecordAsJSON(): string {
   return JSON.stringify(initNWKRecord());
 }
 
-export function initNWKRecord(): NWKRecord {
+export function initNWKRecord(): {
+  versions: NWKVersion[];
+  currentVersion: number;
+} {
   const version = initNWKVersion();
   return {
     versions: [version],
