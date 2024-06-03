@@ -105,6 +105,8 @@
 <script>
 import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
+import { NWKVersion } from "@/data/NWKVersion";
+import { NWKRecord } from "@/data/NWKRecord";
 
 export default defineComponent({
   setup() {

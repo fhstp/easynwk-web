@@ -3,6 +3,7 @@ import { NWKVersion, initNWKVersion } from "@/data/NWKVersion";
 export interface NWKRecord {
   versions: Array<NWKVersion>;
   currentVersion: number;
+  size: string;
 }
 
 export function initNWKRecordAsJSON(): string {
@@ -12,11 +13,13 @@ export function initNWKRecordAsJSON(): string {
 export function initNWKRecord(): {
   versions: NWKVersion[];
   currentVersion: number;
+  size: string;
 } {
   const version = initNWKVersion();
   return {
     versions: [version],
     currentVersion: version.id,
+    size: "5",
   };
 }
 
