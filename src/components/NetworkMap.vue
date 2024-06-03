@@ -59,8 +59,8 @@
     <NetworkMapCoordinates :transform="transform" />
 
     <text v-if="isEditMode" text-anchor="middle" class="edithint">
-      <tspan x="0" y="-1em">Klicke in die Karte, um</tspan>
-      <tspan x="0" dy="2em">die Position festzulegen</tspan>
+      <tspan x="0" y="-1em">{{ t("maptext") }}</tspan>
+      <tspan x="0" dy="2em">{{ t("maptext2") }}</tspan>
     </text>
 
     <g id="marksBackgroundLayer">
@@ -174,7 +174,7 @@
       id="zoomResetBtn"
       class="button is-medium"
       type="button"
-      title="Zoom Zurücksetzen"
+      :title="t('zoomreset')"
       @click="resetZoom()"
       :disabled="isNotZoomed"
     >
@@ -199,7 +199,7 @@
       id="btnClusterConnect"
       class="button is-small"
       type="button"
-      title="komplett verbinden (Clique erzeugen)"
+      :title="t('clusterconnect')"
       @click="clusterConnect"
       v-if="!isClusterFullyConnected"
       :disabled="!isClusterConnectPossible"
@@ -212,7 +212,7 @@
       id="btnClusterUnConnect"
       class="button is-small"
       type="button"
-      title="alle Beziehungen lösen"
+      :title="t('deconnect')"
       @click="clusterDisconnect"
       v-else
     >
@@ -234,7 +234,7 @@
     <button
       class="button is-small"
       type="button"
-      title="Auswahlrechteck schließen"
+      :title="t('closebrush')"
       @click="clearBrush"
     >
       <span class="icon is-small">
@@ -260,6 +260,8 @@ import { SYMBOL_DECEASED } from "@/assets/utils";
 import { getRoleAbbrev } from "../data/Roles";
 import { brushSelection, D3BrushEvent } from "d3";
 import { zoom, ZoomTransform, zoomIdentity } from "d3-zoom";
+import de from "@/de";
+import en from "@/en";
 
 interface AlterMark {
   d: Alter;
@@ -283,6 +285,12 @@ interface ConnectionMark {
 // emit "map-click" (which is not currently used)
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      return this[document.documentElement.lang][prop];
+    },
+  },
   components: { NetworkMapCoordinates, NetworkMapSectors, ComparisonSlider },
   emits: ["map-click"],
 

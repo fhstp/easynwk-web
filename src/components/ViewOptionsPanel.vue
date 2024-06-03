@@ -11,90 +11,60 @@
       <div class="field is-horizontal">
         <div class="field-body">
           <div id="view-settings" class="field" v-if="isOpen">
-            <div class="columns is-multiline">
-              <div class="column is-half-desktop">
-                <div class="control">
-                  <label class="checkbox">
-                    <input type="checkbox" @click.stop="toggleHorizons" />
-                    <span class="icon">
-                      <font-awesome-icon icon="rss" />
-                    </span>
-                    <span>Horizonte</span>
-                  </label>
-                </div>
-                <div class="control">
-                  <label class="checkbox">
-                    <input type="checkbox" @click.stop="toggleAge" />
-                    <span>Alter der Kontakte</span>
-                  </label>
-                </div>
-                <div class="control">
-                  <label class="checkbox">
-                    <input type="checkbox" @click.stop="toggleRoleShort" />
-                    <span>Rolle der Kontakte</span>
-                  </label>
-                </div>
-                <br />
-                <div class="control">
-                  <button class="button" @click.stop="togglePseudonyms">
-                    <span class="icon">
-                      <font-awesome-icon icon="user-secret" />
-                    </span>
-                    <span v-if="pseudonyms">De-Anonymisieren</span>
-                    <span v-else>Anonymisieren</span>
-                    <span></span>
-                  </button>
-                </div>
-              </div>
-              <div class="column is-half-desktop">
-                <div class="control">
-                  <label class="checkbox">
-                    <input
-                      type="checkbox"
-                      @click.stop="toggleAlteriNames"
-                      checked
-                    />
-                    <span class="icon">
-                      <font-awesome-icon icon="font" />
-                    </span>
-                    <span>Kontaktnamen</span>
-                  </label>
-                </div>
-                <div class="control">
-                  <label class="checkbox">
-                    <input type="checkbox" @click.stop="toggleConnections" />
-                    <span class="icon">
-                      <font-awesome-icon icon="project-diagram" />
-                    </span>
-                    <span>Verbindungen</span>
-                  </label>
-                </div>
-              </div>
-            </div>
             <div class="control">
-              <label for="text-size">Textgröße ändern:</label>
-              <input
-                type="range"
-                id="text-size"
-                placeholder="1"
-                min="1"
-                max="10"
-                v-model="textSize"
-                @input="changeTextSize"
-              />
+              <div class="buttons">
+                <button class="button" @click.stop="togglePseudonyms">
+                  <span class="icon">
+                    <font-awesome-icon icon="user-secret" />
+                  </span>
+                  <span v-if="pseudonyms">De-Anonymisieren</span>
+                  <span v-else>Anonymisieren</span>
+                  <span></span>
+                </button>
+
+                <button class="button" @click.stop="toggleHorizons">
+                  <span class="icon">
+                    <font-awesome-icon icon="rss" />
+                  </span>
+                  <span v-if="horizons">Horizonte aus</span>
+                  <span v-else>Horizonte ein</span>
+                </button>
+
+                <br />
+
+                <button class="button" @click.stop="toggleConnections">
+                  <span class="icon">
+                    <font-awesome-icon icon="project-diagram" />
+                  </span>
+                  <span v-if="connections">Verbindungen aus</span>
+                  <span v-else>Verbindungen ein</span>
+                </button>
+
+                <button class="button" @click.stop="toggleAlteriNames">
+                  <span class="icon">
+                    <font-awesome-icon icon="font" />
+                  </span>
+                  <span v-if="alteriNames">Kontaktnamen aus</span>
+                  <span v-else>Kontaktnamen ein</span>
+                </button>
+
+                <button class="button" @click.stop="toggleAge">
+                  <span class="icon">
+                    <font-awesome-icon icon="info" />
+                  </span>
+                  <span v-if="showAge">Alter der Kontakte aus</span>
+                  <span v-else>Alter der Kontakte ein</span>
+                </button>
+
+                <button class="button" @click.stop="toggleRoleShort">
+                  <span class="icon">
+                    <font-awesome-icon icon="info" />
+                  </span>
+                  <span v-if="showRole">Rolle der Kontakte aus</span>
+                  <span v-else>Rolle der Kontakte ein</span>
+                </button>
+              </div>
             </div>
-            <!--<div class="control">
-              <label for="text-size">Knotengröße ändern:</label>
-              <input
-                type="range"
-                id="text-size"
-                placeholder="1"
-                min="1"
-                max="10"
-                v-model="MarkSize"
-                @input="changeMarkSize"
-              />
-            </div> -->
           </div>
         </div>
       </div>
@@ -102,35 +72,15 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
-import { NWKVersion } from "@/data/NWKVersion";
-import { NWKRecord } from "@/data/NWKRecord";
 
 export default defineComponent({
   setup() {
     const store = useStore();
-    const isOpen = ref(false);
-    const textSize = ref(5);
-    //const markSize = ref(5);
 
-    const changeTextSize = () => {
-      const payload = {
-        size: textSize.value,
-      };
-      store.commit("editEgo", payload);
-      /*document.documentElement.style.setProperty(
-            "--text-size",
-            `${textSize.value}px`
-          );*/
-    };
-    /*const changeMarkSize = () => {
-      const payload = {
-        sizeMark: markSize.value,
-      };
-      store.commit("editEgo", payload);
-    };*/
+    const isOpen = ref(false);
 
     return {
       pseudonyms: computed(() => store.state.pseudonym.active),
@@ -141,29 +91,18 @@ export default defineComponent({
       toggleConnections: () => store.commit("view/toggle", "connections"),
       alteriNames: computed(() => store.state.view.alteriNames),
       toggleAlteriNames: () => store.commit("view/toggle", "alteriNames"),
-      isOpen,
+      isOpen: isOpen,
       showAge: computed(() => store.state.view.ageInNwk),
       toggleAge: () => store.commit("view/toggle", "ageInNwk"),
       showRole: computed(() => store.state.view.roleInNwk),
       toggleRoleShort: () => store.commit("view/toggle", "roleInNwk"),
-      textSize,
-      changeTextSize,
-      //markSize,
-      //changeMarkSize,
     };
   },
 });
 </script>
 
-<style scoped>
+<style lang="scss">
 .right {
   float: right;
-}
-
-:root {
-  --text-size: 16px;
-}
-* {
-  font-size: var(--text-size);
 }
 </style>

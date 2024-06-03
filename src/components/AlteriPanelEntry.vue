@@ -8,18 +8,18 @@
     }"
     v-on:click="toggleSelection()"
   >
-    <span v-if="!isEditMode" class="contact"
-      >{{ displayName }}
-      <span v-if="alter.age">/ {{ alter.age + " " }} </span>
-      <span :class="{ autovalue: alter.roleDefault }"
-        >/ {{ alter.role }}</span
-      ></span
-    >
+    <span v-if="!isEditMode" class="contact">
+      {{ displayName }}
+      <span v-if="alter.age">/ {{ alter.age + " " }}</span>
+      <span :class="{ autovalue: alter.roleDefault }">
+        / {{ getTranslatedRole(alter.role) }}
+      </span>
+    </span>
 
     <span class="buttons are-small" v-if="!isEditMode && isAlterOpsAllowed">
       <button
         class="button is-small"
-        title="Kontakt bearbeiten"
+        :title="t('editcontact')"
         @click.stop="edit()"
       >
         <span class="icon is-small">
@@ -28,7 +28,7 @@
       </button>
       <button
         class="button is-small"
-        title="Beziehungen des Kontakts bearbeiten"
+        :title="t('editconnections')"
         :disabled="isConnectionDisabled"
         @click.stop="editConnections()"
       >
@@ -38,7 +38,7 @@
       </button>
       <button
         class="button is-small"
-        title="Kontakt entfernen"
+        :title="t('deletecontact')"
         v-on:click.stop="removeAlter"
       >
         <span class="icon is-small">
@@ -66,9 +66,44 @@ import AlteriEditForm from "@/components/AlteriEditForm.vue";
 import AlteriConnectionList from "@/components/AlteriConnectionList.vue";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
 import { Alter, isConnectable } from "@/data/Alter";
+import de from "@/de";
+import en from "@/en";
+import roles from "@/data/roles_en.json";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      return this[document.documentElement.lang][prop];
+    },
+    langIsGerman() {
+      if (document.documentElement.lang == "de") return true;
+      else return false;
+    },
+  },
   components: { AlteriEditForm, AlteriConnectionList },
+  computed: {
+    getTranslatedRole() {
+      return () => {
+        const { role } = this.alter;
+        const translatedRole = roles.find((r) => r.german === role);
+        const translatedEng = roles.find((r) => r.label === role);
+
+        if (translatedRole) {
+          return this.langIsGerman()
+            ? translatedRole.german
+            : translatedRole.label;
+        } else if (translatedEng) {
+          return this.langIsGerman()
+            ? translatedEng.german
+            : translatedEng.label;
+        } else {
+          return role;
+        }
+      };
+    },
+  },
+
   props: {
     // gets Alter as prop cp. ToDo demo
     alter: {
