@@ -9,10 +9,8 @@
   </thead> -->
       <tbody>
         <tr>
-          <th
-            title="Anzahl der Kontakte im Netzwerk exklusive Ankerperson und exklusive Personen ohne Kante zur Ankerperson"
-          >
-            Netzwerkgröße
+          <th :title="t('networkmsg')">
+            {{ t("networksize") }}
             <!-- <span class="icon">
             <font-awesome-icon icon="info-circle" />
           </span> -->
@@ -20,18 +18,14 @@
           <td>{{ networkSize }}</td>
         </tr>
         <tr>
-          <th
-            title="Summierte Nähe bzw. Distanz der Kontakte zur Ankerperson. Je höher die Kennzahl, umso näher stehen die Personen der Ankerperson."
-          >
-            Beziehungsgewicht
+          <th :title="t('relationshipmsg')">
+            {{ t("relationshipweight") }}
           </th>
           <td>{{ naehenSum }}</td>
         </tr>
         <tr>
-          <th
-            title="Verhältnis der tatsächlich vorhandenen zu den theoretisch möglichen Verbindungen (exklusive der Verbindungen zwischen Anker- und Kontaktpersonen, inklusive Personen ohne Kante zur Ankerperson). Optional: Maßzahl liegt zwischen 0 (nur isolierte Kontakte) und 1 (jede Person im Netzwerk ist mit jeder anderen verbunden)."
-          >
-            Dichte gesamt
+          <th :title="t('densitymsg')">
+            {{ t("totaldensity") }}
           </th>
           <td>
             {{
@@ -43,26 +37,22 @@
           </td>
         </tr>
         <tr>
-          <th
-            title="Kontakt(e) mit den meisten Verbindungen im Netzwerk (neben der Ankerperson)"
-          >
-            Star(s)
+          <th :title="t('starsmsg')">
+            {{ t("stars") }}
           </th>
           <td @click="clickCell('stars')" :class="{ clickAble: stars != '-' }">
             {{ stars }}
           </td>
         </tr>
         <tr>
-          <th title="Anzahl der Verbindungen zwischen den Sektoren im Netzwerk">
-            Brücken
+          <th :title="t('bridgemsg')">
+            {{ t("bridges") }}
           </th>
           <td>{{ bridgesCount }}</td>
         </tr>
         <tr>
-          <th
-            title="Kontakt(e), die einzelne Sektoren im Netzwerk miteinander verbinden"
-          >
-            Brückenperson(en)
+          <th :title="t('bridgesmsg2')">
+            {{ t("bridgepersons") }}
           </th>
           <td
             @click="clickCell('bridgePersons')"
@@ -72,10 +62,8 @@
           </td>
         </tr>
         <tr>
-          <th
-            title="Kontakt(e), die ausschließlich mit der Ankerperson verbunden sind"
-          >
-            Isolierte
+          <th :title="t('isolatedmsg')">
+            {{ t("isolatedpersons") }}
           </th>
           <td
             @click="clickCell('isolated')"
@@ -85,10 +73,8 @@
           </td>
         </tr>
         <tr>
-          <th
-            title="Lebende Personen ohne aktualisierte Verbindung zur Ankerperson. Verbindungen mit anderen Personen im Netzwerk und damit indirekte Verbindung zur Ankerperson sind möglich."
-          >
-            Personen ohne Kante zur Ankerperson
+          <th :title="t('noedgemsg')">
+            {{ t("personswithoutedgetotheego") }}
           </th>
           <td
             @click="clickCell('alterZeroEdge')"
@@ -112,8 +98,16 @@ import {
   NetworkAnalysis,
 } from "@/data/NetworkAnalysis";
 import { getAlterCategorization } from "@/data/AlterCategories";
+import de from "@/de";
+import en from "@/en";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      return this[document.documentElement.lang][prop];
+    },
+  },
   setup() {
     const store = useStore();
 
@@ -131,14 +125,17 @@ export default defineComponent({
     const stars = computed(() => {
       const alteri = networkAnalysis.value.stars;
       if (alteri.length > 0 && networkAnalysis.value.maxDegree > 0) {
-        return (
-          alteri.map((a) => store.getters["displayName"](a)).join(", ") +
-          " (" +
-          networkAnalysis.value.maxDegree +
-          " Beziehungen)"
-        );
+        return document.documentElement.lang == "de"
+          ? alteri.map((a) => store.getters["displayName"](a)).join(", ") +
+              " (" +
+              networkAnalysis.value.maxDegree +
+              " Beziehungen)"
+          : alteri.map((a) => store.getters["displayName"](a)).join(", ") +
+              " (" +
+              networkAnalysis.value.maxDegree +
+              " relations)";
       } else {
-        return "keine";
+        return document.documentElement.lang == "de" ? "keine" : "none";
       }
     });
 

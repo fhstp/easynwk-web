@@ -1,13 +1,13 @@
 <template>
-  <p class="label">Beziehungen von {{ alter.name }}</p>
+  <p class="label">{{ t("relationshipsof") }} {{ alter.name }}</p>
   <p class="help">
-    Klicke auf einen Kontakt um diesen mit {{ alter.name }} zu verbinden bzw.
-    die Verbindung zu lösen.
+    {{ t("clickoncontacttoconnect") }} {{ alter.name }}
+    {{ t("clickoncontacttoconnect2") }}
   </p>
 
   <div class="columns">
     <div class="column">
-      <p class="label">Mögliche Kontakte</p>
+      <p class="label">{{ t("possiblecontacts") }}</p>
       <button
         v-for="other in altersNotConnected"
         :key="other.id"
@@ -18,7 +18,7 @@
       </button>
     </div>
     <div class="column">
-      <p class="label">Verbundene Kontakte</p>
+      <p class="label">{{ t("connectedcontacts") }}</p>
       <button
         v-for="other in altersConnected"
         :key="other.id"
@@ -33,7 +33,7 @@
   <div class="field is-grouped is-grouped-centered">
     <p class="control">
       <button @click.stop="editAlterFinished()" class="button is-primary">
-        Fertig
+        {{ t("done") }}
       </button>
     </p>
   </div>
@@ -44,8 +44,21 @@ import { defineComponent, computed, onMounted } from "vue";
 import { useStore } from "@/store";
 import { isConnectable } from "@/data/Alter";
 import { TAB_CONNECTIONS } from "@/store/viewOptionsModule";
+import de from "@/de";
+import en from "@/en";
 
 export default defineComponent({
+  mixins: [de, en],
+  methods: {
+    t(prop: string) {
+      return this[document.documentElement.lang][prop];
+    },
+  },
+  data() {
+    return {
+      lang: "de",
+    };
+  },
   props: {
     alter: {
       type: Object,
