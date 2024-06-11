@@ -1,7 +1,7 @@
 <template>
   <div class="panel">
     <p class="panel-heading" @click.stop="isOpen = !isOpen">
-      <span>{{ t("versiontitle") }}</span>
+      <span>{{ t("viewsettings") }}</span>
       <span class="icon is-medium clickAble right">
         <font-awesome-icon v-if="isOpen" icon="chevron-up" />
         <font-awesome-icon v-else icon="chevron-down" size="1x" />
@@ -34,7 +34,6 @@
                     <span>{{ t("roleofcontactson") }}</span>
                   </label>
                 </div>
-                <br />
               </div>
               <div class="column is-half-desktop">
                 <div class="control">
@@ -77,8 +76,8 @@
                 type="range"
                 id="text-size"
                 placeholder="1"
-                min="4"
-                max="10"
+                min="3"
+                max="15"
                 v-model="textSize"
                 @input="changeTextSize"
               />
@@ -166,6 +165,10 @@ export default defineComponent({
 <style scoped>
 .right {
   float: right;
+}
+
+.checkbox {
+  width: 25vh;
 }
 
 :root {
