@@ -63,6 +63,19 @@
     </div>
 
     <div class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Emoji</label>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <div class="control">
+            <EmojiPicker :native="true" @select="onSelectEmoji" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field is-horizontal">
       <div class="field-label">
         <label class="label checkbox" for="chk-human">{{ t("human") }}</label>
       </div>
@@ -229,6 +242,8 @@ import { SYMBOL_DECEASED } from "@/assets/utils";
 import { TAB_BASE } from "@/store/viewOptionsModule";
 import de from "@/de";
 import en from "@/en";
+import EmojiPicker from "vue3-emoji-picker";
+import "vue3-emoji-picker/css";
 
 type InputType = HTMLInputElement | HTMLTextAreaElement;
 
@@ -258,6 +273,10 @@ export default defineComponent({
     // toogled after each click on the map (resets keyboard cursor)
     mapclicked: Boolean,
   },
+  components: {
+    EmojiPicker,
+  },
+
   setup(props) {
     const store = useStore();
 
@@ -281,6 +300,19 @@ export default defineComponent({
     const invalidPosition = computed(() => {
       return props.alter?.distance <= 0;
     });
+    function onSelectEmoji(emoji: any) {
+      console.log(emoji);
+      /*
+        // result
+        {
+            i: "😚",
+            n: ["kissing face"],
+            r: "1f61a", // with skin tone
+            t: "neutral", // skin tone
+            u: "1f61a" // without tone
+        }
+        */
+    }
 
     // getter & setter for select dropdown
     function accessor<type>(field: keyof Alter) {
@@ -439,6 +471,7 @@ export default defineComponent({
       isConnectable: computed(() => isConnectable(props.alter as Alter)),
       commitEdit,
       focusRole,
+      onSelectEmoji,
       blurRole,
       genderOptions,
       roleOptions,

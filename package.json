@@ -19,7 +19,9 @@
     "core-js": "^3.8.3",
     "d3": "^7.0.0",
     "vue": "^3.2.13",
+    "vue-emoji-mart": "^1.0.5",
     "vue-router": "^4.0.3",
+    "vue3-emoji-picker": "^1.1.8",
     "vuex": "^4.0.0"
   },
   "devDependencies": {
