@@ -87,7 +87,7 @@ import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
 import de from "@/de";
 import en from "@/en";
-import { ViewOptionsFlags } from "@/store/viewOptionsModule";
+import { ViewOptionsFlags } from "@/data/ViewOptions";
 
 export default defineComponent({
   mixins: [de, en],

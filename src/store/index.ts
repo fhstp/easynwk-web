@@ -10,17 +10,15 @@ import { SYMBOL_DECEASED } from "@/assets/utils";
 import { Alter, initAlter } from "@/data/Alter";
 import { NWK } from "@/data/NWK";
 import { NWKRecord } from "@/data/NWKRecord";
+import { ViewOptions } from "@/data/ViewOptions";
 
 import { applyAdaptiveNWKDefaults } from "./adaptiveNWKDefaults";
 
 import { IUnReDoState, localStoragePlugin } from "./localStoragePlugin";
 import { editAlter, nwkModule } from "./nwkModule";
 import { pseudonymPlugin, PseudonymState } from "./pseudonymPlugin";
-import {
-  TAB_BASE,
-  viewOptionsModule,
-  ViewOptionsState,
-} from "./viewOptionsModule";
+import { viewOptionsModule } from "./viewSettingsModule";
+import { TAB_BASE, sessionModule, SessionState } from "./sessionModule";
 import {
   nwkRecordModule,
   nwkRecordMutationsAtRoot,
@@ -29,15 +27,16 @@ import {
 export interface IStoreState {
   nwk: NWK;
   record: NWKRecord;
-  view: ViewOptionsState;
+  view: ViewOptions;
+  session: SessionState;
   unredo: IUnReDoState;
   pseudonym: PseudonymState;
 }
 
 const getters = {
   editedAlterValid(state: IStoreState): boolean {
-    if (state.view.editIndex != null) {
-      const alter = state.nwk.alteri[state.view.editIndex];
+    if (state.session.editIndex != null) {
+      const alter = state.nwk.alteri[state.session.editIndex];
       return alter.distance > 0 && alter.name.trim().length > 0;
     } else {
       // no alter open to edit --> always valid
@@ -92,8 +91,8 @@ const mutations = {
 
     // new alter is always added on top of list
     state.nwk.alteri.unshift(newAlter);
-    state.view.editIndex = 0;
-    state.view.editTab = TAB_BASE;
+    state.session.editIndex = 0;
+    state.session.editTab = TAB_BASE;
   },
 
   // removes a newly added alter from the list
@@ -106,8 +105,8 @@ const mutations = {
       state.nwk.alteri.splice(alterIndex, 1);
     }
 
-    state.view.editIndex = null;
-    state.view.editTab = "";
+    state.session.editIndex = null;
+    state.session.editTab = "";
   },
   /*cancelAddVersion(state: IStoreState, versionIndex: number): void {
     // canceled alter is new and therefore cannot have connections
@@ -116,8 +115,8 @@ const mutations = {
       state.nwk.versions.splice(versionIndex, 1);
     }
 
-    state.view.editIndex = null;
-    state.view.editTab = "";
+    state.session.editIndex = null;
+    state.session.editTab = "";
   },
 
    */
@@ -126,14 +125,14 @@ const mutations = {
     payload: { alterId: number; tab?: string }
   ): void {
     const index = state.nwk.alteri.findIndex((a) => a.id === payload.alterId);
-    state.view.editIndex = index;
-    state.view.editTab = payload.tab ? payload.tab : TAB_BASE;
+    state.session.editIndex = index;
+    state.session.editTab = payload.tab ? payload.tab : TAB_BASE;
   },
   editAndCloseAlterForm(
     state: IStoreState,
     payload: { changes: Partial<Alter> }
   ): void {
-    const index = state.view.editIndex;
+    const index = state.session.editIndex;
 
     editAlter(state.nwk, index, payload.changes);
 
@@ -143,8 +142,8 @@ const mutations = {
         state.nwk.alteri[index].distance > 0)
     ) {
       // only close if the alter is valid (esp. has name)
-      state.view.editIndex = null;
-      state.view.editTab = "";
+      state.session.editIndex = null;
+      state.session.editTab = "";
     }
   },
 };
@@ -160,6 +159,7 @@ export const store = createStore<IStoreState>({
     nwk: nwkModule,
     record: nwkRecordModule,
     view: viewOptionsModule,
+    session: sessionModule,
   },
   getters,
   mutations,
