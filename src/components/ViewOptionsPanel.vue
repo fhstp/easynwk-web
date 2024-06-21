@@ -12,19 +12,19 @@
         <div>
           <div class="control">
             <label class="checkbox">
-              <input type="checkbox" @click.stop="toggleAlteriNames" checked />
+              <input type="checkbox" v-model="alteriNames" />
               <span>{{ t("namesofcontactson") }}</span>
             </label>
           </div>
           <div class="control">
             <label class="checkbox">
-              <input type="checkbox" @click.stop="toggleAge" />
+              <input type="checkbox" v-model="showAge" />
               <span>{{ t("ageofcontactson") }}</span>
             </label>
           </div>
           <div class="control">
             <label class="checkbox">
-              <input type="checkbox" @click.stop="toggleRoleShort" />
+              <input type="checkbox" v-model="showRole" />
               <span>{{ t("roleofcontactson") }}</span>
             </label>
           </div>
@@ -37,20 +37,19 @@
               min="3"
               max="15"
               v-model="textSize"
-              @input="changeTextSize"
             />
           </div>
         </div>
         <div>
           <div class="control">
             <label class="checkbox">
-              <input type="checkbox" @click.stop="toggleHorizons" />
+              <input type="checkbox" v-model="horizons" />
               <span>{{ t("horizonson") }}</span>
             </label>
           </div>
           <div class="control">
             <label class="checkbox">
-              <input type="checkbox" @click.stop="toggleConnections" />
+              <input type="checkbox" v-model="connections" />
               <span>{{ t("connectionson") }}</span>
             </label>
           </div>
@@ -88,6 +87,7 @@ import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
 import de from "@/de";
 import en from "@/en";
+import { ViewOptionsFlags } from "@/store/viewOptionsModule";
 
 export default defineComponent({
   mixins: [de, en],
@@ -98,43 +98,42 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const isOpen = ref(false);
-    const textSize = ref(5);
-    //const markSize = ref(5);
 
-    const changeTextSize = () => {
-      // const payload = {
-      //   size: textSize.value,
-      // };
-      store.commit("view/setLabelSizeInNwk", textSize.value);
-      /*document.documentElement.style.setProperty(
-            "--text-size",
-            `${textSize.value}px`
-          );*/
-    };
-    /*const changeMarkSize = () => {
-      const payload = {
-        sizeMark: markSize.value,
-      };
-      store.commit("editEgo", payload);
-    };*/
+    // whether panel is collapsed is managed locally
+    const isOpen = ref(false);
+
+    const textSize = computed({
+      get(): number {
+        return store.state.view.labelSizeInNwk;
+      },
+      set(value: number) {
+        store.commit("view/setLabelSizeInNwk", value);
+      },
+    });
+
+    // getter & setter for checkboxes
+    function accessFlag(flag: keyof ViewOptionsFlags) {
+      return computed({
+        get(): boolean {
+          return store.state.view[flag];
+        },
+        set(value: boolean) {
+          const payload = { flag, value };
+          store.commit("view/updateFlag", payload);
+        },
+      });
+    }
 
     return {
       pseudonyms: computed(() => store.state.pseudonym.active),
       togglePseudonyms: () => store.commit("pseudonym/toggle"),
-      horizons: computed(() => store.state.view.horizons),
-      toggleHorizons: () => store.commit("view/toggle", "horizons"),
-      connections: computed(() => store.state.view.connections),
-      toggleConnections: () => store.commit("view/toggle", "connections"),
-      alteriNames: computed(() => store.state.view.alteriNames),
-      toggleAlteriNames: () => store.commit("view/toggle", "alteriNames"),
+      horizons: accessFlag("horizons"),
+      connections: accessFlag("connections"),
+      alteriNames: accessFlag("alteriNames"),
       isOpen,
-      showAge: computed(() => store.state.view.ageInNwk),
-      toggleAge: () => store.commit("view/toggle", "ageInNwk"),
-      showRole: computed(() => store.state.view.roleInNwk),
-      toggleRoleShort: () => store.commit("view/toggle", "roleInNwk"),
+      showAge: accessFlag("ageInNwk"),
+      showRole: accessFlag("roleInNwk"),
       textSize,
-      changeTextSize,
       //markSize,
       //changeMarkSize,
     };

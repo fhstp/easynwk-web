@@ -48,6 +48,13 @@ const getters = {
 };
 
 const mutations = {
+  updateFlag(
+    state: ViewOptionsState,
+    payload: { flag: keyof ViewOptionsFlags; value: boolean }
+  ) {
+    state[payload.flag] = payload.value;
+  },
+
   enable(state: ViewOptionsState, flag: keyof ViewOptionsFlags): void {
     state[flag] = true;
   },
