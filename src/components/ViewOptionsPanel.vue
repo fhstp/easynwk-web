@@ -18,13 +18,21 @@
           </div>
           <div class="control">
             <label class="checkbox">
-              <input type="checkbox" v-model="showAge" />
+              <input
+                type="checkbox"
+                v-model="showAge"
+                :disabled="!alteriNames"
+              />
               <span>{{ t("ageofcontactson") }}</span>
             </label>
           </div>
           <div class="control">
             <label class="checkbox">
-              <input type="checkbox" v-model="showRole" />
+              <input
+                type="checkbox"
+                v-model="showRole"
+                :disabled="!alteriNames"
+              />
               <span>{{ t("roleofcontactson") }}</span>
             </label>
           </div>
@@ -34,9 +42,10 @@
             <input
               type="range"
               id="text-size"
-              min="3"
-              max="15"
+              min="2"
+              max="13"
               v-model="textSize"
+              :disabled="!alteriNames"
             />
           </div>
         </div>

@@ -161,7 +161,8 @@ export default defineComponent({
         () => isEditMode.value && store.state.session.editTab === TAB_BASE
       ),
       isConnectionForm: computed(
-        () => isEditMode.value && store.state.session.editTab === TAB_CONNECTIONS
+        () =>
+          isEditMode.value && store.state.session.editTab === TAB_CONNECTIONS
       ),
       toggleSelection,
       displayName: computed(() => store.getters["displayName"](props.alter)),
