@@ -62,11 +62,11 @@ export default {
         //},
         //viewOptions: {
         viewsettings: "View settings",
-        changesize: "Change text size:",
+        changesize: "Text size:",
         anonymiseon: "Anonymise",
         horizonson: "Horizons",
         connectionson: "Connections",
-        namesofcontactson: "Name of contacts",
+        namesofcontactson: "Labels for contacts",
         ageofcontactson: "Age of contacts",
         roleofcontactson: "Role of contacts",
         anonymiseoff: "De-anonymise",

@@ -7,82 +7,67 @@
         <font-awesome-icon v-else icon="chevron-down" size="1x" />
       </span>
     </p>
-    <div class="panel-block form">
-      <div class="field is-horizontal">
-        <div class="field-body">
-          <div id="view-settings" class="field" v-if="isOpen">
-            <div class="columns is-multiline">
-              <div class="column is-half-desktop">
-                <div class="control">
-                  <label class="checkbox">
-                    <input type="checkbox" @click.stop="toggleHorizons" />
-                    <span class="icon">
-                      <font-awesome-icon icon="rss" />
-                    </span>
-                    <span>{{ t("horizonte") }}</span>
-                  </label>
-                </div>
-                <div class="control">
-                  <label class="checkbox">
-                    <input type="checkbox" @click.stop="toggleAge" />
-                    <span>{{ t("ageofcontactson") }}</span>
-                  </label>
-                </div>
-                <div class="control">
-                  <label class="checkbox">
-                    <input type="checkbox" @click.stop="toggleRoleShort" />
-                    <span>{{ t("roleofcontactson") }}</span>
-                  </label>
-                </div>
-              </div>
-              <div class="column is-half-desktop">
-                <div class="control">
-                  <label class="checkbox">
-                    <input
-                      type="checkbox"
-                      @click.stop="toggleAlteriNames"
-                      checked
-                    />
-                    <span class="icon">
-                      <font-awesome-icon icon="font" />
-                    </span>
-                    <span>{{ t("namesofcontactson") }}</span>
-                  </label>
-                </div>
-                <div class="control">
-                  <label class="checkbox">
-                    <input type="checkbox" @click.stop="toggleConnections" />
-                    <span class="icon">
-                      <font-awesome-icon icon="project-diagram" />
-                    </span>
-                    <span>{{ t("connectionson") }}</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="control">
-              <button class="button" @click.stop="togglePseudonyms">
-                <span class="icon">
-                  <font-awesome-icon icon="user-secret" />
-                </span>
-                <span v-if="pseudonyms">{{ t("anonymiseoff") }}</span>
-                <span v-else>{{ t("anonymiseon") }}</span>
-                <span></span>
-              </button>
-            </div>
-            <div class="control">
-              <label for="text-size">{{ t("changesize") }}</label>
-              <input
-                type="range"
-                id="text-size"
-                placeholder="1"
-                min="3"
-                max="15"
-                v-model="textSize"
-                @input="changeTextSize"
-              />
-            </div>
-            <!--<div class="control">
+    <div class="panel-block">
+      <div class="flex-cont" v-if="isOpen">
+        <div>
+          <div class="control">
+            <label class="checkbox">
+              <input type="checkbox" @click.stop="toggleAlteriNames" checked />
+              <span>{{ t("namesofcontactson") }}</span>
+            </label>
+          </div>
+          <div class="control">
+            <label class="checkbox">
+              <input type="checkbox" @click.stop="toggleAge" />
+              <span>{{ t("ageofcontactson") }}</span>
+            </label>
+          </div>
+          <div class="control">
+            <label class="checkbox">
+              <input type="checkbox" @click.stop="toggleRoleShort" />
+              <span>{{ t("roleofcontactson") }}</span>
+            </label>
+          </div>
+          <div class="control">
+            <label for="text-size">{{ t("changesize") }}</label>
+            &nbsp;
+            <input
+              type="range"
+              id="text-size"
+              min="3"
+              max="15"
+              v-model="textSize"
+              @input="changeTextSize"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="control">
+            <label class="checkbox">
+              <input type="checkbox" @click.stop="toggleHorizons" />
+              <span>{{ t("horizonson") }}</span>
+            </label>
+          </div>
+          <div class="control">
+            <label class="checkbox">
+              <input type="checkbox" @click.stop="toggleConnections" />
+              <span>{{ t("connectionson") }}</span>
+            </label>
+          </div>
+        </div>
+        <div>
+          <div class="control">
+            <button class="button" @click.stop="togglePseudonyms">
+              <span class="icon">
+                <font-awesome-icon icon="user-secret" />
+              </span>
+              <span v-if="pseudonyms">{{ t("anonymiseoff") }}</span>
+              <span v-else>{{ t("anonymiseon") }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!--<div class="control">
               <label for="text-size">Knotengröße ändern:</label>
               <input
                 type="range"
@@ -94,9 +79,6 @@
                 @input="changeMarkSize"
               />
             </div> -->
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -104,8 +86,6 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
-import { NWKVersion } from "@/data/NWKVersion";
-import { NWKRecord } from "@/data/NWKRecord";
 import de from "@/de";
 import en from "@/en";
 
@@ -167,14 +147,15 @@ export default defineComponent({
   float: right;
 }
 
-.checkbox {
-  width: 25vh;
+.flex-cont {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
-:root {
-  --text-size: 16px;
-}
-* {
-  font-size: var(--text-size);
+.flex-cont > * {
+  flex-grow: 1;
+  min-width: 16em;
+  margin: 5px 0;
 }
 </style>
