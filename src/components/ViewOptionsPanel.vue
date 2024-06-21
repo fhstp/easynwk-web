@@ -103,10 +103,10 @@ export default defineComponent({
     //const markSize = ref(5);
 
     const changeTextSize = () => {
-      const payload = {
-        size: textSize.value,
-      };
-      store.commit("editEgo", payload);
+      // const payload = {
+      //   size: textSize.value,
+      // };
+      store.commit("view/setLabelSizeInNwk", textSize.value);
       /*document.documentElement.style.setProperty(
             "--text-size",
             `${textSize.value}px`

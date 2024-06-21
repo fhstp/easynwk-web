@@ -13,6 +13,7 @@ export interface ViewOptionsFlags {
 }
 
 export interface ViewOptionsState extends ViewOptionsFlags {
+  labelSizeInNwk: number;
   selected: Set<number>;
   editIndex: number | null;
   editTab: string;
@@ -30,6 +31,7 @@ export function initViewOptionsState(): ViewOptionsState {
     nwkcomparison: false,
     nwkchange: false,
 
+    labelSizeInNwk: 5,
     selected: new Set<number>(),
     editIndex: null,
     editTab: "",
@@ -56,6 +58,10 @@ const mutations = {
 
   toggle(state: ViewOptionsState, flag: keyof ViewOptionsFlags): void {
     state[flag] = !state[flag];
+  },
+
+  setLabelSizeInNwk(state: ViewOptionsState, newSize: number): void {
+    state.labelSizeInNwk = newSize;
   },
 
   toggleAlterSelected(state: ViewOptionsState, alterId: number): void {

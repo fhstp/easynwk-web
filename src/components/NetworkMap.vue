@@ -98,7 +98,7 @@
         />
         <text
           v-if="alteriNames && useTextBG"
-          :style="{ 'font-size': $store.state.nwk.ego.size + 'px' }"
+          :style="{ 'font-size': labelSize + 'px' }"
           class="textbg"
           vector-effect="non-scaling-stroke"
           :x="mark.x"
@@ -113,7 +113,7 @@
         </text>
         <text
           v-if="alteriNames"
-          :style="{ 'font-size': $store.state.nwk.ego.size + 'px' }"
+          :style="{ 'font-size': labelSize + 'px' }"
           :x="mark.x"
           :y="mark.y"
           :text-anchor="mark.x < 0 ? 'end' : 'start'"
@@ -748,6 +748,7 @@ export default defineComponent({
       egoCoords,
       alteriMarks,
       connectionMarks,
+      labelSize: computed(() => store.state.view.labelSizeInNwk),
       showAge: computed(() => store.state.view.ageInNwk),
       showRole: computed(() => store.state.view.roleInNwk),
       getRoleShort,
