@@ -15,18 +15,18 @@ export const CATEGORY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: "Sektor",
     en: "Sector",
   },
-  "Kreis 3": {
-    de: "Kreis 3",
-    en: "Circle 3",
-  },
-  "Kreis 3 + 2": {
-    de: "Kreis 3 + 2",
-    en: "Circle 3 + 2",
-  },
-  "Kreis 3 + 2 + 1": {
-    de: "Kreis 3 + 2 + 1",
-    en: "Circle 3 + 2 + 1",
-  },
+  // "Kreis 3": {
+  //   de: "Kreis 3",
+  //   en: "Circle 3",
+  // },
+  // "Kreis 3 + 2": {
+  //   de: "Kreis 3 + 2",
+  //   en: "Circle 3 + 2",
+  // },
+  // "Kreis 3 + 2 + 1": {
+  //   de: "Kreis 3 + 2 + 1",
+  //   en: "Circle 3 + 2 + 1",
+  // },
   "prof. Hilfe": {
     de: "Prof. Hilfe",
     en: "Professional Help",
@@ -39,22 +39,22 @@ export const CATEGORY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: "gesamtes Netzwerk",
     en: "Entire Network",
   },
-  Geschlecht: {
-    de: "Geschlecht",
-    en: "Gender",
-  },
+  // Geschlecht: {
+  //   de: "Geschlecht",
+  //   en: "Gender",
+  // },
   Überblick: {
     de: "Überblick",
     en: "Overview",
   },
-  "Horizont (kumulativ)": {
-    de: "Horizont (kumulativ)",
-    en: "Cumulative Horizon",
-  },
-  Horizont: {
-    de: "Horizont",
-    en: "Horizon",
-  },
+  // "Horizont (kumulativ)": {
+  //   de: "Horizont (kumulativ)",
+  //   en: "Cumulative Horizon",
+  // },
+  // Horizont: {
+  //   de: "Horizont",
+  //   en: "Horizon",
+  // },
   Familie: {
     de: "Familie",
     en: "Family",
@@ -71,22 +71,22 @@ export const CATEGORY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: "prof. Helfer*innen",
     en: "Professional Helpers",
   },
-  weiblich: {
-    de: "weiblich",
-    en: "Female",
-  },
-  männlich: {
-    de: "männlich",
-    en: "Male",
-  },
-  divers: {
-    de: "divers",
-    en: "Diverse",
-  },
-  "nicht festgelegt": {
-    de: "nicht festgelegt",
-    en: "Not Specified",
-  },
+  // weiblich: {
+  //   de: "weiblich",
+  //   en: "Female",
+  // },
+  // männlich: {
+  //   de: "männlich",
+  //   en: "Male",
+  // },
+  // divers: {
+  //   de: "divers",
+  //   en: "Diverse",
+  // },
+  // "nicht festgelegt": {
+  //   de: "nicht festgelegt",
+  //   en: "Not Specified",
+  // },
 };
 
 export function sectorIndex(alter: Alter): number | null {
@@ -132,6 +132,7 @@ const PROFI: AlterCategorization = {
   categories: ["prof. Hilfe", "Netzwerk ohne prof. Hilfe", "gesamtes Netzwerk"],
 };
 
+/* obsolete categorizations (since Jun 2024)
 const HORIZON_CUM: AlterCategorization = {
   label: "Horizont (kumulativ)",
   inCategory: (catIndex: number, a: Alter): boolean =>
@@ -152,6 +153,7 @@ const GENDER: AlterCategorization = {
     a.currentGender === Gender[catIndex],
   categories: ["weiblich", "männlich", "divers", "nicht festgelegt,"],
 };
+*/
 
 // const AGE: AlterCategorization = {
 //   label: "Alter",
@@ -173,17 +175,13 @@ const ALL: AlterCategorization = {
 };
 
 export function getAlterCategorization(key = ""): AlterCategorization {
-  return key === "sector"
-    ? SECTOR
-    : key === "profi"
-    ? PROFI
-    : key === "horizon"
-    ? HORIZON
-    : key === "horizon_cum"
-    ? HORIZON_CUM
-    : key === "gender"
-    ? GENDER
-    : ALL;
+  return key === "sector" ? SECTOR : key === "profi" ? PROFI : ALL;
+  // : key === "horizon"
+  // ? HORIZON
+  // : key === "horizon_cum"
+  // ? HORIZON_CUM
+  // : key === "gender"
+  // ? GENDER
   // : key === "age"
   // ? AGE
 }
@@ -192,8 +190,8 @@ export const allAlterCategorizationKeys = [
   "",
   "sector",
   "profi",
-  "horizon",
-  "horizon_cum",
-  "gender",
+  // "horizon",
+  // "horizon_cum",
+  // "gender",
   // "age",
 ];
