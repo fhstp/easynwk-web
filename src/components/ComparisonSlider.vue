@@ -121,8 +121,8 @@ export default defineComponent({
       versionMarks,
       handleCircleClick,
       handleComparisonClick,
-      showComparison: computed(() => store.state.view.nwkcomparison),
-      changeNWK: computed(() => store.state.view.nwkchange),
+      showComparison: computed(() => store.state.session.nwkcomparison),
+      changeNWK: computed(() => store.state.session.nwkchange),
     };
   },
 });

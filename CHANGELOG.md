@@ -1,6 +1,14 @@
 # easyNWK Version History
 
-## version 2.2.0, released xx xxx 2024
+## version 2.3.0, released xx Jun 2024
+
+* (feature) font-size of alteri labels can be changed
+* (feature) view option settings are presisted in local storage
+* (usability) view options panel redesigned using checkboxes
+* (bugfix) save anoynimized to JSON in the data structure for multiple maps
+* (security) various updates of libraries
+
+## version 2.2.0, released 30 Apr 2024
 
 * (feature) make the web app multi-linugal [#83](https://github.com/fhstp/easynwk-web/issues/83)
 

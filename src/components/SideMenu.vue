@@ -270,19 +270,14 @@ export default defineComponent({
         );
       },
 
-      showStatistics: () => store.commit("view/enable", "statistics"),
+      showStatistics: () => store.commit("session/enable", "statistics"),
       pseudonyms: computed(() => store.state.pseudonym.active),
       togglePseudonyms: () => store.commit("pseudonym/toggle"),
       horizons: computed(() => store.state.view.horizons),
-      toggleHorizons: () => store.commit("view/toggle", "horizons"),
       connections: computed(() => store.state.view.connections),
-      toggleConnections: () => store.commit("view/toggle", "connections"),
       alteriNames: computed(() => store.state.view.alteriNames),
-      toggleAlteriNames: () => store.commit("view/toggle", "alteriNames"),
       showAge: computed(() => store.state.view.ageInNwk),
-      toggleAge: () => store.commit("view/toggle", "ageInNwk"),
       showRole: computed(() => store.state.view.roleInNwk),
-      toggleRoleShort: () => store.commit("view/toggle", "roleInNwk"),
     };
   },
 });

@@ -43,7 +43,7 @@
 import { defineComponent, computed, onMounted } from "vue";
 import { useStore } from "@/store";
 import { isConnectable } from "@/data/Alter";
-import { TAB_CONNECTIONS } from "@/store/viewOptionsModule";
+import { TAB_CONNECTIONS } from "@/store/sessionModule";
 import de from "@/de";
 import en from "@/en";
 
@@ -100,8 +100,8 @@ export default defineComponent({
     onMounted(() => {
       document.onkeydown = (event: KeyboardEvent) => {
         if (event.key === "Escape" || event.key === "Esc") {
-          if (store.state.view.editTab === TAB_CONNECTIONS) {
-            store.commit("view/closeAlterForm");
+          if (store.state.session.editTab === TAB_CONNECTIONS) {
+            store.commit("session/closeAlterForm");
           }
         }
       };
@@ -121,7 +121,7 @@ export default defineComponent({
           id2: otherId,
         });
       },
-      editAlterFinished: () => store.commit("view/closeAlterForm"),
+      editAlterFinished: () => store.commit("session/closeAlterForm"),
       displayName: store.getters["displayName"],
     };
   },

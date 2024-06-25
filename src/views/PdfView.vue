@@ -173,6 +173,7 @@ export default defineComponent({
       pseudo = /true/i.test(pseudo);
       pseudo ? store.commit("pseudonym/toggle") : "";
 
+      /* ViewOptions are now read in from local storage
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let hor: any = useRouter().currentRoute.value.query.hor;
       if (/true/i.test(hor)) {
@@ -198,6 +199,7 @@ export default defineComponent({
       let role: any = useRouter().currentRoute.value.query.role;
       role = /true/i.test(role);
       role ? store.commit("view/toggle", "roleInNwk") : "";
+      */
     };
 
     onMounted(() => {
