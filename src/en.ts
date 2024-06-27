@@ -120,6 +120,7 @@ export default {
         role: "Role",
         human: "Human",
         humanno: "Human: No",
+        selectedEmoji: "Chosen emoji: ",
         agetitle: "Optional, social age of the contact",
         deceased: "deceased",
         deceasedyes: "Deceased: Yes",

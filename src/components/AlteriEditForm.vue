@@ -69,7 +69,31 @@
       <div class="field-body">
         <div class="field">
           <div class="control">
-            <EmojiPicker :native="true" @select="onSelectEmoji" />
+            <label class="checkbox" for="chk-show-emoji-picker">
+              <input
+                id="chk-show-emoji-picker"
+                type="checkbox"
+                v-model="showEmojiPicker"
+              />
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field is-horizontal" v-if="showEmojiPicker">
+      <div class="field-label is-normal">
+        <label class="label">{{ t("selectEmoji") }}</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="emoji-picker-container">
+            <EmojiPicker :native="true" :skin="false" @select="onSelectEmoji" />
+          </div>
+
+          <br />
+          <div class="selected-emoji" v-if="selectedEmoji">
+            {{ t("selectedEmoji") + selectedEmoji }}
           </div>
         </div>
       </div>
@@ -284,6 +308,8 @@ export default defineComponent({
 
     const selectedRoleLabel = ref(props.alter?.role);
 
+    const showEmojiPicker = ref(!!props.alter?.emoji);
+
     // name field is special because it must not be empty
     // the data item is only used for validity check & never stored
     const alterNameInUI = ref(props.alter?.name);
@@ -300,19 +326,21 @@ export default defineComponent({
     const invalidPosition = computed(() => {
       return props.alter?.distance <= 0;
     });
+
+    const selectedEmoji = ref(props.alter?.emoji || "");
+
     function onSelectEmoji(emoji: any) {
-      console.log(emoji);
-      /*
-        // result
-        {
-            i: "😚",
-            n: ["kissing face"],
-            r: "1f61a", // with skin tone
-            t: "neutral", // skin tone
-            u: "1f61a" // without tone
-        }
-        */
+      selectedEmoji.value = emoji.i;
+      commitEditEmoji(emoji.i);
     }
+
+    const commitEditEmoji = (emoji: string) => {
+      const payload = {
+        index: store.state.view.editIndex,
+        changes: { emoji: emoji },
+      };
+      store.commit("editAlter", payload);
+    };
 
     // getter & setter for select dropdown
     function accessor<type>(field: keyof Alter) {
@@ -478,6 +506,8 @@ export default defineComponent({
       engRoleOptions,
       editAlterFinished,
       cancelAddAlter,
+      selectedEmoji,
+      showEmojiPicker,
       altername,
       domButton,
       SYMBOL_DECEASED,

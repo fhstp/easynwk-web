@@ -136,18 +136,33 @@
     </g>
     <g class="brushParent"></g>
     <g class="marksForegroundLayer">
-      <use
-        v-for="mark in alteriMarks"
-        :key="mark.d.id"
-        :href="'#' + mark.shape"
-        :x="mark.x"
-        :y="mark.y"
-        class="mark clickAble"
-        width="4"
-        height="4"
-        transform="translate(-2,-2)"
-        @click.stop="clickAlter(mark.d)"
-      />
+      <template v-for="mark in alteriMarks">
+        <template v-if="mark.d.emoji">
+          <text
+            :key="mark.d.id"
+            :x="mark.x - 3"
+            :y="mark.y"
+            class="mark clickAble"
+            @click.stop="clickAlter(mark.d)"
+            style="font-size: 4px; cursor: pointer"
+          >
+            {{ mark.d.emoji }}
+          </text>
+        </template>
+        <template v-else>
+          <use
+            :key="mark.d.id"
+            :href="'#' + mark.shape"
+            :x="mark.x"
+            :y="mark.y"
+            class="mark clickAble"
+            width="4"
+            height="4"
+            transform="translate(-2,-2)"
+            @click.stop="clickAlter(mark.d)"
+          />
+        </template>
+      </template>
     </g>
 
     <NetworkMapSectors :transform="transform" @zoom-sector="zoomSector" />
