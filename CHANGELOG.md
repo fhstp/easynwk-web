@@ -1,11 +1,12 @@
 # easyNWK Version History
 
-## version 2.3.0, released xx Jun 2024
+## version 2.3.0, released 8 Jul 2024
 
 * (feature) font-size of alteri labels can be changed
 * (feature) view option settings are presisted in local storage
 * (usability) view options panel redesigned using checkboxes
 * (bugfix) save anoynimized to JSON in the data structure for multiple maps
+* (bugfix) anoynimize alteri list in export/print view
 * (security) various updates of libraries
 
 ## version 2.2.0, released 30 Apr 2024
@@ -60,7 +61,7 @@
 * (bugfix) provide favicon in a relative location
 * (security) various updates of libraries
 
-## version 2.0.1
+## version 2.0.1, released 25 Apr 2022
 
 * (feature) contacts outside outer horizon cannot be connected
 * (security) various updates of libraries
