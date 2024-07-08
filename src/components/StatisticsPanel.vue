@@ -80,7 +80,7 @@ export default defineComponent({
       tab,
       go,
       hideStatistics: () => {
-        store.commit("view/disable", "statistics");
+        store.commit("session/disable", "statistics");
       },
     };
   },

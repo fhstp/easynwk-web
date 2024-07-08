@@ -64,7 +64,7 @@ import { defineComponent, computed } from "vue";
 import { useStore } from "@/store";
 import AlteriEditForm from "@/components/AlteriEditForm.vue";
 import AlteriConnectionList from "@/components/AlteriConnectionList.vue";
-import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
+import { TAB_BASE, TAB_CONNECTIONS } from "@/store/sessionModule";
 import { Alter, isConnectable } from "@/data/Alter";
 import de from "@/de";
 import en from "@/en";
@@ -125,18 +125,18 @@ export default defineComponent({
     };
 
     const edit = () => {
-      store.commit("view/openAlterForm", { alterIndex: props.alterIndex });
+      store.commit("session/openAlterForm", { alterIndex: props.alterIndex });
     };
 
     // handles isEditMode
     const isEditMode = computed(() => {
-      return store.state.view.editIndex === props.alterIndex;
+      return store.state.session.editIndex === props.alterIndex;
     });
 
     // handles isSelected
     const toggleSelection = () => {
       if (!isEditMode.value) {
-        store.commit("view/selectSingleAlter", props.alter.id);
+        store.commit("session/selectSingleAlter", props.alter.id);
       }
     };
 
@@ -144,13 +144,13 @@ export default defineComponent({
       removeAlter,
       edit,
       editConnections: () => {
-        store.commit("view/openAlterForm", {
+        store.commit("session/openAlterForm", {
           alterIndex: props.alterIndex,
           tab: TAB_CONNECTIONS,
         });
       },
       isSelected: computed(() =>
-        store.getters["view/isSelected"](props.alter.id)
+        store.getters["session/isSelected"](props.alter.id)
       ),
       isConnectionDisabled: computed(
         () => !isConnectable(props.alter as Alter)
@@ -158,10 +158,11 @@ export default defineComponent({
       isEditMode,
       isAlterOpsAllowed: computed(() => store.getters.editedAlterValid),
       isBaseForm: computed(
-        () => isEditMode.value && store.state.view.editTab === TAB_BASE
+        () => isEditMode.value && store.state.session.editTab === TAB_BASE
       ),
       isConnectionForm: computed(
-        () => isEditMode.value && store.state.view.editTab === TAB_CONNECTIONS
+        () =>
+          isEditMode.value && store.state.session.editTab === TAB_CONNECTIONS
       ),
       toggleSelection,
       displayName: computed(() => store.getters["displayName"](props.alter)),

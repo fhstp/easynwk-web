@@ -8,11 +8,13 @@ import { initNWK } from "@/data/NWK";
 import { MutationPayload, Store } from "vuex";
 import { IStoreState } from ".";
 import { initPseudonymState } from "./pseudonymPlugin";
-import { initViewOptionsState } from "./viewOptionsModule";
+import { ViewOptions, initDefaultViewOptions } from "@/data/ViewOptions";
+import { initSessionState } from "./sessionModule";
 
 const STORAGE_KEY = "easynwk";
 const STORAGE_KEY_NWK = STORAGE_KEY + "_nwk";
 const STORAGE_KEY_RECORD = STORAGE_KEY + "_record";
+const STORAGE_KEY_VIEW = STORAGE_KEY + "_setting";
 const UNREDO_MODULE = "unredo";
 
 export interface IUnReDoState {
@@ -38,11 +40,21 @@ export function loadNWKRecordStateFromStore(): string {
   }
 }
 
+export function loadViewSettingsFromStore(): ViewOptions {
+  const storedViewSettings = localStorage.getItem(STORAGE_KEY_VIEW);
+  if (storedViewSettings && storedViewSettings != "undefined") {
+    return JSON.parse(storedViewSettings);
+  } else {
+    return initDefaultViewOptions();
+  }
+}
+
 export const localStoragePlugin = (store: Store<IStoreState>): void => {
   // keep track of undo history as local (non-reactive) vars
   const history = {
     initialNWKState: loadNWKStateFromStore(),
     initialNWKRecordState: loadNWKRecordStateFromStore(),
+    initialViewSettings: loadViewSettingsFromStore(),
     done: [] as Array<MutationPayload>,
     undone: [] as Array<MutationPayload>,
     replaying: false,
@@ -71,9 +83,11 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         // reset to initial state
         store.state.pseudonym = initPseudonymState();
         store.commit("loadJSON", history.initialNWKRecordState);
+        // TODO test if we need to restore the NWK record for full undo!
         // the cached NWK could be more up to date than the record
         store.commit("restoreNWKFromJSON", history.initialNWKState);
-        store.state.view = initViewOptionsState();
+        store.commit("view/update", history.initialViewSettings);
+        store.state.session = initSessionState();
         // replay all mutations (but last)
         for (const c of history.done) {
           store.commit(c.type, c.payload);
@@ -136,6 +150,10 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         STORAGE_KEY_RECORD,
         JSON.stringify(stateAfter.record)
       );
+    }
+
+    if (!history.replaying && mutation.type.startsWith("view/")) {
+      localStorage.setItem(STORAGE_KEY_VIEW, JSON.stringify(stateAfter.view));
     }
   });
 };
