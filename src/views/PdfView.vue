@@ -31,9 +31,11 @@
       <div id="egobar">
         <p class="name">{{ t("ego") + ": " + ego.name }}</p>
         <span v-if="versions.length && currentVersion >= 0">
-          <!-- TODO translate -->
-          Gedruckte Karte: {{ visibleNWKVersion?.title || "" }}
-          vom
+          {{
+            t("currentversion") +
+            (visibleNWKVersion?.title || "") +
+            t("versionfrom")
+          }}
           <!-- TODO use internationalizable date formater -->
           {{
             visibleNWKVersion?.date?.substring(8, 10) +
@@ -61,7 +63,7 @@
             v-bind:key="index"
             class="panel-block"
           >
-            <p class="name">{{ alter.name }}</p>
+            <p class="name">{{ getAlterName(alter) }}</p>
             <p>{{ alter.role }}</p>
             <p>
               {{ alter.age.length >= 1 ? t("age") + ": " + alter.age : "" }}
@@ -99,7 +101,7 @@
 </template>
 <script lang="ts">
 import NetworkMap from "@/components/NetworkMap.vue";
-import { useStore } from "@/store";
+import { store, useStore } from "@/store";
 import { defineComponent, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import de from "@/de";
@@ -133,6 +135,12 @@ export default defineComponent({
         default:
           return "";
       }
+    },
+    getAlterName(alter: any) {
+      const pseudo = store.state.pseudonym.active; // oder wie pseudo gespeichert wird
+      return pseudo
+        ? store.getters["pseudonym/pseudonize"](alter.id)
+        : alter.name;
     },
   },
   name: "PdfView",
