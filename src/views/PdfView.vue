@@ -31,9 +31,11 @@
       <div id="egobar">
         <p class="name">{{ t("ego") + ": " + ego.name }}</p>
         <span v-if="versions.length && currentVersion >= 0">
-          <!-- TODO translate -->
-          Gedruckte Karte: {{ visibleNWKVersion?.title || "" }}
-          vom
+          {{
+            t("currentversion") +
+            (visibleNWKVersion?.title || "") +
+            t("versionfrom")
+          }}
           <!-- TODO use internationalizable date formater -->
           {{
             visibleNWKVersion?.date?.substring(8, 10) +
