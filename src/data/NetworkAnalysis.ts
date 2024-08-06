@@ -1,7 +1,7 @@
-import { Alter, isConnectable, naehenScore } from "./Alter";
-import { AlterCategorization, sectorIndex } from "./AlterCategories";
-import { Connection } from "./Connection";
-import { NWK } from "./NWK";
+import { type Alter, isConnectable, naehenScore } from "./Alter";
+import { type AlterCategorization, sectorIndex } from "./AlterCategories";
+import type { Connection } from "./Connection";
+import type { NWK } from "./NWK";
 
 export interface NetworkAnalysis {
   alterConnected: number;

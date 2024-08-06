@@ -253,12 +253,12 @@ import NetworkMapSectors from "@/components/NetworkMapSectors.vue";
 import ComparisonSlider from "@/components/ComparisonSlider.vue";
 
 import * as d3 from "d3";
-import { Alter, isConnectable } from "@/data/Alter";
+import { type Alter, isConnectable } from "@/data/Alter";
 import { shapeByGender } from "@/data/Gender";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/sessionModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { getRoleAbbrev } from "../data/Roles";
-import { brushSelection, D3BrushEvent } from "d3";
+import { brushSelection, type D3BrushEvent } from "d3";
 import { zoom, ZoomTransform, zoomIdentity } from "d3-zoom";
 import de from "@/de";
 import en from "@/en";
@@ -786,7 +786,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import "~bulma/sass/base/_all.sass";
+@import "bulma/sass/base/_all.sass";
 
 svg {
   overflow: visible;

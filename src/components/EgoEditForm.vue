@@ -91,7 +91,7 @@
 import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useStore } from "@/store";
 
-import { Ego } from "@/data/Ego";
+import type { Ego } from "@/data/Ego";
 import { Gender } from "@/data/Gender";
 import de from "@/de";
 import en from "@/en";
