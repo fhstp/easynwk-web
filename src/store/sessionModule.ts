@@ -2,7 +2,6 @@ export const TAB_BASE = "base";
 export const TAB_CONNECTIONS = "connections";
 
 export interface SessionFlags {
-  statistics: boolean;
   nwkchange: boolean;
   nwkcomparison: boolean;
 }
@@ -15,7 +14,6 @@ export interface SessionState extends SessionFlags {
 
 export function initSessionState(): SessionState {
   return {
-    statistics: false,
     nwkcomparison: false,
     nwkchange: false,
 

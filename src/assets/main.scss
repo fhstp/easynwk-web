@@ -44,6 +44,13 @@ $panel-shadow: none;
   border-right: 1px solid #dbdbdb;
 }
 
+// equal height with or without large icon
+.panel-heading {
+  padding-top: 0.6em;
+  padding-bottom: 0.2em;
+  min-height: 2.5em;
+}
+
 .clickAble {
   cursor: pointer;
 }
