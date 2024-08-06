@@ -104,15 +104,6 @@
           </span>
           <span>{{ t("createPDF") }}</span>
         </a>
-
-        <p><br /></p>
-
-        <button class="button" @click="showStatistics">
-          <span class="icon">
-            <font-awesome-icon icon="chart-bar" />
-          </span>
-          <span>{{ t("keyfigures") }}</span>
-        </button>
       </div>
 
       <div class="links">
@@ -297,7 +288,6 @@ export default defineComponent({
         );
       },
 
-      showStatistics: () => store.commit("session/enable", "statistics"),
       pseudonyms: computed(() => store.state.pseudonym.active),
       togglePseudonyms: () => store.commit("pseudonym/toggle"),
       horizons: computed(() => store.state.view.horizons),

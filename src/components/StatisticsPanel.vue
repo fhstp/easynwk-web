@@ -1,16 +1,17 @@
 <template>
   <nav class="panel">
-    <p class="panel-heading" style="display: flex">
+    <p class="panel-heading" style="display: flex" @click.stop="isOpen = !isOpen">
       <span class="icon is-medium">
         <font-awesome-icon icon="chart-bar" size="lg" />
       </span>
       <span>{{ t("keyfigures") }}</span>
       <span style="flex: 1">&nbsp;</span>
-      <span class="icon is-medium clickAble" @click="hideStatistics">
-        <font-awesome-icon icon="times" size="1x" />
+      <span class="icon is-medium clickAble">
+        <font-awesome-icon v-if="isOpen" icon="chevron-up" />
+        <font-awesome-icon v-else icon="chevron-down" size="1x" />
       </span>
     </p>
-    <p class="panel-tabs">
+    <p class="panel-tabs" v-if="isOpen">
       <a
         v-for="cat in categories"
         :key="cat"
@@ -20,11 +21,12 @@
         {{ translateCategoryKey(categoryLabel(cat)) }}</a
       >
     </p>
-    <StatisticsTable v-if="tab === ''"></StatisticsTable>
+    <StatisticsTable v-if="isOpen && tab === ''"></StatisticsTable>
     <StatisticsTableCategories
-      v-else
+      v-else-if="isOpen"
       :categories="tab"
     ></StatisticsTableCategories>
+    <div class="panel-block" v-else />
   </nav>
 </template>
 
@@ -62,6 +64,9 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
+    // whether panel is collapsed is managed locally
+    const isOpen = ref(false);
+
     const tab = ref("");
 
     const go = (newTab: string) => {
@@ -77,11 +82,9 @@ export default defineComponent({
       categoryLabel: computed(
         () => (cat: string) => getAlterCategorization(cat).label
       ),
+      isOpen,
       tab,
       go,
-      hideStatistics: () => {
-        store.commit("session/disable", "statistics");
-      },
     };
   },
 });
