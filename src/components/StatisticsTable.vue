@@ -18,22 +18,25 @@
           <td>{{ networkSize }}</td>
         </tr>
         <tr>
-          <th :title="t('relationshipmsg')">
-            {{ t("relationshipweight") }}
+          <th :title="t('closenessmsg')">
+            {{ t("closeness") }}
           </th>
-          <td>{{ naehenSum }}</td>
+          <td>{{ naehen }}</td>
         </tr>
         <tr>
           <th :title="t('densitymsg')">
             {{ t("totaldensity") }}
           </th>
           <td>
-            {{
-              density.toLocaleString(undefined, {
-                minimumFractionDigits: 3,
-                maximumFractionDigits: 3,
-              })
-            }}
+            {{ density.toFixed(3) }}
+          </td>
+        </tr>
+        <tr>
+          <th :title="t('degreemsg')">
+            {{ t("degree") }}
+          </th>
+          <td>
+            {{ degree }}
           </td>
         </tr>
         <tr>
@@ -42,23 +45,6 @@
           </th>
           <td @click="clickCell('stars')" :class="{ clickAble: stars != '-' }">
             {{ stars }}
-          </td>
-        </tr>
-        <tr>
-          <th :title="t('bridgemsg')">
-            {{ t("bridges") }}
-          </th>
-          <td>{{ bridgesCount }}</td>
-        </tr>
-        <tr>
-          <th :title="t('bridgesmsg2')">
-            {{ t("bridgepersons") }}
-          </th>
-          <td
-            @click="clickCell('bridgePersons')"
-            :class="{ clickAble: bridgePersons != '0' }"
-          >
-            {{ bridgePersons }}
           </td>
         </tr>
         <tr>
@@ -140,7 +126,7 @@ export default defineComponent({
     });
 
     function makeComputedAlterGroup(
-      group: "stars" | "isolated" | "bridgePersons" | "alterZeroEdge"
+      group: "stars" | "isolated" | "alterZeroEdge"
     ) {
       return computed(() => {
         const alteri = networkAnalysis.value[group];
@@ -158,7 +144,7 @@ export default defineComponent({
     }
 
     const clickCell = (
-      group: "stars" | "isolated" | "bridgePersons" | "alterZeroEdge"
+      group: "stars" | "isolated" | "alterZeroEdge"
     ) => {
       const alteri = networkAnalysis.value[group];
       if (alteri.length > 0) {
@@ -171,13 +157,12 @@ export default defineComponent({
 
     return {
       networkSize: computed(() => networkAnalysis.value.alterConnected),
-      naehenSum: computed(() => networkAnalysis.value.naehenSum),
+      naehen: computed(() => networkAnalysis.value.naehenAvg.toFixed(1) + " (" + networkAnalysis.value.naehenDev.toFixed(1) + ")"),
       density,
+      degree: computed(() => networkAnalysis.value.degreeAvg.toFixed(1) + " (" + networkAnalysis.value.degreeDev.toFixed(1) + ")"),
       stars,
       isolated: makeComputedAlterGroup("isolated"),
       alterZeroEdge: makeComputedAlterGroup("alterZeroEdge"),
-      bridgePersons: makeComputedAlterGroup("bridgePersons"),
-      bridgesCount: computed(() => networkAnalysis.value.bridges.length),
       clickCell,
     };
   },

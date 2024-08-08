@@ -40,6 +40,7 @@ export default {
         relationshipweight: "Beziehungsgewicht",
         totaldensity: "Dichte",
         categorydensity: "Dichte der Kategorie",
+        degree: "Durchschn. Degree (SD)",
         stars: "Star(s)",
         categorystar: "Star(s) (pro Kategorie)",
         // bridges: "Brücken",

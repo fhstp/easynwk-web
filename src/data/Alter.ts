@@ -69,6 +69,13 @@ export function naehenScore(alter: Alter): number {
   return Math.max(9 - Math.floor((alter.distance * 9) / 100), 0);
 }
 
+export function horizonKey(alter: Alter): string {
+  if (alter.distance < 33.33) return "horizon_close";
+  else if (alter.distance < 66.67) return "horizon_middle";
+  else return "horizon_far";
+}
+
+
 /**
  * check if the alter can be connected to the ego or another alter.
  * By definition it is not possible to have a connection to a deceased or non-human alter.
