@@ -103,13 +103,13 @@ export function sectorIndex(alter: Alter): number | null {
   }
 }
 
-function horizonIndex(alter: Alter): number {
-  if (alter.distance <= 0) return 100;
-  else if (alter.distance < 33.33) return 0;
-  else if (alter.distance < 66.67) return 1;
-  else if (alter.distance < 100) return 2;
-  else return 100;
-}
+// function horizonIndex(alter: Alter): number {
+//   if (alter.distance <= 0) return 100;
+//   else if (alter.distance < 33.33) return 0;
+//   else if (alter.distance < 66.67) return 1;
+//   else if (alter.distance < 100) return 2;
+//   else return 100;
+// }
 
 const SECTOR: AlterCategorization = {
   label: "Sektor",

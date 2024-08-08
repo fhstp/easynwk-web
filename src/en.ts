@@ -35,9 +35,12 @@ export default {
         horizoncumulative: "Horizon (cumulative)",
         gender: "Gender",
         networksize: "Network size",
+        sizebygender: "by Gender",
+        closeness: "Avg. Closeness (SD)",
         relationshipweight: "Relationship weight",
         totaldensity: "Total density",
         categorydensity: "Category density",
+        degree: "Avg. Degree (SD)",
         categorystar: "Star (per category)",
         stars: "Star(s)",
         bridges: "Bridges",
@@ -46,10 +49,14 @@ export default {
         personswithoutedgetotheego: "Person(s) without edge to the ego",
         networkmsg:
           "Number of contacts in the network without ego and without contacts that do not have an edge to the ego",
+        closenessmsg:
+          "arithmetic average of closeness of contacts to the ego in 9 contric rings (9=close … 1=distant)",
         relationshipmsg:
           "Summed proximity or distance of the contacts to the ego. The higher the indicator, the closer the contacts are to the ego.",
         densitymsg:
           "Ratio of the actually existing connections to the theoretically possible connections (excluding connections between ego and contacts, including contacts without edge to ego). Optional: Measurement is between 0 (isolated contacts only) and 1 (every person in the network is connected to everyone else).",
+        degreemsg:
+          "arithmetic average of connections of contact persons (eckluding connections to the ego, inclusive persons without edge to the ego)",
         starsmsg:
           "Contact(s) with most connections in the network (besides the ego)",
         bridgesmsg2: "Contact(s) connecting individual sectors in the network",

@@ -26,7 +26,7 @@
             {{ t("relationshipweight") }}
           </th>
           <td v-for="(cat, i) in categoryLabels" :key="i">
-            {{ naehenSum[i] }}
+            {{ naehen[i] }}
           </td>
         </tr>
         <tr>
@@ -52,27 +52,6 @@
             :class="{ clickAble: stars[i] != '-' }"
           >
             {{ stars[i] }}
-          </td>
-        </tr>
-        <tr>
-          <th :title="t('bridgemsg')">
-            {{ t("bridges") }}
-          </th>
-          <td v-for="(cat, i) in categoryLabels" :key="i">
-            {{ bridgesCount[i] }}
-          </td>
-        </tr>
-        <tr>
-          <th :title="t('bridgesmsg2')">
-            {{ t("bridgepersons") }}
-          </th>
-          <td
-            v-for="(cat, i) in categoryLabels"
-            :key="i"
-            @click="clickCell('bridgePersons', cat)"
-            :class="{ clickAble: bridgePersons[i] != '0' }"
-          >
-            {{ bridgePersons[i] }}
           </td>
         </tr>
         <tr>
@@ -212,7 +191,7 @@ export default defineComponent({
     });
 
     function makeComputedAlterGroup(
-      group: "stars" | "isolated" | "bridgePersons" | "alterZeroEdge"
+      group: "stars" | "isolated" | "alterZeroEdge"
     ) {
       return computed(() => {
         return categoryLabels.value.map((cat) => {
@@ -234,7 +213,7 @@ export default defineComponent({
     }
 
     const clickCell = (
-      group: "stars" | "isolated" | "bridgePersons" | "alterZeroEdge",
+      group: "stars" | "isolated" | "alterZeroEdge",
       cat: string
     ) => {
       const alteri = getOrInit(networkAnalysis.value, cat)[group];
@@ -253,9 +232,9 @@ export default defineComponent({
           getOrInit(networkAnalysis.value, cat).alterConnected.toFixed(0)
         );
       }),
-      naehenSum: computed((): string[] => {
+      naehen: computed((): string[] => {
         return categoryLabels.value.map((cat) =>
-          getOrInit(networkAnalysis.value, cat).naehenSum.toFixed(0)
+          getOrInit(networkAnalysis.value, cat).naehenAvg.toFixed(0)
         );
       }),
       density,
@@ -264,12 +243,6 @@ export default defineComponent({
       stars,
       isolated: makeComputedAlterGroup("isolated"),
       alterZeroEdge: makeComputedAlterGroup("alterZeroEdge"),
-      bridgePersons: makeComputedAlterGroup("bridgePersons"),
-      bridgesCount: computed((): string[] => {
-        return categoryLabels.value.map((cat) =>
-          getOrInit(networkAnalysis.value, cat).bridges.length.toFixed(0)
-        );
-      }),
       clickCell,
     };
   },
