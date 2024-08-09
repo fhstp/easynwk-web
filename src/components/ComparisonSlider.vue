@@ -43,7 +43,7 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
 import { useStore } from "@/store";
-import { NWKVersion } from "@/data/NWKVersion";
+import { type NWKVersion } from "@/data/NWKVersion";
 
 interface VersionMark {
   d: NWKVersion;
@@ -129,7 +129,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import "~bulma/sass/base/_all.sass";
+@import "bulma/sass/base/_all.sass";
 
 .versionText {
   font-size: 4px;

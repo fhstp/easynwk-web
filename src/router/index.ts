@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHashHistory, type RouteRecordRaw } from "vue-router";
 import Home from "../views/HomeView.vue";
 import Pdf from "../views/PdfView.vue";
 

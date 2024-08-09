@@ -1,7 +1,7 @@
-import { Alter, isConnectable } from "@/data/Alter";
-import { Ego } from "@/data/Ego";
+import { type Alter, isConnectable } from "@/data/Alter";
+import { type Ego } from "@/data/Ego";
 import { applyAdaptiveNWKDefaults } from "./adaptiveNWKDefaults";
-import { NWK, restoreNWK } from "@/data/NWK";
+import { type NWK, restoreNWK } from "@/data/NWK";
 
 import { loadNWKStateFromStore } from "./localStoragePlugin";
 

@@ -1,4 +1,4 @@
-import { Alter, isConnectable } from "@/data/Alter";
+import { type Alter, isConnectable } from "@/data/Alter";
 import { sectorIndex } from "@/data/AlterCategories";
 import { getGenderDefaultByRole } from "@/data/Roles";
 import { SectorDefaultRoles, SectorDefaultRolesEng } from "@/data/Sectors";

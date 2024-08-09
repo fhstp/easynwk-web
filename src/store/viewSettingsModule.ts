@@ -1,4 +1,4 @@
-import { ViewOptions, ViewOptionsFlags } from "@/data/ViewOptions";
+import type { ViewOptions, ViewOptionsFlags } from "@/data/ViewOptions";
 import { loadViewSettingsFromStore } from "./localStoragePlugin";
 
 const state = loadViewSettingsFromStore();

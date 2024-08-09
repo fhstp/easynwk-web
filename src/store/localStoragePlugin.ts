@@ -5,10 +5,10 @@ and <https://github.com/anthonygore/vuex-undo-redo> */
 
 import { initNWKRecordAsJSON } from "@/data/NWKRecord";
 import { initNWK } from "@/data/NWK";
-import { MutationPayload, Store } from "vuex";
-import { IStoreState } from ".";
+import { type MutationPayload, Store } from "vuex";
+import { type IStoreState } from ".";
 import { initPseudonymState } from "./pseudonymPlugin";
-import { ViewOptions, initDefaultViewOptions } from "@/data/ViewOptions";
+import { type ViewOptions, initDefaultViewOptions } from "@/data/ViewOptions";
 import { initSessionState } from "./sessionModule";
 
 const STORAGE_KEY = "easynwk";

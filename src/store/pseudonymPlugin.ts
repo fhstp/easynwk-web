@@ -1,6 +1,6 @@
 import { getRoleAbbrev, PseudonymGenerator } from "@/data/Roles";
 import { Store } from "vuex";
-import { IStoreState } from ".";
+import type { IStoreState } from ".";
 
 export interface PseudonymState {
   active: boolean;

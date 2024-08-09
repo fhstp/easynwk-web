@@ -169,7 +169,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from "vue";
 import { useStore } from "@/store";
-import { NWKVersion } from "@/data/NWKVersion";
+import type { NWKVersion } from "@/data/NWKVersion";
 import de from "@/de";
 import en from "@/en";
 

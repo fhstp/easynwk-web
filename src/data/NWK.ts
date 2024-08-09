@@ -1,6 +1,6 @@
-import { Alter } from "@/data/Alter";
-import { Ego, initEgo } from "@/data/Ego";
-import { Connection } from "./Connection";
+import { type Alter } from "@/data/Alter";
+import { type Ego, initEgo } from "@/data/Ego";
+import { type Connection } from "./Connection";
 
 // define your typings for the store state
 export interface NWK {

@@ -222,7 +222,7 @@
 import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useStore } from "@/store";
 
-import { Alter, hasOptionalChanges, isConnectable } from "@/data/Alter";
+import { type Alter, hasOptionalChanges, isConnectable } from "@/data/Alter";
 import { Gender } from "@/data/Gender";
 import { Roles, RolesEng } from "@/data/Roles";
 import { SYMBOL_DECEASED } from "@/assets/utils";
@@ -473,7 +473,7 @@ input::-webkit-calendar-picker-indicator {
   margin-left: 0;
 }
 
-@import "~bulma/sass/base/_all.sass";
+@import "bulma/sass/base/_all.sass";
 .autovalue {
   color: $grey-light;
 }

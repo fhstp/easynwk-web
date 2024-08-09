@@ -1,8 +1,8 @@
 import { loadNWKRecordStateFromStore } from "@/store/localStoragePlugin";
-import { IStoreState } from ".";
-import { NWKRecord, initNWKRecord, loadNWKRecord } from "@/data/NWKRecord";
+import type { IStoreState } from ".";
+import { type NWKRecord, initNWKRecord, loadNWKRecord } from "@/data/NWKRecord";
 import { initNWK } from "@/data/NWK";
-import { NWKVersion, initNWKVersion } from "@/data/NWKVersion";
+import { type NWKVersion, initNWKVersion } from "@/data/NWKVersion";
 
 const state = JSON.parse(loadNWKRecordStateFromStore());
 

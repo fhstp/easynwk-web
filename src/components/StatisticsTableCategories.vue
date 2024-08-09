@@ -114,7 +114,7 @@ import {
   calculateDensity,
   // calculateExternalDensity,
   getOrInit,
-  NetworkAnalysis,
+  type NetworkAnalysis,
 } from "@/data/NetworkAnalysis";
 import {
   CATEGORY_TRANSLATIONS,
