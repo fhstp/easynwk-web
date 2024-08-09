@@ -171,7 +171,7 @@ export default defineComponent({
         store.commit("loadJSON", nwkText);
         emit("open-nwk");
       };
-      fr.readAsText(files.item(0));
+      fr.readAsText(files.item(0),"windows-1252");
     };
 
     const currentVersion = computed(() => store.state.record.currentVersion);
