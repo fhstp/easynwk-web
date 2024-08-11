@@ -299,7 +299,7 @@ export default defineComponent({
     }
 
     // generic event handlers from form to vuex
-    const commitEdit = (evt: FocusEvent, field: keyof Alter) => {
+    const commitEdit = (evt: UIEvent, field: keyof Alter) => {
       const value = (evt.target as InputType).value.trim();
       if (props.alter && value !== props.alter[field]) {
         const changes = { [field]: value };

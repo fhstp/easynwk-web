@@ -12,7 +12,7 @@
       {{ displayName }}
       <span v-if="alter.age">/ {{ alter.age + " " }}</span>
       <span :class="{ autovalue: alter.roleDefault }">
-        / {{ getTranslatedRole(alter.role) }}
+        / {{ getTranslatedRole() }}
       </span>
     </span>
 

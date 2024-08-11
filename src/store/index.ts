@@ -149,12 +149,12 @@ const mutations = {
 };
 
 const plugins =
-  process.env.NODE_ENV !== "production"
+  ! PRODUCTION
     ? [createLogger(), localStoragePlugin, pseudonymPlugin]
     : [localStoragePlugin, pseudonymPlugin];
 
 export const store = createStore<IStoreState>({
-  strict: process.env.NODE_ENV !== "production",
+  strict: ! PRODUCTION,
   modules: {
     nwk: nwkModule,
     record: nwkRecordModule,

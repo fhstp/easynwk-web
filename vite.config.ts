@@ -9,6 +9,7 @@ export default defineConfig({
   plugins: [vue()],
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+    PRODUCTION: process.env.NODE_ENV == "production",
   },
   resolve: {
     alias: {
