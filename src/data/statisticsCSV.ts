@@ -6,10 +6,10 @@ import {
   analyseNWKbyCategory,
   calculateDensity,
   getOrInit,
-  NetworkAnalysis,
+  type NetworkAnalysis,
 } from "@/data/NetworkAnalysis";
-import { NWK } from "@/data/NWK";
-import { Alter } from "./Alter";
+import type { NWK } from "@/data/NWK";
+import type { Alter } from "./Alter";
 
 const SEP = ";";
 

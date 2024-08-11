@@ -1,4 +1,4 @@
-import { initNWK, NWK } from "@/data/NWK";
+import { initNWK, type NWK } from "@/data/NWK";
 
 const DEFAULT_NWK_VERSION = 1;
 

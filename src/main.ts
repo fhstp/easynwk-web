@@ -3,7 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import { store, key } from "./store";
 
-require("@/assets/main.scss");
+import "@/assets/main.scss";
 
 // BEGIN fontawesome
 import { library } from "@fortawesome/fontawesome-svg-core";

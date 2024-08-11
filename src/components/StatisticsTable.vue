@@ -95,7 +95,7 @@ import {
   analyseNWKbyCategory,
   calculateDensity,
   getOrInit,
-  NetworkAnalysis,
+  type NetworkAnalysis,
 } from "@/data/NetworkAnalysis";
 import { getAlterCategorization } from "@/data/AlterCategories";
 import de from "@/de";

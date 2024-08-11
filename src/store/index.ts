@@ -1,4 +1,4 @@
-import { InjectionKey } from "vue";
+import type { InjectionKey } from "vue";
 import {
   createLogger,
   createStore,
@@ -7,18 +7,18 @@ import {
 } from "vuex";
 
 import { SYMBOL_DECEASED } from "@/assets/utils";
-import { Alter, initAlter } from "@/data/Alter";
-import { NWK } from "@/data/NWK";
-import { NWKRecord } from "@/data/NWKRecord";
-import { ViewOptions } from "@/data/ViewOptions";
+import { type Alter, initAlter } from "@/data/Alter";
+import type { NWK } from "@/data/NWK";
+import type { NWKRecord } from "@/data/NWKRecord";
+import type { ViewOptions } from "@/data/ViewOptions";
 
 import { applyAdaptiveNWKDefaults } from "./adaptiveNWKDefaults";
 
-import { IUnReDoState, localStoragePlugin } from "./localStoragePlugin";
+import { type IUnReDoState, localStoragePlugin } from "./localStoragePlugin";
 import { editAlter, nwkModule } from "./nwkModule";
-import { pseudonymPlugin, PseudonymState } from "./pseudonymPlugin";
+import { pseudonymPlugin, type PseudonymState } from "./pseudonymPlugin";
 import { viewOptionsModule } from "./viewSettingsModule";
-import { TAB_BASE, sessionModule, SessionState } from "./sessionModule";
+import { TAB_BASE, sessionModule, type SessionState } from "./sessionModule";
 import {
   nwkRecordModule,
   nwkRecordMutationsAtRoot,
@@ -149,12 +149,12 @@ const mutations = {
 };
 
 const plugins =
-  process.env.NODE_ENV !== "production"
+  ! PRODUCTION
     ? [createLogger(), localStoragePlugin, pseudonymPlugin]
     : [localStoragePlugin, pseudonymPlugin];
 
 export const store = createStore<IStoreState>({
-  strict: process.env.NODE_ENV !== "production",
+  strict: ! PRODUCTION,
   modules: {
     nwk: nwkModule,
     record: nwkRecordModule,

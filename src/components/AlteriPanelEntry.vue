@@ -12,7 +12,7 @@
       {{ displayName }}
       <span v-if="alter.age">/ {{ alter.age + " " }}</span>
       <span :class="{ autovalue: alter.roleDefault }">
-        / {{ getTranslatedRole(alter.role) }}
+        / {{ getTranslatedRole() }}
       </span>
     </span>
 
@@ -65,7 +65,7 @@ import { useStore } from "@/store";
 import AlteriEditForm from "@/components/AlteriEditForm.vue";
 import AlteriConnectionList from "@/components/AlteriConnectionList.vue";
 import { TAB_BASE, TAB_CONNECTIONS } from "@/store/sessionModule";
-import { Alter, isConnectable } from "@/data/Alter";
+import { type Alter, isConnectable } from "@/data/Alter";
 import de from "@/de";
 import en from "@/en";
 import roles from "@/data/roles_en.json";
@@ -203,7 +203,7 @@ export default defineComponent({
   padding: 3px 0px;
 }
 
-@import "~bulma/sass/base/_all.sass";
+@import "bulma/sass/base/_all.sass";
 .autovalue {
   color: $grey-light;
 }

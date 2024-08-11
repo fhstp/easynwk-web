@@ -56,7 +56,7 @@
               <input
                 class="input"
                 min="0"
-                :value="$store.state.nwk.ego.age"
+                :value="egoInStore.age"
                 @blur="commitEdit($event, 'age')"
                 type="number"
               />
@@ -69,7 +69,7 @@
         <div class="control">
           <textarea
             class="textarea is-small"
-            :value="$store.state.nwk.ego.note"
+            :value="egoInStore.note"
             @blur="commitEdit($event, 'note')"
             :placeholder="t('notesaboutego')"
           ></textarea>
@@ -91,7 +91,7 @@
 import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useStore } from "@/store";
 
-import { Ego } from "@/data/Ego";
+import type { Ego } from "@/data/Ego";
 import { Gender } from "@/data/Gender";
 import de from "@/de";
 import en from "@/en";
@@ -136,7 +136,7 @@ export default defineComponent({
     });
 
     // generic event handlers from form to vuex
-    const commitEdit = (evt: InputEvent, field: keyof Ego) => {
+    const commitEdit = (evt: UIEvent, field: keyof Ego) => {
       const value = (evt.target as InputType).value.trim();
       if (value !== store.state.nwk.ego[field]) {
         const payload = { [field]: value };
@@ -172,6 +172,7 @@ export default defineComponent({
     return {
       egoName,
       invalidName,
+      egoInStore: computed(() => store.state.nwk.ego),
       egoGender,
       commitEdit,
       genderOptions,

@@ -1,4 +1,4 @@
-import { NWKVersion, initNWKVersion } from "@/data/NWKVersion";
+import { type NWKVersion, initNWKVersion } from "@/data/NWKVersion";
 
 export interface NWKRecord {
   versions: Array<NWKVersion>;

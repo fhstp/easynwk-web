@@ -119,7 +119,7 @@
           >{{ t("sourcecode") }} (Version {{ appVersion }})</a
         >
         <a href="http://www.easynwk.com/impressum/">{{ t("imprint") }}</a>
-        <img src="fhstp_sw_pos.png" width="80" height="80" />
+        <img src="@/assets/fhstp_sw_pos.png" width="80" height="80" />
       </div>
     </div>
   </div>
@@ -131,7 +131,7 @@ import { computed, defineComponent, ref } from "vue";
 import { useStore } from "@/store";
 import { downloadSVGasPNG, downloadText } from "@/assets/utils";
 import { statisticsCSV } from "@/data/statisticsCSV";
-import { NWK } from "@/data/NWK";
+// import { NWK } from "@/data/NWK";
 import de from "@/de";
 import en from "@/en";
 
@@ -238,7 +238,7 @@ export default defineComponent({
       open,
       save,
       openDemoData,
-      appVersion: computed(() => process.env.VUE_APP_VERSION),
+      appVersion: computed(() => __APP_VERSION__),
       exportPNG: () => {
         downloadSVGasPNG(
           store.state.nwk.ego.name +
