@@ -66,6 +66,7 @@ export default {
         anonymiseon: "Anonymise",
         horizonson: "Horizons",
         connectionson: "Connections",
+        emojion: "Emojis",
         namesofcontactson: "Labels for contacts",
         ageofcontactson: "Age of contacts",
         roleofcontactson: "Role of contacts",

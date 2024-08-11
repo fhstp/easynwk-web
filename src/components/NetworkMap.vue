@@ -139,7 +139,7 @@
     <g class="brushParent"></g>
     <g class="marksForegroundLayer">
       <template v-for="mark in alteriMarks">
-        <template v-if="mark.d.emoji">
+        <template v-if="mark.d.emoji && emoji">
           <text
             :key="mark.d.id"
             :x="mark.x - 3"
@@ -770,6 +770,7 @@ export default defineComponent({
       getRoleShort,
       alteriNames: computed(() => store.state.view.alteriNames),
       connections: computed(() => store.state.view.connections),
+      emoji: computed(() => store.state.view.emoji),
       brushBtns,
       isClusterConnectPossible,
       isClusterFullyConnected,

@@ -62,6 +62,12 @@
               <span>{{ t("connectionson") }}</span>
             </label>
           </div>
+          <div class="control">
+            <label class="checkbox">
+              <input type="checkbox" v-model="emoji" />
+              <span>{{ t("emojion") }}</span>
+            </label>
+          </div>
         </div>
         <div>
           <div class="control">
@@ -138,6 +144,7 @@ export default defineComponent({
       togglePseudonyms: () => store.commit("pseudonym/toggle"),
       horizons: accessFlag("horizons"),
       connections: accessFlag("connections"),
+      emoji: accessFlag("emoji"),
       alteriNames: accessFlag("alteriNames"),
       isOpen,
       showAge: accessFlag("ageInNwk"),

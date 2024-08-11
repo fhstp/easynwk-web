@@ -62,26 +62,27 @@
       </div>
     </div>
 
-    <div class="field is-horizontal">
+    <div class="field is-horizontal" v-if="emoji">
       <div class="field-label is-normal">
         <label class="label">Emoji</label>
       </div>
+      <br />
       <div class="field-body">
         <div class="field">
           <div class="control">
-            <label class="checkbox" for="chk-show-emoji-picker">
-              <input
-                id="chk-show-emoji-picker"
-                type="checkbox"
-                v-model="showEmojiPicker"
-              />
-            </label>
+            <div class="selected-emoji">
+              {{
+                selectedEmoji.length < 1
+                  ? "Noch kein Emoji gewählt"
+                  : t("selectedEmoji") + selectedEmoji
+              }}
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="field is-horizontal" v-if="showEmojiPicker">
+    <div class="field is-horizontal" v-if="emoji">
       <div class="field-label is-normal">
         <label class="label">{{ t("selectEmoji") }}</label>
       </div>
@@ -90,12 +91,8 @@
           <div class="emoji-picker-container">
             <EmojiPicker :native="true" :skin="false" @select="onSelectEmoji" />
           </div>
-
-          <br />
-          <div class="selected-emoji" v-if="selectedEmoji">
-            {{ t("selectedEmoji") + selectedEmoji }}
-          </div>
         </div>
+        <br />
       </div>
     </div>
 
@@ -336,7 +333,7 @@ export default defineComponent({
 
     const commitEditEmoji = (emoji: string) => {
       const payload = {
-        index: store.state.view.editIndex,
+        index: store.state.session.editIndex,
         changes: { emoji: emoji },
       };
       store.commit("editAlter", payload);
@@ -497,6 +494,7 @@ export default defineComponent({
       alterDeceased: accessor<boolean>("deceased"),
       alterEdgeType: accessor<number>("edgeType"),
       isConnectable: computed(() => isConnectable(props.alter as Alter)),
+      emoji: computed(() => store.state.view.emoji),
       commitEdit,
       focusRole,
       onSelectEmoji,

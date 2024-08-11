@@ -67,6 +67,7 @@ export default {
         anonymiseon: "Anonymisieren",
         horizonson: "Horizonte",
         connectionson: "Verbindungen",
+        emojion: "Emojis",
         namesofcontactson: "Beschriftung der Kontakte",
         ageofcontactson: "zusätzlich: Alter (Jahre)",
         roleofcontactson: "zusätzlich: Rolle der Kontakte",
