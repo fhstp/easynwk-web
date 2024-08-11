@@ -128,7 +128,7 @@ export default defineComponent({
       egoEditMode,
       editEgoFinished,
       mapclick,
-      showStatistics: computed(() => store.state.view.statistics),
+      showStatistics: computed(() => store.state.session.statistics),
     };
   },
 });

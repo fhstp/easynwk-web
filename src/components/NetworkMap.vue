@@ -98,6 +98,7 @@
         />
         <text
           v-if="alteriNames && useTextBG"
+          :style="{ 'font-size': labelSize + 'px' }"
           class="textbg"
           vector-effect="non-scaling-stroke"
           :x="mark.x"
@@ -112,6 +113,7 @@
         </text>
         <text
           v-if="alteriNames"
+          :style="{ 'font-size': labelSize + 'px' }"
           :x="mark.x"
           :y="mark.y"
           :text-anchor="mark.x < 0 ? 'end' : 'start'"
@@ -268,7 +270,7 @@ import ComparisonSlider from "@/components/ComparisonSlider.vue";
 import * as d3 from "d3";
 import { Alter, isConnectable } from "@/data/Alter";
 import { shapeByGender } from "@/data/Gender";
-import { TAB_BASE, TAB_CONNECTIONS } from "@/store/viewOptionsModule";
+import { TAB_BASE, TAB_CONNECTIONS } from "@/store/sessionModule";
 import { SYMBOL_DECEASED } from "@/assets/utils";
 import { getRoleAbbrev } from "../data/Roles";
 import { brushSelection, D3BrushEvent } from "d3";
@@ -312,8 +314,8 @@ export default defineComponent({
 
     const isEditMode = computed(() => {
       return (
-        store.state.view.editIndex != null &&
-        store.state.view.editTab === TAB_BASE
+        store.state.session.editIndex != null &&
+        store.state.session.editTab === TAB_BASE
       );
     });
 
@@ -332,7 +334,7 @@ export default defineComponent({
     };
 
     const isConnectMode = computed(
-      () => store.state.view.editTab === TAB_CONNECTIONS
+      () => store.state.session.editTab === TAB_CONNECTIONS
     );
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -398,12 +400,12 @@ export default defineComponent({
 
             if (isEditMode.value) {
               const payload = {
-                index: store.state.view.editIndex,
+                index: store.state.session.editIndex,
                 changes: posPol,
               };
               store.commit("editAlter", payload);
               // } else {
-              //   store.commit("view/clearSelectedAlters");
+              //   store.commit("session/clearSelectedAlters");
             }
             emit("map-click", posPol);
           }, 500); //tolerance in ms
@@ -550,7 +552,7 @@ export default defineComponent({
             isInBrushExtent(am, extent)
           );
           markIdsInExtent = marksInExtent.map((am) => am.d.id);
-          store.commit("view/selectAlters", markIdsInExtent);
+          store.commit("session/selectAlters", markIdsInExtent);
 
           // check if cluster connect is possible (more than 1 connectable alter)
           connectableIdsInExtent = marksInExtent
@@ -583,8 +585,8 @@ export default defineComponent({
         }
       } else {
         // console.log("Brush selection inactive");
-        if (store.state.view.selected.size > 0) {
-          store.commit("view/clearSelectedAlters");
+        if (store.state.session.selected.size > 0) {
+          store.commit("session/clearSelectedAlters");
         }
         if (brushBtns.value) {
           brushBtns.value.style.visibility = "hidden";
@@ -653,9 +655,10 @@ export default defineComponent({
 
     let clickTimeoutId: number | null = null;
     const clickAlter = (alter: Alter) => {
-      if (isConnectMode.value && store.state.view.editIndex != null) {
+      if (isConnectMode.value && store.state.session.editIndex != null) {
         if (isConnectable(alter)) {
-          const editId = store.state.nwk.alteri[store.state.view.editIndex].id;
+          const editId =
+            store.state.nwk.alteri[store.state.session.editIndex].id;
           const payload = { id1: editId, id2: alter.id };
           store.commit("toggleConnection", payload);
         }
@@ -667,7 +670,7 @@ export default defineComponent({
             console.log(alter.name + " clicked");
 
             // toggleSelection
-            store.commit("view/selectSingleAlter", alter.id);
+            store.commit("session/selectSingleAlter", alter.id);
           }, 500); //tolerance in ms
         } else {
           // double click
@@ -717,7 +720,7 @@ export default defineComponent({
           shape: shapeByGender(el.human, el.currentGender),
           x: coords ? coords.x : 0,
           y: coords ? coords.y : 0,
-          selected: store.getters["view/isSelected"](el.id),
+          selected: store.getters["session/isSelected"](el.id),
         });
       });
       // first draw marks further away from center to avoid overplotting
@@ -730,8 +733,8 @@ export default defineComponent({
         const coords2 = alteriCoords.value.get(conn.id2);
 
         const selected =
-          store.getters["view/isSelected"](conn.id1) ||
-          store.getters["view/isSelected"](conn.id2);
+          store.getters["session/isSelected"](conn.id1) ||
+          store.getters["session/isSelected"](conn.id2);
 
         return {
           x1: coords1 ? coords1.x : 0,
@@ -761,6 +764,7 @@ export default defineComponent({
       egoCoords,
       alteriMarks,
       connectionMarks,
+      labelSize: computed(() => store.state.view.labelSizeInNwk),
       showAge: computed(() => store.state.view.ageInNwk),
       showRole: computed(() => store.state.view.roleInNwk),
       getRoleShort,
@@ -786,7 +790,7 @@ export default defineComponent({
           )
       ),
       showComparisonSlider: computed(
-        () => store.state.view.nwkchange || store.state.view.nwkcomparison
+        () => store.state.session.nwkchange || store.state.session.nwkcomparison
       ),
     };
   },

@@ -245,10 +245,10 @@ export default defineComponent({
     };
 
     return {
-      nwkcomparison: computed(() => store.state.view.nwkcomparison),
-      nwkchange: computed(() => store.state.view.nwkchange),
-      toggleComparison: () => store.commit("view/toggle", "nwkcomparison"),
-      toggleChange: () => store.commit("view/toggle", "nwkchange"),
+      nwkcomparison: computed(() => store.state.session.nwkcomparison),
+      nwkchange: computed(() => store.state.session.nwkchange),
+      toggleComparison: () => store.commit("session/toggle", "nwkcomparison"),
+      toggleChange: () => store.commit("session/toggle", "nwkchange"),
       editText: editText,
       isOpen: isOpen,
       newVersion: newVersion,
