@@ -164,14 +164,24 @@ export default defineComponent({
       const fr = new FileReader();
       // eslint-disable-next-line
       fr.onload = (e: any) => {
-        const nwkText = e.target.result;
+        let nwkText = e.target.result;
         // TODO format checks & error messages
         // if (savedNWK.alteri && savedNWK.alteri instanceof Array) {
         // if (savedNWK.ego && isEgo(savedNWK.ego)) {
-        store.commit("loadJSON", nwkText);
-        emit("open-nwk");
+        try {
+          JSON.parse(nwkText);
+          store.commit("loadJSON", nwkText);
+          emit("open-nwk");
+        } catch (error) {
+          fr.onload = (e: any) => {
+            nwkText = e.target.result;
+            store.commit("loadJSON", nwkText);
+            emit("open-nwk");
+          };
+          fr.readAsText(files.item(0), "windows-1252")
+        }
       };
-      fr.readAsText(files.item(0),"windows-1252");
+      fr.readAsText(files.item(0));
     };
 
     const currentVersion = computed(() => store.state.record.currentVersion);
