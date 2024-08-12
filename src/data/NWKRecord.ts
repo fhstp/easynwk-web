@@ -1,4 +1,4 @@
-import { NWKVersion, initNWKVersion } from "@/data/NWKVersion";
+import { type NWKVersion, initNWKVersion } from "@/data/NWKVersion";
 import roles from "@/data/roles_de.json";
 
 export interface NWKRecord {
@@ -119,7 +119,7 @@ function parseNWKFile(nwkText: string): any {
         }
         break;
 
-      case "P":
+      case "P": {
         const alterId = parseInt(parts[2]);
         const x = parseFloat(parts[3])
         const y = parseFloat(parts[4])
@@ -134,6 +134,7 @@ function parseNWKFile(nwkText: string): any {
           alteri.distance = polarCoords.distance;
         }
         break;
+      }
 
       case "L":
         nwkData.connections.push({
