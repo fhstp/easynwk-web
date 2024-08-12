@@ -101,6 +101,14 @@
           <span>{{ t("createPDF") }}</span>
         </a>
 
+        <a :href="'#/stat?lang=' + t('lang')" target="_blank" class="button">
+          <!-- Button richtig stylen-->
+          <span class="icon">
+            <font-awesome-icon icon="chart-area" />
+          </span>
+          <span>Statistik Report</span>
+        </a>
+
         <p><br /></p>
 
         <button class="button" @click="showStatistics">

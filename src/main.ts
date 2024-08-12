@@ -53,6 +53,7 @@ import {
   faUnlink,
   faArrowsAlt,
   faCopy,
+  faChartArea,
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
   faBars,
@@ -96,7 +97,8 @@ library.add(
   faInfo,
   faLink,
   faUnlink,
-  faArrowsAlt
+  faArrowsAlt,
+  faChartArea
 );
 
 // Vue.component("font-awesome-icon", FontAwesomeIcon);
