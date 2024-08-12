@@ -233,7 +233,7 @@
         </template>
         <template v-if="mark.d.supportCognitive >= 1">
           <font-awesome-icon
-            icon="brain"
+            icon="lightbulb"
             height="3"
             width="3"
             style="color: #afafaf"
@@ -243,7 +243,7 @@
         </template>
         <template v-if="mark.d.supportSocial >= 1">
           <font-awesome-icon
-            icon="comments"
+            icon="users"
             height="3"
             width="3"
             style="color: #afafaf"
@@ -253,7 +253,7 @@
         </template>
         <template v-if="mark.d.supportMaterial >= 1">
           <font-awesome-icon
-            icon="money-bill-wave"
+            icon="toolbox"
             height="3"
             width="3"
             style="color: #afafaf"
@@ -263,7 +263,7 @@
         </template>
         <template v-if="mark.d.supportPractical >= 1">
           <font-awesome-icon
-            icon="hard-hat"
+            icon="link"
             height="3"
             width="3"
             style="color: #afafaf"
@@ -898,11 +898,11 @@ export default defineComponent({
       egoShape: computed(() =>
         shapeByGender(true, store.state.nwk.ego.currentGender)
       ),
-      emotional: computed(() => store.state.view.emotional),
-      cognitive: computed(() => store.state.view.cognitive),
-      social: computed(() => store.state.view.social),
-      material: computed(() => store.state.view.material),
-      practical: computed(() => store.state.view.practical),
+      emotional: computed(() => store.state.session.emotional),
+      cognitive: computed(() => store.state.session.cognitive),
+      social: computed(() => store.state.session.social),
+      material: computed(() => store.state.session.material),
+      practical: computed(() => store.state.session.practical),
       isEditMode,
       isConnectMode,
       clickAlter,

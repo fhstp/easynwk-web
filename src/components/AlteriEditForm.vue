@@ -202,7 +202,7 @@
 
     <div v-if="showQuality" class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label">Kognitiv</label>
+        <label class="label">Informationell</label>
       </div>
       <div class="field-body">
         <div class="control">
@@ -238,7 +238,7 @@
 
     <div v-if="showQuality" class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label">Materiell</label>
+        <label class="label">Instrumentell</label>
       </div>
       <div class="field-body">
         <div class="control">
@@ -256,7 +256,7 @@
 
     <div v-if="showQuality" class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label">Praktisch</label>
+        <label class="label">Linking</label>
       </div>
       <div class="field-body">
         <div class="control">
@@ -551,7 +551,7 @@ export default defineComponent({
       alterConflict: accessor<boolean>("conflict"),
       alterEdgeType: accessor<number>("edgeType"),
       isConnectable: computed(() => isConnectable(props.alter as Alter)),
-      showQuality: computed(() => store.state.view.qualityRelationship),
+      showQuality: computed(() => store.state.session.qualityRelationship),
       commitEdit,
       focusRole,
       blurRole,

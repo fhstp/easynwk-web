@@ -44,7 +44,7 @@
             <ViewOptionsPanel :key="langKey" />
             <ComparisonOptionsPanel :key="langKey" />
             <StatisticsPanel v-if="showStatistics" :key="langKey" />
-            <support-panel />
+            <support-panel v-if="showQuality" />
             <!-- v-if="showQuality" -->
           </div>
         </div>
@@ -132,7 +132,7 @@ export default defineComponent({
       egoEditMode,
       editEgoFinished,
       mapclick,
-      showQuality: computed(() => store.state.view.qualityRelationship),
+      showQuality: computed(() => store.state.session.qualityRelationship),
       showStatistics: computed(() => store.state.session.statistics),
     };
   },

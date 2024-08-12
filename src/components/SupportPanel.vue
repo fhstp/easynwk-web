@@ -24,17 +24,17 @@
               </div>
               <div class="box">
                 <font-awesome-icon
-                  icon="brain"
+                  icon="lightbulb"
                   :style="{ color: brainClicked ? 'orange' : '#afafaf' }"
                   class="clickAble"
                   @click="toggleBrainIcon"
                   @click.stop="toggleCognitive"
                 />
-                Kognitiv: {{ alteriCognitive }}
+                Informationell: {{ alteriCognitive }}
               </div>
               <div class="box">
                 <font-awesome-icon
-                  icon="comments"
+                  icon="users"
                   :style="{ color: speakClicked ? 'orange' : '#afafaf' }"
                   class="clickAble"
                   @click="toggleSpeakIcon"
@@ -44,23 +44,23 @@
               </div>
               <div class="box">
                 <font-awesome-icon
-                  icon="money-bill-wave"
+                  icon="toolbox"
                   :style="{ color: moneyClicked ? 'orange' : '#afafaf' }"
                   class="clickAble"
                   @click="toggleMoneyIcon"
                   @click.stop="toggleMaterial"
                 />
-                Materiell: {{ alteriMaterial }}
+                Instrumentell: {{ alteriMaterial }}
               </div>
               <div class="box">
                 <font-awesome-icon
-                  icon="hard-hat"
+                  icon="link"
                   :style="{ color: helmetClicked ? 'orange' : '#afafaf' }"
                   class="clickAble"
                   @click="toggleHelmetIcon"
                   @click.stop="togglePractical"
                 />
-                Praktisch: {{ alteriPractical }}
+                Linking: {{ alteriPractical }}
               </div>
             </div>
           </div>
@@ -164,11 +164,11 @@ export default defineComponent({
       alteriSocial: alteriSocial,
       alteriMaterial: alteriMaterial,
       alteriPractical: alteriPractical,
-      toggleEmotional: () => store.commit("view/toggle", "emotional"),
-      toggleCognitive: () => store.commit("view/toggle", "cognitive"),
-      toggleSocial: () => store.commit("view/toggle", "social"),
-      toggleMaterial: () => store.commit("view/toggle", "material"),
-      togglePractical: () => store.commit("view/toggle", "practical"),
+      toggleEmotional: () => store.commit("session/toggle", "emotional"),
+      toggleCognitive: () => store.commit("session/toggle", "cognitive"),
+      toggleSocial: () => store.commit("session/toggle", "social"),
+      toggleMaterial: () => store.commit("session/toggle", "material"),
+      togglePractical: () => store.commit("session/toggle", "practical"),
     };
   },
 });

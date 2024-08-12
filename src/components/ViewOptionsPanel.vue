@@ -72,6 +72,13 @@
               <span v-if="pseudonyms">{{ t("anonymiseoff") }}</span>
               <span v-else>{{ t("anonymiseon") }}</span>
             </button>
+            <button class="button" @click.stop="toggleQuality">
+              <span class="icon">
+                <font-awesome-icon icon="hand-holding-heart" />
+              </span>
+              <span v-if="showQuality">Qualitäten aus</span>
+              <span v-else>Qualitäten an</span>
+            </button>
           </div>
         </div>
       </div>
@@ -136,8 +143,9 @@ export default defineComponent({
     return {
       pseudonyms: computed(() => store.state.pseudonym.active),
       togglePseudonyms: () => store.commit("pseudonym/toggle"),
-      showQuality: computed(() => store.state.view.qualityRelationship),
-      toggleQuality: () => store.commit("view/toggle", "qualityRelationship"),
+      showQuality: computed(() => store.state.session.qualityRelationship),
+      toggleQuality: () =>
+        store.commit("session/toggle", "qualityRelationship"),
       horizons: accessFlag("horizons"),
       connections: accessFlag("connections"),
       alteriNames: accessFlag("alteriNames"),

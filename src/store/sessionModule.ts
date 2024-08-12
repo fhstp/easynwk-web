@@ -22,8 +22,6 @@ export interface SessionState extends SessionFlags {
 export function initSessionState(): SessionState {
   return {
     statistics: false,
-    ageInNwk: false,
-    roleInNwk: false,
     qualityRelationship: false,
     nwkcomparison: false,
     nwkchange: false,
