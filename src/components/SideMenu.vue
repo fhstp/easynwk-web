@@ -185,16 +185,35 @@ export default defineComponent({
     const save = () => {
       store.commit("prepareToSaveJSON");
 
-      let nwkJSON = JSON.stringify(store.state.record);
+      let nwkJSON;
       let filename = store.state.nwk.ego.name;
+      let pseudonymizedVersions = [];
 
       if (store.state.pseudonym.active) {
-        const tempNWK = JSON.parse(nwkJSON) as NWK;
-        for (const alter of tempNWK.alteri) {
-          alter.name = store.getters["pseudonym/pseudonize"](alter.id);
+        for (let i = 0; i < store.state.record.versions.length; i++) {
+          let tempNWK = JSON.parse(
+            JSON.stringify(store.state.record.versions[i].nwk)
+          );
+          for (const alter of tempNWK.alteri) {
+            alter.name = store.getters["pseudonym/pseudonize"](alter.id);
+          }
+          // clone version and replace nwk with pseudonymized nwk
+          let pseudonymizedVersion = {
+            ...store.state.record.versions[i],
+            nwk: tempNWK,
+          };
+          pseudonymizedVersions.push(pseudonymizedVersion);
         }
-        nwkJSON = JSON.stringify(tempNWK);
+
+        let anonymizedRecord = {
+          ...store.state.record,
+          versions: pseudonymizedVersions,
+        };
+        nwkJSON = JSON.stringify(anonymizedRecord);
         filename += "_anonym";
+      } else {
+        nwkJSON = JSON.stringify(store.state.record);
+        console.log("non anonym: " + nwkJSON);
       }
 
       downloadText(filename + ".json", nwkJSON);
@@ -251,19 +270,14 @@ export default defineComponent({
         );
       },
 
-      showStatistics: () => store.commit("view/enable", "statistics"),
+      showStatistics: () => store.commit("session/enable", "statistics"),
       pseudonyms: computed(() => store.state.pseudonym.active),
       togglePseudonyms: () => store.commit("pseudonym/toggle"),
       horizons: computed(() => store.state.view.horizons),
-      toggleHorizons: () => store.commit("view/toggle", "horizons"),
       connections: computed(() => store.state.view.connections),
-      toggleConnections: () => store.commit("view/toggle", "connections"),
       alteriNames: computed(() => store.state.view.alteriNames),
-      toggleAlteriNames: () => store.commit("view/toggle", "alteriNames"),
       showAge: computed(() => store.state.view.ageInNwk),
-      toggleAge: () => store.commit("view/toggle", "ageInNwk"),
       showRole: computed(() => store.state.view.roleInNwk),
-      toggleRoleShort: () => store.commit("view/toggle", "roleInNwk"),
     };
   },
 });

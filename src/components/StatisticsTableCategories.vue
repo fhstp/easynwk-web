@@ -240,7 +240,7 @@ export default defineComponent({
       const alteri = getOrInit(networkAnalysis.value, cat)[group];
       if (alteri.length > 0) {
         store.commit(
-          "view/selectAlters",
+          "session/selectAlters",
           alteri.map((a) => a.id)
         );
       }

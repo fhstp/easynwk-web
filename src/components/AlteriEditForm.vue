@@ -331,7 +331,7 @@ import { Alter, hasOptionalChanges, isConnectable } from "@/data/Alter";
 import { Gender } from "@/data/Gender";
 import { Roles, RolesEng } from "@/data/Roles";
 import { SYMBOL_DECEASED } from "@/assets/utils";
-import { TAB_BASE } from "@/store/viewOptionsModule";
+import { TAB_BASE } from "@/store/sessionModule";
 import de from "@/de";
 import en from "@/en";
 
@@ -397,7 +397,7 @@ export default defineComponent({
         },
         set(value: type) {
           const payload = {
-            index: store.state.view.editIndex,
+            index: store.state.session.editIndex,
             changes: { [field]: value },
           };
           store.commit("editAlter", payload);
@@ -410,7 +410,7 @@ export default defineComponent({
       const value = (evt.target as InputType).value.trim();
       if (props.alter && value !== props.alter[field]) {
         const changes = { [field]: value };
-        const payload = { index: store.state.view.editIndex, changes };
+        const payload = { index: store.state.session.editIndex, changes };
         store.commit("editAlter", payload);
       }
     };
@@ -434,7 +434,7 @@ export default defineComponent({
       if (role) {
         const germanValue = role.german;
         const payload = {
-          index: store.state.view.editIndex,
+          index: store.state.session.editIndex,
           changes: { role: germanValue },
         };
         store.commit("editAlter", payload);
@@ -484,7 +484,7 @@ export default defineComponent({
         }
       } else {
         (domButton.value as HTMLButtonElement).focus();
-        store.commit("view/closeAlterForm");
+        store.commit("session/closeAlterForm");
 
         if (addingNewAlter.value && allowAddNext) {
           store.commit("addAlter");
@@ -494,7 +494,7 @@ export default defineComponent({
 
     const cancelAddAlter = () => {
       if (addingNewAlter.value) {
-        store.commit("cancelAddAlter", store.state.view.editIndex);
+        store.commit("cancelAddAlter", store.state.session.editIndex);
       }
     };
 
@@ -511,7 +511,7 @@ export default defineComponent({
           }
 
           // check if form is open isEditMode (see #97)
-          if (store.state.view.editTab !== TAB_BASE) {
+          if (store.state.session.editTab !== TAB_BASE) {
             return;
           }
 
@@ -522,11 +522,11 @@ export default defineComponent({
               remove = confirm("Soll dieser Kontakt gelöscht werden?");
             }
             if (remove) {
-              store.commit("cancelAddAlter", store.state.view.editIndex);
+              store.commit("cancelAddAlter", store.state.session.editIndex);
             }
           } else {
             // alter is valid --> just close the form
-            store.commit("view/closeAlterForm");
+            store.commit("session/closeAlterForm");
           }
         }
       };

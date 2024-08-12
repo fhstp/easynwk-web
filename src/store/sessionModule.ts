@@ -1,13 +1,8 @@
 export const TAB_BASE = "base";
 export const TAB_CONNECTIONS = "connections";
 
-export interface ViewOptionsFlags {
-  horizons: boolean;
-  connections: boolean;
-  alteriNames: boolean;
+export interface SessionFlags {
   statistics: boolean;
-  ageInNwk: boolean;
-  roleInNwk: boolean;
   qualityRelationship: boolean;
   nwkcomparison: boolean;
   nwkchange: boolean;
@@ -18,18 +13,14 @@ export interface ViewOptionsFlags {
   practical: boolean;
 }
 
-export interface ViewOptionsState extends ViewOptionsFlags {
+export interface SessionState extends SessionFlags {
   selected: Set<number>;
   editIndex: number | null;
   editTab: string;
 }
 
-export function initViewOptionsState(): ViewOptionsState {
+export function initSessionState(): SessionState {
   return {
-    // pseudonyms: true,
-    horizons: false,
-    connections: true,
-    alteriNames: true,
     statistics: false,
     ageInNwk: false,
     roleInNwk: false,
@@ -48,29 +39,36 @@ export function initViewOptionsState(): ViewOptionsState {
   };
 }
 
-const state = initViewOptionsState();
+const state = initSessionState();
 
 const getters = {
   isSelected:
-    (state: ViewOptionsState) =>
+    (state: SessionState) =>
     (alterId: number): boolean =>
       state.selected.has(alterId),
 };
 
 const mutations = {
-  enable(state: ViewOptionsState, flag: keyof ViewOptionsFlags): void {
+  updateFlag(
+    state: SessionState,
+    payload: { flag: keyof SessionFlags; value: boolean }
+  ) {
+    state[payload.flag] = payload.value;
+  },
+
+  enable(state: SessionState, flag: keyof SessionFlags): void {
     state[flag] = true;
   },
 
-  disable(state: ViewOptionsState, flag: keyof ViewOptionsFlags): void {
+  disable(state: SessionState, flag: keyof SessionFlags): void {
     state[flag] = false;
   },
 
-  toggle(state: ViewOptionsState, flag: keyof ViewOptionsFlags): void {
+  toggle(state: SessionState, flag: keyof SessionFlags): void {
     state[flag] = !state[flag];
   },
 
-  toggleAlterSelected(state: ViewOptionsState, alterId: number): void {
+  toggleAlterSelected(state: SessionState, alterId: number): void {
     if (state.selected.has(alterId)) {
       state.selected.delete(alterId);
     } else {
@@ -78,7 +76,7 @@ const mutations = {
     }
   },
 
-  selectSingleAlter(state: ViewOptionsState, alterId: number): void {
+  selectSingleAlter(state: SessionState, alterId: number): void {
     if (state.selected.has(alterId) && state.selected.size == 1) {
       // exactly this alter was already selected
       state.selected.clear();
@@ -88,16 +86,16 @@ const mutations = {
     }
   },
 
-  selectAlters(state: ViewOptionsState, alterIds: number[]): void {
+  selectAlters(state: SessionState, alterIds: number[]): void {
     state.selected = new Set(alterIds);
   },
 
-  clearSelectedAlters(state: ViewOptionsState): void {
+  clearSelectedAlters(state: SessionState): void {
     state.selected.clear();
   },
 
   openAlterForm(
-    state: ViewOptionsState,
+    state: SessionState,
     payload: { alterIndex: number; tab?: string }
   ): void {
     state.editIndex = payload.alterIndex;
@@ -108,13 +106,13 @@ const mutations = {
     // TODO nice to select opened alter (but index to id mapping missing)
   },
 
-  closeAlterForm(state: ViewOptionsState): void {
+  closeAlterForm(state: SessionState): void {
     state.editIndex = null;
     state.editTab = "";
   },
 };
 
-export const viewOptionsModule = {
+export const sessionModule = {
   namespaced: true,
   state,
   getters,
