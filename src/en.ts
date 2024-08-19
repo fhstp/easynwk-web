@@ -180,6 +180,8 @@ export default {
         network_without_professional_help: "Network without Professional Help",
         entire_network: "Entire Network",
         lang: "en",
+        formaterror: "The selected file does not match the JSON or NWK format.",
+        checkformat: "Please check the file and try again.",
         //Karten und Verläufe:
         versiontitle: "Maps and versions",
         currentversion: "Current map:  ",
