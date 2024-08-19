@@ -134,7 +134,17 @@
         width="4"
         height="4"
         transform="translate(-2,-2)"
+        v-if="!emoji || !egoEmoji"
       />
+      <text
+        v-if="emoji && egoEmoji"
+        :x="egoCoords[0]"
+        :y="egoCoords[1]"
+        class="mark"
+        style="font-size: 4px; cursor: pointer; text-anchor: middle"
+      >
+        {{ egoEmoji }}
+      </text>
     </g>
     <g class="brushParent"></g>
     <g class="marksForegroundLayer">
@@ -757,6 +767,7 @@ export default defineComponent({
       egoShape: computed(() =>
         shapeByGender(true, store.state.nwk.ego.currentGender)
       ),
+      egoEmoji: computed(() => store.state.nwk.ego.emoji),
       isEditMode,
       isConnectMode,
       clickAlter,

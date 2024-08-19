@@ -5,6 +5,8 @@ export interface Ego {
   age: string;
   currentGender: string;
   note: string;
+  emoji: string;
+  emojiSkin: number;
 }
 
 export function initEgo(): Ego {
@@ -13,6 +15,8 @@ export function initEgo(): Ego {
     currentGender: defaultGender,
     age: "",
     note: "",
+    emoji: "",
+    emojiSkin: 1,
   };
 }
 

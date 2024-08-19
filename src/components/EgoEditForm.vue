@@ -26,6 +26,48 @@
         </div>
       </div>
 
+      <div class="field is-horizontal" v-if="emoji">
+        <div class="field-label is-normal">
+          <label class="label">Emoji</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <div class="selected-emoji">
+                {{
+                  selectedEmoji.length < 1
+                    ? "No Emoji selected"
+                    : t("selectedEmoji") + selectedEmoji
+                }}
+              </div>
+              <button
+                v-if="selectedEmoji.length > 0"
+                @click="removeEmoji"
+                class="delete"
+                aria-label="remove emoji"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field is-horizontal" v-if="emoji">
+        <div class="field-label is-normal">
+          <label class="label">{{ t("selectEmoji") }}</label>
+        </div>
+        <div class="field-body">
+          <div class="control">
+            <div class="emoji-picker-container">
+              <EmojiPicker
+                :native="true"
+                :disableSkinTones="true"
+                @select="onSelectEmoji"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="field is-horizontal">
         <div class="field-label is-normal">
           <label class="label">{{ t("genders") }}</label>
@@ -95,6 +137,8 @@ import { Ego } from "@/data/Ego";
 import { Gender } from "@/data/Gender";
 import de from "@/de";
 import en from "@/en";
+import EmojiPicker from "vue3-emoji-picker";
+import "vue3-emoji-picker/css";
 
 type InputType = HTMLInputElement | HTMLTextAreaElement;
 
@@ -105,12 +149,17 @@ export default defineComponent({
       return this[document.documentElement.lang][prop];
     },
   },
+  components: {
+    EmojiPicker,
+  },
   setup(props, { emit }) {
     const store = useStore();
 
     // name field is special because it must not be empty
     // the data item is only used for validity check & never stored
     const egoName = ref(store.state.nwk.ego.name);
+
+    const selectedEmoji = ref(store.state.nwk.ego.emoji || "");
 
     const egoNameInStore = computed(() => {
       return store.state.nwk.ego.name;
@@ -143,6 +192,21 @@ export default defineComponent({
         store.commit("editEgo", payload);
       }
     };
+
+    const commitEditEmoji = (emoji: string) => {
+      const payload = { emoji: emoji };
+      store.commit("editEgo", payload);
+    };
+
+    function onSelectEmoji(emoji: any) {
+      selectedEmoji.value = emoji.i;
+      commitEditEmoji(emoji.i);
+    }
+
+    function removeEmoji() {
+      selectedEmoji.value = "";
+      commitEditEmoji("");
+    }
 
     // apparently v-for needs this to be a data item
     const genderOptions = ref(Gender);
@@ -177,6 +241,10 @@ export default defineComponent({
       genderOptions,
       editEgoFinished,
       egofield,
+      selectedEmoji,
+      onSelectEmoji,
+      removeEmoji,
+      emoji: computed(() => store.state.view.emoji),
     };
   },
 });

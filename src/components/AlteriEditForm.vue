@@ -77,6 +77,12 @@
                   : t("selectedEmoji") + selectedEmoji
               }}
             </div>
+            <button
+              v-if="selectedEmoji.length > 0"
+              @click="removeEmoji"
+              class="delete"
+              aria-label="remove emoji"
+            ></button>
           </div>
         </div>
       </div>
@@ -89,7 +95,11 @@
       <div class="field-body">
         <div class="control">
           <div class="emoji-picker-container">
-            <EmojiPicker :native="true" :skin="false" @select="onSelectEmoji" />
+            <EmojiPicker
+              :native="true"
+              :disableSkinTones="true"
+              @select="onSelectEmoji"
+            />
           </div>
         </div>
         <br />
@@ -339,6 +349,11 @@ export default defineComponent({
       store.commit("editAlter", payload);
     };
 
+    function removeEmoji() {
+      selectedEmoji.value = "";
+      commitEditEmoji("");
+    }
+
     // getter & setter for select dropdown
     function accessor<type>(field: keyof Alter) {
       return computed({
@@ -498,6 +513,7 @@ export default defineComponent({
       commitEdit,
       focusRole,
       onSelectEmoji,
+      removeEmoji,
       blurRole,
       genderOptions,
       roleOptions,
