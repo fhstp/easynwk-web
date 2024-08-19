@@ -39,8 +39,8 @@
             "age": "86",
             "note": "",
             "deceased": false,
-            "edgeType": "0",
-            "edgeTypeByUser": "0",
+            "edgeType": 0,
+            "edgeTypeByUser": 0,
             "angle": 63.66630822906832,
             "distance": 78.41498418743308
           },
