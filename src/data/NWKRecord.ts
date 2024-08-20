@@ -114,7 +114,8 @@ function parseNWKFile(nwkText: string): any {
             edgeType: 0,
             edgeTypeByUser: 0,
             angle: 0,
-            distance: 0
+            distance: 0,
+            hasPosition: false,
           });
         }
         break;
@@ -132,6 +133,7 @@ function parseNWKFile(nwkText: string): any {
           alteri.edgeTypeByUser = edgeType;
           alteri.angle = polarCoords.angle;
           alteri.distance = polarCoords.distance;
+          alteri.hasPosition = true;
         }
         break;
       }
@@ -144,6 +146,9 @@ function parseNWKFile(nwkText: string): any {
         break;
     }
   });
+  //alteri ohne position werden verworfen
+  //weil easyNWK 1.5 so gelöschte alteri gespeichert hat
+  nwkData.alteri = nwkData.alteri.filter((a: {hasPosition: boolean}) => a.hasPosition); 
 
   nwkData.version.nwk = {
     ego: nwkData.ego,
