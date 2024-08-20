@@ -1,6 +1,4 @@
 import { Alter } from "./Alter";
-import { Gender } from "./Gender";
-import { Sectors } from "./Sectors";
 
 type inCategoryType = (catIndex: number, a: Alter) => boolean;
 

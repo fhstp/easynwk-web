@@ -18,6 +18,29 @@
           <td>{{ networkSize }}</td>
         </tr>
         <tr>
+          <th class="sizeby">
+            {{ t("sizebygender") }}
+            <em>{{ t("female") }}</em>
+            <em>{{ t("male") }}</em>
+            <em>{{ t("diverse") }}</em>
+            <em>{{ t("notspecified") }}</em>
+          </th>
+          <td>
+            <p>&nbsp;</p>
+            <p v-for="(gSize, i) in sizeByGender" :key="'g' + i">{{ gSize }}</p>
+          </td>
+        </tr>
+        <tr>
+          <th class="sizeby">
+            {{ t("sizebyhorizon") }}
+            <em v-for="(ho, i) in HORIZON_KEYS" :key="'hl' + i">{{ t(ho) }}</em>
+          </th>
+          <td>
+            <p>&nbsp;</p>
+            <p v-for="(hSz, i) in sizeByHorizon" :key="'h' + i">{{ hSz }}</p>
+          </td>
+        </tr>
+        <tr>
           <th :title="t('closenessmsg')">
             {{ t("closeness") }}
           </th>
@@ -86,6 +109,7 @@ import {
 import { getAlterCategorization } from "@/data/AlterCategories";
 import de from "@/de";
 import en from "@/en";
+import { HORIZON_KEYS } from "@/data/Horizon";
 
 export default defineComponent({
   mixins: [de, en],
@@ -143,9 +167,7 @@ export default defineComponent({
       });
     }
 
-    const clickCell = (
-      group: "stars" | "isolated" | "alterZeroEdge"
-    ) => {
+    const clickCell = (group: "stars" | "isolated" | "alterZeroEdge") => {
       const alteri = networkAnalysis.value[group];
       if (alteri.length > 0) {
         store.commit(
@@ -156,10 +178,39 @@ export default defineComponent({
     };
 
     return {
-      networkSize: computed(() => networkAnalysis.value.alterConnected),
-      naehen: computed(() => networkAnalysis.value.naehenAvg.toFixed(1) + " (" + networkAnalysis.value.naehenDev.toFixed(1) + ")"),
+      networkSize: computed(
+        () =>
+          networkAnalysis.value.alterConnected +
+          " (" +
+          networkAnalysis.value.alterConnectable +
+          ")"
+      ),
+      sizeByGender: computed(() =>
+        networkAnalysis.value.genderConnected.map(
+          (g, i) => g + " (" + networkAnalysis.value.genderConnectable[i] + ")"
+        )
+      ),
+      HORIZON_KEYS,
+      sizeByHorizon: computed(() =>
+        networkAnalysis.value.horizonConnected.map(
+          (g, i) => g + " (" + networkAnalysis.value.horizonConnectable[i] + ")"
+        )
+      ),
+      naehen: computed(
+        () =>
+          networkAnalysis.value.naehenAvg.toFixed(1) +
+          " (" +
+          networkAnalysis.value.naehenDev.toFixed(1) +
+          ")"
+      ),
       density,
-      degree: computed(() => networkAnalysis.value.degreeAvg.toFixed(1) + " (" + networkAnalysis.value.degreeDev.toFixed(1) + ")"),
+      degree: computed(
+        () =>
+          networkAnalysis.value.degreeAvg.toFixed(1) +
+          " (" +
+          networkAnalysis.value.degreeDev.toFixed(1) +
+          ")"
+      ),
       stars,
       isolated: makeComputedAlterGroup("isolated"),
       alterZeroEdge: makeComputedAlterGroup("alterZeroEdge"),
@@ -172,5 +223,11 @@ export default defineComponent({
 <style scoped lang="scss">
 td:not([align]) {
   text-align: right;
+}
+
+th.sizeby > em {
+  display: block;
+  font-style: normal;
+  margin-left: 3em;
 }
 </style>

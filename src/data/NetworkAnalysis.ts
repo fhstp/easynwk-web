@@ -1,5 +1,7 @@
-import { type Alter, horizonKey, isConnectable, naehenScore } from "./Alter";
+import { type Alter, isConnectable } from "./Alter";
+import { HORIZON_KEYS, horizonKey, naehenScore } from "./Horizon";
 import { type AlterCategorization, sectorIndex } from "./AlterCategories";
+import { Gender } from "./Gender";
 import type { NWK } from "./NWK";
 
 export interface NetworkAnalysis {
@@ -15,10 +17,10 @@ export interface NetworkAnalysis {
   maxDegree: number;
   isolated: Array<Alter>;
   alterZeroEdge: Array<Alter>;
-  genderConnected: Map<string, number>;
-  genderConnectable: Map<string, number>;
-  horizonConnected: Map<string, number>;
-  horizonConnectable: Map<string, number>;
+  genderConnected: Array<number>;
+  genderConnectable: Array<number>;
+  horizonConnected: Array<number>;
+  horizonConnectable: Array<number>;
 }
 
 function initNetworkAnalysis(): NetworkAnalysis {
@@ -35,10 +37,10 @@ function initNetworkAnalysis(): NetworkAnalysis {
     maxDegree: 0,
     isolated: [],
     alterZeroEdge: [],
-    genderConnected: new Map(),
-    genderConnectable: new Map(),
-    horizonConnected: new Map(),
-    horizonConnectable: new Map(),
+    genderConnected: [],
+    genderConnectable: [],
+    horizonConnected: [],
+    horizonConnectable: [],
   };
 }
 
@@ -57,9 +59,9 @@ export function getOrInit(
 interface AlterMetrics {
   alter: Alter;
   degree: number;
-  sector: number;
-  naehe: number,
-  isolated: boolean,
+  // sector: number;
+  naehe: number;
+  isolated: boolean;
 }
 
 /**
@@ -81,7 +83,7 @@ export function analyseNWKbyCategory(
         alter,
         degree: 0,
         naehe: naehenScore(alter),
-        sector: sec,
+        // sector: sec,
         isolated: true,
       });
   }
@@ -116,6 +118,10 @@ export function analyseNWKbyCategory(
 
     let degreeSum = 0;
     let naehenSum = 0;
+    const genderConnected = new Map();
+    const genderConnectable = new Map();
+    const horizonConnected = new Map();
+    const horizonConnectable = new Map();
 
     for (const [, am] of alterMetrics) {
       if (categories.inCategory(i, am.alter)) {
@@ -142,15 +148,15 @@ export function analyseNWKbyCategory(
           analysis.isolated.push(am.alter);
         }
 
-        // (8) increase networkSize & naehenSum
+        // (8) increase networkSize & naehenSum & size-by-arrays
         analysis.alterConnectable++;
         degreeSum += am.degree;
-        countByKey(analysis.genderConnectable, am.alter.currentGender);
-        countByKey(analysis.horizonConnectable, horizonKey(am.alter));
+        countByKey(genderConnectable, am.alter.currentGender);
+        countByKey(horizonConnectable, horizonKey(am.alter));
         if (am.alter.edgeType >= 1) {
           analysis.alterConnected++;
-          countByKey(analysis.genderConnected, am.alter.currentGender);
-          countByKey(analysis.horizonConnected, horizonKey(am.alter));
+          countByKey(genderConnected, am.alter.currentGender);
+          countByKey(horizonConnected, horizonKey(am.alter));
           naehenSum += am.naehe;
         }
       }
@@ -158,6 +164,12 @@ export function analyseNWKbyCategory(
 
     analysis.degreeAvg = degreeSum / analysis.alterConnectable;
     analysis.naehenAvg = naehenSum / analysis.alterConnected;
+    analysis.genderConnected = mapToArray(genderConnected, Gender);
+    analysis.genderConnectable = mapToArray(genderConnectable, Gender);
+    analysis.horizonConnected = mapToArray(horizonConnected, HORIZON_KEYS);
+    analysis.horizonConnectable = mapToArray(horizonConnectable, HORIZON_KEYS);
+
+    // another iteration to calculate standard deviation
     degreeSum = 0;
     naehenSum = 0;
 
@@ -183,6 +195,13 @@ function countByKey(map: Map<string, number>, key: string) {
   } else {
     map.set(key, 1);
   }
+}
+
+function mapToArray(map: Map<string, number>, keys: string[]) {
+  return keys.map((k) => {
+    const value = map.get(k);
+    return value ? value : 0;
+  });
 }
 
 /**
