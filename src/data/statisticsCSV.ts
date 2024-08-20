@@ -10,6 +10,14 @@ import {
 } from "@/data/NetworkAnalysis";
 import { NWK } from "@/data/NWK";
 import { Alter } from "./Alter";
+import { computed } from "vue";
+import { store } from "@/store";
+
+const networkAnalysis = computed((): NetworkAnalysis => {
+  const categorization = getAlterCategorization();
+  const analysis = analyseNWKbyCategory(store.state.nwk, categorization);
+  return getOrInit(analysis, categorization.categories[0]);
+});
 
 const SEP = ";";
 
@@ -104,6 +112,52 @@ export function statisticsCSV(
       displayName,
       "alterZeroEdge"
     ).reduce((prev, curr) => prev + SEP + curr, "");
+  }
+
+  output += "\n\n" + "test" + SEP + "test2" + "\n\n";
+  
+  for (const cat of allAlterCategorizationKeys) {
+    // loop each tab of the statistics panel (below each other on single sheet)
+    const categorization = getAlterCategorization(cat);
+    const networkAnalysis = analyseNWKbyCategory(nwk, categorization);
+
+    output += categorization.label + SEP;
+    output += "Netzwerkgröße (+aktivierbare)" + SEP;
+    output += "nach Geschlecht weiblich" + SEP;
+    output += "nach Geschlecht männlich" + SEP;
+    output += "nach Geschlecht divers" + SEP;
+    output += "nach Geschlecht nicht festgelegt" + SEP;
+    output += "nach Horizont nah" + SEP;
+    output += "nach Horizont mittel" + SEP;
+    output += "nach Horizont entfernt" + SEP;
+    output += "Durschschn. Nähe (SD)" + SEP;
+    output += "Dichte" + SEP;
+    output += "Durchschn. Degree (SD)" + SEP;
+    output += "Star(s)" + SEP;
+    output += "Isolierte" + SEP;
+    output += "Personen ohne Kante zum Ego" + SEP;
+  }
+  output += "\n";
+
+  for (const _ of allAlterCategorizationKeys) {
+    // loop each tab of the statistics panel (below each other on single sheet)
+  
+
+    output += SEP;
+    output += networkAnalysis.value.alterConnected + " (" + networkAnalysis.value.alterConnectable + ")" + SEP;
+    
+    for (const [i, g] of networkAnalysis.value.genderConnected.entries()) {
+      output += g + " (" + networkAnalysis.value.genderConnectable[i] + ")" + SEP
+    }
+    for (const [i, g] of networkAnalysis.value.horizonConnected.entries()) {
+      output += g + " (" + networkAnalysis.value.horizonConnectable[i] + ")" + SEP
+    }
+    output += networkAnalysis.value.naehenAvg.toFixed(1) + " (" + networkAnalysis.value.naehenDev.toFixed(1) + ")" + SEP;
+    output += "Dichte" + SEP;
+    output += "Durchschn. Degree (SD)" + SEP;
+    output += "Star(s)" + SEP;
+    output += "Isolierte" + SEP;
+    output += "Personen ohne Kante zum Ego" + SEP;
   }
 
   return output;
