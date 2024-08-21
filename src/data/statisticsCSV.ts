@@ -5,181 +5,136 @@ import {
 import {
   analyseNWKbyCategory,
   calculateDensity,
-  getOrInit,
   NetworkAnalysis,
 } from "@/data/NetworkAnalysis";
 import { NWK } from "@/data/NWK";
 import { Alter } from "./Alter";
-import { computed } from "vue";
 import { store } from "@/store";
 
-const networkAnalysis = computed((): NetworkAnalysis => {
-  const categorization = getAlterCategorization();
-  const analysis = analyseNWKbyCategory(store.state.nwk, categorization);
-  return getOrInit(analysis, categorization.categories[0]);
-});
-
 const SEP = ";";
-
+let output = "";
+let isFirstTime = true;
 export function statisticsCSV(
   nwk: NWK,
-  displayName: (a: Alter) => string
+  title: string,
+  date: string,
+  id: number,
 ): string {
-  let output = "Auswertung" + SEP + nwk.ego.name;
-
   for (const cat of allAlterCategorizationKeys) {
-    // loop each tab of the statistics panel (below each other on single sheet)
     const categorization = getAlterCategorization(cat);
-    const networkAnalysis = analyseNWKbyCategory(nwk, categorization);
+    const networkAnalysisMap = analyseNWKbyCategory(nwk, categorization);
+    console.log(Array.from(networkAnalysisMap.entries()));
 
-    output += "\n\n" + categorization.label + "\n\n";
-
-    output += "Kennzahl";
-    for (const label of categorization.categories) {
-      output += SEP + label;
+    if (isFirstTime) {
+      output += "Name" + SEP;
+      output += "Datum" + SEP;
+      output += "ID" + SEP;
+      output += "Netzwerksektor" + SEP;
+      output += "Netzwerkgröße" + SEP;
+      output += "Netzwerkgröße (+aktivierbare)" + SEP;
+      output += "nach Geschlecht weiblich" + SEP;
+      output += "nach Geschlecht weiblich (+aktivierbare)" + SEP;
+      output += "nach Geschlecht männlich" + SEP;
+      output += "nach Geschlecht männlich (+aktivierbare)" + SEP;
+      output += "nach Geschlecht divers" + SEP;
+      output += "nach Geschlecht divers (+aktivierbare)" + SEP;
+      output += "nach Geschlecht nicht festgelegt" + SEP;
+      output += "nach Geschlecht nicht festgelegt (+aktivierbare)" + SEP;
+      output += "nach Horizont nah" + SEP;
+      output += "nach Horizont nah (+aktivierbare)" + SEP;
+      output += "nach Horizont mittel" + SEP;
+      output += "nach Horizont mittel (+aktivierbare)" + SEP;
+      output += "nach Horizont entfernt" + SEP;
+      output += "nach Horizont entfernt (+aktivierbare)" + SEP;
+      output += "Durschschn. Nähe" + SEP;
+      output += "Durschschn. Nähe (SD)" + SEP;
+      output += "Dichte" + SEP;
+      output += "Durchschn. Degree" + SEP;
+      output += "Durchschn. Degree (SD)" + SEP;
+      output += "Star(s)" + SEP;
+      output += "Isolierte" + SEP;
+      output += "Personen ohne Kante zum Ego" + SEP;
+      output += "\n";
+      isFirstTime = false;
     }
-
-    output += "\nNetzwerkgröße";
+    
     for (const label of categorization.categories) {
-      output +=
-        SEP + getOrInit(networkAnalysis, label).alterConnected.toFixed(0);
+      const networkAnalysis = networkAnalysisMap.get(label);
+      if (networkAnalysis) {
+        getDataForKeyFigures(networkAnalysis, title, date, id, categorization.label, label);
+      }
+      output += "\n";
     }
-
-    output += "\nBeziehungsgewicht";
-    for (const label of categorization.categories) {
-      // TODO change to naehenAvg and naehenDev
-//      output += SEP + getOrInit(networkAnalysis, label).naehenSum.toFixed(0);
-    }
-
-    output += "\nDichte der Kategorie";
-    for (const label of categorization.categories) {
-      const { alterConnectable, intConnCount } = getOrInit(
-        networkAnalysis,
-        label
-      );
-      output +=
-        SEP +
-        calculateDensity(alterConnectable, intConnCount).toLocaleString(
-          undefined,
-          {
-            minimumFractionDigits: 3,
-            maximumFractionDigits: 3,
-          }
-        );
-    }
-
-    output += "\nStar(s)";
-    output += categorization.categories
-      .map((label) => {
-        const { stars, maxDegree } = getOrInit(networkAnalysis, label);
-        if (stars.length > 0 && maxDegree > 0) {
-          return stars.map((a) => displayName(a)).join(", ");
-          //  + " (" + maxDegree + " Beziehungen)"
-        } else {
-          return "-";
-        }
-      })
-      .reduce((prev, curr) => prev + SEP + curr, "");
-
-    /* bridges were removed from simple statistics
-    output += "\nBrücken";
-    for (const label of categorization.categories) {
-      output +=
-        SEP + getOrInit(networkAnalysis, label).bridges.length.toFixed(0);
-    }
-
-    output += "\nBrückenperson(en)";
-    output += makeComputedAlterGroup(
-      networkAnalysis,
-      categorization.categories,
-      displayName,
-      "bridgePersons"
-    ).reduce((prev, curr) => prev + SEP + curr, "");
-    */
-
-    output += "\nIsolierte";
-    output += makeComputedAlterGroup(
-      networkAnalysis,
-      categorization.categories,
-      displayName,
-      "isolated"
-    ).reduce((prev, curr) => prev + SEP + curr, "");
-
-    output += "\nPersonen ohne Kante zur Ankerperson";
-    output += makeComputedAlterGroup(
-      networkAnalysis,
-      categorization.categories,
-      displayName,
-      "alterZeroEdge"
-    ).reduce((prev, curr) => prev + SEP + curr, "");
-  }
-
-  output += "\n\n" + "test" + SEP + "test2" + "\n\n";
-  
-  for (const cat of allAlterCategorizationKeys) {
-    // loop each tab of the statistics panel (below each other on single sheet)
-    const categorization = getAlterCategorization(cat);
-    const networkAnalysis = analyseNWKbyCategory(nwk, categorization);
-
-    output += categorization.label + SEP;
-    output += "Netzwerkgröße (+aktivierbare)" + SEP;
-    output += "nach Geschlecht weiblich" + SEP;
-    output += "nach Geschlecht männlich" + SEP;
-    output += "nach Geschlecht divers" + SEP;
-    output += "nach Geschlecht nicht festgelegt" + SEP;
-    output += "nach Horizont nah" + SEP;
-    output += "nach Horizont mittel" + SEP;
-    output += "nach Horizont entfernt" + SEP;
-    output += "Durschschn. Nähe (SD)" + SEP;
-    output += "Dichte" + SEP;
-    output += "Durchschn. Degree (SD)" + SEP;
-    output += "Star(s)" + SEP;
-    output += "Isolierte" + SEP;
-    output += "Personen ohne Kante zum Ego" + SEP;
   }
   output += "\n";
-
-  for (const _ of allAlterCategorizationKeys) {
-    // loop each tab of the statistics panel (below each other on single sheet)
-  
-
-    output += SEP;
-    output += networkAnalysis.value.alterConnected + " (" + networkAnalysis.value.alterConnectable + ")" + SEP;
-    
-    for (const [i, g] of networkAnalysis.value.genderConnected.entries()) {
-      output += g + " (" + networkAnalysis.value.genderConnectable[i] + ")" + SEP
-    }
-    for (const [i, g] of networkAnalysis.value.horizonConnected.entries()) {
-      output += g + " (" + networkAnalysis.value.horizonConnectable[i] + ")" + SEP
-    }
-    output += networkAnalysis.value.naehenAvg.toFixed(1) + " (" + networkAnalysis.value.naehenDev.toFixed(1) + ")" + SEP;
-    output += "Dichte" + SEP;
-    output += "Durchschn. Degree (SD)" + SEP;
-    output += "Star(s)" + SEP;
-    output += "Isolierte" + SEP;
-    output += "Personen ohne Kante zum Ego" + SEP;
-  }
-
   return output;
 }
 
-function makeComputedAlterGroup(
-  networkAnalysis: Map<string, NetworkAnalysis>,
-  categoryLabels: string[],
-  displayName: (a: Alter) => string,
-  group: "stars" | "isolated" | "alterZeroEdge"
-) {
-  return categoryLabels.map((cat) => {
-    const analysis = getOrInit(networkAnalysis, cat);
-    if (analysis[group].length > 0) {
-      return (
-        analysis[group].length +
-        " (" +
-        analysis[group].map((a) => displayName(a)).join(", ") +
-        ")"
-      );
-    } else {
-      return "0";
-    }
-  });
+function getDataForKeyFigures(networkAnalysis: NetworkAnalysis, title: string, date: string, id: number, categoryLabel: string, label: string) {
+  output += title + SEP; 
+  output += date + SEP;
+  output += id + SEP;
+  output += categoryLabel + (label ? " " + label : "") + SEP;
+  output += networkAnalysis.alterConnectable + SEP;
+    
+  for (const [i, g] of networkAnalysis.genderConnected.entries()) {
+    output += g + SEP;
+    output += networkAnalysis.genderConnectable[i] + SEP;
+  }
+  for (const [i, g] of networkAnalysis.horizonConnected.entries()) {
+    output += g + SEP;
+    output += networkAnalysis.horizonConnectable[i] + SEP;
+  }
+  output += networkAnalysis.naehenAvg.toString().replace('.', ',') + SEP;
+  output += networkAnalysis.naehenDev.toString().replace('.', ',') + SEP;
+  const density = calculateDensity(networkAnalysis.alterConnectable, networkAnalysis.intConnCount);
+  output += density.toString().replace('.', ',') + SEP;
+  output += networkAnalysis.degreeAvg.toString().replace(".", ",") + SEP;
+  output += networkAnalysis.degreeDev.toString().replace('.', ',') + SEP;
+  output += formatStars(networkAnalysis) + SEP;
+  output += formatIsolated(networkAnalysis.isolated) + SEP;
+  output += formatZeroEdge(networkAnalysis.alterZeroEdge) + SEP;
+}
+
+function formatStars(networkAnalysis: NetworkAnalysis): string {
+  const alteri = networkAnalysis.stars;
+  if (alteri.length > 0 && networkAnalysis.maxDegree > 0) {
+    return document.documentElement.lang == "de"
+      ? alteri.map((a) => store.getters["displayName"](a)).join(", ") +
+          " (" +
+          networkAnalysis.maxDegree +
+          " Beziehungen)"
+      : alteri.map((a) => store.getters["displayName"](a)).join(", ") +
+          " (" +
+          networkAnalysis.maxDegree +
+          " relations)";
+  } else {
+    return document.documentElement.lang == "de" ? "keine" : "none";
+  }
+}
+
+function formatIsolated(alteri: Alter[]): string {
+  if (alteri.length > 0) {
+    return (
+      alteri.length +
+      " (" +
+      alteri.map((a) => store.getters["displayName"](a)).join(", ") +
+      ")"
+    );
+  } else {
+    return "0";
+  }
+}
+
+function formatZeroEdge(alteri: Alter[]): string {
+  if (alteri.length > 0) {
+    return (
+      alteri.length +
+      " (" +
+      alteri.map((a) => store.getters["displayName"](a)).join(", ") +
+      ")"
+    );
+  } else {
+    return "0";
+  }
 }

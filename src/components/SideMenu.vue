@@ -284,7 +284,7 @@ export default defineComponent({
             "." +
             visibleNWKVersion.value?.date?.substring(0, 4) +
             ".csv",
-          statisticsCSV(store.state.nwk, store.getters["displayName"])
+          statisticsCSV(store.state.nwk, visibleNWKVersion.value!.title, visibleNWKVersion.value!.date, visibleNWKVersion.value!.id)
         );
       },
 
