@@ -53,6 +53,15 @@ import {
   faUnlink,
   faArrowsAlt,
   faCopy,
+  faHeart,
+  faBrain,
+  faComments,
+  faMoneyBillWave,
+  faHardHat,
+  faHandHoldingHeart,
+  faToolbox,
+  faLightbulb,
+  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
   faBars,
@@ -96,7 +105,16 @@ library.add(
   faInfo,
   faLink,
   faUnlink,
-  faArrowsAlt
+  faArrowsAlt,
+  faHeart,
+  faBrain,
+  faComments,
+  faMoneyBillWave,
+  faHardHat,
+  faHandHoldingHeart,
+  faToolbox,
+  faLightbulb,
+  faUsers
 );
 
 // Vue.component("font-awesome-icon", FontAwesomeIcon);

@@ -3,8 +3,14 @@ export const TAB_CONNECTIONS = "connections";
 
 export interface SessionFlags {
   statistics: boolean;
-  nwkchange: boolean;
+  qualityRelationship: boolean;
   nwkcomparison: boolean;
+  nwkchange: boolean;
+  emotional: boolean;
+  cognitive: boolean;
+  social: boolean;
+  material: boolean;
+  practical: boolean;
 }
 
 export interface SessionState extends SessionFlags {
@@ -16,8 +22,14 @@ export interface SessionState extends SessionFlags {
 export function initSessionState(): SessionState {
   return {
     statistics: false,
+    qualityRelationship: false,
     nwkcomparison: false,
     nwkchange: false,
+    emotional: false,
+    cognitive: false,
+    social: false,
+    material: false,
+    practical: false,
 
     selected: new Set<number>(),
     editIndex: null,

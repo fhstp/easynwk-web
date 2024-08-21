@@ -167,6 +167,111 @@
       </div>
     </div>
 
+    <div v-if="showQuality" class="field is-horizontal">
+      <div class="field-label">
+        <label class="label" for="chk-new-checkbox">Konflikthaft</label>
+      </div>
+      <div class="field-body">
+        <label>
+          <input
+            id="chk-new-checkbox"
+            type="checkbox"
+            v-model="alterConflict"
+          />
+        </label>
+      </div>
+    </div>
+
+    <div v-if="showQuality" class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Emotional</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="alterEmotional">
+              <option value="0">Keine Unterstützung</option>
+              <option value="1">Ich unterstütze {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} unterstützt mich</option>
+              <option value="3">Wir unterstützen uns</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showQuality" class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Informationell</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="alterCognitive">
+              <option value="0">Keine Unterstützung</option>
+              <option value="1">Ich unterstütze {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} unterstützt mich</option>
+              <option value="3">Wir unterstützen uns</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showQuality" class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Sozial</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="alterSocial">
+              <option value="0">Keine Unterstützung</option>
+              <option value="1">Ich unterstütze {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} unterstützt mich</option>
+              <option value="3">Wir unterstützen uns</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showQuality" class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Instrumentell</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="alterMaterial">
+              <option value="0">Keine Unterstützung</option>
+              <option value="1">Ich unterstütze {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} unterstützt mich</option>
+              <option value="3">Wir unterstützen uns</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showQuality" class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Linking</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="alterPractical">
+              <option value="0">Keine Unterstützung</option>
+              <option value="1">Ich unterstütze {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} unterstützt mich</option>
+              <option value="3">Wir unterstützen uns</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="field">
       <div class="control">
         <textarea
@@ -264,6 +369,8 @@ export default defineComponent({
     const addingNewAlter = ref(!(props.alter?.name.length > 0));
 
     const selectedRoleLabel = ref(props.alter?.role);
+
+    const newCheckboxModel = ref(false);
 
     // name field is special because it must not be empty
     // the data item is only used for validity check & never stored
@@ -429,14 +536,22 @@ export default defineComponent({
       addingNewAlter,
       alterNameInUI,
       alterRole,
+      newCheckboxModel,
+      alterEmotional: accessor<number>("supportEmotional"),
+      alterCognitive: accessor<number>("supportCognitive"),
+      alterSocial: accessor<number>("supportSocial"),
+      alterMaterial: accessor<number>("supportMaterial"),
+      alterPractical: accessor<number>("supportPractical"),
       localizedRole,
       invalidName,
       invalidPosition,
       alterHuman: accessor<boolean>("human"),
       alterGender: accessor<string>("currentGender"),
       alterDeceased: accessor<boolean>("deceased"),
+      alterConflict: accessor<boolean>("conflict"),
       alterEdgeType: accessor<number>("edgeType"),
       isConnectable: computed(() => isConnectable(props.alter as Alter)),
+      showQuality: computed(() => store.state.session.qualityRelationship),
       commitEdit,
       focusRole,
       blurRole,
