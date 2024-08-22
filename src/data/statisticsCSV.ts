@@ -7,20 +7,18 @@ import {
   calculateDensity,
   NetworkAnalysis,
 } from "@/data/NetworkAnalysis";
-import { NWK } from "@/data/NWK";
 import { Alter } from "./Alter";
 import { store } from "@/store";
+import { NWKVersion } from "./NWKVersion";
 
 const SEP = ";";
 let output = "";
 let isFirstTime = true;
-export function statisticsCSV(
-  nwk: NWK,
-  title: string,
-  date: string,
-  id: number,
-): string {
 
+export function statisticsCSV(
+  versions: NWKVersion[]
+): string {
+  
   if (isFirstTime) {
     output += "Name" + SEP;
     output += "Datum" + SEP;
@@ -54,23 +52,23 @@ export function statisticsCSV(
     isFirstTime = false;
   }
 
-
-  for (const cat of allAlterCategorizationKeys) {
-    const categorization = getAlterCategorization(cat);
-    const networkAnalysisMap = analyseNWKbyCategory(nwk, categorization);
-    console.table(Array.from(networkAnalysisMap.entries()));
-    console.log(nwk)
-
-    
-    
-    for (const label of categorization.categories) {
-      const networkAnalysis = networkAnalysisMap.get(label);
-      if (networkAnalysis) {
-        getDataForKeyFigures(networkAnalysis, title, date, id, categorization.label, label);
+  for (const version of versions) {
+    if (version.id === store.state.record.currentVersion) {
+      for (const cat of allAlterCategorizationKeys) {
+        const categorization = getAlterCategorization(cat);
+        const networkAnalysisMap = analyseNWKbyCategory(version.nwk, categorization);
+      
+        for (const label of categorization.categories) {
+          const networkAnalysis = networkAnalysisMap.get(label);
+          if (networkAnalysis) {
+            getDataForKeyFigures(networkAnalysis, version.title, version.date, version.id, categorization.label, label);
+          }
+          output += "\n";
+        }
       }
-      output += "\n";
     }
   }
+  
   output += "\n";
   return output;
 }
