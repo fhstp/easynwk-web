@@ -20,43 +20,48 @@ export function statisticsCSV(
   date: string,
   id: number,
 ): string {
+
+  if (isFirstTime) {
+    output += "Name" + SEP;
+    output += "Datum" + SEP;
+    output += "ID" + SEP;
+    output += "Netzwerksektor" + SEP;
+    output += "Netzwerkgröße" + SEP;
+    output += "Netzwerkgröße (+aktivierbare)" + SEP;
+    output += "nach Geschlecht weiblich" + SEP;
+    output += "nach Geschlecht weiblich (+aktivierbare)" + SEP;
+    output += "nach Geschlecht männlich" + SEP;
+    output += "nach Geschlecht männlich (+aktivierbare)" + SEP;
+    output += "nach Geschlecht divers" + SEP;
+    output += "nach Geschlecht divers (+aktivierbare)" + SEP;
+    output += "nach Geschlecht nicht festgelegt" + SEP;
+    output += "nach Geschlecht nicht festgelegt (+aktivierbare)" + SEP;
+    output += "nach Horizont nah" + SEP;
+    output += "nach Horizont nah (+aktivierbare)" + SEP;
+    output += "nach Horizont mittel" + SEP;
+    output += "nach Horizont mittel (+aktivierbare)" + SEP;
+    output += "nach Horizont entfernt" + SEP;
+    output += "nach Horizont entfernt (+aktivierbare)" + SEP;
+    output += "Durschschn. Nähe" + SEP;
+    output += "Durschschn. Nähe (SD)" + SEP;
+    output += "Dichte" + SEP;
+    output += "Durchschn. Degree" + SEP;
+    output += "Durchschn. Degree (SD)" + SEP;
+    output += "Star(s)" + SEP;
+    output += "Isolierte" + SEP;
+    output += "Personen ohne Kante zum Ego" + SEP;
+    output += "\n";
+    isFirstTime = false;
+  }
+
+
   for (const cat of allAlterCategorizationKeys) {
     const categorization = getAlterCategorization(cat);
     const networkAnalysisMap = analyseNWKbyCategory(nwk, categorization);
-    console.log(Array.from(networkAnalysisMap.entries()));
+    console.table(Array.from(networkAnalysisMap.entries()));
+    console.log(nwk)
 
-    if (isFirstTime) {
-      output += "Name" + SEP;
-      output += "Datum" + SEP;
-      output += "ID" + SEP;
-      output += "Netzwerksektor" + SEP;
-      output += "Netzwerkgröße" + SEP;
-      output += "Netzwerkgröße (+aktivierbare)" + SEP;
-      output += "nach Geschlecht weiblich" + SEP;
-      output += "nach Geschlecht weiblich (+aktivierbare)" + SEP;
-      output += "nach Geschlecht männlich" + SEP;
-      output += "nach Geschlecht männlich (+aktivierbare)" + SEP;
-      output += "nach Geschlecht divers" + SEP;
-      output += "nach Geschlecht divers (+aktivierbare)" + SEP;
-      output += "nach Geschlecht nicht festgelegt" + SEP;
-      output += "nach Geschlecht nicht festgelegt (+aktivierbare)" + SEP;
-      output += "nach Horizont nah" + SEP;
-      output += "nach Horizont nah (+aktivierbare)" + SEP;
-      output += "nach Horizont mittel" + SEP;
-      output += "nach Horizont mittel (+aktivierbare)" + SEP;
-      output += "nach Horizont entfernt" + SEP;
-      output += "nach Horizont entfernt (+aktivierbare)" + SEP;
-      output += "Durschschn. Nähe" + SEP;
-      output += "Durschschn. Nähe (SD)" + SEP;
-      output += "Dichte" + SEP;
-      output += "Durchschn. Degree" + SEP;
-      output += "Durchschn. Degree (SD)" + SEP;
-      output += "Star(s)" + SEP;
-      output += "Isolierte" + SEP;
-      output += "Personen ohne Kante zum Ego" + SEP;
-      output += "\n";
-      isFirstTime = false;
-    }
+    
     
     for (const label of categorization.categories) {
       const networkAnalysis = networkAnalysisMap.get(label);
