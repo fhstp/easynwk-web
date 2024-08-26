@@ -76,6 +76,7 @@ function getDataForKeyFigures(networkAnalysis: NetworkAnalysis, ego: string,  ti
   output += id + SEP;
   output += categoryLabel + (label ? " " + label : "") + SEP;
   output += networkAnalysis.alterConnectable + SEP;
+  output += networkAnalysis.alterConnected + SEP;
     
   for (const [i, g] of networkAnalysis.genderConnected.entries()) {
     output += g + SEP;
