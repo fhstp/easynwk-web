@@ -34,31 +34,42 @@ export default {
         horizon: "Horizont",
         horizoncumulative: "Horizont (kumulativ)",
         gender: "Geschlecht",
-        networksize: "Netzwerkgröße",
+        networksize: "Netzwerkgröße (+aktivierbare)",
+        sizebygender: "nach Geschlecht",
+        sizebyhorizon: "nach Horizont",
+        horizon_close: "nah",
+        horizon_middle: "mittel",
+        horizon_far: "entfernt",
+        closeness: "Durchschn. Nähe (SD)",
         relationshipweight: "Beziehungsgewicht",
-        totaldensity: "Dichte gesamt",
+        totaldensity: "Dichte",
         categorydensity: "Dichte der Kategorie",
+        degree: "Durchschn. Degree (SD)",
         stars: "Star(s)",
         categorystar: "Star(s) (pro Kategorie)",
-        bridges: "Brücken",
-        bridgepersons: "Brückenperson(en)",
+        // bridges: "Brücken",
+        // bridgepersons: "Brückenperson(en)",
         isolatedpersons: "Isolierte",
-        personswithoutedgetotheego: "Personen ohne Kante zur Ankerperson",
+        personswithoutedgetotheego: "Personen ohne Kante zum Ego",
         networkmsg:
-          "Anzahl der Kontakte im Netzwerk exklusive Ankerperson und exklusive Personen ohne Kante zur Ankerperson",
+          "Anzahl der Kontakte im Netzwerk exklusive des Egos und exklusive Personen ohne Kante zum Ego (bzw. inklusive aktivierbarer Personen; d.h. Menschen, nicht verstorben)",
+        closenessmsg:
+          "arithmetisches Mittel der Nähe der Kontakte zum Ego in 9 konzentrischen Ringen (9=nah … 1=entfernt)",
         relationshipmsg:
           "Summierte Nähe bzw. Distanz der Kontakte zur Ankerperson. Je höher die Kennzahl, umso näher stehen die Personen der Ankerperson.",
         densitymsg:
-          "Verhältnis der tatsächlich vorhandenen zu den theoretisch möglichen Verbindungen (exklusive der Verbindungen zwischen Anker- und Kontaktpersonen, inklusive Personen ohne Kante zur Ankerperson). Optional: Maßzahl liegt zwischen 0 (nur isolierte Kontakte) und 1 (jede Person im Netzwerk ist mit jeder anderen verbunden).",
+          "Verhältnis der tatsächlich vorhandenen zu den theoretisch möglichen Verbindungen (exklusive der Verbindungen zwischen Ego und Kontaktpersonen, inklusive Personen ohne Kante zum Ego). Kennzahl liegt zwischen 0 (nur isolierte Kontakte) und 1 (jede Person im Netzwerk ist mit jeder anderen verbunden).",
+        degreemsg:
+          "arithmetisches Mittel der Verbindungen von Kontaktpersonen (exklusive der Verbindungen zwischen Ego und Kontaktpersonen, inklusive Personen ohne Kante zum Ego)",
         starsmsg:
-          "Kontakt(e) mit den meisten Verbindungen im Netzwerk (neben der Ankerperson)",
-        bridgemsg: "Anzahl der Verbindungen zwischen den Sektoren im Netzwerk",
-        bridgesmsg2:
-          "Kontakt(e), die einzelne Sektoren im Netzwerk miteinander verbinden",
+          "Kontakt(e) mit den meisten Verbindungen im Netzwerk (exklusive Ego)",
+        // bridgemsg: "Anzahl der Verbindungen zwischen den Sektoren im Netzwerk",
+        // bridgesmsg2:
+        //   "Kontakt(e), die einzelne Sektoren im Netzwerk miteinander verbinden",
         isolatedmsg:
-          "Kontakt(e), die ausschließlich mit der Ankerperson verbunden sind",
+          "Kontakt(e), die ausschließlich mit dem Ego verbunden sind",
         noedgemsg:
-          "Lebende Personen ohne aktualisierte Verbindung zur Ankerperson. Verbindungen mit anderen Personen im Netzwerk und damit indirekte Verbindung zur Ankerperson sind möglich.",
+          "Lebende Personen ohne aktualisierte Verbindung zum Ego. Verbindungen mit anderen Personen im Netzwerk und damit indirekte Verbindung zum Ego sind möglich.",
 
         //},
         //viewOptions: {

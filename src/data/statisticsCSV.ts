@@ -39,7 +39,8 @@ export function statisticsCSV(
 
     output += "\nBeziehungsgewicht";
     for (const label of categorization.categories) {
-      output += SEP + getOrInit(networkAnalysis, label).naehenSum.toFixed(0);
+      // TODO change to naehenAvg and naehenDev
+//      output += SEP + getOrInit(networkAnalysis, label).naehenSum.toFixed(0);
     }
 
     output += "\nDichte der Kategorie";
@@ -72,6 +73,7 @@ export function statisticsCSV(
       })
       .reduce((prev, curr) => prev + SEP + curr, "");
 
+    /* bridges were removed from simple statistics
     output += "\nBrücken";
     for (const label of categorization.categories) {
       output +=
@@ -85,6 +87,7 @@ export function statisticsCSV(
       displayName,
       "bridgePersons"
     ).reduce((prev, curr) => prev + SEP + curr, "");
+    */
 
     output += "\nIsolierte";
     output += makeComputedAlterGroup(
@@ -110,7 +113,7 @@ function makeComputedAlterGroup(
   networkAnalysis: Map<string, NetworkAnalysis>,
   categoryLabels: string[],
   displayName: (a: Alter) => string,
-  group: "stars" | "isolated" | "bridgePersons" | "alterZeroEdge"
+  group: "stars" | "isolated" | "alterZeroEdge"
 ) {
   return categoryLabels.map((cat) => {
     const analysis = getOrInit(networkAnalysis, cat);

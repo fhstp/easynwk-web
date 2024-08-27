@@ -43,7 +43,7 @@
             />
             <ViewOptionsPanel :key="langKey" />
             <ComparisonOptionsPanel :key="langKey" />
-            <StatisticsPanel v-if="showStatistics" :key="langKey" />
+            <StatisticsPanel :key="langKey" />
           </div>
         </div>
       </div>
@@ -128,7 +128,6 @@ export default defineComponent({
       egoEditMode,
       editEgoFinished,
       mapclick,
-      showStatistics: computed(() => store.state.session.statistics),
     };
   },
 });
