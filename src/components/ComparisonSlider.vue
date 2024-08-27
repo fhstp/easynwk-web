@@ -1,5 +1,5 @@
 <template>
-  <g id="comparisonSlider">
+  <g id="comparisonSlider" v-if="versionMarks.length > 1">
     <line
       :x1="versionMarks[0].x"
       y1="-113"
@@ -12,7 +12,6 @@
       @click="() => handleCircleClick(mark.d.id)"
     >
       <circle
-        v-if="changeNWK"
         :cx="mark.x"
         cy="-113"
         r="2"
@@ -23,7 +22,6 @@
       />
       <!-- TODO check if different template elements necessary-->
       <circle
-        v-if="showComparison"
         :cx="mark.x"
         cy="-113"
         r="2"
@@ -121,8 +119,6 @@ export default defineComponent({
       versionMarks,
       handleCircleClick,
       handleComparisonClick,
-      showComparison: computed(() => store.state.session.nwkcomparison),
-      changeNWK: computed(() => store.state.session.nwkchange),
     };
   },
 });

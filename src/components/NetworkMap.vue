@@ -2,7 +2,7 @@
   <svg
     id="nwkmap"
     :viewBox="
-      showComparisonSlider && !isEditMode
+      !isEditMode
         ? '-110 -117 220 220'
         : '-106 -106 212 212'
     "
@@ -167,7 +167,7 @@
     <text :x="0" y="-102" text-anchor="middle" class="ego">
       {{ egoLabel }}
     </text>
-    <ComparisonSlider v-if="showComparisonSlider && !isEditMode" />
+    <ComparisonSlider/>
   </svg>
   <div id="zoomBtns">
     <button
@@ -774,9 +774,7 @@ export default defineComponent({
             /Apple Computer/.test(navigator.vendor)
           )
       ),
-      showComparisonSlider: computed(
-        () => store.state.session.nwkchange || store.state.session.nwkcomparison
-      ),
+      
     };
   },
 });
