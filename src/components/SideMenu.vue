@@ -277,7 +277,7 @@ export default defineComponent({
         downloadText(
           store.state.nwk.ego.name +
             " " +
-            today.toLocaleDateString("de-DE") +
+            today.toLocaleDateString("en-CA") +
             ".csv",
           statisticsCSV(store.state.record.versions)
         );
