@@ -12,27 +12,15 @@
       @click="() => handleCircleClick(mark.d.id)"
     >
       <circle
-        v-if="changeNWK"
         :cx="mark.x"
         cy="-113"
-        r="2"
+        r="1.5"
         :class="{
           comparisonCircle: !mark.selected,
           'comparisonCircle-selected': mark.selected,
         }"
       />
-      <!-- TODO check if different template elements necessary-->
-      <circle
-        v-if="showComparison"
-        :cx="mark.x"
-        cy="-113"
-        r="2"
-        :class="{
-          comparisonCircle: !mark.selected,
-          'comparisonCircle-selected': mark.selected,
-        }"
-        @click="() => handleComparisonClick(mark.d.id)"
-      />
+      <!-- TODO optionally a different shape/style if in juxtaposed version mode -->
       <text :x="mark.x" y="-108" text-anchor="middle" class="versionText">
         {{ mark.label }}
       </text>
@@ -99,9 +87,9 @@ export default defineComponent({
           versionId !== store.state.record.currentVersion
       );
       if (clickedVersion) {
-        console.log(`Clicked version: ${clickedVersion.title}`);
+        // console.log(`Clicked version: ${clickedVersion.title}`);
         store.commit("switchNWK", versionId);
-        console.log("Changed Version");
+        // console.log("Changed Version");
       }
     }
 
@@ -121,8 +109,6 @@ export default defineComponent({
       versionMarks,
       handleCircleClick,
       handleComparisonClick,
-      showComparison: computed(() => store.state.session.nwkcomparison),
-      changeNWK: computed(() => store.state.session.nwkchange),
     };
   },
 });
@@ -141,10 +127,12 @@ line {
 }
 
 .comparisonCircle {
-  fill: #d6dae9;
+  stroke: #d6dae9;
+  fill: white;
 }
 
 .comparisonCircle-selected {
+  stroke: $color-primary-1;
   fill: $color-primary-1;
 }
 </style>
