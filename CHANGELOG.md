@@ -1,5 +1,13 @@
 # easyNWK Version History
 
+## version 2.4.0, released 28 Aug 2024
+
+* (feature) opening and importing .nwk files created with easyNWK 1.5
+* (feature) revised simple statistics for practicioneers (incl. Nähe, stdev, counts by gender and horizon)
+* (feature) revised statistics export (one line per versions and column of the statistics panel)
+* (usability) better feedback on opening unsuitable files
+* (security) various updates of libraries
+
 ## version 2.3.0, released 8 Jul 2024
 
 * (feature) font-size of alteri labels can be changed
