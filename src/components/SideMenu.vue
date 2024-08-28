@@ -273,18 +273,13 @@ export default defineComponent({
         );
       },
       exportCSV: () => {
+        const today = new Date();
         downloadText(
           store.state.nwk.ego.name +
             " " +
-            visibleNWKVersion.value?.title +
-            " " +
-            visibleNWKVersion.value?.date?.substring(8, 10) +
-            "." +
-            visibleNWKVersion.value?.date?.substring(5, 7) +
-            "." +
-            visibleNWKVersion.value?.date?.substring(0, 4) +
+            today.toLocaleDateString("en-CA") +
             ".csv",
-          statisticsCSV(store.state.nwk, store.getters["displayName"])
+          statisticsCSV(store.state.record.versions)
         );
       },
 
