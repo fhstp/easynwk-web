@@ -1,5 +1,5 @@
 <template>
-  <g id="comparisonSlider" v-if="versionMarks.length > 1">
+  <g id="comparisonSlider">
     <line
       :x1="versionMarks[0].x"
       y1="-113"
@@ -14,23 +14,13 @@
       <circle
         :cx="mark.x"
         cy="-113"
-        r="2"
+        r="1.5"
         :class="{
           comparisonCircle: !mark.selected,
           'comparisonCircle-selected': mark.selected,
         }"
       />
-      <!-- TODO check if different template elements necessary-->
-      <circle
-        :cx="mark.x"
-        cy="-113"
-        r="2"
-        :class="{
-          comparisonCircle: !mark.selected,
-          'comparisonCircle-selected': mark.selected,
-        }"
-        @click="() => handleComparisonClick(mark.d.id)"
-      />
+      <!-- TODO optionally a different shape/style if in juxtaposed version mode -->
       <text :x="mark.x" y="-108" text-anchor="middle" class="versionText">
         {{ mark.label }}
       </text>
@@ -97,9 +87,9 @@ export default defineComponent({
           versionId !== store.state.record.currentVersion
       );
       if (clickedVersion) {
-        console.log(`Clicked version: ${clickedVersion.title}`);
+        // console.log(`Clicked version: ${clickedVersion.title}`);
         store.commit("switchNWK", versionId);
-        console.log("Changed Version");
+        // console.log("Changed Version");
       }
     }
 
@@ -137,10 +127,12 @@ line {
 }
 
 .comparisonCircle {
-  fill: #d6dae9;
+  stroke: #d6dae9;
+  fill: white;
 }
 
 .comparisonCircle-selected {
+  stroke: $color-primary-1;
   fill: $color-primary-1;
 }
 </style>

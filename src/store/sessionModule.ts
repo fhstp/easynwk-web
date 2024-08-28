@@ -1,7 +1,9 @@
 export const TAB_BASE = "base";
 export const TAB_CONNECTIONS = "connections";
 
-
+// export interface SessionFlags {
+//   versionComparison: boolean;
+// }
 
 export interface SessionState {
   selected: Set<number>;
@@ -11,6 +13,7 @@ export interface SessionState {
 
 export function initSessionState(): SessionState {
   return {
+    // versionComparison: false,
     selected: new Set<number>(),
     editIndex: null,
     editTab: "",
@@ -27,6 +30,25 @@ const getters = {
 };
 
 const mutations = {
+  /* updateFlag(
+    state: SessionState,
+    payload: { flag: keyof SessionFlags; value: boolean }
+  ) {
+    state[payload.flag] = payload.value;
+  },
+
+  enable(state: SessionState, flag: keyof SessionFlags): void {
+    state[flag] = true;
+  },
+
+  disable(state: SessionState, flag: keyof SessionFlags): void {
+    state[flag] = false;
+  },
+
+  toggle(state: SessionState, flag: keyof SessionFlags): void {
+    state[flag] = !state[flag];
+  }, */
+
   toggleAlterSelected(state: SessionState, alterId: number): void {
     if (state.selected.has(alterId)) {
       state.selected.delete(alterId);
