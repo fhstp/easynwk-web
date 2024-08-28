@@ -68,21 +68,15 @@
       </div>
       <br />
       <div class="field-body">
-        <div class="field">
-          <div class="control">
-            <div class="selected-emoji">
+        <div>
+          <div style="display: flex; align-items: center; margin-top: 10px;">
+            <div>
               {{
-                selectedEmoji.length < 1
-                  ? "Noch kein Emoji gewählt"
-                  : t("selectedEmoji") + selectedEmoji
+                selectedEmoji == null || selectedEmoji.length < 1
+                  ? t("noemoji")
+                  : selectedEmoji
               }}
             </div>
-            <button
-              v-if="selectedEmoji.length > 0"
-              @click="removeEmoji"
-              class="delete"
-              aria-label="remove emoji"
-            ></button>
           </div>
         </div>
       </div>
@@ -93,16 +87,37 @@
         <label class="label">{{ t("selectEmoji") }}</label>
       </div>
       <div class="field-body">
-        <div class="control">
-          <div class="emoji-picker-container">
-            <EmojiPicker
-              :native="true"
-              :disableSkinTones="true"
-              @select="onSelectEmoji"
-            />
+        <div class="dropdown" :class="{ 'is-active': showEmojiPicker }">
+          <div >
+            <button
+              type="button"
+              class="button is-small"
+              @click="toggleEmojiPicker"
+            >
+            <span>{{ t("selectemoji") }}</span>
+            </button>
+            <button
+              v-if="selectedEmoji != null && selectedEmoji.length > 0"
+              @click="removeEmoji"
+              class="button is-small"
+              style="margin-left: 10px;"
+            >
+            <span>{{t("removeemoji")}}</span>
+            </button>
+          </div>
+          <div class="dropdown-menu">
+            <div>
+              <div>
+                <EmojiPicker
+                  v-model="selectedEmoji"
+                  :native="true"
+                  :disableSkinTones="true"
+                  @select="onSelectEmoji"
+                />
+              </div>
+            </div>
           </div>
         </div>
-        <br />
       </div>
     </div>
 
@@ -315,7 +330,7 @@ export default defineComponent({
 
     const selectedRoleLabel = ref(props.alter?.role);
 
-    const showEmojiPicker = ref(!!props.alter?.emoji);
+    const showEmojiPicker = ref(false);
 
     // name field is special because it must not be empty
     // the data item is only used for validity check & never stored
@@ -335,9 +350,11 @@ export default defineComponent({
     });
 
     const selectedEmoji = ref(props.alter?.emoji || "");
+    
 
     function onSelectEmoji(emoji: any) {
       selectedEmoji.value = emoji.i;
+      showEmojiPicker.value = false;
       commitEditEmoji(emoji.i);
     }
 
@@ -352,6 +369,10 @@ export default defineComponent({
     function removeEmoji() {
       selectedEmoji.value = "";
       commitEditEmoji("");
+    }
+
+    function toggleEmojiPicker() {
+      showEmojiPicker.value = !showEmojiPicker.value;
     }
 
     // getter & setter for select dropdown
@@ -514,6 +535,7 @@ export default defineComponent({
       focusRole,
       onSelectEmoji,
       removeEmoji,
+      toggleEmojiPicker,
       blurRole,
       genderOptions,
       roleOptions,
@@ -561,5 +583,16 @@ input::-webkit-calendar-picker-indicator {
 
 select > option {
   color: $text-strong;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  width: 20em;
+}
+
+.dropdown.is-active .dropdown-menu {
+  display: block;
 }
 </style>

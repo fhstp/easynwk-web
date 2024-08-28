@@ -27,46 +27,63 @@
       </div>
 
       <div class="field is-horizontal" v-if="emoji">
-        <div class="field-label is-normal">
-          <label class="label">Emoji</label>
-        </div>
-        <div class="field-body">
-          <div class="field">
-            <div class="control">
-              <div class="selected-emoji">
-                {{
-                  selectedEmoji.length < 1
-                    ? "No Emoji selected"
-                    : t("selectedEmoji") + selectedEmoji
-                }}
-              </div>
-              <button
-                v-if="selectedEmoji.length > 0"
-                @click="removeEmoji"
-                class="delete"
-                aria-label="remove emoji"
-              ></button>
+      <div class="field-label is-normal">
+        <label class="label">Emoji</label>
+      </div>
+      <br />
+      <div class="field-body">
+        <div>
+          <div style="display: flex; align-items: center; margin-top: 10px;">
+            <div>
+              {{
+                selectedEmoji == null || selectedEmoji.length < 1
+                  ? t("noemoji")
+                  : selectedEmoji
+              }}
             </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="field is-horizontal" v-if="emoji">
-        <div class="field-label is-normal">
-          <label class="label">{{ t("selectEmoji") }}</label>
-        </div>
-        <div class="field-body">
-          <div class="control">
-            <div class="emoji-picker-container">
-              <EmojiPicker
-                :native="true"
-                :disableSkinTones="true"
-                @select="onSelectEmoji"
-              />
+    <div class="field is-horizontal" v-if="emoji">
+      <div class="field-label is-normal">
+        <label class="label">{{ t("selectEmoji") }}</label>
+      </div>
+      <div class="field-body">
+        <div class="dropdown" :class="{ 'is-active': showEmojiPicker }">
+          <div >
+            <button
+              type="button"
+              class="button is-small"
+              @click="toggleEmojiPicker"
+            >
+            <span>{{ t("selectemoji") }}</span>
+            </button>
+            <button
+              v-if="selectedEmoji != null && selectedEmoji.length > 0"
+              @click="removeEmoji"
+              class="button is-small"
+              style="margin-left: 10px;"
+            >
+            <span>{{t("removeemoji")}}</span>
+            </button>
+          </div>
+          <div class="dropdown-menu">
+            <div>
+              <div>
+                <EmojiPicker
+                  v-model="selectedEmoji"
+                  :native="true"
+                  :disableSkinTones="true"
+                  @select="onSelectEmoji"
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
       <div class="field is-horizontal">
         <div class="field-label is-normal">
@@ -160,6 +177,7 @@ export default defineComponent({
     const egoName = ref(store.state.nwk.ego.name);
 
     const selectedEmoji = ref(store.state.nwk.ego.emoji || "");
+    const showEmojiPicker = ref(false);
 
     const egoNameInStore = computed(() => {
       return store.state.nwk.ego.name;
@@ -200,12 +218,17 @@ export default defineComponent({
 
     function onSelectEmoji(emoji: any) {
       selectedEmoji.value = emoji.i;
+      showEmojiPicker.value = false;
       commitEditEmoji(emoji.i);
     }
 
     function removeEmoji() {
       selectedEmoji.value = "";
       commitEditEmoji("");
+    }
+
+    function toggleEmojiPicker() {
+      showEmojiPicker.value = !showEmojiPicker.value;
     }
 
     // apparently v-for needs this to be a data item
@@ -244,6 +267,8 @@ export default defineComponent({
       selectedEmoji,
       onSelectEmoji,
       removeEmoji,
+      showEmojiPicker,
+      toggleEmojiPicker,
       emoji: computed(() => store.state.view.emoji),
     };
   },
@@ -252,6 +277,17 @@ export default defineComponent({
 
 <style scoped>
 .panel-block {
+  display: block;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  width: 20em;
+}
+
+.dropdown.is-active .dropdown-menu {
   display: block;
 }
 </style>

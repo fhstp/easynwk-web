@@ -195,6 +195,9 @@ export default {
         date: "Datum",
         deleteversion: "Karte löschen",
         titleplaceholder: "Titel der aktuellen Version",
+        noemoji: "Noch kein Emoji gewählt",
+        selectemoji: "Emoji auswählen",
+        removeemoji: "Emoji entfernen",
       },
     };
   },

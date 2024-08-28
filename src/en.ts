@@ -193,6 +193,9 @@ export default {
         date: "Date",
         deleteversion: "Delete map",
         titleplaceholder: "Title of the current version",
+        noemoji: "No emoji chosen yet",
+        selectemoji: "Select emoji",
+        removeemoji: "Remove emoji",
       },
     };
   },
