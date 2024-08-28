@@ -574,7 +574,7 @@ input::-webkit-calendar-picker-indicator {
 
 @import "~bulma/sass/base/_all.sass";
 .autovalue {
-  color: $grey-light;
+  color: #656565
 }
 
 .autovalue:focus {
