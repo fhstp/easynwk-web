@@ -69,7 +69,7 @@
       <br />
       <div class="field-body">
         <div>
-          <div style="display: flex; align-items: center; margin-top: 10px;">
+          <div style="display: flex; align-items: center; margin-top: 10px">
             <div>
               {{
                 selectedEmoji == null || selectedEmoji.length < 1
@@ -88,21 +88,22 @@
       </div>
       <div class="field-body">
         <div class="dropdown" :class="{ 'is-active': showEmojiPicker }">
-          <div >
+          <div>
             <button
               type="button"
               class="button is-small"
               @click="toggleEmojiPicker"
             >
-            <span>{{ t("selectemoji") }}</span>
+              <span>{{ t("selectemoji") }}</span>
             </button>
             <button
               v-if="selectedEmoji != null && selectedEmoji.length > 0"
               @click="removeEmoji"
+              type="button"
               class="button is-small"
-              style="margin-left: 10px;"
+              style="margin-left: 10px"
             >
-            <span>{{t("removeemoji")}}</span>
+              <span>{{ t("removeemoji") }}</span>
             </button>
           </div>
           <div class="dropdown-menu">
@@ -349,7 +350,7 @@ export default defineComponent({
     });
 
     const selectedEmoji = ref(props.alter?.emoji || "");
-    
+
 
     function onSelectEmoji(emoji: any) {
       selectedEmoji.value = emoji.i;
@@ -573,7 +574,7 @@ input::-webkit-calendar-picker-indicator {
 
 @import "~bulma/sass/base/_all.sass";
 .autovalue {
-  color: #656565
+  color: #656565;
 }
 
 .autovalue:focus {

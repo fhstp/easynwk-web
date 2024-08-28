@@ -1,6 +1,6 @@
 {
   "name": "easynwk",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "private": true,
   "author": "Alexander Rind (https://github.com/alex-rind/)",
   "repository": "https://github.com/fhstp/easynwk-web/",
@@ -19,7 +19,6 @@
     "core-js": "^3.8.3",
     "d3": "^7.0.0",
     "vue": "^3.2.13",
-    "vue-emoji-mart": "^1.0.5",
     "vue-router": "^4.0.3",
     "vue3-emoji-picker": "^1.1.8",
     "vuex": "^4.0.0"
