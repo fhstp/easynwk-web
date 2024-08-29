@@ -221,7 +221,7 @@
         :key="mark.d.id"
       >
         <!-- Hier werden die Icons für jedes Alter platziert -->
-        <template v-if="mark.d.supportEmotional >= 1">
+        <template v-if="mark.d.supportEmotional >= 1 && showQuality">
           <font-awesome-icon
             icon="heart"
             height="3"
@@ -231,7 +231,7 @@
             :y="mark.y < 0 ? mark.y : mark.y + 5"
           />
         </template>
-        <template v-if="mark.d.supportCognitive >= 1">
+        <template v-if="mark.d.supportCognitive >= 1 && showQuality">
           <font-awesome-icon
             icon="lightbulb"
             height="3"
@@ -241,7 +241,7 @@
             :y="mark.y < 0 ? mark.y : mark.y + 5"
           />
         </template>
-        <template v-if="mark.d.supportSocial >= 1">
+        <template v-if="mark.d.supportSocial >= 1 && showQuality">
           <font-awesome-icon
             icon="users"
             height="3"
@@ -251,7 +251,7 @@
             :y="mark.y < 0 ? mark.y : mark.y + 5"
           />
         </template>
-        <template v-if="mark.d.supportMaterial >= 1">
+        <template v-if="mark.d.supportMaterial >= 1 && showQuality">
           <font-awesome-icon
             icon="toolbox"
             height="3"
@@ -261,7 +261,7 @@
             :y="mark.y < 0 ? mark.y : mark.y + 5"
           />
         </template>
-        <template v-if="mark.d.supportPractical >= 1">
+        <template v-if="mark.d.supportPractical >= 1 && showQuality">
           <font-awesome-icon
             icon="link"
             height="3"
@@ -938,6 +938,7 @@ export default defineComponent({
       showComparisonSlider: computed(
         () => store.state.session.nwkchange || store.state.session.nwkcomparison
       ),
+      showQuality: computed(() => store.state.session.qualityRelationship),
     };
   },
 });

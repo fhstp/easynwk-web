@@ -182,10 +182,10 @@
       </div>
     </div>
 
-    <div v-if="showQuality" style="margin-bottom: 1em;">
+    <div v-if="showQuality" style="margin-bottom: 1.5em;">
     <div class="field is-horizontal" v-for="(label, key) in supportOptions" :key="key">
       <div class="field-label is-normal">
-        <label class="label">{{ t(label) }}</label>
+        <label class="label" style="width: 100px;">{{ t(label) }}</label>
       </div>
       <div class="field-body">
         <div class="control">
