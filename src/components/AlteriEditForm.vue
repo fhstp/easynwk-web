@@ -169,7 +169,7 @@
 
     <div v-if="showQuality" class="field is-horizontal">
       <div class="field-label">
-        <label class="label" for="chk-new-checkbox">Konflikthaft</label>
+        <label class="label" for="chk-new-checkbox">{{ t("conflictual") }}</label>
       </div>
       <div class="field-body">
         <label>
@@ -182,95 +182,25 @@
       </div>
     </div>
 
-    <div v-if="showQuality" class="field is-horizontal">
+    <div v-if="showQuality" style="margin-bottom: 1em;">
+    <div class="field is-horizontal" v-for="(label, key) in supportOptions" :key="key">
       <div class="field-label is-normal">
-        <label class="label">Emotional</label>
+        <label class="label">{{ t(label) }}</label>
       </div>
       <div class="field-body">
         <div class="control">
           <div class="select is-fullwidth">
-            <select v-model="alterEmotional">
-              <option value="0">Keine Unterstützung</option>
-              <option value="1">Ich unterstütze {{ alter.name }}</option>
-              <option value="2">{{ alter.name }} unterstützt mich</option>
-              <option value="3">Wir unterstützen uns</option>
+            <select v-model="supportValues[key]">
+              <option value="0">{{ t("nosupport") }}</option>
+              <option value="1">{{ t("isupport") }} {{ alter.name }}</option>
+              <option value="2">{{ alter.name }} {{ t("supportsme") }}</option>
+              <option value="3">{{ t("supporteachother") }}</option>
             </select>
           </div>
         </div>
       </div>
     </div>
-
-    <div v-if="showQuality" class="field is-horizontal">
-      <div class="field-label is-normal">
-        <label class="label">Informationell</label>
-      </div>
-      <div class="field-body">
-        <div class="control">
-          <div class="select is-fullwidth">
-            <select v-model="alterCognitive">
-              <option value="0">Keine Unterstützung</option>
-              <option value="1">Ich unterstütze {{ alter.name }}</option>
-              <option value="2">{{ alter.name }} unterstützt mich</option>
-              <option value="3">Wir unterstützen uns</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="showQuality" class="field is-horizontal">
-      <div class="field-label is-normal">
-        <label class="label">Sozial</label>
-      </div>
-      <div class="field-body">
-        <div class="control">
-          <div class="select is-fullwidth">
-            <select v-model="alterSocial">
-              <option value="0">Keine Unterstützung</option>
-              <option value="1">Ich unterstütze {{ alter.name }}</option>
-              <option value="2">{{ alter.name }} unterstützt mich</option>
-              <option value="3">Wir unterstützen uns</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="showQuality" class="field is-horizontal">
-      <div class="field-label is-normal">
-        <label class="label">Instrumentell</label>
-      </div>
-      <div class="field-body">
-        <div class="control">
-          <div class="select is-fullwidth">
-            <select v-model="alterMaterial">
-              <option value="0">Keine Unterstützung</option>
-              <option value="1">Ich unterstütze {{ alter.name }}</option>
-              <option value="2">{{ alter.name }} unterstützt mich</option>
-              <option value="3">Wir unterstützen uns</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="showQuality" class="field is-horizontal">
-      <div class="field-label is-normal">
-        <label class="label">Linking</label>
-      </div>
-      <div class="field-body">
-        <div class="control">
-          <div class="select is-fullwidth">
-            <select v-model="alterPractical">
-              <option value="0">Keine Unterstützung</option>
-              <option value="1">Ich unterstütze {{ alter.name }}</option>
-              <option value="2">{{ alter.name }} unterstützt mich</option>
-              <option value="3">Wir unterstützen uns</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
+  </div>
 
     <div class="field">
       <div class="control">
@@ -371,6 +301,22 @@ export default defineComponent({
     const selectedRoleLabel = ref(props.alter?.role);
 
     const newCheckboxModel = ref(false);
+
+    const supportOptions = ref({
+      emotional: "emotional",
+      instrumental: "instrumental",
+      informational: "informational",
+      social: "social",
+      linking: "linking",
+    });
+
+    const supportValues = ref({
+      emotional: accessor<number>("supportEmotional"),
+      instrumental: accessor<number>("supportCognitive"),
+      informational: accessor<number>("supportSocial"),
+      social: accessor<number>("supportMaterial"),
+      linking: accessor<number>("supportPractical"),
+    });
 
     // name field is special because it must not be empty
     // the data item is only used for validity check & never stored
@@ -537,11 +483,6 @@ export default defineComponent({
       alterNameInUI,
       alterRole,
       newCheckboxModel,
-      alterEmotional: accessor<number>("supportEmotional"),
-      alterCognitive: accessor<number>("supportCognitive"),
-      alterSocial: accessor<number>("supportSocial"),
-      alterMaterial: accessor<number>("supportMaterial"),
-      alterPractical: accessor<number>("supportPractical"),
       localizedRole,
       invalidName,
       invalidPosition,
@@ -563,6 +504,8 @@ export default defineComponent({
       altername,
       domButton,
       SYMBOL_DECEASED,
+      supportOptions,
+      supportValues,
     };
   },
 });
