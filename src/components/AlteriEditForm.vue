@@ -328,7 +328,6 @@ export default defineComponent({
 
     const addingNewAlter = ref(!(props.alter?.name.length > 0));
 
-    const selectedRoleLabel = ref(props.alter?.role);
 
     const showEmojiPicker = ref(false);
 
@@ -587,7 +586,7 @@ select > option {
 
 .dropdown-menu {
   display: none;
-  position: absolute;
+  position: sticky;
   z-index: 10;
   width: 20em;
 }

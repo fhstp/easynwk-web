@@ -139,9 +139,9 @@
       <text
         v-if="emoji && egoEmoji"
         :x="egoCoords[0]"
-        :y="egoCoords[1]"
+        :y="egoCoords[1] + 1"
         class="mark"
-        style="font-size: 4px; cursor: pointer; text-anchor: middle"
+        style="font-size: 4px; cursor: pointer; text-anchor: middle;"
       >
         {{ egoEmoji }}
       </text>
@@ -153,7 +153,7 @@
           <text
             :key="mark.d.id"
             :x="mark.x - 3"
-            :y="mark.y"
+            :y="mark.y + 1"
             class="mark clickAble"
             @click.stop="clickAlter(mark.d)"
             style="font-size: 4px; cursor: pointer"
