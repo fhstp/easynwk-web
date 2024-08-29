@@ -75,6 +75,8 @@ export default {
         namesofcontactsoff: "Name of contacts off",
         ageofcontactsoff: "Age of contacts off",
         roleofcontactsoff: "Role of contacts off",
+        qualitieson: "Qualities on",
+        qualitiesoff: "Qualities off",
         //},
         //pdfView: {
         printorpdf: "Print or print as PDF",
@@ -150,6 +152,10 @@ export default {
         isupport: "I support",
         supportsme: "supports me",
         supporteachother: "We support each other",
+        introductionsentence: "Click on the symbol (or text) to display the support network of one of the five qualities. (multiple selection possible)",
+        socialsupport: "Social support",
+        toggleon: "Toggle all on",
+        toggleoff: "Toggle all off",
         //},
         //alterConnections: {
         relationshipsof: "Relationships of",

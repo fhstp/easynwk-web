@@ -76,6 +76,8 @@ export default {
         namesofcontactsoff: "Kontaktnamen aus",
         ageofcontactsoff: "Alter der Kontakte aus",
         roleofcontactsoff: "Rolle der Kontakte aus",
+        qualitieson: "Qualitäten ein",
+        qualitiesoff: "Qualitäen aus",
         //},
         //pdfView: {
         printorpdf: "Drucken bzw. als PDF drucken",
@@ -151,6 +153,10 @@ export default {
         isupport: "Ich unterstütze",
         supportsme: "unterstützt mich",
         supporteachother: "Wir unterstützen uns",
+        introductionsentence: "Durch Klick auf das Symbol (oder Text) wird das Unterstützungsnetzwerk einer der fünf Qualitäten angezeigt. (Mehrfachauswahl möglich)",
+        socialsupport: "Soziale Unterstützung",
+        toggleon: "Alle einschalten",
+        toggleoff: "Alle ausschalten",
         //},
         //alterConnections: {
         relationshipsof: "Beziehungen von",

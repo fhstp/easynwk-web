@@ -231,9 +231,9 @@
             :y="mark.y < 0 ? mark.y : mark.y + 5"
           />
         </template>
-        <template v-if="mark.d.supportCognitive >= 1 && showQuality">
+        <template v-if="mark.d.supportMaterial >= 1 && showQuality">
           <font-awesome-icon
-            icon="lightbulb"
+            icon="toolbox"
             height="3"
             width="3"
             style="color: #afafaf"
@@ -241,9 +241,9 @@
             :y="mark.y < 0 ? mark.y : mark.y + 5"
           />
         </template>
-        <template v-if="mark.d.supportSocial >= 1 && showQuality">
+        <template v-if="mark.d.supportCognitive >= 1 && showQuality">
           <font-awesome-icon
-            icon="users"
+            icon="lightbulb"
             height="3"
             width="3"
             style="color: #afafaf"
@@ -251,9 +251,9 @@
             :y="mark.y < 0 ? mark.y : mark.y + 5"
           />
         </template>
-        <template v-if="mark.d.supportMaterial >= 1 && showQuality">
+        <template v-if="mark.d.supportSocial >= 1 && showQuality">
           <font-awesome-icon
-            icon="toolbox"
+            icon="users"
             height="3"
             width="3"
             style="color: #afafaf"

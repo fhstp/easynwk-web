@@ -312,9 +312,9 @@ export default defineComponent({
 
     const supportValues = ref({
       emotional: accessor<number>("supportEmotional"),
-      instrumental: accessor<number>("supportCognitive"),
-      informational: accessor<number>("supportSocial"),
-      social: accessor<number>("supportMaterial"),
+      instrumental: accessor<number>("supportMaterial"),
+      informational: accessor<number>("supportCognitive"),
+      social: accessor<number>("supportSocial"),
       linking: accessor<number>("supportPractical"),
     });
 

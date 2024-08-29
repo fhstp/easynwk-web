@@ -72,12 +72,12 @@
               <span v-if="pseudonyms">{{ t("anonymiseoff") }}</span>
               <span v-else>{{ t("anonymiseon") }}</span>
             </button>
-            <button class="button" @click.stop="toggleQuality">
+            <button class="button" @click.stop="toggleQuality" style="margin-left: 0.5em;">
               <span class="icon">
                 <font-awesome-icon icon="hand-holding-heart" />
               </span>
-              <span v-if="showQuality">Qualitäten aus</span>
-              <span v-else>Qualitäten an</span>
+              <span v-if="showQuality">{{ t("qualitiesoff") }}</span>
+              <span v-else>{{ t("qualitieson") }}</span>
             </button>
           </div>
         </div>
