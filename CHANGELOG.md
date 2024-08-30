@@ -1,5 +1,11 @@
 # easyNWK Version History
 
+## version 2.5.0, released ... 2024
+
+* (feature) optionally set emoji for ego and each alter
+* (usability) version slider always on as soon as more than 1 version
+* (usability) filename of PDF with date in YYYY-MM-dd
+
 ## version 2.4.0, released 28 Aug 2024
 
 * (feature) opening and importing .nwk files created with easyNWK 1.5

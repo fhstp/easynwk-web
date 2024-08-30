@@ -134,22 +134,47 @@
         width="4"
         height="4"
         transform="translate(-2,-2)"
+        v-if="!emoji || !egoEmoji"
       />
+      <text
+        v-if="emoji && egoEmoji"
+        :x="egoCoords[0]"
+        :y="egoCoords[1] + 1"
+        class="mark"
+        style="font-size: 4px; cursor: pointer; text-anchor: middle;"
+      >
+        {{ egoEmoji }}
+      </text>
     </g>
     <g class="brushParent"></g>
     <g class="marksForegroundLayer">
-      <use
-        v-for="mark in alteriMarks"
-        :key="mark.d.id"
-        :href="'#' + mark.shape"
-        :x="mark.x"
-        :y="mark.y"
-        class="mark clickAble"
-        width="4"
-        height="4"
-        transform="translate(-2,-2)"
-        @click.stop="clickAlter(mark.d)"
-      />
+      <template v-for="mark in alteriMarks">
+        <template v-if="mark.d.emoji && emoji">
+          <text
+            :key="mark.d.id"
+            :x="mark.x - 3"
+            :y="mark.y + 1"
+            class="mark clickAble"
+            @click.stop="clickAlter(mark.d)"
+            style="font-size: 4px; cursor: pointer"
+          >
+            {{ mark.d.emoji }}
+          </text>
+        </template>
+        <template v-else>
+          <use
+            :key="mark.d.id"
+            :href="'#' + mark.shape"
+            :x="mark.x"
+            :y="mark.y"
+            class="mark clickAble"
+            width="4"
+            height="4"
+            transform="translate(-2,-2)"
+            @click.stop="clickAlter(mark.d)"
+          />
+        </template>
+      </template>
     </g>
 
     <NetworkMapSectors :transform="transform" @zoom-sector="zoomSector" />
@@ -742,6 +767,7 @@ export default defineComponent({
       egoShape: computed(() =>
         shapeByGender(true, store.state.nwk.ego.currentGender)
       ),
+      egoEmoji: computed(() => store.state.nwk.ego.emoji),
       isEditMode,
       isConnectMode,
       clickAlter,
@@ -755,6 +781,7 @@ export default defineComponent({
       getRoleShort,
       alteriNames: computed(() => store.state.view.alteriNames),
       connections: computed(() => store.state.view.connections),
+      emoji: computed(() => store.state.view.emoji),
       brushBtns,
       isClusterConnectPossible,
       isClusterFullyConnected,
