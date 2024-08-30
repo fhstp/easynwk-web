@@ -61,17 +61,6 @@ export function hasOptionalChanges(alter: Alter) {
 }
 
 /**
- * get the "closeness" of an alter in 9 concentric rings around the ego.
- * 9 = very close, ..., 0 = on or beyond the outer horizon.
- * Based on Java class Position by Nikolaus Kelis (v. 1.4.2)
- * @param alter
- * @returns integer between 9 (close) and 0 (distant)
- */
-export function naehenScore(alter: Alter): number {
-  return Math.max(9 - Math.floor((alter.distance * 9) / 100), 0);
-}
-
-/**
  * check if the alter can be connected to the ego or another alter.
  * By definition it is not possible to have a connection to a deceased or non-human alter.
  * Neither is it possible to have a connection to an alter placed outside the outer horizon.

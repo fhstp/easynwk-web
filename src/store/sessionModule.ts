@@ -1,13 +1,11 @@
 export const TAB_BASE = "base";
 export const TAB_CONNECTIONS = "connections";
 
-export interface SessionFlags {
-  statistics: boolean;
-  nwkchange: boolean;
-  nwkcomparison: boolean;
-}
+// export interface SessionFlags {
+//   versionComparison: boolean;
+// }
 
-export interface SessionState extends SessionFlags {
+export interface SessionState {
   selected: Set<number>;
   editIndex: number | null;
   editTab: string;
@@ -15,10 +13,7 @@ export interface SessionState extends SessionFlags {
 
 export function initSessionState(): SessionState {
   return {
-    statistics: false,
-    nwkcomparison: false,
-    nwkchange: false,
-
+    // versionComparison: false,
     selected: new Set<number>(),
     editIndex: null,
     editTab: "",
@@ -35,7 +30,7 @@ const getters = {
 };
 
 const mutations = {
-  updateFlag(
+  /* updateFlag(
     state: SessionState,
     payload: { flag: keyof SessionFlags; value: boolean }
   ) {
@@ -52,7 +47,7 @@ const mutations = {
 
   toggle(state: SessionState, flag: keyof SessionFlags): void {
     state[flag] = !state[flag];
-  },
+  }, */
 
   toggleAlterSelected(state: SessionState, alterId: number): void {
     if (state.selected.has(alterId)) {

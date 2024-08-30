@@ -104,15 +104,6 @@
           </span>
           <span>{{ t("createPDF") }}</span>
         </a>
-
-        <p><br /></p>
-
-        <button class="button" @click="showStatistics">
-          <span class="icon">
-            <font-awesome-icon icon="chart-bar" />
-          </span>
-          <span>{{ t("keyfigures") }}</span>
-        </button>
       </div>
 
       <div class="links">
@@ -282,22 +273,16 @@ export default defineComponent({
         );
       },
       exportCSV: () => {
+        const today = new Date();
         downloadText(
           store.state.nwk.ego.name +
             " " +
-            visibleNWKVersion.value?.title +
-            " " +
-            visibleNWKVersion.value?.date?.substring(8, 10) +
-            "." +
-            visibleNWKVersion.value?.date?.substring(5, 7) +
-            "." +
-            visibleNWKVersion.value?.date?.substring(0, 4) +
+            today.toLocaleDateString("en-CA") +
             ".csv",
-          statisticsCSV(store.state.nwk, store.getters["displayName"])
+          statisticsCSV(store.state.record.versions)
         );
       },
 
-      showStatistics: () => store.commit("session/enable", "statistics"),
       pseudonyms: computed(() => store.state.pseudonym.active),
       togglePseudonyms: () => store.commit("pseudonym/toggle"),
       horizons: computed(() => store.state.view.horizons),

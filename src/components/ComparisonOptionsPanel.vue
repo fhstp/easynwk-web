@@ -70,13 +70,6 @@
                   <span>{{ t("duplicateversion") }}</span>
                 </button>
 
-                <button class="button" @click.stop="toggleChange">
-                  <span class="icon">
-                    <font-awesome-icon icon="exchange-alt" />
-                  </span>
-                  <span>{{ t("changeversion") }}</span>
-                </button>
-
                 <!-- TODO hide comparison button in the production code in main branch
                 <button class="button" @click.stop="toggleComparison" disabled>
                   <span class="icon">
@@ -245,10 +238,6 @@ export default defineComponent({
     };
 
     return {
-      nwkcomparison: computed(() => store.state.session.nwkcomparison),
-      nwkchange: computed(() => store.state.session.nwkchange),
-      toggleComparison: () => store.commit("session/toggle", "nwkcomparison"),
-      toggleChange: () => store.commit("session/toggle", "nwkchange"),
       editText: editText,
       isOpen: isOpen,
       newVersion: newVersion,

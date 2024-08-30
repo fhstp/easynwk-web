@@ -17,23 +17,46 @@
             <font-awesome-icon icon="info-circle" />
           </span> -->
           </th>
-          <td v-for="(cat, i) in categoryLabels" :key="i">
+          <td v-for="(_, i) in categoryLabels" :key="i">
             {{ networkSize[i] }}
           </td>
         </tr>
         <tr>
-          <th :title="t('relationshipmsg')">
-            {{ t("relationshipweight") }}
+          <th class="sizeby">
+            {{ t("sizebygender") }}
+            <em>{{ t("female") }}</em>
+            <em>{{ t("male") }}</em>
+            <em>{{ t("diverse") }}</em>
+            <em>{{ t("notspecified") }}</em>
           </th>
-          <td v-for="(cat, i) in categoryLabels" :key="i">
-            {{ naehenSum[i] }}
+          <td v-for="(_, i) in categoryLabels" :key="i">
+            <p>&nbsp;</p>
+            <p v-for="(gSize, j) in sizeByGender[i]" :key="j">{{ gSize }}</p>
+          </td>
+        </tr>
+        <tr>
+          <th class="sizeby">
+            {{ t("sizebyhorizon") }}
+            <em v-for="(ho, i) in HORIZON_KEYS" :key="'hl' + i">{{ t(ho) }}</em>
+          </th>
+          <td v-for="(_, i) in categoryLabels" :key="i">
+            <p>&nbsp;</p>
+            <p v-for="(hSz, j) in sizeByHorizon[i]" :key="j">{{ hSz }}</p>
+          </td>
+        </tr>
+        <tr>
+          <th :title="t('closenessmsg')">
+            {{ t("closeness") }}
+          </th>
+          <td v-for="(_, i) in categoryLabels" :key="i">
+            {{ naehen[i] }}
           </td>
         </tr>
         <tr>
           <th :title="t('densitymsg')">
             {{ t("categorydensity") }}
           </th>
-          <td v-for="(cat, i) in categoryLabels" :key="i">{{ density[i] }}</td>
+          <td v-for="(_, i) in categoryLabels" :key="i">{{ density[i] }}</td>
         </tr>
         <!-- <tr>
         <th>Dichte zu anderen Kategorien</th>
@@ -41,6 +64,14 @@
           {{ extDensity[i] }}
         </td>
       </tr> -->
+        <tr>
+          <th :title="t('degreemsg')">
+            {{ t("degree") }}
+          </th>
+          <td v-for="(_, i) in categoryLabels" :key="i">
+            {{ degree[i] }}
+          </td>
+        </tr>
         <tr>
           <th :title="t('starsmsg')">
             {{ t("categorystar") }}
@@ -52,27 +83,6 @@
             :class="{ clickAble: stars[i] != '-' }"
           >
             {{ stars[i] }}
-          </td>
-        </tr>
-        <tr>
-          <th :title="t('bridgemsg')">
-            {{ t("bridges") }}
-          </th>
-          <td v-for="(cat, i) in categoryLabels" :key="i">
-            {{ bridgesCount[i] }}
-          </td>
-        </tr>
-        <tr>
-          <th :title="t('bridgesmsg2')">
-            {{ t("bridgepersons") }}
-          </th>
-          <td
-            v-for="(cat, i) in categoryLabels"
-            :key="i"
-            @click="clickCell('bridgePersons', cat)"
-            :class="{ clickAble: bridgePersons[i] != '0' }"
-          >
-            {{ bridgePersons[i] }}
           </td>
         </tr>
         <tr>
@@ -122,6 +132,7 @@ import {
 } from "@/data/AlterCategories";
 import de from "@/de";
 import en from "@/en";
+import { HORIZON_KEYS } from "@/data/Horizon";
 
 export default defineComponent({
   mixins: [de, en],
@@ -129,7 +140,7 @@ export default defineComponent({
     t(prop: string) {
       return this[document.documentElement.lang][prop];
     },
-    translateCategoryKey(categoryKey: any) {
+    translateCategoryKey(categoryKey: string) {
       const lang = document.documentElement.lang;
       const translation = CATEGORY_TRANSLATIONS[categoryKey];
 
@@ -212,7 +223,7 @@ export default defineComponent({
     });
 
     function makeComputedAlterGroup(
-      group: "stars" | "isolated" | "bridgePersons" | "alterZeroEdge"
+      group: "stars" | "isolated" | "alterZeroEdge"
     ) {
       return computed(() => {
         return categoryLabels.value.map((cat) => {
@@ -234,7 +245,7 @@ export default defineComponent({
     }
 
     const clickCell = (
-      group: "stars" | "isolated" | "bridgePersons" | "alterZeroEdge",
+      group: "stars" | "isolated" | "alterZeroEdge",
       cat: string
     ) => {
       const alteri = getOrInit(networkAnalysis.value, cat)[group];
@@ -248,28 +259,47 @@ export default defineComponent({
 
     return {
       categoryLabels,
-      networkSize: computed((): string[] => {
-        return categoryLabels.value.map((cat) =>
-          getOrInit(networkAnalysis.value, cat).alterConnected.toFixed(0)
-        );
+      networkSize: computed((): string[] =>
+        categoryLabels.value.map((cat) => {
+          const analy = getOrInit(networkAnalysis.value, cat);
+          return analy.alterConnected + " (" + analy.alterConnectable + ")";
+        })
+      ),
+      sizeByGender: computed(() => {
+        return categoryLabels.value.map((cat) => {
+          const analy = getOrInit(networkAnalysis.value, cat);
+          return analy.genderConnected.map(
+            (g, i) => g + " (" + analy.genderConnectable[i] + ")"
+          );
+        });
       }),
-      naehenSum: computed((): string[] => {
-        return categoryLabels.value.map((cat) =>
-          getOrInit(networkAnalysis.value, cat).naehenSum.toFixed(0)
-        );
+      HORIZON_KEYS,
+      sizeByHorizon: computed(() => {
+        return categoryLabels.value.map((cat) => {
+          const analy = getOrInit(networkAnalysis.value, cat);
+          return analy.horizonConnected.map(
+            (g, i) => g + " (" + analy.horizonConnectable[i] + ")"
+          );
+        });
       }),
+      naehen: computed((): string[] =>
+        categoryLabels.value.map((cat) => {
+          const an = getOrInit(networkAnalysis.value, cat);
+          return an.naehenAvg.toFixed(1) + " (" + an.naehenDev.toFixed(1) + ")";
+        })
+      ),
       density,
       // extDensity,
+      degree: computed((): string[] =>
+        categoryLabels.value.map((cat) => {
+          const an = getOrInit(networkAnalysis.value, cat);
+          return an.degreeAvg.toFixed(1) + " (" + an.degreeDev.toFixed(1) + ")";
+        })
+      ),
 
       stars,
       isolated: makeComputedAlterGroup("isolated"),
       alterZeroEdge: makeComputedAlterGroup("alterZeroEdge"),
-      bridgePersons: makeComputedAlterGroup("bridgePersons"),
-      bridgesCount: computed((): string[] => {
-        return categoryLabels.value.map((cat) =>
-          getOrInit(networkAnalysis.value, cat).bridges.length.toFixed(0)
-        );
-      }),
       clickCell,
     };
   },
@@ -287,5 +317,11 @@ td:not([align]) {
 
 th {
   font-weight: normal;
+}
+
+th.sizeby > em {
+  display: block;
+  font-style: normal;
+  margin-left: 2em;
 }
 </style>
