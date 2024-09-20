@@ -72,7 +72,11 @@
               <span v-if="pseudonyms">{{ t("anonymiseoff") }}</span>
               <span v-else>{{ t("anonymiseon") }}</span>
             </button>
-            <button class="button" @click.stop="toggleQuality" style="margin-left: 0.5em;">
+            <button
+              class="button"
+              @click.stop="toggleQuality"
+              style="margin-left: 0.5em"
+            >
               <span class="icon">
                 <font-awesome-icon icon="hand-holding-heart" />
               </span>

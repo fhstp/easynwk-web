@@ -152,7 +152,8 @@ export default {
         isupport: "I support",
         supportsme: "supports me",
         supporteachother: "We support each other",
-        introductionsentence: "Click on the symbol (or text) to display the support network of one of the five qualities. (multiple selection possible)",
+        introductionsentence:
+          "Click on the symbol (or text) to display the support network of one of the five qualities. (multiple selection possible)",
         socialsupport: "Social support",
         toggleon: "Toggle all on",
         toggleoff: "Toggle all off",

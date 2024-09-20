@@ -12,33 +12,51 @@
         <div class="field-body">
           <div id="view-settings" class="field" v-if="isOpen">
             <div class="control">
-              <div style="margin: 1.5em;">
+              <div style="margin: 1.5em">
                 <p>{{ t("introductionsentence") }}</p>
               </div>
 
               <div>
-                <div 
+                <div
                   class="clickAble"
-                  :style="{margin: '1em', fontWeight: heartClicked ? 'bold' : 'unset', display: 'inline-flex', alignItems: 'center'}"
+                  :style="{
+                    margin: '1em',
+                    fontWeight: heartClicked ? 'bold' : 'unset',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                  }"
                   @click="toggleHeartIcon"
-                  @click.stop="toggleEmotional">
+                  @click.stop="toggleEmotional"
+                >
                   <font-awesome-icon
                     icon="heart"
-                    :style="{ color: heartClicked ? 'orange' : '#afafaf', marginRight: '0.5em'}"
+                    :style="{
+                      color: heartClicked ? 'orange' : '#afafaf',
+                      marginRight: '0.5em',
+                    }"
                   />
                   {{ t("emotional") }}: {{ alteriEmotional }}
                 </div>
               </div>
-            
+
               <div>
-                <div 
+                <div
                   class="clickAble"
-                  :style="{margin: '1em', fontWeight: moneyClicked ? 'bold' : 'unset', display: 'inline-flex', alignItems: 'center'}"
+                  :style="{
+                    margin: '1em',
+                    fontWeight: moneyClicked ? 'bold' : 'unset',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                  }"
                   @click="toggleMoneyIcon"
-                  @click.stop="toggleMaterial">
+                  @click.stop="toggleMaterial"
+                >
                   <font-awesome-icon
                     icon="toolbox"
-                    :style="{ color: moneyClicked ? 'orange' : '#afafaf', marginRight: '0.5em'}"
+                    :style="{
+                      color: moneyClicked ? 'orange' : '#afafaf',
+                      marginRight: '0.5em',
+                    }"
                     class="clickAble"
                   />
                   {{ t("instrumental") }}: {{ alteriMaterial }}
@@ -46,14 +64,23 @@
               </div>
 
               <div>
-                <div 
+                <div
                   class="clickAble"
-                  :style="{margin: '1em', fontWeight: brainClicked ? 'bold' : 'unset', display: 'inline-flex', alignItems: 'center'}"
+                  :style="{
+                    margin: '1em',
+                    fontWeight: brainClicked ? 'bold' : 'unset',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                  }"
                   @click="toggleBrainIcon"
-                  @click.stop="toggleCognitive">
+                  @click.stop="toggleCognitive"
+                >
                   <font-awesome-icon
                     icon="lightbulb"
-                    :style="{ color: brainClicked ? 'orange' : '#afafaf', marginRight: '0.5em'}"
+                    :style="{
+                      color: brainClicked ? 'orange' : '#afafaf',
+                      marginRight: '0.5em',
+                    }"
                     class="clickAble"
                   />
                   {{ t("informational") }}: {{ alteriCognitive }}
@@ -61,14 +88,23 @@
               </div>
 
               <div>
-                <div 
+                <div
                   class="clickAble"
-                  :style="{margin: '1em', fontWeight: speakClicked ? 'bold' : 'unset', display: 'inline-flex', alignItems: 'center'}"
+                  :style="{
+                    margin: '1em',
+                    fontWeight: speakClicked ? 'bold' : 'unset',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                  }"
                   @click="toggleSpeakIcon"
-                  @click.stop="toggleSocial">
+                  @click.stop="toggleSocial"
+                >
                   <font-awesome-icon
                     icon="users"
-                    :style="{ color: speakClicked ? 'orange' : '#afafaf', marginRight: '0.5em'}"
+                    :style="{
+                      color: speakClicked ? 'orange' : '#afafaf',
+                      marginRight: '0.5em',
+                    }"
                     class="clickAble"
                   />
                   {{ t("social") }}: {{ alteriSocial }}
@@ -76,14 +112,23 @@
               </div>
 
               <div>
-                <div 
+                <div
                   class="clickAble"
-                  :style="{margin: '1em', fontWeight: helmetClicked ? 'bold' : 'unset', display: 'inline-flex', alignItems: 'center'}"
+                  :style="{
+                    margin: '1em',
+                    fontWeight: helmetClicked ? 'bold' : 'unset',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                  }"
                   @click="toggleHelmetIcon"
-                  @click.stop="togglePractical">
+                  @click.stop="togglePractical"
+                >
                   <font-awesome-icon
                     icon="link"
-                    :style="{ color: helmetClicked ? 'orange' : '#afafaf', marginRight: '0.5em'}"
+                    :style="{
+                      color: helmetClicked ? 'orange' : '#afafaf',
+                      marginRight: '0.5em',
+                    }"
                     class="clickAble"
                   />
                   {{ t("linking") }}: {{ alteriPractical }}

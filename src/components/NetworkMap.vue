@@ -109,10 +109,13 @@
           :x2="mark.x"
           :y2="mark.y"
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
-          :style="mark.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
+          :style="
+            mark.d.conflict && showQuality ? 'stroke: red' : 'stroke: #afafaf'
+          "
         />
         <marker
           id="arrowheadMe"
+          v-if="showQuality"
           markerWidth="10"
           markerHeight="7"
           refX="12"
@@ -123,6 +126,7 @@
         </marker>
         <marker
           id="arrowheadAlter"
+          v-if="showQuality"
           markerWidth="10"
           markerHeight="7"
           refX="25"
@@ -152,7 +156,9 @@
           :x2="mark.x"
           :y2="mark.y"
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
-          :style="mark.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
+          :style="
+            mark.d.conflict && showQuality ? 'stroke: red' : 'stroke: #afafaf'
+          "
           marker-end="url(#arrowheadAlter)"
         />
         <line
@@ -221,7 +227,11 @@
         :key="mark.d.id"
       >
         <!-- Hier werden die Icons für jedes Alter platziert -->
-        <template v-if="mark.d.supportEmotional >= 1 && showQuality">
+        <template
+          v-if="
+            mark.d.supportEmotional >= 1 && showQuality && mark.d.edgeType >= 1
+          "
+        >
           <font-awesome-icon
             icon="heart"
             height="3"

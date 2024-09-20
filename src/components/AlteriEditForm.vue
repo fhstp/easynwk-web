@@ -167,9 +167,11 @@
       </div>
     </div>
 
-    <div v-if="showQuality" class="field is-horizontal">
+    <div v-if="showQuality && alterEdgeType >= 1" class="field is-horizontal">
       <div class="field-label">
-        <label class="label" for="chk-new-checkbox">{{ t("conflictual") }}</label>
+        <label class="label" for="chk-new-checkbox">{{
+          t("conflictual")
+        }}</label>
       </div>
       <div class="field-body">
         <label>
@@ -182,25 +184,31 @@
       </div>
     </div>
 
-    <div v-if="showQuality" style="margin-bottom: 1.5em;">
-    <div class="field is-horizontal" v-for="(label, key) in supportOptions" :key="key">
-      <div class="field-label is-normal">
-        <label class="label" style="width: 100px;">{{ t(label) }}</label>
-      </div>
-      <div class="field-body">
-        <div class="control">
-          <div class="select is-fullwidth">
-            <select v-model="supportValues[key]">
-              <option value="0">{{ t("nosupport") }}</option>
-              <option value="1">{{ t("isupport") }} {{ alter.name }}</option>
-              <option value="2">{{ alter.name }} {{ t("supportsme") }}</option>
-              <option value="3">{{ t("supporteachother") }}</option>
-            </select>
+    <div v-if="showQuality && alterEdgeType >= 1" style="margin-bottom: 1.5em">
+      <div
+        class="field is-horizontal"
+        v-for="(label, key) in supportOptions"
+        :key="key"
+      >
+        <div class="field-label is-normal">
+          <label class="label" style="width: 100px">{{ t(label) }}</label>
+        </div>
+        <div class="field-body">
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select v-model="supportValues[key]">
+                <option value="0">{{ t("nosupport") }}</option>
+                <option value="1">{{ t("isupport") }} {{ alter.name }}</option>
+                <option value="2">
+                  {{ alter.name }} {{ t("supportsme") }}
+                </option>
+                <option value="3">{{ t("supporteachother") }}</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
     <div class="field">
       <div class="control">
