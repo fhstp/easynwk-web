@@ -77,7 +77,7 @@ export default {
         ageofcontactsoff: "Alter der Kontakte aus",
         roleofcontactsoff: "Rolle der Kontakte aus",
         qualitieson: "Qualitäten ein",
-        qualitiesoff: "Qualitäen aus",
+        qualitiesoff: "Qualitäten aus",
         //},
         //pdfView: {
         printorpdf: "Drucken bzw. als PDF drucken",
