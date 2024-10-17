@@ -82,6 +82,7 @@
           :y1="mark.y1"
           :x2="mark.x2"
           :y2="mark.y2"
+          :color="isPartOfClique(mark) ? 'purple' : 'black'"
           :class="{ select: mark.selected }"
         />
       </g>
@@ -141,7 +142,7 @@
         :x="egoCoords[0]"
         :y="egoCoords[1] + 1"
         class="mark"
-        style="font-size: 4px; cursor: pointer; text-anchor: middle;"
+        style="font-size: 4px; cursor: pointer; text-anchor: middle"
       >
         {{ egoEmoji }}
       </text>
@@ -206,6 +207,14 @@
       <span class="icon is-large">
         <font-awesome-icon icon="search-minus" />
       </span>
+    </button>
+    <button
+      id="zoomResetBtn"
+      class="button is-medium"
+      type="button"
+      :title="t('zoomreset')"
+    >
+      <span class="icon is-large"> Clique </span>
     </button>
   </div>
   <div id="brushBtns" ref="brushBtns">
@@ -328,6 +337,42 @@ export default defineComponent({
         store.state.session.editTab === TAB_BASE
       );
     });
+
+    function clusterClique(markIds: number[]): boolean {
+      const connectedAlters: number[] = [];
+      for (let i = 0; i < markIds.length; i++) {
+        const connectedAlterIds = computed(() => {
+          const myId = markIds[i];
+          const id1s = store.state.nwk.connections
+            .filter((d) => d.id2 == myId)
+            .map((d) => d.id1);
+          const id2s = store.state.nwk.connections
+            .filter((d) => d.id1 == myId)
+            .map((d) => d.id2);
+          return [...id1s, ...id2s];
+        });
+
+        for (let x = i + 1; x < markIds.length; x++) {
+          if (!connectedAlterIds.value.includes(markIds[x])) {
+            return false;
+          }
+        }
+        connectedAlters.push(markIds[i]);
+      }
+
+      // Check if at least 3 members in the clique
+      if (connectedAlters.length >= 3) {
+        const alterNames = connectedAlters.map((id) => {
+          const alter = store.state.nwk.alteri.find((a) => a.id === id);
+          return alter ? alter.name : `Unknown (ID: ${id})`;
+        });
+
+        console.log("Clique detected with members:", alterNames);
+        return true;
+      }
+
+      return false;
+    }
 
     const getPositionPolar = (event: UIEvent) => {
       const coords = d3.pointer(event);
@@ -659,6 +704,39 @@ export default defineComponent({
       return true;
     }
 
+    function isCliqueConnected(markIds: number[]): boolean {
+      if (markIds.length < 3) return false;
+
+      for (let i = 0; i < markIds.length; i++) {
+        const connectedAlterIds = getConnectedAlterIds(markIds[i]);
+
+        // Prüfen ob alle anderen markIds auch verbunden sind
+        for (let j = 0; j < markIds.length; j++) {
+          if (i !== j && !connectedAlterIds.includes(markIds[j])) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
+
+    function getConnectedAlterIds(myId: number): number[] {
+      const id1s = store.state.nwk.connections
+        .filter((d) => d.id2 === myId)
+        .map((d) => d.id1);
+      const id2s = store.state.nwk.connections
+        .filter((d) => d.id1 === myId)
+        .map((d) => d.id2);
+      return [...id1s, ...id2s];
+    }
+
+    function isPartOfClique(mark: ConnectionMark): boolean {
+      const connectedMarks = [mark.x1, mark.y1, mark.x2, mark.y2];
+      console.log("Hier " + connectedMarks + mark);
+      return isCliqueConnected(connectedMarks);
+    }
+
     const getRoleShort = (role: string) => {
       return getRoleAbbrev(role);
     };
@@ -787,7 +865,9 @@ export default defineComponent({
       isClusterFullyConnected,
       clusterConnect,
       clusterDisconnect,
+      clusterClique,
       clearBrush,
+      isPartOfClique,
       zoomSector,
       isNotZoomed: computed(() => transform.value.k == 1),
       resetZoom,
@@ -842,6 +922,11 @@ line.select {
   // stroke: rgb(136, 159, 213);
   // stroke: rgb($fhstpblue, 0.6);
   stroke: rgb(102, 150, 192);
+}
+
+.clique {
+  stroke: purple;
+  stroke-width: 2;
 }
 
 #position {
