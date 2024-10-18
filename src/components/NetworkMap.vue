@@ -36,8 +36,8 @@
         />
       </symbol>
       <radialGradient id="selected-gradient">
-        <stop offset="60%" stop-color="rgb(0, 80, 150)" stop-opacity="0.25" />
-        <stop offset="100%" stop-color="rgb(0, 80, 150)" stop-opacity="0" />
+        <stop offset="60%" stop-color="rgb(28, 135, 230)" stop-opacity="0.25" />
+        <stop offset="100%" stop-color="rgb(28, 135, 230)" stop-opacity="0" />
       </radialGradient>
       <filter id="dilate-and-xor">
         <!-- h/t https://stackoverflow.com/a/63287731/1140589 -->
