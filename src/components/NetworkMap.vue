@@ -69,7 +69,7 @@
           v-if="mark.selected"
           :cx="mark.x"
           :cy="mark.y"
-          r="4"
+          r="6"
           fill="url('#selected-gradient')"
         />
       </g>
