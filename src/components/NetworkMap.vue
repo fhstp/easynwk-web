@@ -842,7 +842,8 @@ line {
 line.select {
   // stroke: rgb(136, 159, 213);
   // stroke: rgb($fhstpblue, 0.6);
-  stroke: rgb(102, 150, 192);
+  stroke: rgb(28, 135, 230);
+  //altes blau rgb(102, 150, 192);
 }
 
 #position {
