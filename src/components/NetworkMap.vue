@@ -36,8 +36,8 @@
         />
       </symbol>
       <radialGradient id="selected-gradient">
-        <stop offset="60%" stop-color="rgb(0, 80, 150)" stop-opacity="0.25" />
-        <stop offset="100%" stop-color="rgb(0, 80, 150)" stop-opacity="0" />
+        <stop offset="60%" stop-color="rgb(28, 135, 230)" stop-opacity="0.25" />
+        <stop offset="100%" stop-color="rgb(28, 135, 230)" stop-opacity="0" />
       </radialGradient>
       <filter id="dilate-and-xor">
         <!-- h/t https://stackoverflow.com/a/63287731/1140589 -->
@@ -69,7 +69,7 @@
           v-if="mark.selected"
           :cx="mark.x"
           :cy="mark.y"
-          r="4"
+          r="6"
           fill="url('#selected-gradient')"
         />
       </g>
@@ -141,7 +141,7 @@
         :x="egoCoords[0]"
         :y="egoCoords[1] + 1"
         class="mark"
-        style="font-size: 4px; cursor: pointer; text-anchor: middle;"
+        style="font-size: 4px; cursor: pointer; text-anchor: middle"
       >
         {{ egoEmoji }}
       </text>
@@ -687,6 +687,7 @@ export default defineComponent({
           clearTimeout(clickTimeoutId);
           clickTimeoutId = null;
           console.log(alter.name + " dblclick");
+          console.log("Text here");
 
           // open form
           store.commit("openAlterFormById", { alterId: alter.id });
@@ -841,7 +842,9 @@ line {
 line.select {
   // stroke: rgb(136, 159, 213);
   // stroke: rgb($fhstpblue, 0.6);
-  stroke: rgb(102, 150, 192);
+  stroke: rgb(28, 135, 230);
+  stroke-dasharray: 5, 1;
+  //altes blau rgb(102, 150, 192);
 }
 
 #position {
