@@ -141,7 +141,7 @@
         :x="egoCoords[0]"
         :y="egoCoords[1] + 1"
         class="mark"
-        style="font-size: 4px; cursor: pointer; text-anchor: middle;"
+        style="font-size: 4px; cursor: pointer; text-anchor: middle"
       >
         {{ egoEmoji }}
       </text>
@@ -687,6 +687,7 @@ export default defineComponent({
           clearTimeout(clickTimeoutId);
           clickTimeoutId = null;
           console.log(alter.name + " dblclick");
+          console.log("Text here");
 
           // open form
           store.commit("openAlterFormById", { alterId: alter.id });
