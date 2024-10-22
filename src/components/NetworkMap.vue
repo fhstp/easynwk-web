@@ -82,7 +82,6 @@
           :y1="mark.y1"
           :x2="mark.x2"
           :y2="mark.y2"
-          :color="isPartOfClique(mark) ? 'purple' : 'black'"
           :class="{ select: mark.selected }"
         />
       </g>
@@ -209,10 +208,10 @@
       </span>
     </button>
     <button
-      id="zoomResetBtn"
+      id="CliqueBtn"
       class="button is-medium"
       type="button"
-      :title="t('zoomreset')"
+      @click="findCliques"
     >
       <span class="icon is-large"> Clique </span>
     </button>
@@ -704,15 +703,25 @@ export default defineComponent({
       return true;
     }
 
-    function isCliqueConnected(markIds: number[]): boolean {
-      if (markIds.length < 3) return false;
+    function getConnectedAlterIds(alterId: number): number[] {
+      const connections = store.state.nwk.connections;
+      const id1s = connections
+        .filter((conn) => conn.id2 === alterId)
+        .map((conn) => conn.id1);
+      const id2s = connections
+        .filter((conn) => conn.id1 === alterId)
+        .map((conn) => conn.id2);
+      return [...id1s, ...id2s];
+    }
 
-      for (let i = 0; i < markIds.length; i++) {
-        const connectedAlterIds = getConnectedAlterIds(markIds[i]);
+    // Methode für Clique
+    function isClique(alterIds: number[]): boolean {
+      if (alterIds.length < 3) return false; // mindestens 3 für Clique
 
-        // Prüfen ob alle anderen markIds auch verbunden sind
-        for (let j = 0; j < markIds.length; j++) {
-          if (i !== j && !connectedAlterIds.includes(markIds[j])) {
+      for (let i = 0; i < alterIds.length; i++) {
+        const connectedIds = getConnectedAlterIds(alterIds[i]);
+        for (let j = 0; j < alterIds.length; j++) {
+          if (i !== j && !connectedIds.includes(alterIds[j])) {
             return false;
           }
         }
@@ -721,20 +730,31 @@ export default defineComponent({
       return true;
     }
 
-    function getConnectedAlterIds(myId: number): number[] {
-      const id1s = store.state.nwk.connections
-        .filter((d) => d.id2 === myId)
-        .map((d) => d.id1);
-      const id2s = store.state.nwk.connections
-        .filter((d) => d.id1 === myId)
-        .map((d) => d.id2);
-      return [...id1s, ...id2s];
-    }
+    // Namen in der Konsole ausgeben
+    function findCliques() {
+      const alteri = store.state.nwk.alteri;
+      const cliques: string[][] = [];
 
-    function isPartOfClique(mark: ConnectionMark): boolean {
-      const connectedMarks = [mark.x1, mark.y1, mark.x2, mark.y2];
-      console.log("Hier " + connectedMarks + mark);
-      return isCliqueConnected(connectedMarks);
+      // Alle möglichen Gruppen durchsuchen
+      for (let i = 0; i < alteri.length; i++) {
+        for (let j = i + 1; j < alteri.length; j++) {
+          for (let k = j + 1; k < alteri.length; k++) {
+            const potentialClique = [alteri[i].id, alteri[j].id, alteri[k].id];
+            if (isClique(potentialClique)) {
+              const cliqueNames = potentialClique.map(
+                (id) =>
+                  alteri.find((alter) => alter.id === id)?.name || "Unbekannt"
+              );
+              cliques.push(cliqueNames);
+              console.log("Clique gefunden:", cliqueNames);
+            }
+          }
+        }
+      }
+
+      if (cliques.length === 0) {
+        console.log("Keine Cliquen gefunden");
+      }
     }
 
     const getRoleShort = (role: string) => {
@@ -865,9 +885,10 @@ export default defineComponent({
       isClusterFullyConnected,
       clusterConnect,
       clusterDisconnect,
-      clusterClique,
+      //clusterClique,
       clearBrush,
-      isPartOfClique,
+      findCliques,
+      //isPartOfClique,
       zoomSector,
       isNotZoomed: computed(() => transform.value.k == 1),
       resetZoom,
