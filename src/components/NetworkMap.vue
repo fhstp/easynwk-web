@@ -703,6 +703,8 @@ export default defineComponent({
       return true;
     }
 
+    //- Clique -----------------------------------------------------------------
+
     function getConnectedAlterIds(alterId: number): number[] {
       const connections = store.state.nwk.connections;
       const id1s = connections
@@ -713,6 +715,95 @@ export default defineComponent({
         .map((conn) => conn.id2);
       return [...id1s, ...id2s];
     }
+
+    function isClique(alterIds: number[]): boolean {
+      if (alterIds.length < 3 || alterIds.length > 12) return false; // mind. 3 und max. 12 für Clique
+
+      for (let i = 0; i < alterIds.length; i++) {
+        const connectedIds = getConnectedAlterIds(alterIds[i]);
+        for (let j = 0; j < alterIds.length; j++) {
+          if (i !== j && !connectedIds.includes(alterIds[j])) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
+
+    function findCliques() {
+      const alteri = store.state.nwk.alteri;
+      const cliques: string[][] = [];
+
+      // Lt Google-Suche ist eine Clique min 3 und max 12 Personen
+      for (let size = 3; size <= 12; size++) {
+        const combinations = getCombinations(alteri, size);
+
+        combinations.forEach((potentialClique) => {
+          const ids = potentialClique.map((alter) => alter.id);
+          if (isClique(ids)) {
+            const cliqueNames = ids.map(
+              (id) =>
+                alteri.find((alter) => alter.id === id)?.name || "Unbekannt"
+            );
+            cliques.push(cliqueNames);
+          }
+        });
+      }
+
+      // Duplizierte Cliquen entfernen, die Teil einer größeren Clique sind
+      const uniqueCliques = removeSubCliques(cliques);
+
+      uniqueCliques.forEach((clique) => {
+        console.log("Clique gefunden:", clique);
+      });
+
+      if (uniqueCliques.length === 0) {
+        console.log("Keine Cliquen gefunden");
+      }
+    }
+
+    // Kombinationen von size im array
+    function getCombinations(array: any[], size: number): any[][] {
+      const results: any[][] = [];
+
+      function combine(start: number, chosen: any[]) {
+        if (chosen.length === size) {
+          results.push([...chosen]);
+          return;
+        }
+
+        for (let i = start; i < array.length; i++) {
+          chosen.push(array[i]);
+          combine(i + 1, chosen);
+          chosen.pop();
+        }
+      }
+
+      combine(0, []);
+      return results;
+    }
+
+    function removeSubCliques(cliques: string[][]): string[][] {
+      const filteredCliques: string[][] = [];
+
+      // Sortiert nach Größe damit subcliquen nicht zuerst gezeigt werden
+      cliques.sort((a, b) => b.length - a.length);
+
+      cliques.forEach((clique) => {
+        const isSubset = filteredCliques.some((filteredClique) =>
+          clique.every((member) => filteredClique.includes(member))
+        );
+
+        if (!isSubset) {
+          filteredCliques.push(clique);
+        }
+      });
+
+      return filteredCliques;
+    }
+
+    /*
 
     // Methode für Clique
     function isClique(alterIds: number[]): boolean {
@@ -756,6 +847,8 @@ export default defineComponent({
         console.log("Keine Cliquen gefunden");
       }
     }
+
+     */
 
     const getRoleShort = (role: string) => {
       return getRoleAbbrev(role);
