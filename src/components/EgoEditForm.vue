@@ -12,7 +12,7 @@
           <div class="field">
             <div class="control">
               <input
-                class="input"
+                class="input is-link"
                 :class="{ 'is-danger': invalidName }"
                 ref="egofield"
                 v-model="egoName"
@@ -27,63 +27,63 @@
       </div>
 
       <div class="field is-horizontal" v-if="emoji">
-      <div class="field-label is-normal">
-        <label class="label">Emoji</label>
-      </div>
-      <br />
-      <div class="field-body">
-        <div>
-          <div style="display: flex; align-items: center; margin-top: 10px;">
-            <div>
-              {{
-                selectedEmoji == null || selectedEmoji.length < 1
-                  ? t("noemoji")
-                  : selectedEmoji
-              }}
-            </div>
-          </div>
+        <div class="field-label is-normal">
+          <label class="label">Emoji</label>
         </div>
-      </div>
-    </div>
-
-    <div class="field is-horizontal" v-if="emoji">
-      <div class="field-label is-normal">
-        <label class="label">{{ t("selectEmoji") }}</label>
-      </div>
-      <div class="field-body">
-        <div class="dropdown" :class="{ 'is-active': showEmojiPicker }">
-          <div >
-            <button
-              type="button"
-              class="button is-small"
-              @click="toggleEmojiPicker"
-            >
-            <span>{{ t("selectemoji") }}</span>
-            </button>
-            <button
-              v-if="selectedEmoji != null && selectedEmoji.length > 0"
-              @click="removeEmoji"
-              class="button is-small"
-              style="margin-left: 10px;"
-            >
-            <span>{{t("removeemoji")}}</span>
-            </button>
-          </div>
-          <div class="dropdown-menu">
-            <div>
+        <br />
+        <div class="field-body">
+          <div>
+            <div style="display: flex; align-items: center; margin-top: 10px">
               <div>
-                <EmojiPicker
-                  v-model="selectedEmoji"
-                  :native="true"
-                  :disableSkinTones="true"
-                  @select="onSelectEmoji"
-                />
+                {{
+                  selectedEmoji == null || selectedEmoji.length < 1
+                    ? t("noemoji")
+                    : selectedEmoji
+                }}
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <div class="field is-horizontal" v-if="emoji">
+        <div class="field-label is-normal">
+          <label class="label">{{ t("selectEmoji") }}</label>
+        </div>
+        <div class="field-body">
+          <div class="dropdown" :class="{ 'is-active': showEmojiPicker }">
+            <div>
+              <button
+                type="button"
+                class="button is-small"
+                @click="toggleEmojiPicker"
+              >
+                <span>{{ t("selectemoji") }}</span>
+              </button>
+              <button
+                v-if="selectedEmoji != null && selectedEmoji.length > 0"
+                @click="removeEmoji"
+                class="button is-small"
+                style="margin-left: 10px"
+              >
+                <span>{{ t("removeemoji") }}</span>
+              </button>
+            </div>
+            <div class="dropdown-menu">
+              <div>
+                <div>
+                  <EmojiPicker
+                    v-model="selectedEmoji"
+                    :native="true"
+                    :disableSkinTones="true"
+                    @select="onSelectEmoji"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div class="field is-horizontal">
         <div class="field-label is-normal">
@@ -91,7 +91,7 @@
         </div>
         <div class="field-body">
           <div class="control">
-            <div class="select is-fullwidth">
+            <div class="select is-fullwidth is-link">
               <select v-model="egoGender">
                 <option value="weiblich">{{ t("female") }}</option>
                 <option value="männlich">{{ t("male") }}</option>
@@ -113,7 +113,7 @@
           <div class="field">
             <div class="control">
               <input
-                class="input"
+                class="input is-link"
                 min="0"
                 :value="$store.state.nwk.ego.age"
                 @blur="commitEdit($event, 'age')"
@@ -127,7 +127,7 @@
       <div class="field">
         <div class="control">
           <textarea
-            class="textarea is-small"
+            class="textarea is-small is-link"
             :value="$store.state.nwk.ego.note"
             @blur="commitEdit($event, 'note')"
             :placeholder="t('notesaboutego')"

@@ -211,7 +211,7 @@
       id="CliqueBtn"
       class="button is-medium"
       type="button"
-      @click="findCliques"
+      @click="findMaximalCliques"
     >
       <span class="icon is-large"> Clique </span>
     </button>
@@ -716,6 +716,90 @@ export default defineComponent({
       return [...id1s, ...id2s];
     }
 
+    // Erstellen einer Adjazenzliste für Bron-Kerbosch-Algorithm (https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm)
+    function createAdjacencyList(alteri: any[]): Map<number, Set<number>> {
+      const adjacencyList = new Map<number, Set<number>>();
+
+      alteri.forEach((alter) => {
+        const connectedIds = getConnectedAlterIds(alter.id);
+        adjacencyList.set(alter.id, new Set(connectedIds));
+      });
+
+      return adjacencyList;
+    }
+
+    function bronKerbosch(
+      r: Set<number>,
+      p: Set<number>,
+      x: Set<number>,
+      cliques: number[][],
+      adjacencyList: Map<number, Set<number>>
+    ) {
+      if (p.size === 0 && x.size === 0) {
+        cliques.push(Array.from(r)); // Maximal-Clique gefunden
+        return;
+      }
+
+      const pCopy = new Set(p);
+
+      for (const v of pCopy) {
+        const neighbors = adjacencyList.get(v) || new Set();
+
+        // Rekursiver Aufruf
+        bronKerbosch(
+          new Set(r).add(v),
+          new Set([...p].filter((u) => neighbors.has(u))),
+          new Set([...x].filter((u) => neighbors.has(u))),
+          cliques,
+          adjacencyList
+        );
+
+        p.delete(v);
+        x.add(v);
+      }
+    }
+
+    // Finden aller 'maximalen Cliquen' von Größe 3 bis 12 (https://en.wikipedia.org/wiki/Adolescent_clique)
+    function findMaximalCliques() {
+      const alteri = store.state.nwk.alteri;
+      const adjacencyList = createAdjacencyList(alteri);
+      const cliques: number[][] = [];
+
+      bronKerbosch(
+        new Set(),
+        new Set(adjacencyList.keys()),
+        new Set(),
+        cliques,
+        adjacencyList
+      );
+
+      const filteredCliques = cliques.filter(
+        (clique) => clique.length >= 3 && clique.length <= 12
+      );
+
+      filteredCliques.forEach((clique) => {
+        const cliqueNames = clique.map(
+          (id) => alteri.find((alter) => alter.id === id)?.name || "Unbekannt"
+        );
+        console.log("Maximale Clique gefunden:", cliqueNames);
+      });
+
+      if (filteredCliques.length === 0) {
+        console.log("Keine Cliquen gefunden");
+      }
+    }
+
+    /*function getConnectedAlterIds(alterId: number): number[] {
+      const connections = store.state.nwk.connections;
+      const id1s = connections
+        .filter((conn) => conn.id2 === alterId)
+        .map((conn) => conn.id1);
+      const id2s = connections
+        .filter((conn) => conn.id1 === alterId)
+        .map((conn) => conn.id2);
+      return [...id1s, ...id2s];
+    }
+
     function isClique(alterIds: number[]): boolean {
       if (alterIds.length < 3 || alterIds.length > 12) return false; // mind. 3 und max. 12 für Clique
 
@@ -801,51 +885,6 @@ export default defineComponent({
       });
 
       return filteredCliques;
-    }
-
-    /*
-
-    // Methode für Clique
-    function isClique(alterIds: number[]): boolean {
-      if (alterIds.length < 3) return false; // mindestens 3 für Clique
-
-      for (let i = 0; i < alterIds.length; i++) {
-        const connectedIds = getConnectedAlterIds(alterIds[i]);
-        for (let j = 0; j < alterIds.length; j++) {
-          if (i !== j && !connectedIds.includes(alterIds[j])) {
-            return false;
-          }
-        }
-      }
-
-      return true;
-    }
-
-    // Namen in der Konsole ausgeben
-    function findCliques() {
-      const alteri = store.state.nwk.alteri;
-      const cliques: string[][] = [];
-
-      // Alle möglichen Gruppen durchsuchen
-      for (let i = 0; i < alteri.length; i++) {
-        for (let j = i + 1; j < alteri.length; j++) {
-          for (let k = j + 1; k < alteri.length; k++) {
-            const potentialClique = [alteri[i].id, alteri[j].id, alteri[k].id];
-            if (isClique(potentialClique)) {
-              const cliqueNames = potentialClique.map(
-                (id) =>
-                  alteri.find((alter) => alter.id === id)?.name || "Unbekannt"
-              );
-              cliques.push(cliqueNames);
-              console.log("Clique gefunden:", cliqueNames);
-            }
-          }
-        }
-      }
-
-      if (cliques.length === 0) {
-        console.log("Keine Cliquen gefunden");
-      }
     }
 
      */
@@ -980,7 +1019,8 @@ export default defineComponent({
       clusterDisconnect,
       //clusterClique,
       clearBrush,
-      findCliques,
+      findMaximalCliques,
+      //findCliques,
       //isPartOfClique,
       zoomSector,
       isNotZoomed: computed(() => transform.value.k == 1),
