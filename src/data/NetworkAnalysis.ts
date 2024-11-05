@@ -17,6 +17,7 @@ export interface NetworkAnalysis {
   maxDegree: number;
   isolated: Array<Alter>;
   alterZeroEdge: Array<Alter>;
+  clique: Array<Array<Alter>>;
   genderConnected: Array<number>;
   genderConnectable: Array<number>;
   horizonConnected: Array<number>;
@@ -37,6 +38,7 @@ function initNetworkAnalysis(): NetworkAnalysis {
     maxDegree: 0,
     isolated: [],
     alterZeroEdge: [],
+    clique: [],
     genderConnected: [],
     genderConnectable: [],
     horizonConnected: [],
@@ -71,6 +73,163 @@ interface AlterMetrics {
  * @returns
  */
 export function analyseNWKbyCategory(
+  nwk: NWK,
+  categories: AlterCategorization
+): Map<string, NetworkAnalysis> {
+  function createAdjacencyList(alteri: Alter[]): Map<number, Set<number>> {
+    const adjacencyList = new Map<number, Set<number>>();
+    for (const alter of alteri) {
+      adjacencyList.set(alter.id, new Set());
+    }
+    for (const conn of nwk.connections) {
+      adjacencyList.get(conn.id1)?.add(conn.id2);
+      adjacencyList.get(conn.id2)?.add(conn.id1);
+    }
+    return adjacencyList;
+  }
+
+  // Bron-Kerbosch-Algorithmus zur Berechnung der maximalen Cliquen
+  function bronKerbosch(
+    R: Set<number>,
+    P: Set<number>,
+    X: Set<number>,
+    cliques: Array<Array<number>>,
+    adjacencyList: Map<number, Set<number>>
+  ) {
+    if (P.size === 0 && X.size === 0) {
+      cliques.push(Array.from(R));
+      return;
+    }
+    const PArray = Array.from(P);
+    for (const v of PArray) {
+      const neighbors = adjacencyList.get(v) || new Set();
+      bronKerbosch(
+        new Set([...R, v]),
+        new Set([...P].filter((x) => neighbors.has(x))),
+        new Set([...X].filter((x) => neighbors.has(x))),
+        cliques,
+        adjacencyList
+      );
+      P.delete(v);
+      X.add(v);
+    }
+  }
+
+  const adjacencyList = createAdjacencyList(nwk.alteri);
+  const result = new Map<string, NetworkAnalysis>();
+
+  for (let i = 0; i < categories.categories.length; i++) {
+    const analysis = getOrInit(result, categories.categories[i]);
+
+    const alterMetrics: Map<number, AlterMetrics> = new Map();
+    for (const alter of nwk.alteri) {
+      const sec = sectorIndex(alter);
+      if (sec != null && isConnectable(alter))
+        alterMetrics.set(alter.id, {
+          alter,
+          degree: 0,
+          naehe: naehenScore(alter),
+          isolated: true,
+        });
+    }
+    for (const conn of nwk.connections) {
+      const a1 = alterMetrics.get(conn.id1);
+      const a2 = alterMetrics.get(conn.id2);
+      if (!(a1 && a2)) continue;
+
+      a1.isolated = false;
+      a2.isolated = false;
+
+      if (
+        categories.inCategory(i, a1.alter) &&
+        categories.inCategory(i, a2.alter)
+      ) {
+        analysis.intConnCount++;
+        a1.degree++;
+        a2.degree++;
+      }
+    }
+
+    let degreeSum = 0;
+    let naehenSum = 0;
+    const genderConnected = new Map();
+    const genderConnectable = new Map();
+    const horizonConnected = new Map();
+    const horizonConnectable = new Map();
+
+    for (const [, am] of alterMetrics) {
+      if (categories.inCategory(i, am.alter)) {
+        if (am.degree > analysis.maxDegree) {
+          analysis.maxDegree = am.degree;
+          analysis.stars = [];
+        }
+
+        if (am.degree == analysis.maxDegree) {
+          analysis.stars.push(am.alter);
+        }
+
+        if (am.alter.edgeType == 0) {
+          analysis.alterZeroEdge.push(am.alter);
+        }
+
+        if (am.isolated && am.alter.edgeType >= 1) {
+          analysis.isolated.push(am.alter);
+        }
+
+        analysis.alterConnectable++;
+        degreeSum += am.degree;
+        countByKey(genderConnectable, am.alter.currentGender);
+        countByKey(horizonConnectable, horizonKey(am.alter));
+        if (am.alter.edgeType >= 1) {
+          analysis.alterConnected++;
+          countByKey(genderConnected, am.alter.currentGender);
+          countByKey(horizonConnected, horizonKey(am.alter));
+          naehenSum += am.naehe;
+        }
+      }
+    }
+
+    analysis.degreeAvg = degreeSum / analysis.alterConnectable;
+    analysis.naehenAvg = naehenSum / analysis.alterConnected;
+    analysis.genderConnected = mapToArray(genderConnected, Gender);
+    analysis.genderConnectable = mapToArray(genderConnectable, Gender);
+    analysis.horizonConnected = mapToArray(horizonConnected, HORIZON_KEYS);
+    analysis.horizonConnectable = mapToArray(horizonConnectable, HORIZON_KEYS);
+
+    degreeSum = 0;
+    naehenSum = 0;
+
+    for (const [, am] of alterMetrics) {
+      if (categories.inCategory(i, am.alter)) {
+        degreeSum += (am.degree - analysis.degreeAvg) ** 2;
+        if (am.alter.edgeType >= 1) {
+          naehenSum += (am.naehe - analysis.naehenAvg) ** 2;
+        }
+      }
+    }
+    analysis.degreeDev = Math.sqrt(degreeSum / analysis.alterConnectable);
+    analysis.naehenDev = Math.sqrt(naehenSum / analysis.alterConnected);
+
+    const cliques: number[][] = [];
+    bronKerbosch(
+      new Set(),
+      new Set(adjacencyList.keys()),
+      new Set(),
+      cliques,
+      adjacencyList
+    );
+
+    analysis.clique = cliques
+      .filter((clique) => clique.length >= 3 && clique.length <= 12)
+      .map((clique) =>
+        clique.map((id) => nwk.alteri.find((alter) => alter.id === id)!)
+      );
+  }
+
+  return result;
+}
+
+/*export function analyseNWKbyCategory(
   nwk: NWK,
   categories: AlterCategorization
 ): Map<string, NetworkAnalysis> {
@@ -187,6 +346,8 @@ export function analyseNWKbyCategory(
 
   return result;
 }
+
+ */
 
 function countByKey(map: Map<string, number>, key: string) {
   const prev = map.get(key);
