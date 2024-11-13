@@ -127,10 +127,30 @@
         <tr>
           <th title="Clique">Cliquen</th>
           <td
-            @click="clickCell('clique')"
-            :class="{ clickAble: clique != '0' }"
+            v-for="(cat, i) in categoryLabels"
+            :key="i"
+            @click="clickCell('clique', cat)"
+            :class="{ clickAble: clique[i] != '0' }"
           >
-            Platzhalter
+            {{ clique[i] }}
+          </td>
+        </tr>
+        <tr v-for="(catCliques, index) in cliques" :key="'category-' + index">
+          <th>
+            <div
+              v-for="(clique, cliqueIndex) in catCliques"
+              :key="'clique-' + cliqueIndex"
+            >
+              <div>{{ clique.cliqueNumber }}</div>
+            </div>
+          </th>
+          <td>
+            <div
+              v-for="(clique, cliqueIndex) in catCliques"
+              :key="'members-' + cliqueIndex"
+            >
+              {{ clique.members }}
+            </div>
           </td>
         </tr>
       </tbody>
@@ -244,6 +264,36 @@ export default defineComponent({
       });
     });
 
+    const clique = computed(() => {
+      return categoryLabels.value.map((cat) => {
+        const analysis = getOrInit(networkAnalysis.value, cat);
+        if (analysis.clique.length > 0) {
+          return (
+            analysis.clique.length +
+            " (" +
+            analysis.clique
+              .map((a) => store.getters["displayName"](a))
+              .join(", ") +
+            ")"
+          );
+        } else {
+          return "0";
+        }
+      });
+    });
+
+    const cliques = computed(() => {
+      return categoryLabels.value.map((cat) => {
+        const analysis = getOrInit(networkAnalysis.value, cat);
+        return analysis.clique.map((clique, idx) => ({
+          cliqueNumber: `Clique ${idx + 1}`,
+          members: clique
+            .map((a) => store.getters["displayName"](a))
+            .join(", "),
+        }));
+      });
+    });
+
     function makeComputedAlterGroup(
       group: "stars" | "isolated" | "alterZeroEdge"
     ) {
@@ -320,6 +370,8 @@ export default defineComponent({
       ),
 
       stars,
+      clique,
+      cliques,
       isolated: makeComputedAlterGroup("isolated"),
       alterZeroEdge: makeComputedAlterGroup("alterZeroEdge"),
       clickCell,
@@ -345,5 +397,18 @@ th.sizeby > em {
   display: block;
   font-style: normal;
   margin-left: 2em;
+}
+
+td div {
+  margin-bottom: 5px;
+}
+
+td {
+  padding: 8px;
+  border-bottom: 1px solid #d3d3d3;
+  text-align: left;
+}
+tr:last-child td {
+  border-bottom: 1px solid #d3d3d3;
 }
 </style>
