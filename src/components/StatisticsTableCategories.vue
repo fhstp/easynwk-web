@@ -111,6 +111,28 @@
             {{ alterZeroEdge[i] }}
           </td>
         </tr>
+        <tr>
+          <th :title="t('noedgemsg')">
+            {{ t("personswithoutedgetotheego") }}
+          </th>
+          <td
+            v-for="(cat, i) in categoryLabels"
+            :key="i"
+            @click="clickCell('alterZeroEdge', cat)"
+            :class="{ clickAble: alterZeroEdge[i] != '0' }"
+          >
+            {{ alterZeroEdge[i] }}
+          </td>
+        </tr>
+        <tr>
+          <th title="Clique">Cliquen</th>
+          <td
+            @click="clickCell('clique')"
+            :class="{ clickAble: clique != '0' }"
+          >
+            Platzhalter
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
