@@ -125,7 +125,7 @@
           </td>
         </tr>
         <tr>
-          <th title="Clique">Cliquen</th>
+          <th title="Clique">Anzahl Cliquen</th>
           <td
             v-for="(cat, i) in categoryLabels"
             :key="i"
@@ -137,20 +137,40 @@
         </tr>
         <tr v-for="(catCliques, index) in cliques" :key="'category-' + index">
           <th>
-            <div
-              v-for="(clique, cliqueIndex) in catCliques"
-              :key="'clique-' + cliqueIndex"
-            >
-              <div>{{ clique.cliqueNumber }}</div>
+            <div class="clique-container">
+              <div
+                v-for="(clique, cliqueIndex) in catCliques"
+                :key="'clique-number-' + cliqueIndex"
+                class="clique-entry"
+              >
+                <span class="clique-number">{{ clique.cliqueNumber }}</span>
+                <span class="clique-divider"></span>
+                <span class="clique-members">{{ clique.members }}</span>
+              </div>
             </div>
           </th>
-          <td>
-            <div
-              v-for="(clique, cliqueIndex) in catCliques"
-              :key="'members-' + cliqueIndex"
-            >
-              {{ clique.members }}
-            </div>
+        </tr>
+
+        <tr>
+          <th title="Clique">Star Cliquen</th>
+          <td
+            v-for="(cat, i) in categoryLabels"
+            :key="i"
+            @click="clickCell('clique', cat)"
+            :class="{ clickAble: clique[i] != '0' }"
+          >
+            Platzhalter
+          </td>
+        </tr>
+        <tr>
+          <th title="Clique">Brückenperson Cliquen</th>
+          <td
+            v-for="(cat, i) in categoryLabels"
+            :key="i"
+            @click="clickCell('clique', cat)"
+            :class="{ clickAble: clique[i] != '0' }"
+          >
+            Platzhalter
           </td>
         </tr>
       </tbody>
@@ -268,14 +288,7 @@ export default defineComponent({
       return categoryLabels.value.map((cat) => {
         const analysis = getOrInit(networkAnalysis.value, cat);
         if (analysis.clique.length > 0) {
-          return (
-            analysis.clique.length +
-            " (" +
-            analysis.clique
-              .map((a) => store.getters["displayName"](a))
-              .join(", ") +
-            ")"
-          );
+          return analysis.clique.length;
         } else {
           return "0";
         }
@@ -410,5 +423,29 @@ td {
 }
 tr:last-child td {
   border-bottom: 1px solid #d3d3d3;
+}
+
+.clique-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.clique-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.clique-number,
+.clique-members {
+  width: 90%;
+}
+
+.clique-divider {
+  width: 1px;
+  height: 100%;
 }
 </style>
