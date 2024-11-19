@@ -44,12 +44,14 @@
                   :key="i"
                   @click="clickCell('clique', cat)"
                   :class="{ clickAble: clique[i] != '0' }"
-                  >{{ clique.members.length }} (Sektor)</span
                 >
+                  {{ clique.membersArray.length }} ({{ clique.sector }})
+                </span>
               </div>
             </div>
           </th>
         </tr>
+
         <!--
       <tr>
         <th title="Clique">Star Cliquen</th>
@@ -148,12 +150,22 @@ export default defineComponent({
     const cliques = computed(() => {
       return categoryLabels.value.map((cat) => {
         const analysis = getOrInit(networkAnalysis.value, cat);
-        return analysis.clique.map((clique, idx) => ({
-          cliqueNumber: `Clique ${idx + 1}`,
-          members: clique
-            .map((a) => store.getters["displayName"](a))
-            .join(", "),
-        }));
+        return analysis.clique.map((clique, idx) => {
+          const sectors = clique.map((a) =>
+            getAlterCategorization(props.categories).categories.find(
+              (c) => c === cat
+            )
+          );
+          console.log(sectors);
+          return {
+            cliqueNumber: `Clique ${idx + 1}`,
+            members: clique
+              .map((a) => store.getters["displayName"](a))
+              .join(", "),
+            membersArray: clique.map((a) => store.getters["displayName"](a)),
+            sector: sectors.join(", "),
+          };
+        });
       });
     });
 

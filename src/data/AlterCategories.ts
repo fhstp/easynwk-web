@@ -132,8 +132,14 @@ const PROFI: AlterCategorization = {
 
 const CLIQUE: AlterCategorization = {
   label: "Clique",
-  inCategory: () => true,
-  categories: [""],
+  inCategory: (catIndex: number, a: Alter): boolean =>
+    sectorIndex(a) === catIndex,
+  categories: [
+    "Familie",
+    "Freund*innen / Bekannte",
+    "Kolleg*innen",
+    "prof. Helfer*innen",
+  ],
 };
 
 /* obsolete categorizations (since Jun 2024)
