@@ -207,6 +207,7 @@ export default {
         noemoji: "No emoji chosen yet",
         selectemoji: "Select emoji",
         removeemoji: "Remove emoji",
+        amountClique: "Amount of Cliques",
       },
     };
   },

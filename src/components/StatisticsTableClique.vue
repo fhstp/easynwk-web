@@ -11,122 +11,7 @@
       </thead>
       <tbody>
         <tr>
-          <th :title="t('networkmsg')">
-            {{ t("networksize") }}
-            <!-- <span class="icon">
-            <font-awesome-icon icon="info-circle" />
-          </span> -->
-          </th>
-          <td v-for="(_, i) in categoryLabels" :key="i">
-            {{ networkSize[i] }}
-          </td>
-        </tr>
-        <tr>
-          <th class="sizeby">
-            {{ t("sizebygender") }}
-            <em>{{ t("female") }}</em>
-            <em>{{ t("male") }}</em>
-            <em>{{ t("diverse") }}</em>
-            <em>{{ t("notspecified") }}</em>
-          </th>
-          <td v-for="(_, i) in categoryLabels" :key="i">
-            <p>&nbsp;</p>
-            <p v-for="(gSize, j) in sizeByGender[i]" :key="j">{{ gSize }}</p>
-          </td>
-        </tr>
-        <tr>
-          <th class="sizeby">
-            {{ t("sizebyhorizon") }}
-            <em v-for="(ho, i) in HORIZON_KEYS" :key="'hl' + i">{{ t(ho) }}</em>
-          </th>
-          <td v-for="(_, i) in categoryLabels" :key="i">
-            <p>&nbsp;</p>
-            <p v-for="(hSz, j) in sizeByHorizon[i]" :key="j">{{ hSz }}</p>
-          </td>
-        </tr>
-        <tr>
-          <th :title="t('closenessmsg')">
-            {{ t("closeness") }}
-          </th>
-          <td v-for="(_, i) in categoryLabels" :key="i">
-            {{ naehen[i] }}
-          </td>
-        </tr>
-        <tr>
-          <th :title="t('densitymsg')">
-            {{ t("categorydensity") }}
-          </th>
-          <td v-for="(_, i) in categoryLabels" :key="i">{{ density[i] }}</td>
-        </tr>
-        <!-- <tr>
-        <th>Dichte zu anderen Kategorien</th>
-        <td v-for="(cat, i) in categoryLabels" :key="i">
-          {{ extDensity[i] }}
-        </td>
-      </tr> -->
-        <tr>
-          <th :title="t('degreemsg')">
-            {{ t("degree") }}
-          </th>
-          <td v-for="(_, i) in categoryLabels" :key="i">
-            {{ degree[i] }}
-          </td>
-        </tr>
-        <tr>
-          <th :title="t('starsmsg')">
-            {{ t("categorystar") }}
-          </th>
-          <td
-            v-for="(cat, i) in categoryLabels"
-            :key="i"
-            @click="clickCell('stars', cat)"
-            :class="{ clickAble: stars[i] != '-' }"
-          >
-            {{ stars[i] }}
-          </td>
-        </tr>
-        <tr>
-          <th :title="t('isolatedmsg')">
-            {{ t("isolatedpersons") }}
-          </th>
-          <td
-            v-for="(cat, i) in categoryLabels"
-            :key="i"
-            @click="clickCell('isolated', cat)"
-            :class="{ clickAble: isolated[i] != '0' }"
-          >
-            {{ isolated[i] }}
-          </td>
-        </tr>
-        <tr>
-          <th :title="t('noedgemsg')">
-            {{ t("personswithoutedgetotheego") }}
-          </th>
-          <td
-            v-for="(cat, i) in categoryLabels"
-            :key="i"
-            @click="clickCell('alterZeroEdge', cat)"
-            :class="{ clickAble: alterZeroEdge[i] != '0' }"
-          >
-            {{ alterZeroEdge[i] }}
-          </td>
-        </tr>
-        <tr>
-          <th :title="t('noedgemsg')">
-            {{ t("personswithoutedgetotheego") }}
-          </th>
-          <td
-            v-for="(cat, i) in categoryLabels"
-            :key="i"
-            @click="clickCell('alterZeroEdge', cat)"
-            :class="{ clickAble: alterZeroEdge[i] != '0' }"
-          >
-            {{ alterZeroEdge[i] }}
-          </td>
-        </tr>
-        <!--
-        <tr>
-          <th title="Clique">Anzahl Cliquen</th>
+          <th title="Clique">{{ t("amountClique") }}</th>
           <td
             v-for="(cat, i) in categoryLabels"
             :key="i"
@@ -165,30 +50,30 @@
             </div>
           </th>
         </tr>
-        <tr>
-          <th title="Clique">Star Cliquen</th>
-          <td
-            v-for="(cat, i) in categoryLabels"
-            :key="i"
-            @click="clickCell('clique', cat)"
-            :class="{ clickAble: clique[i] != '0' }"
-          >
-            Platzhalter
-          </td>
-        </tr>
-        <tr>
-          <th title="Clique">Brückenperson Cliquen</th>
-          <td
-            v-for="(cat, i) in categoryLabels"
-            :key="i"
-            @click="clickCell('clique', cat)"
-            :class="{ clickAble: clique[i] != '0' }"
-          >
-            Platzhalter
-          </td>
-        </tr>
-        -->
-      </tbody>
+        <!--
+      <tr>
+        <th title="Clique">Star Cliquen</th>
+        <td
+          v-for="(cat, i) in categoryLabels"
+          :key="i"
+          @click="clickCell('clique', cat)"
+          :class="{ clickAble: clique[i] != '0' }"
+        >
+          Platzhalter
+        </td>
+      </tr>
+      <tr>
+        <th title="Clique">Brückenperson Cliquen</th>
+        <td
+          v-for="(cat, i) in categoryLabels"
+          :key="i"
+          @click="clickCell('clique', cat)"
+          :class="{ clickAble: clique[i] != '0' }"
+        >
+          Platzhalter
+        </td>
+      </tr>
+      --></tbody>
     </table>
   </div>
 </template>
@@ -249,57 +134,7 @@ export default defineComponent({
       );
     });
 
-    const density = computed((): string[] => {
-      const result: string[] = [];
-      const analysis = networkAnalysis.value;
-      for (const cat of categoryLabels.value) {
-        const { alterConnectable, intConnCount } = getOrInit(analysis, cat);
-        result.push(
-          calculateDensity(alterConnectable, intConnCount).toLocaleString(
-            undefined,
-            {
-              minimumFractionDigits: 3,
-              maximumFractionDigits: 3,
-            }
-          )
-        );
-      }
-      return result;
-    });
-
-    // const extDensity = computed((): string[] => {
-    //   const result: string[] = [];
-    //   const totalAlteri = store.state.nwk.alteri.length;
-    //   const analysis = networkAnalysis.value;
-
-    //   for (const cat of categoryLabels.value) {
-    //     const { alterCount, extConnCount } = getOrInit(analysis, cat);
-    //     result.push(
-    //       calculateExternalDensity(
-    //         alterCount,
-    //         totalAlteri - alterCount,
-    //         extConnCount
-    //       ).toFixed(3)
-    //     );
-    //   }
-    //   return result;
-    // });
-
-    const stars = computed(() => {
-      return categoryLabels.value.map((cat) => {
-        const analysis = getOrInit(networkAnalysis.value, cat);
-        if (analysis.stars.length > 0 && analysis.maxDegree > 0) {
-          return analysis.stars
-            .map((a) => store.getters["displayName"](a))
-            .join(", ");
-          //  + " (" + analysis.maxDegree + " Beziehungen)"
-        } else {
-          return "-";
-        }
-      });
-    });
-
-    /*const clique = computed(() => {
+    const clique = computed(() => {
       return categoryLabels.value.map((cat) => {
         const analysis = getOrInit(networkAnalysis.value, cat);
         if (analysis.clique.length > 0) {
@@ -321,9 +156,8 @@ export default defineComponent({
         }));
       });
     });
-     */
 
-    function makeComputedAlterGroup(
+    /* function makeComputedAlterGroup(
       group: "stars" | "isolated" | "alterZeroEdge"
     ) {
       return computed(() => {
@@ -358,6 +192,8 @@ export default defineComponent({
       }
     };
 
+     */
+
     return {
       categoryLabels,
       networkSize: computed((): string[] =>
@@ -389,21 +225,17 @@ export default defineComponent({
           return an.naehenAvg.toFixed(1) + " (" + an.naehenDev.toFixed(1) + ")";
         })
       ),
-      density,
-      // extDensity,
       degree: computed((): string[] =>
         categoryLabels.value.map((cat) => {
           const an = getOrInit(networkAnalysis.value, cat);
           return an.degreeAvg.toFixed(1) + " (" + an.degreeDev.toFixed(1) + ")";
         })
       ),
-
-      stars,
-      //clique,
-      //cliques,
-      isolated: makeComputedAlterGroup("isolated"),
-      alterZeroEdge: makeComputedAlterGroup("alterZeroEdge"),
-      clickCell,
+      clique,
+      cliques,
+      //isolated: makeComputedAlterGroup("isolated"),
+      //alterZeroEdge: makeComputedAlterGroup("alterZeroEdge"),
+      //clickCell,
     };
   },
 });
