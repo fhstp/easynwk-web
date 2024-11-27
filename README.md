@@ -1,7 +1,7 @@
 # easyNWK Web
 
 This project aims to provide a modern web-based version of the easyNWK.
-The easyNWK is an egocentric network visualization tool for social workers and
+The easyNWK is an egocentered network visualization tool for social workers and
 healthcare professionals based on the book
 [Soziale Diagnostik](https://www.vandenhoeck-ruprecht-verlage.com/themen-entdecken/paedagogik-soziale-arbeit/soziale-arbeit/26908/soziale-diagnostik)
 by Peter Pantuček-Eisenbacher.
