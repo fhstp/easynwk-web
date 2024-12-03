@@ -17,7 +17,6 @@ export interface NetworkAnalysis {
   maxDegree: number;
   isolated: Array<Alter>;
   alterZeroEdge: Array<Alter>;
-  clique: Array<Array<Alter>>;
   genderConnected: Array<number>;
   genderConnectable: Array<number>;
   horizonConnected: Array<number>;
@@ -38,7 +37,6 @@ function initNetworkAnalysis(): NetworkAnalysis {
     maxDegree: 0,
     isolated: [],
     alterZeroEdge: [],
-    clique: [],
     genderConnected: [],
     genderConnectable: [],
     horizonConnected: [],
@@ -76,46 +74,6 @@ export function analyseNWKbyCategory(
   nwk: NWK,
   categories: AlterCategorization
 ): Map<string, NetworkAnalysis> {
-  function createAdjacencyList(alteri: Alter[]): Map<number, Set<number>> {
-    const adjacencyList = new Map<number, Set<number>>();
-    for (const alter of alteri) {
-      adjacencyList.set(alter.id, new Set());
-    }
-    for (const conn of nwk.connections) {
-      adjacencyList.get(conn.id1)?.add(conn.id2);
-      adjacencyList.get(conn.id2)?.add(conn.id1);
-    }
-    return adjacencyList;
-  }
-
-  // Bron-Kerbosch-Algorithmus zur Berechnung der maximalen Cliquen
-  function bronKerbosch(
-    R: Set<number>,
-    P: Set<number>,
-    X: Set<number>,
-    cliques: Array<Array<number>>,
-    adjacencyList: Map<number, Set<number>>
-  ) {
-    if (P.size === 0 && X.size === 0) {
-      cliques.push(Array.from(R));
-      return;
-    }
-    const PArray = Array.from(P);
-    for (const v of PArray) {
-      const neighbors = adjacencyList.get(v) || new Set();
-      bronKerbosch(
-        new Set([...R, v]),
-        new Set([...P].filter((x) => neighbors.has(x))),
-        new Set([...X].filter((x) => neighbors.has(x))),
-        cliques,
-        adjacencyList
-      );
-      P.delete(v);
-      X.add(v);
-    }
-  }
-
-  const adjacencyList = createAdjacencyList(nwk.alteri);
   const result = new Map<string, NetworkAnalysis>();
 
   for (let i = 0; i < categories.categories.length; i++) {
@@ -209,21 +167,6 @@ export function analyseNWKbyCategory(
     }
     analysis.degreeDev = Math.sqrt(degreeSum / analysis.alterConnectable);
     analysis.naehenDev = Math.sqrt(naehenSum / analysis.alterConnected);
-
-    const cliques: number[][] = [];
-    bronKerbosch(
-      new Set(),
-      new Set(adjacencyList.keys()),
-      new Set(),
-      cliques,
-      adjacencyList
-    );
-
-    analysis.clique = cliques
-      .filter((clique) => clique.length >= 3 && clique.length <= 12)
-      .map((clique) =>
-        clique.map((id) => nwk.alteri.find((alter) => alter.id === id)!)
-      );
   }
 
   return result;

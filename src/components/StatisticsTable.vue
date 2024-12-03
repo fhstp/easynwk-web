@@ -161,7 +161,7 @@ export default defineComponent({
     });
 
     function makeComputedAlterGroup(
-      group: "stars" | "isolated" | "alterZeroEdge" | "clique"
+      group: "stars" | "isolated" | "alterZeroEdge"
     ) {
       return computed(() => {
         const alteri = networkAnalysis.value[group];
