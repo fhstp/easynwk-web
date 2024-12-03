@@ -10,27 +10,27 @@
         <tr>
           <th title="Clique">{{ t("amountClique") }}</th>
         </tr>
-        <tr v-for="(catCliques, index) in cliques" :key="'category-' + index">
+        <tr
+          v-for="(clique, cliqueIndex) in cliques"
+          :key="'clique-number-' + cliqueIndex"
+        >
           <th>
             <div class="clique-container">
-              <div
-                v-for="(clique, cliqueIndex) in catCliques"
-                :key="'clique-number-' + cliqueIndex"
-                class="clique-entry"
-              >
+              <div class="clique-entry">
                 <span
                   class="clique-members"
-                  @click="clickCell('clique', categoryLabels[index])"
+                  @click="clickCell('clique', clique.cliqueNumber)"
                   :class="{ clickAble: clique.membersArray.length > 0 }"
                   >{{ clique.members }}</span
                 >
                 <span class="clique-divider"></span>
                 <span
                   class="clique-number"
-                  @click="clickCell('clique', categoryLabels[index])"
+                  @click="clickCell('clique', clique.cliqueNumber)"
                   :class="{ clickAble: clique.membersArray.length > 0 }"
                 >
-                  {{ clique.membersArray.length }} ({{ categoryLabels[index] }})
+                  {{ clique.membersArray.length }} (
+                  {{ clique.sectors.join(", ") }})
                 </span>
               </div>
             </div>
@@ -95,19 +95,37 @@ export default defineComponent({
     });
 
     const cliques = computed(() => {
-      return categoryLabels.value.map((cat) => {
-        const analysis = getOrInit(networkAnalysis.value, cat);
-        return analysis.clique.map((clique, idx) => {
-          return {
-            cliqueNumber: `Clique ${idx + 1}`,
-            members: clique
-              .map((a) => store.getters["displayName"](a))
-              .join(", "),
-            membersArray: clique.map((a) => store.getters["displayName"](a)),
-            sector: cat,
-          };
-        });
-      });
+      return categoryLabels.value
+        .map((cat) => {
+          const analysis = getOrInit(networkAnalysis.value, cat);
+          return analysis.clique.map((clique, idx) => {
+            const sectors: string[] = [];
+
+            clique.forEach((member) => {
+              categoryLabels.value.forEach((sector) => {
+                const sectorAnalysis = networkAnalysis.value.get(sector);
+                if (
+                  sectorAnalysis &&
+                  sectorAnalysis.clique.some((c) => c.includes(member))
+                ) {
+                  if (!sectors.includes(sector)) {
+                    sectors.push(sector);
+                  }
+                }
+              });
+            });
+
+            return {
+              cliqueNumber: `Clique ${idx + 1}`,
+              members: clique
+                .map((a) => store.getters["displayName"](a))
+                .join(", "),
+              membersArray: clique.map((a) => store.getters["displayName"](a)),
+              sectors: sectors,
+            };
+          });
+        })
+        .flat();
     });
 
     return {
