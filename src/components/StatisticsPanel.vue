@@ -1,6 +1,10 @@
 <template>
   <nav class="panel">
-    <p class="panel-heading" style="display: flex" @click.stop="isOpen = !isOpen">
+    <p
+      class="panel-heading"
+      style="display: flex"
+      @click.stop="isOpen = !isOpen"
+    >
       <span class="icon is-medium">
         <font-awesome-icon icon="chart-bar" size="lg" />
       </span>
@@ -18,14 +22,18 @@
         :class="{ 'is-active': tab === cat }"
         @click="go(cat)"
       >
-        {{ translateCategoryKey(categoryLabel(cat)) }}</a
-      >
+        {{ translateCategoryKey(categoryLabel(cat)) }}
+      </a>
     </p>
     <StatisticsTable v-if="isOpen && tab === ''"></StatisticsTable>
     <StatisticsTableCategories
-      v-else-if="isOpen"
+      v-else-if="isOpen && tab !== 'clique'"
       :categories="tab"
     ></StatisticsTableCategories>
+    <StatisticsTableClique
+      v-else-if="isOpen && tab === 'clique'"
+    ></StatisticsTableClique>
+
     <div class="panel-block" v-else />
   </nav>
 </template>
@@ -35,6 +43,7 @@ import { computed, defineComponent, ref } from "vue";
 import { useStore } from "@/store";
 import StatisticsTable from "@/components/StatisticsTable.vue";
 import StatisticsTableCategories from "@/components/StatisticsTableCategories.vue";
+import StatisticsTableClique from "@/components/StatisticsTableClique.vue";
 import {
   allAlterCategorizationKeys,
   getAlterCategorization,
@@ -60,7 +69,11 @@ export default defineComponent({
       }
     },
   },
-  components: { StatisticsTable, StatisticsTableCategories },
+  components: {
+    StatisticsTableClique,
+    StatisticsTable,
+    StatisticsTableCategories,
+  },
   setup() {
     const store = useStore();
 
