@@ -32,7 +32,6 @@
     ></StatisticsTableCategories>
     <StatisticsTableClique
       v-else-if="isOpen && tab === 'clique'"
-      :categories="tab"
     ></StatisticsTableClique>
 
     <div class="panel-block" v-else />

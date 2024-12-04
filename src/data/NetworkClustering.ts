@@ -14,7 +14,8 @@ export function findCliques(nwk: NWK): Alter[][] {
   );
 
   return cliques
-    .filter((clique) => clique.length >= 3 && clique.length <= 12)
+    .filter((clique) => clique.length >= 3)
+    .sort((a, b) => b.length - a.length)
     .map((clique) =>
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       clique.map((id) => nwk.alteri.find((alter) => alter.id === id)!)

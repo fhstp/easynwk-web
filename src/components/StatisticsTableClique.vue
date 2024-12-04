@@ -1,21 +1,18 @@
 <template>
   <div class="panel-block" style="display: block">
     <table class="table is-fullwidth">
-      <thead>
-        <tr>
-          <th></th>
-        </tr>
-      </thead>
       <tbody>
         <tr>
           <th title="Clique">{{ t("amountClique") }}</th>
+          <td>{{ cliquesList.length }}</td>
         </tr>
         <tr
-          v-for="(clique, cliqueIndex) in cliques"
+          v-for="(clique, cliqueIndex) in cliquesList"
           :key="'clique-number-' + cliqueIndex"
         >
           <th>
-            <div class="clique-container">
+            {{ clique.alters.map((d) => d.name).join(", ") }}
+            <!-- <div class="clique-container">
               <div class="clique-entry">
                 <span
                   class="clique-members"
@@ -33,8 +30,11 @@
                   {{ clique.sectors.join(", ") }})
                 </span>
               </div>
-            </div>
+            </div> -->
           </th>
+          <td>
+            {{ clique.description }}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -44,17 +44,17 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 import { useStore } from "@/store";
-import {
-  analyseNWKbyCategory,
-  getOrInit,
-  NetworkAnalysis,
-} from "@/data/NetworkAnalysis";
-import {
-  CATEGORY_TRANSLATIONS,
-  getAlterCategorization,
-} from "@/data/AlterCategories";
+import { findCliques } from "@/data/NetworkClustering";
+import { sectorIndex } from "@/data/AlterCategories";
 import de from "@/de";
 import en from "@/en";
+import { Alter } from "@/data/Alter";
+import { Sectors, SectorsEng } from "@/data/Sectors";
+
+interface CliqueItem {
+  alters: Alter[];
+  description: string;
+}
 
 export default defineComponent({
   mixins: [de, en],
@@ -62,75 +62,39 @@ export default defineComponent({
     t(prop: string) {
       return this[document.documentElement.lang][prop];
     },
-    translateCategoryKey(categoryKey: string) {
-      const lang = document.documentElement.lang;
-      const translation = CATEGORY_TRANSLATIONS[categoryKey];
-
-      if (translation && translation[lang]) {
-        return translation[lang];
-      } else {
-        return categoryKey;
-      }
-    },
   },
-
-  props: {
-    categories: {
-      type: String,
-      required: true,
-    },
-  },
-  setup(props) {
+  setup() {
     const store = useStore();
 
-    const categoryLabels = computed((): string[] => {
-      return getAlterCategorization(props.categories).categories;
+    const sectorLabels =
+      document.documentElement.lang === "de" ? Sectors : SectorsEng;
+
+    const cliques = computed((): Alter[][] => {
+      return findCliques(store.state.nwk);
     });
 
-    const networkAnalysis = computed((): Map<string, NetworkAnalysis> => {
-      return analyseNWKbyCategory(
-        store.state.nwk,
-        getAlterCategorization(props.categories)
-      );
-    });
+    const cliquesList = computed((): CliqueItem[] => {
+      return cliques.value.map((clique) => {
+        const sectorIndices = clique
+          .map((a) => sectorIndex(a))
+          .filter((d) => d !== null);
+        const uniqSectorIndices = [...new Set(sectorIndices)];
+        console.log(uniqSectorIndices);
+        const sectLabels = uniqSectorIndices
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          .map((d) => sectorLabels[d!])
+          .join(", ");
 
-    const cliques = computed(() => {
-      return categoryLabels.value
-        .map((cat) => {
-          const analysis = getOrInit(networkAnalysis.value, cat);
-          return analysis.clique.map((clique, idx) => {
-            const sectors: string[] = [];
-
-            clique.forEach((member) => {
-              categoryLabels.value.forEach((sector) => {
-                const sectorAnalysis = networkAnalysis.value.get(sector);
-                if (
-                  sectorAnalysis &&
-                  sectorAnalysis.clique.some((c) => c.includes(member))
-                ) {
-                  if (!sectors.includes(sector)) {
-                    sectors.push(sector);
-                  }
-                }
-              });
-            });
-
-            return {
-              cliqueNumber: `Clique ${idx + 1}`,
-              members: clique
-                .map((a) => store.getters["displayName"](a))
-                .join(", "),
-              membersArray: clique.map((a) => store.getters["displayName"](a)),
-              sectors: sectors,
-            };
-          });
-        })
-        .flat();
+        return {
+          // cliqueNumber: `Clique ${idx + 1}`,
+          alters: clique,
+          description: clique.length + " (" + sectLabels + ")",
+        };
+      });
     });
 
     return {
-      categoryLabels,
-      cliques,
+      cliquesList,
     };
   },
 });
