@@ -10,7 +10,7 @@
           v-for="(clique, cliqueIndex) in cliquesList"
           :key="'clique-number-' + cliqueIndex"
         >
-          <th>
+          <th @click="clickClique(clique.alters)" class="clickAble">
             {{ clique.alters.map((d) => d.name).join(", ") }}
             <!-- <div class="clique-container">
               <div class="clique-entry">
@@ -93,8 +93,18 @@ export default defineComponent({
       });
     });
 
+    const clickClique = (alteri: Alter[]) => {
+      if (alteri.length > 0) {
+        store.commit(
+          "session/selectAlters",
+          alteri.map((a) => a.id)
+        );
+      }
+    };
+
     return {
       cliquesList,
+      clickClique,
     };
   },
 });
