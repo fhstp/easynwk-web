@@ -11,26 +11,13 @@
           :key="'clique-number-' + cliqueIndex"
         >
           <th @click="clickClique(clique.alters)" class="clickAble">
-            {{ clique.alters.map((d) => d.name).join(", ") }}
-            <!-- <div class="clique-container">
-              <div class="clique-entry">
-                <span
-                  class="clique-members"
-                  @click="clickCell('clique', clique.cliqueNumber)"
-                  :class="{ clickAble: clique.membersArray.length > 0 }"
-                  >{{ clique.members }}</span
-                >
-                <span class="clique-divider"></span>
-                <span
-                  class="clique-number"
-                  @click="clickCell('clique', clique.cliqueNumber)"
-                  :class="{ clickAble: clique.membersArray.length > 0 }"
-                >
-                  {{ clique.membersArray.length }} (
-                  {{ clique.sectors.join(", ") }})
-                </span>
-              </div>
-            </div> -->
+            <template
+              v-for="(a, idx) in clique.alters"
+              :key="`a_${cliqueIndex}_${idx}`"
+            >
+              <template v-if="idx > 0">, </template>
+              <span :class="{ selalter: isSelected(a.id) }">{{ a.name }}</span>
+            </template>
           </th>
           <td>
             {{ clique.description }}
@@ -105,12 +92,17 @@ export default defineComponent({
     return {
       cliquesList,
       clickClique,
+      isSelected: store.getters["session/isSelected"],
     };
   },
 });
 </script>
 
 <style scoped lang="scss">
+span.selalter {
+  color: blue;
+}
+
 thead th:not([align]) {
   text-align: right;
 }
