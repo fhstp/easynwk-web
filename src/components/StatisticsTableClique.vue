@@ -100,7 +100,8 @@ export default defineComponent({
 
 <style scoped lang="scss">
 span.selalter {
-  color: blue;
+  color: rgb(30, 92, 146);
+  font-weight: bold;
 }
 
 thead th:not([align]) {
