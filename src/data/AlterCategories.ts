@@ -130,6 +130,18 @@ const PROFI: AlterCategorization = {
   categories: ["prof. Hilfe", "Netzwerk ohne prof. Hilfe", "gesamtes Netzwerk"],
 };
 
+const CLIQUE: AlterCategorization = {
+  label: "Clique",
+  inCategory: (catIndex: number, a: Alter): boolean =>
+    sectorIndex(a) === catIndex,
+  categories: [
+    "Familie",
+    "Freund*innen / Bekannte",
+    "Kolleg*innen",
+    "prof. Helfer*innen",
+  ],
+};
+
 /* obsolete categorizations (since Jun 2024)
 const HORIZON_CUM: AlterCategorization = {
   label: "Horizont (kumulativ)",
@@ -173,7 +185,13 @@ const ALL: AlterCategorization = {
 };
 
 export function getAlterCategorization(key = ""): AlterCategorization {
-  return key === "sector" ? SECTOR : key === "profi" ? PROFI : ALL;
+  return key === "sector"
+    ? SECTOR
+    : key === "profi"
+    ? PROFI
+    : key === "clique"
+    ? CLIQUE
+    : ALL;
   // : key === "horizon"
   // ? HORIZON
   // : key === "horizon_cum"
@@ -188,6 +206,7 @@ export const allAlterCategorizationKeys = [
   "",
   "sector",
   "profi",
+  "clique",
   // "horizon",
   // "horizon_cum",
   // "gender",

@@ -92,6 +92,17 @@
             {{ alterZeroEdge }}
           </td>
         </tr>
+        <!--
+        <tr>
+          <th title="Clique">Cliquen</th>
+          <td
+            @click="clickCell('clique')"
+            :class="{ clickAble: clique != '0' }"
+          >
+            {{ clique }}
+          </td>
+        </tr>
+        -->
       </tbody>
     </table>
   </div>
@@ -214,6 +225,7 @@ export default defineComponent({
       stars,
       isolated: makeComputedAlterGroup("isolated"),
       alterZeroEdge: makeComputedAlterGroup("alterZeroEdge"),
+      //clique: makeComputedAlterGroup("clique"),
       clickCell,
     };
   },
