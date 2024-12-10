@@ -207,14 +207,6 @@
         <font-awesome-icon icon="search-minus" />
       </span>
     </button>
-    <button
-      id="CliqueBtn"
-      class="button is-medium"
-      type="button"
-      @click="findMaximalCliques"
-    >
-      <span class="icon is-large"> Clique </span>
-    </button>
   </div>
   <div id="brushBtns" ref="brushBtns">
     <!-- <button
@@ -336,42 +328,6 @@ export default defineComponent({
         store.state.session.editTab === TAB_BASE
       );
     });
-
-    function clusterClique(markIds: number[]): boolean {
-      const connectedAlters: number[] = [];
-      for (let i = 0; i < markIds.length; i++) {
-        const connectedAlterIds = computed(() => {
-          const myId = markIds[i];
-          const id1s = store.state.nwk.connections
-            .filter((d) => d.id2 == myId)
-            .map((d) => d.id1);
-          const id2s = store.state.nwk.connections
-            .filter((d) => d.id1 == myId)
-            .map((d) => d.id2);
-          return [...id1s, ...id2s];
-        });
-
-        for (let x = i + 1; x < markIds.length; x++) {
-          if (!connectedAlterIds.value.includes(markIds[x])) {
-            return false;
-          }
-        }
-        connectedAlters.push(markIds[i]);
-      }
-
-      // Check if at least 3 members in the clique
-      if (connectedAlters.length >= 3) {
-        const alterNames = connectedAlters.map((id) => {
-          const alter = store.state.nwk.alteri.find((a) => a.id === id);
-          return alter ? alter.name : `Unknown (ID: ${id})`;
-        });
-
-        console.log("Clique detected with members:", alterNames);
-        return true;
-      }
-
-      return false;
-    }
 
     const getPositionPolar = (event: UIEvent) => {
       const coords = d3.pointer(event);
@@ -703,192 +659,6 @@ export default defineComponent({
       return true;
     }
 
-    //- Clique -----------------------------------------------------------------
-
-    function getConnectedAlterIds(alterId: number): number[] {
-      const connections = store.state.nwk.connections;
-      const id1s = connections
-        .filter((conn) => conn.id2 === alterId)
-        .map((conn) => conn.id1);
-      const id2s = connections
-        .filter((conn) => conn.id1 === alterId)
-        .map((conn) => conn.id2);
-      return [...id1s, ...id2s];
-    }
-
-    // Erstellen einer Adjazenzliste für Bron-Kerbosch-Algorithm (https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm)
-    function createAdjacencyList(alteri: any[]): Map<number, Set<number>> {
-      const adjacencyList = new Map<number, Set<number>>();
-
-      alteri.forEach((alter) => {
-        const connectedIds = getConnectedAlterIds(alter.id);
-        adjacencyList.set(alter.id, new Set(connectedIds));
-      });
-
-      return adjacencyList;
-    }
-
-    function bronKerbosch(
-      r: Set<number>,
-      p: Set<number>,
-      x: Set<number>,
-      cliques: number[][],
-      adjacencyList: Map<number, Set<number>>
-    ) {
-      if (p.size === 0 && x.size === 0) {
-        cliques.push(Array.from(r)); // Maximal-Clique gefunden
-        return;
-      }
-
-      const pCopy = new Set(p);
-
-      for (const v of pCopy) {
-        const neighbors = adjacencyList.get(v) || new Set();
-
-        // Rekursiver Aufruf
-        bronKerbosch(
-          new Set(r).add(v),
-          new Set([...p].filter((u) => neighbors.has(u))),
-          new Set([...x].filter((u) => neighbors.has(u))),
-          cliques,
-          adjacencyList
-        );
-
-        p.delete(v);
-        x.add(v);
-      }
-    }
-
-    // Finden aller 'maximalen Cliquen' von Größe 3 bis 12 (https://en.wikipedia.org/wiki/Adolescent_clique)
-    function findMaximalCliques() {
-      const alteri = store.state.nwk.alteri;
-      const adjacencyList = createAdjacencyList(alteri);
-      const cliques: number[][] = [];
-
-      bronKerbosch(
-        new Set(),
-        new Set(adjacencyList.keys()),
-        new Set(),
-        cliques,
-        adjacencyList
-      );
-
-      const filteredCliques = cliques.filter(
-        (clique) => clique.length >= 3 && clique.length <= 12
-      );
-
-      filteredCliques.forEach((clique) => {
-        const cliqueNames = clique.map(
-          (id) => alteri.find((alter) => alter.id === id)?.name || "Unbekannt"
-        );
-        console.log("Maximale Clique gefunden:", cliqueNames);
-      });
-
-      if (filteredCliques.length === 0) {
-        console.log("Keine Cliquen gefunden");
-      }
-    }
-
-    /*function getConnectedAlterIds(alterId: number): number[] {
-      const connections = store.state.nwk.connections;
-      const id1s = connections
-        .filter((conn) => conn.id2 === alterId)
-        .map((conn) => conn.id1);
-      const id2s = connections
-        .filter((conn) => conn.id1 === alterId)
-        .map((conn) => conn.id2);
-      return [...id1s, ...id2s];
-    }
-
-    function isClique(alterIds: number[]): boolean {
-      if (alterIds.length < 3 || alterIds.length > 12) return false; // mind. 3 und max. 12 für Clique
-
-      for (let i = 0; i < alterIds.length; i++) {
-        const connectedIds = getConnectedAlterIds(alterIds[i]);
-        for (let j = 0; j < alterIds.length; j++) {
-          if (i !== j && !connectedIds.includes(alterIds[j])) {
-            return false;
-          }
-        }
-      }
-
-      return true;
-    }
-
-    function findCliques() {
-      const alteri = store.state.nwk.alteri;
-      const cliques: string[][] = [];
-
-      // Lt Google-Suche ist eine Clique min 3 und max 12 Personen
-      for (let size = 3; size <= 12; size++) {
-        const combinations = getCombinations(alteri, size);
-
-        combinations.forEach((potentialClique) => {
-          const ids = potentialClique.map((alter) => alter.id);
-          if (isClique(ids)) {
-            const cliqueNames = ids.map(
-              (id) =>
-                alteri.find((alter) => alter.id === id)?.name || "Unbekannt"
-            );
-            cliques.push(cliqueNames);
-          }
-        });
-      }
-
-      // Duplizierte Cliquen entfernen, die Teil einer größeren Clique sind
-      const uniqueCliques = removeSubCliques(cliques);
-
-      uniqueCliques.forEach((clique) => {
-        console.log("Clique gefunden:", clique);
-      });
-
-      if (uniqueCliques.length === 0) {
-        console.log("Keine Cliquen gefunden");
-      }
-    }
-
-    // Kombinationen von size im array
-    function getCombinations(array: any[], size: number): any[][] {
-      const results: any[][] = [];
-
-      function combine(start: number, chosen: any[]) {
-        if (chosen.length === size) {
-          results.push([...chosen]);
-          return;
-        }
-
-        for (let i = start; i < array.length; i++) {
-          chosen.push(array[i]);
-          combine(i + 1, chosen);
-          chosen.pop();
-        }
-      }
-
-      combine(0, []);
-      return results;
-    }
-
-    function removeSubCliques(cliques: string[][]): string[][] {
-      const filteredCliques: string[][] = [];
-
-      // Sortiert nach Größe damit subcliquen nicht zuerst gezeigt werden
-      cliques.sort((a, b) => b.length - a.length);
-
-      cliques.forEach((clique) => {
-        const isSubset = filteredCliques.some((filteredClique) =>
-          clique.every((member) => filteredClique.includes(member))
-        );
-
-        if (!isSubset) {
-          filteredCliques.push(clique);
-        }
-      });
-
-      return filteredCliques;
-    }
-
-     */
-
     const getRoleShort = (role: string) => {
       return getRoleAbbrev(role);
     };
@@ -1017,11 +787,7 @@ export default defineComponent({
       isClusterFullyConnected,
       clusterConnect,
       clusterDisconnect,
-      //clusterClique,
       clearBrush,
-      findMaximalCliques,
-      //findCliques,
-      //isPartOfClique,
       zoomSector,
       isNotZoomed: computed(() => transform.value.k == 1),
       resetZoom,
@@ -1076,11 +842,6 @@ line.select {
   // stroke: rgb(136, 159, 213);
   // stroke: rgb($fhstpblue, 0.6);
   stroke: rgb(102, 150, 192);
-}
-
-.clique {
-  stroke: purple;
-  stroke-width: 2;
 }
 
 #position {
