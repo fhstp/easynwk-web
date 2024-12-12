@@ -78,7 +78,8 @@ export default {
         anonymiseon: "Anonymisieren",
         horizonson: "Horizonte",
         connectionson: "Verbindungen",
-        emojion: "Emojis",
+        emojion: "Emojis anzeigen",
+        emojioff: "Emojis ausblenden",
         namesofcontactson: "Beschriftung der Kontakte",
         ageofcontactson: "zusätzlich: Alter (Jahre)",
         roleofcontactson: "zusätzlich: Rolle der Kontakte",
@@ -193,8 +194,10 @@ export default {
         network_without_professional_help: "Netzwerk ohne prof. Hilfe",
         entire_network: "gesamtes Netzwerk",
         lang: "de",
-        formaterror: "Die ausgewählte Datei entspricht nicht dem JSON oder den NWK Format.",
-        checkformat: "Bitte überprüfen Sie die Datei und versuchen Sie es erneut.",
+        formaterror:
+          "Die ausgewählte Datei entspricht nicht dem JSON oder den NWK Format.",
+        checkformat:
+          "Bitte überprüfen Sie die Datei und versuchen Sie es erneut.",
         //Karten und Verläufe:
         versiontitle: "Karten und Verläufe",
         currentversion: "Aktuelle Karte: ",

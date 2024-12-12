@@ -62,21 +62,26 @@
               <span>{{ t("connectionson") }}</span>
             </label>
           </div>
-          <div class="control">
-            <label class="checkbox">
-              <input type="checkbox" v-model="emoji" />
-              <span>{{ t("emojion") }}</span>
-            </label>
-          </div>
         </div>
         <div>
           <div class="control">
-            <button class="button" @click.stop="togglePseudonyms">
+            <button
+              class="button"
+              @click.stop="togglePseudonyms"
+              style="margin-right: 1vw"
+            >
               <span class="icon">
                 <font-awesome-icon icon="user-secret" />
               </span>
               <span v-if="pseudonyms">{{ t("anonymiseoff") }}</span>
               <span v-else>{{ t("anonymiseon") }}</span>
+            </button>
+            <button class="button" @click.stop="toggleEmoji">
+              <span class="icon">
+                <font-awesome-icon icon="icons" />
+              </span>
+              <span v-if="emoji">{{ t("emojioff") }}</span>
+              <span v-else>{{ t("emojion") }}</span>
             </button>
           </div>
         </div>
@@ -142,6 +147,11 @@ export default defineComponent({
     return {
       pseudonyms: computed(() => store.state.pseudonym.active),
       togglePseudonyms: () => store.commit("pseudonym/toggle"),
+      toggleEmoji: () =>
+        store.commit("view/updateFlag", {
+          flag: "emoji",
+          value: !store.state.view.emoji,
+        }),
       horizons: accessFlag("horizons"),
       connections: accessFlag("connections"),
       emoji: accessFlag("emoji"),
