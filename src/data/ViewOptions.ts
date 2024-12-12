@@ -9,6 +9,7 @@ export interface ViewOptionsFlags {
 
 export interface ViewOptions extends ViewOptionsFlags {
   labelSizeInNwk: number;
+  iconSizeInNwk: number;
 }
 
 export function initDefaultViewOptions(): ViewOptions {
@@ -22,5 +23,6 @@ export function initDefaultViewOptions(): ViewOptions {
     roleInNwk: false,
 
     labelSizeInNwk: 5,
+    iconSizeInNwk: 5,
   };
 }

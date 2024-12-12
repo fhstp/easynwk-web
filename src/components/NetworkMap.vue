@@ -69,6 +69,7 @@
           v-if="mark.selected"
           :cx="mark.x"
           :cy="mark.y"
+          :style="{ r: iconSize }"
           r="6"
           fill="url('#selected-gradient')"
         />
@@ -95,6 +96,7 @@
           :x2="mark.x"
           :y2="mark.y"
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          :style="{ size: iconSize + 'px' }"
         />
         <text
           v-if="alteriNames && useTextBG"
@@ -141,7 +143,8 @@
         :x="egoCoords[0]"
         :y="egoCoords[1] + 1"
         class="mark"
-        style="font-size: 4px; cursor: pointer; text-anchor: middle"
+        style="cursor: pointer; text-anchor: middle"
+        :style="{ 'font-size': iconSize + 'px' }"
       >
         {{ egoEmoji }}
       </text>
@@ -156,7 +159,8 @@
             :y="mark.y + 1"
             class="mark clickAble"
             @click.stop="clickAlter(mark.d)"
-            style="font-size: 4px; cursor: pointer"
+            style="cursor: pointer"
+            :style="{ 'font-size': iconSize + 'px' }"
           >
             {{ mark.d.emoji }}
           </text>
@@ -777,6 +781,7 @@ export default defineComponent({
       alteriMarks,
       connectionMarks,
       labelSize: computed(() => store.state.view.labelSizeInNwk),
+      iconSize: computed(() => store.state.view.iconSizeInNwk),
       showAge: computed(() => store.state.view.ageInNwk),
       showRole: computed(() => store.state.view.roleInNwk),
       getRoleShort,

@@ -48,6 +48,18 @@
               :disabled="!alteriNames"
             />
           </div>
+          <div class="control">
+            <label for="text-size">{{ t("changesizeEmoji") }}</label>
+            &nbsp;
+            <input
+              type="range"
+              id="text-size"
+              min="4"
+              max="8"
+              v-model="iconSize"
+              :disabled="!alteriNames"
+            />
+          </div>
         </div>
         <div>
           <div class="control">
@@ -126,6 +138,15 @@ export default defineComponent({
       },
     });
 
+    const iconSize = computed({
+      get(): number {
+        return store.state.view.labelSizeInNwk;
+      },
+      set(value: number) {
+        store.commit("view/setIconSizeInNwk", value);
+      },
+    });
+
     // getter & setter for checkboxes
     function accessFlag(flag: keyof ViewOptionsFlags) {
       return computed({
@@ -150,6 +171,7 @@ export default defineComponent({
       showAge: accessFlag("ageInNwk"),
       showRole: accessFlag("roleInNwk"),
       textSize,
+      iconSize,
       //markSize,
       //changeMarkSize,
     };
