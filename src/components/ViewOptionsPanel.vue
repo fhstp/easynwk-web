@@ -48,17 +48,6 @@
               :disabled="!alteriNames"
             />
           </div>
-          <div class="control">
-            <label for="text-size">{{ t("changesizeEmoji") }}</label>
-            &nbsp;
-            <input
-              type="range"
-              id="icon-size"
-              min="3"
-              max="8"
-              v-model="iconSize"
-            />
-          </div>
         </div>
         <div>
           <div class="control">
@@ -69,9 +58,26 @@
           </div>
           <div class="control">
             <label class="checkbox">
+              <input type="checkbox" v-model="connectionsEgo" />
+              <span>{{ t("connectionsego") }}</span>
+            </label>
+          </div>
+          <div class="control">
+            <label class="checkbox">
               <input type="checkbox" v-model="connections" />
               <span>{{ t("connectionson") }}</span>
             </label>
+          </div>
+          <div class="control">
+            <label for="text-size">{{ t("changesizeEmoji") }}</label>
+            &nbsp;
+            <input
+              type="range"
+              id="icon-size"
+              min="3"
+              max="8"
+              v-model="iconSize"
+            />
           </div>
         </div>
         <div>
@@ -174,6 +180,7 @@ export default defineComponent({
         }),
       horizons: accessFlag("horizons"),
       connections: accessFlag("connections"),
+      connectionsEgo: accessFlag("connectionsEgo"),
       emoji: accessFlag("emoji"),
       alteriNames: accessFlag("alteriNames"),
       isOpen,

@@ -1,6 +1,7 @@
 export interface ViewOptionsFlags {
   horizons: boolean;
   connections: boolean;
+  connectionsEgo: boolean;
   emoji: boolean;
   alteriNames: boolean;
   ageInNwk: boolean;
@@ -17,6 +18,7 @@ export function initDefaultViewOptions(): ViewOptions {
     // pseudonyms: true,
     horizons: false,
     connections: true,
+    connectionsEgo: true,
     emoji: false,
     alteriNames: true,
     ageInNwk: false,

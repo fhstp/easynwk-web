@@ -88,7 +88,7 @@
 
       <g v-for="mark in alteriMarks" :key="mark.d.id">
         <line
-          v-if="connections && mark.d.edgeType >= 1"
+          v-if="connectionsEgo && mark.d.edgeType >= 1"
           :class="{ select: mark.selected }"
           :x1="egoCoords[0]"
           :y1="egoCoords[1]"
@@ -790,6 +790,7 @@ export default defineComponent({
       getRoleShort,
       alteriNames: computed(() => store.state.view.alteriNames),
       connections: computed(() => store.state.view.connections),
+      connectionsEgo: computed(() => store.state.view.connectionsEgo),
       emoji: computed(() => store.state.view.emoji),
       brushBtns,
       isClusterConnectPossible,
