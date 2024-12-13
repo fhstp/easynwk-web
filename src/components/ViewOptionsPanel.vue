@@ -42,7 +42,7 @@
             <input
               type="range"
               id="text-size"
-              min="4"
+              min="3"
               max="13"
               v-model="textSize"
               :disabled="!alteriNames"
@@ -54,10 +54,9 @@
             <input
               type="range"
               id="icon-size"
-              min="4"
-              max="7"
+              min="3"
+              max="8"
               v-model="iconSize"
-              :disabled="!alteriNames"
             />
           </div>
         </div>

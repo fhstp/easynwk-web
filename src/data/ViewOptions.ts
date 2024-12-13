@@ -23,6 +23,6 @@ export function initDefaultViewOptions(): ViewOptions {
     roleInNwk: false,
 
     labelSizeInNwk: 5,
-    iconSizeInNwk: 5,
+    iconSizeInNwk: 4,
   };
 }
