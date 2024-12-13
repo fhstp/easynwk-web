@@ -104,7 +104,7 @@
           :x="mark.x"
           :y="mark.y"
           :text-anchor="mark.x < 0 ? 'end' : 'start'"
-          :dx="mark.x < 0 ? -3 : 3"
+          :dx="mark.x < 0 ? -0.7 * iconSize : 0.7 * iconSize"
           :dy="mark.y < 0 ? -1 : 4"
         >
           {{ mark.label }}
@@ -117,7 +117,7 @@
           :x="mark.x"
           :y="mark.y"
           :text-anchor="mark.x < 0 ? 'end' : 'start'"
-          :dx="mark.x < 0 ? -3 : 3"
+          :dx="mark.x < 0 ? -0.7 * iconSize : 0.7 * iconSize"
           :dy="mark.y < 0 ? -1 : 4"
         >
           {{ mark.label }}
@@ -139,9 +139,9 @@
       <text
         v-if="emoji && egoEmoji"
         :x="egoCoords[0]"
-        :y="egoCoords[1] + 1"
+        :y="egoCoords[1] + iconSize / 4"
         class="mark"
-        style="cursor: pointer; text-anchor: middle"
+        style="cursor: pointer"
         :style="{ 'font-size': iconSize + 'px' }"
       >
         {{ egoEmoji }}
@@ -153,11 +153,10 @@
         <template v-if="mark.d.emoji && emoji">
           <text
             :key="mark.d.id"
-            :x="mark.x - 3"
-            :y="mark.y + 1"
+            :x="mark.x"
+            :y="mark.y + iconSize / 4"
             class="mark clickAble"
             @click.stop="clickAlter(mark.d)"
-            style="cursor: pointer"
             :style="{ 'font-size': iconSize + 'px' }"
           >
             {{ mark.d.emoji }}
@@ -866,10 +865,14 @@ line.select {
   fill: $color-primary-0;
 }
 
-.mark {
+use.mark {
   fill: rgb(54, 54, 54);
   stroke: white;
   stroke-width: 0.2;
+}
+
+text.mark {
+  text-anchor: middle;
 }
 
 .edithint {
