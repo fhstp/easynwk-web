@@ -42,7 +42,7 @@
             <input
               type="range"
               id="text-size"
-              min="2"
+              min="4"
               max="13"
               v-model="textSize"
               :disabled="!alteriNames"
@@ -53,9 +53,9 @@
             &nbsp;
             <input
               type="range"
-              id="text-size"
+              id="icon-size"
               min="4"
-              max="8"
+              max="7"
               v-model="iconSize"
               :disabled="!alteriNames"
             />
@@ -140,7 +140,7 @@ export default defineComponent({
 
     const iconSize = computed({
       get(): number {
-        return store.state.view.labelSizeInNwk;
+        return store.state.view.iconSizeInNwk;
       },
       set(value: number) {
         store.commit("view/setIconSizeInNwk", value);

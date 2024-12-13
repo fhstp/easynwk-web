@@ -69,8 +69,7 @@
           v-if="mark.selected"
           :cx="mark.x"
           :cy="mark.y"
-          :style="{ r: iconSize }"
-          r="6"
+          :r="iconSize"
           fill="url('#selected-gradient')"
         />
       </g>
@@ -133,8 +132,8 @@
         :x="egoCoords[0]"
         :y="egoCoords[1]"
         class="mark"
-        width="4"
-        height="4"
+        :width="iconSize"
+        :height="iconSize"
         transform="translate(-2,-2)"
         v-if="!emoji || !egoEmoji"
       />
@@ -172,8 +171,8 @@
             :x="mark.x"
             :y="mark.y"
             class="mark clickAble"
-            width="4"
-            height="4"
+            :width="iconSize"
+            :height="iconSize"
             transform="translate(-2,-2)"
             @click.stop="clickAlter(mark.d)"
           />
