@@ -77,7 +77,7 @@ export default {
         anonymiseon: "Anonymise",
         horizonson: "Horizons",
         connectionson: "Connections",
-        emojion: "Shoe emojis",
+        emojion: "Show emojis",
         emojioff: "Hide emojis",
         namesofcontactson: "Labels for contacts",
         ageofcontactson: "Age of contacts",

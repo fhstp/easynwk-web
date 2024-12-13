@@ -57,12 +57,7 @@ $panel-shadow: none;
 
 .textarea,
 .input,
+.select select,
 .button {
-  border: 1.5px solid #aaa;
+  border-color: #aaa;
 }
-
-.select {
-  border: 1.5px solid #aaa;
-  border-radius: 4px;
-}
-
