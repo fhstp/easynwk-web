@@ -37,6 +37,9 @@ const mutations = {
   setLabelSizeInNwk(state: ViewOptions, newSize: number): void {
     state.labelSizeInNwk = newSize;
   },
+  setIconSizeInNwk(state: ViewOptions, newSize: number): void {
+    state.iconSizeInNwk = newSize;
+  },
 };
 
 export const viewOptionsModule = {

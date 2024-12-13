@@ -43,7 +43,7 @@ export function loadNWKRecordStateFromStore(): string {
 export function loadViewSettingsFromStore(): ViewOptions {
   const storedViewSettings = localStorage.getItem(STORAGE_KEY_VIEW);
   if (storedViewSettings && storedViewSettings != "undefined") {
-    return JSON.parse(storedViewSettings);
+    return { ...initDefaultViewOptions(), ...JSON.parse(storedViewSettings) };
   } else {
     return initDefaultViewOptions();
   }

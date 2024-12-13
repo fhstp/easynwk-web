@@ -208,6 +208,7 @@ export default {
         noemoji: "No emoji chosen yet",
         selectemoji: "Select emoji",
         removeemoji: "Remove emoji",
+        changesizeEmoji: "Icon size: ",
       },
     };
   },

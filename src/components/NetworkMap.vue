@@ -69,7 +69,7 @@
           v-if="mark.selected"
           :cx="mark.x"
           :cy="mark.y"
-          r="6"
+          :r="iconSize * 1.5"
           fill="url('#selected-gradient')"
         />
       </g>
@@ -104,7 +104,7 @@
           :x="mark.x"
           :y="mark.y"
           :text-anchor="mark.x < 0 ? 'end' : 'start'"
-          :dx="mark.x < 0 ? -3 : 3"
+          :dx="mark.x < 0 ? -0.7 * iconSize : 0.7 * iconSize"
           :dy="mark.y < 0 ? -1 : 4"
         >
           {{ mark.label }}
@@ -117,7 +117,7 @@
           :x="mark.x"
           :y="mark.y"
           :text-anchor="mark.x < 0 ? 'end' : 'start'"
-          :dx="mark.x < 0 ? -3 : 3"
+          :dx="mark.x < 0 ? -0.7 * iconSize : 0.7 * iconSize"
           :dy="mark.y < 0 ? -1 : 4"
         >
           {{ mark.label }}
@@ -131,17 +131,18 @@
         :x="egoCoords[0]"
         :y="egoCoords[1]"
         class="mark"
-        width="4"
-        height="4"
-        transform="translate(-2,-2)"
+        :width="iconSize"
+        :height="iconSize"
+        :transform="iconTranslate"
         v-if="!emoji || !egoEmoji"
       />
       <text
         v-if="emoji && egoEmoji"
         :x="egoCoords[0]"
-        :y="egoCoords[1] + 1"
+        :y="egoCoords[1] + iconSize / 4"
         class="mark"
-        style="font-size: 4px; cursor: pointer; text-anchor: middle"
+        style="cursor: pointer"
+        :style="{ 'font-size': iconSize + 'px' }"
       >
         {{ egoEmoji }}
       </text>
@@ -152,11 +153,11 @@
         <template v-if="mark.d.emoji && emoji">
           <text
             :key="mark.d.id"
-            :x="mark.x - 3"
-            :y="mark.y + 1"
+            :x="mark.x"
+            :y="mark.y + iconSize / 4"
             class="mark clickAble"
             @click.stop="clickAlter(mark.d)"
-            style="font-size: 4px; cursor: pointer"
+            :style="{ 'font-size': iconSize + 'px' }"
           >
             {{ mark.d.emoji }}
           </text>
@@ -168,9 +169,9 @@
             :x="mark.x"
             :y="mark.y"
             class="mark clickAble"
-            width="4"
-            height="4"
-            transform="translate(-2,-2)"
+            :width="iconSize"
+            :height="iconSize"
+            :transform="iconTranslate"
             @click.stop="clickAlter(mark.d)"
           />
         </template>
@@ -777,6 +778,13 @@ export default defineComponent({
       alteriMarks,
       connectionMarks,
       labelSize: computed(() => store.state.view.labelSizeInNwk),
+      iconSize: computed(() => store.state.view.iconSizeInNwk),
+      iconTranslate: computed(
+        () =>
+          `translate(${store.state.view.iconSizeInNwk / -2},${
+            store.state.view.iconSizeInNwk / -2
+          })`
+      ),
       showAge: computed(() => store.state.view.ageInNwk),
       showRole: computed(() => store.state.view.roleInNwk),
       getRoleShort,
@@ -857,10 +865,14 @@ line.select {
   fill: $color-primary-0;
 }
 
-.mark {
+use.mark {
   fill: rgb(54, 54, 54);
   stroke: white;
   stroke-width: 0.2;
+}
+
+text.mark {
+  text-anchor: middle;
 }
 
 .edithint {
