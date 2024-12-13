@@ -39,9 +39,9 @@ $panel-shadow: none;
 .panel-block,
 .panel-heading,
 .panel-tabs {
-  border-bottom: 1px solid #dbdbdb;
-  border-left: 1px solid #dbdbdb;
-  border-right: 1px solid #dbdbdb;
+  border-bottom: 1px solid #C6C6C6;
+  border-left: 1px solid #C6C6C6;
+  border-right: 1px solid #C6C6C6;
 }
 
 // equal height with or without large icon
@@ -53,4 +53,11 @@ $panel-shadow: none;
 
 .clickAble {
   cursor: pointer;
+}
+
+.textarea,
+.input,
+.select select,
+.button {
+  border-color: #aaa;
 }
