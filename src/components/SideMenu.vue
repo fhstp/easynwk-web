@@ -177,6 +177,7 @@ export default defineComponent({
           store.commit("loadJSON", nwkText);
           emit("open-nwk");
         } catch (error) {
+          // eslint-disable-next-line
             fr.onload = (e: any) => {
               nwkText = e.target.result;
               try {

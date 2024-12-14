@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14474951.svg)](https://doi.org/10.5281/zenodo.14474951)
+
 # easyNWK Web
 
 This project aims to provide a modern web-based version of the easyNWK.
@@ -51,6 +53,6 @@ Further thanks to all interviewed persons and testers.
 
 <img align="right" src="https://user-images.githubusercontent.com/1217527/234003656-5afae206-1571-4df9-bb49-bfed89578085.png" alt="logo of the European Commission">
 
-This work was partly funded by 
+This work was partly funded by
 the BMDW through the programme "Digital Innovation Hubs in Österreich" and Lower Austria ([sprint 1](https://dih-ost.at/product/egozentrierte-netzwerkkarte-digital/), [sprint 2](https://dih-ost.at/product/weiterentwicklung-der-egozentrierten-netzwerkkarte/)); and
 the Erasmus+ project [TransSoDia](https://research.fhstp.ac.at/en/projects/transsodia-transnational-and-digital-learning-and-teaching-in-cooperative-social-diagnostics) cofunded by the European Union.
