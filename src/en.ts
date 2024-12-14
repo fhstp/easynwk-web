@@ -25,7 +25,7 @@ export default {
         keyfigures: "Key figures",
         abouteasyNWK: "About the easyNWK",
         sourcecode: "Source code ",
-        imprint: "Imprint",
+        imprint: "Legal information",
         //},
         //statisticPanel: {
         overview: "Overview",

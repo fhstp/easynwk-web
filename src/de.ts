@@ -25,7 +25,7 @@ export default {
         keyfigures: "Kennzahlen",
         abouteasyNWK: "Über die easyNWK",
         sourcecode: "Source Code ",
-        imprint: "Impressum",
+        imprint: "Impressum/Datenschutz",
         //},
         //statisticPanel: {
         overview: "Überblick",
