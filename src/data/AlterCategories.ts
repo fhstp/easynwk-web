@@ -33,8 +33,8 @@ export const CATEGORY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: "Netzwerk ohne prof. Hilfe",
     en: "Network without Professional Help",
   },
-  "gesamtes Netzwerk": {
-    de: "gesamtes Netzwerk",
+  "Gesamtes Netzwerk": {
+    de: "Gesamtes Netzwerk",
     en: "Entire Network",
   },
   // Geschlecht: {
@@ -127,7 +127,7 @@ const PROFI: AlterCategorization = {
     (catIndex === 0 && sectorIndex(a) === 3) ||
     (catIndex === 1 && sectorIndex(a) != 3) ||
     catIndex === 2,
-  categories: ["prof. Hilfe", "Netzwerk ohne prof. Hilfe", "gesamtes Netzwerk"],
+  categories: ["Prof. Hilfe", "Netzwerk ohne prof. Hilfe", "Gesamtes Netzwerk"],
 };
 
 const CLIQUE: AlterCategorization = {

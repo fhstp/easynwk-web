@@ -113,7 +113,9 @@
         <a href="https://github.com/fhstp/easynwk-web" target="_blank"
           >{{ t("sourcecode") }} (Version {{ appVersion }})</a
         >
-        <a href="http://www.easynwk.com/impressum/">{{ t("imprint") }}</a>
+        <a href="https://easynwk.fhstp.ac.at/impressum-datenschutz">
+          {{ t("imprint") }}
+        </a>
         <img src="fhstp_sw_pos.png" width="80" height="80" />
       </div>
     </div>
