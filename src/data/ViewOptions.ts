@@ -1,6 +1,7 @@
 export interface ViewOptionsFlags {
   horizons: boolean;
   connections: boolean;
+  connectionsEgo: boolean;
   emoji: boolean;
   alteriNames: boolean;
   ageInNwk: boolean;
@@ -9,6 +10,7 @@ export interface ViewOptionsFlags {
 
 export interface ViewOptions extends ViewOptionsFlags {
   labelSizeInNwk: number;
+  iconSizeInNwk: number;
 }
 
 export function initDefaultViewOptions(): ViewOptions {
@@ -16,11 +18,13 @@ export function initDefaultViewOptions(): ViewOptions {
     // pseudonyms: true,
     horizons: false,
     connections: true,
+    connectionsEgo: true,
     emoji: false,
     alteriNames: true,
     ageInNwk: false,
     roleInNwk: false,
 
     labelSizeInNwk: 5,
+    iconSizeInNwk: 4,
   };
 }

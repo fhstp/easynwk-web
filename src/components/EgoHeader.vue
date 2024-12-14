@@ -51,7 +51,7 @@ export default defineComponent({
 #ego {
   display: flex;
   align-items: center;
-  color: black
+  color: black;
 }
 
 #ego > :last-child {

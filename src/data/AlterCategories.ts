@@ -25,7 +25,7 @@ export const CATEGORY_TRANSLATIONS: Record<string, Record<string, string>> = {
   //   de: "Kreis 3 + 2 + 1",
   //   en: "Circle 3 + 2 + 1",
   // },
-  "prof. Hilfe": {
+  "Prof. Hilfe": {
     de: "Prof. Hilfe",
     en: "Professional Help",
   },
