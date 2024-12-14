@@ -115,7 +115,7 @@
               <input
                 class="input"
                 min="0"
-                :value="$store.state.nwk.ego.age"
+                :value="egoAge"
                 @blur="commitEdit($event, 'age')"
                 type="number"
               />
@@ -128,7 +128,7 @@
         <div class="control">
           <textarea
             class="textarea is-small"
-            :value="$store.state.nwk.ego.note"
+            :value="egoNote"
             @blur="commitEdit($event, 'note')"
             :placeholder="t('notesaboutego')"
           ></textarea>
@@ -203,7 +203,7 @@ export default defineComponent({
     });
 
     // generic event handlers from form to vuex
-    const commitEdit = (evt: InputEvent, field: keyof Ego) => {
+    const commitEdit = (evt: UIEvent, field: keyof Ego) => {
       const value = (evt.target as InputType).value.trim();
       if (value !== store.state.nwk.ego[field]) {
         const payload = { [field]: value };
@@ -216,7 +216,7 @@ export default defineComponent({
       store.commit("editEgo", payload);
     };
 
-    function onSelectEmoji(emoji: any) {
+    function onSelectEmoji<EmojiType extends { i: string }>(emoji: EmojiType) {
       selectedEmoji.value = emoji.i;
       showEmojiPicker.value = false;
       commitEditEmoji(emoji.i);
@@ -260,6 +260,8 @@ export default defineComponent({
       egoName,
       invalidName,
       egoGender,
+      egoAge: computed(() => store.state.nwk.ego.age),
+      egoNote: computed(() => store.state.nwk.ego.note),
       commitEdit,
       genderOptions,
       editEgoFinished,
