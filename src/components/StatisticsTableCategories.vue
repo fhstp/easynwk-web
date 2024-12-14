@@ -111,83 +111,6 @@
             {{ alterZeroEdge[i] }}
           </td>
         </tr>
-        <tr>
-          <th :title="t('noedgemsg')">
-            {{ t("personswithoutedgetotheego") }}
-          </th>
-          <td
-            v-for="(cat, i) in categoryLabels"
-            :key="i"
-            @click="clickCell('alterZeroEdge', cat)"
-            :class="{ clickAble: alterZeroEdge[i] != '0' }"
-          >
-            {{ alterZeroEdge[i] }}
-          </td>
-        </tr>
-        <!--
-        <tr>
-          <th title="Clique">Anzahl Cliquen</th>
-          <td
-            v-for="(cat, i) in categoryLabels"
-            :key="i"
-            @click="clickCell('clique', cat)"
-            :class="{ clickAble: clique[i] != '0' }"
-          >
-            {{ clique[i] }}
-          </td>
-        </tr>
-        <tr v-for="(catCliques, index) in cliques" :key="'category-' + index">
-          <th>
-            <div class="clique-container">
-              <div
-                v-for="(clique, cliqueIndex) in catCliques"
-                :key="'clique-number-' + cliqueIndex"
-                class="clique-entry"
-              >
-                <span
-                  class="clique-members"
-                  v-for="(cat, i) in categoryLabels"
-                  :key="i"
-                  @click="clickCell('clique', cat)"
-                  :class="{ clickAble: clique[i] != '0' }"
-                  >{{ clique.members }}</span
-                >
-                <span class="clique-divider"></span>
-                <span
-                  class="clique-number"
-                  v-for="(cat, i) in categoryLabels"
-                  :key="i"
-                  @click="clickCell('clique', cat)"
-                  :class="{ clickAble: clique[i] != '0' }"
-                  >{{ clique.members.length }} (Sektor)</span
-                >
-              </div>
-            </div>
-          </th>
-        </tr>
-        <tr>
-          <th title="Clique">Star Cliquen</th>
-          <td
-            v-for="(cat, i) in categoryLabels"
-            :key="i"
-            @click="clickCell('clique', cat)"
-            :class="{ clickAble: clique[i] != '0' }"
-          >
-            Platzhalter
-          </td>
-        </tr>
-        <tr>
-          <th title="Clique">Brückenperson Cliquen</th>
-          <td
-            v-for="(cat, i) in categoryLabels"
-            :key="i"
-            @click="clickCell('clique', cat)"
-            :class="{ clickAble: clique[i] != '0' }"
-          >
-            Platzhalter
-          </td>
-        </tr>
-        -->
       </tbody>
     </table>
   </div>
@@ -299,30 +222,6 @@ export default defineComponent({
       });
     });
 
-    /*const clique = computed(() => {
-      return categoryLabels.value.map((cat) => {
-        const analysis = getOrInit(networkAnalysis.value, cat);
-        if (analysis.clique.length > 0) {
-          return analysis.clique.length;
-        } else {
-          return "0";
-        }
-      });
-    });
-
-    const cliques = computed(() => {
-      return categoryLabels.value.map((cat) => {
-        const analysis = getOrInit(networkAnalysis.value, cat);
-        return analysis.clique.map((clique, idx) => ({
-          cliqueNumber: `Clique ${idx + 1}`,
-          members: clique
-            .map((a) => store.getters["displayName"](a))
-            .join(", "),
-        }));
-      });
-    });
-     */
-
     function makeComputedAlterGroup(
       group: "stars" | "isolated" | "alterZeroEdge"
     ) {
@@ -399,8 +298,6 @@ export default defineComponent({
       ),
 
       stars,
-      //clique,
-      //cliques,
       isolated: makeComputedAlterGroup("isolated"),
       alterZeroEdge: makeComputedAlterGroup("alterZeroEdge"),
       clickCell,
@@ -426,46 +323,5 @@ th.sizeby > em {
   display: block;
   font-style: normal;
   margin-left: 2em;
-}
-
-td div {
-  margin-bottom: 5px;
-}
-
-td {
-  padding: 8px;
-  border-bottom: 1px solid #d3d3d3;
-  text-align: left;
-}
-tr:last-child td {
-  border-bottom: 1px solid #d3d3d3;
-}
-
-.clique-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.clique-entry {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #d3d3d3;
-}
-
-.clique-number {
-  margin-left: 5vw;
-  width: 12vw;
-}
-
-.clique-members {
-  width: 16vw;
-}
-
-.clique-divider {
-  width: 1px;
-  height: 100%;
 }
 </style>

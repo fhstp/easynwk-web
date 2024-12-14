@@ -12,7 +12,7 @@
           <div class="field">
             <div class="control">
               <input
-                class="input is-link"
+                class="input"
                 :class="{ 'is-danger': invalidName }"
                 ref="egofield"
                 v-model="egoName"
@@ -91,7 +91,7 @@
         </div>
         <div class="field-body">
           <div class="control">
-            <div class="select is-fullwidth is-link">
+            <div class="select is-fullwidth">
               <select v-model="egoGender">
                 <option value="weiblich">{{ t("female") }}</option>
                 <option value="männlich">{{ t("male") }}</option>
@@ -113,7 +113,7 @@
           <div class="field">
             <div class="control">
               <input
-                class="input is-link"
+                class="input"
                 min="0"
                 :value="$store.state.nwk.ego.age"
                 @blur="commitEdit($event, 'age')"
@@ -127,7 +127,7 @@
       <div class="field">
         <div class="control">
           <textarea
-            class="textarea is-small is-link"
+            class="textarea is-small"
             :value="$store.state.nwk.ego.note"
             @blur="commitEdit($event, 'note')"
             :placeholder="t('notesaboutego')"

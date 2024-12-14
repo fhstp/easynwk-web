@@ -74,108 +74,6 @@ export function analyseNWKbyCategory(
   nwk: NWK,
   categories: AlterCategorization
 ): Map<string, NetworkAnalysis> {
-  const result = new Map<string, NetworkAnalysis>();
-
-  for (let i = 0; i < categories.categories.length; i++) {
-    const analysis = getOrInit(result, categories.categories[i]);
-
-    const alterMetrics: Map<number, AlterMetrics> = new Map();
-    for (const alter of nwk.alteri) {
-      const sec = sectorIndex(alter);
-      if (sec != null && isConnectable(alter))
-        alterMetrics.set(alter.id, {
-          alter,
-          degree: 0,
-          naehe: naehenScore(alter),
-          isolated: true,
-        });
-    }
-    for (const conn of nwk.connections) {
-      const a1 = alterMetrics.get(conn.id1);
-      const a2 = alterMetrics.get(conn.id2);
-      if (!(a1 && a2)) continue;
-
-      a1.isolated = false;
-      a2.isolated = false;
-
-      if (
-        categories.inCategory(i, a1.alter) &&
-        categories.inCategory(i, a2.alter)
-      ) {
-        analysis.intConnCount++;
-        a1.degree++;
-        a2.degree++;
-      }
-    }
-
-    let degreeSum = 0;
-    let naehenSum = 0;
-    const genderConnected = new Map();
-    const genderConnectable = new Map();
-    const horizonConnected = new Map();
-    const horizonConnectable = new Map();
-
-    for (const [, am] of alterMetrics) {
-      if (categories.inCategory(i, am.alter)) {
-        if (am.degree > analysis.maxDegree) {
-          analysis.maxDegree = am.degree;
-          analysis.stars = [];
-        }
-
-        if (am.degree == analysis.maxDegree) {
-          analysis.stars.push(am.alter);
-        }
-
-        if (am.alter.edgeType == 0) {
-          analysis.alterZeroEdge.push(am.alter);
-        }
-
-        if (am.isolated && am.alter.edgeType >= 1) {
-          analysis.isolated.push(am.alter);
-        }
-
-        analysis.alterConnectable++;
-        degreeSum += am.degree;
-        countByKey(genderConnectable, am.alter.currentGender);
-        countByKey(horizonConnectable, horizonKey(am.alter));
-        if (am.alter.edgeType >= 1) {
-          analysis.alterConnected++;
-          countByKey(genderConnected, am.alter.currentGender);
-          countByKey(horizonConnected, horizonKey(am.alter));
-          naehenSum += am.naehe;
-        }
-      }
-    }
-
-    analysis.degreeAvg = degreeSum / analysis.alterConnectable;
-    analysis.naehenAvg = naehenSum / analysis.alterConnected;
-    analysis.genderConnected = mapToArray(genderConnected, Gender);
-    analysis.genderConnectable = mapToArray(genderConnectable, Gender);
-    analysis.horizonConnected = mapToArray(horizonConnected, HORIZON_KEYS);
-    analysis.horizonConnectable = mapToArray(horizonConnectable, HORIZON_KEYS);
-
-    degreeSum = 0;
-    naehenSum = 0;
-
-    for (const [, am] of alterMetrics) {
-      if (categories.inCategory(i, am.alter)) {
-        degreeSum += (am.degree - analysis.degreeAvg) ** 2;
-        if (am.alter.edgeType >= 1) {
-          naehenSum += (am.naehe - analysis.naehenAvg) ** 2;
-        }
-      }
-    }
-    analysis.degreeDev = Math.sqrt(degreeSum / analysis.alterConnectable);
-    analysis.naehenDev = Math.sqrt(naehenSum / analysis.alterConnected);
-  }
-
-  return result;
-}
-
-/*export function analyseNWKbyCategory(
-  nwk: NWK,
-  categories: AlterCategorization
-): Map<string, NetworkAnalysis> {
   // (1) prepare a map of (valid) alters with metrics indexed by id
   const alterMetrics: Map<number, AlterMetrics> = new Map();
   for (const alter of nwk.alteri) {
@@ -289,8 +187,6 @@ export function analyseNWKbyCategory(
 
   return result;
 }
-
- */
 
 function countByKey(map: Map<string, number>, key: string) {
   const prev = map.get(key);
