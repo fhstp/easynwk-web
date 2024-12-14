@@ -27,63 +27,63 @@
       </div>
 
       <div class="field is-horizontal" v-if="emoji">
-      <div class="field-label is-normal">
-        <label class="label">Emoji</label>
-      </div>
-      <br />
-      <div class="field-body">
-        <div>
-          <div style="display: flex; align-items: center; margin-top: 10px;">
-            <div>
-              {{
-                selectedEmoji == null || selectedEmoji.length < 1
-                  ? t("noemoji")
-                  : selectedEmoji
-              }}
-            </div>
-          </div>
+        <div class="field-label is-normal">
+          <label class="label">Emoji</label>
         </div>
-      </div>
-    </div>
-
-    <div class="field is-horizontal" v-if="emoji">
-      <div class="field-label is-normal">
-        <label class="label">{{ t("selectEmoji") }}</label>
-      </div>
-      <div class="field-body">
-        <div class="dropdown" :class="{ 'is-active': showEmojiPicker }">
-          <div >
-            <button
-              type="button"
-              class="button is-small"
-              @click="toggleEmojiPicker"
-            >
-            <span>{{ t("selectemoji") }}</span>
-            </button>
-            <button
-              v-if="selectedEmoji != null && selectedEmoji.length > 0"
-              @click="removeEmoji"
-              class="button is-small"
-              style="margin-left: 10px;"
-            >
-            <span>{{t("removeemoji")}}</span>
-            </button>
-          </div>
-          <div class="dropdown-menu">
-            <div>
+        <br />
+        <div class="field-body">
+          <div>
+            <div style="display: flex; align-items: center; margin-top: 10px">
               <div>
-                <EmojiPicker
-                  v-model="selectedEmoji"
-                  :native="true"
-                  :disableSkinTones="true"
-                  @select="onSelectEmoji"
-                />
+                {{
+                  selectedEmoji == null || selectedEmoji.length < 1
+                    ? t("noemoji")
+                    : selectedEmoji
+                }}
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <div class="field is-horizontal" v-if="emoji">
+        <div class="field-label is-normal">
+          <label class="label">{{ t("selectEmoji") }}</label>
+        </div>
+        <div class="field-body">
+          <div class="dropdown" :class="{ 'is-active': showEmojiPicker }">
+            <div>
+              <button
+                type="button"
+                class="button is-small"
+                @click="toggleEmojiPicker"
+              >
+                <span>{{ t("selectemoji") }}</span>
+              </button>
+              <button
+                v-if="selectedEmoji != null && selectedEmoji.length > 0"
+                @click="removeEmoji"
+                class="button is-small"
+                style="margin-left: 10px"
+              >
+                <span>{{ t("removeemoji") }}</span>
+              </button>
+            </div>
+            <div class="dropdown-menu">
+              <div>
+                <div>
+                  <EmojiPicker
+                    v-model="selectedEmoji"
+                    :native="true"
+                    :disableSkinTones="true"
+                    @select="onSelectEmoji"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div class="field is-horizontal">
         <div class="field-label is-normal">
@@ -115,7 +115,7 @@
               <input
                 class="input"
                 min="0"
-                :value="$store.state.nwk.ego.age"
+                :value="egoAge"
                 @blur="commitEdit($event, 'age')"
                 type="number"
               />
@@ -128,7 +128,7 @@
         <div class="control">
           <textarea
             class="textarea is-small"
-            :value="$store.state.nwk.ego.note"
+            :value="egoNote"
             @blur="commitEdit($event, 'note')"
             :placeholder="t('notesaboutego')"
           ></textarea>
@@ -203,7 +203,7 @@ export default defineComponent({
     });
 
     // generic event handlers from form to vuex
-    const commitEdit = (evt: InputEvent, field: keyof Ego) => {
+    const commitEdit = (evt: UIEvent, field: keyof Ego) => {
       const value = (evt.target as InputType).value.trim();
       if (value !== store.state.nwk.ego[field]) {
         const payload = { [field]: value };
@@ -216,7 +216,7 @@ export default defineComponent({
       store.commit("editEgo", payload);
     };
 
-    function onSelectEmoji(emoji: any) {
+    function onSelectEmoji<EmojiType extends { i: string }>(emoji: EmojiType) {
       selectedEmoji.value = emoji.i;
       showEmojiPicker.value = false;
       commitEditEmoji(emoji.i);
@@ -260,6 +260,8 @@ export default defineComponent({
       egoName,
       invalidName,
       egoGender,
+      egoAge: computed(() => store.state.nwk.ego.age),
+      egoNote: computed(() => store.state.nwk.ego.note),
       commitEdit,
       genderOptions,
       editEgoFinished,

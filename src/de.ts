@@ -213,6 +213,7 @@ export default {
         noemoji: "Noch kein Emoji gewählt",
         selectemoji: "Emoji auswählen",
         removeemoji: "Emoji entfernen",
+        amountClique: "Anzahl Cliquen",
         changesizeEmoji: "Icon Größe: ",
       },
     };
