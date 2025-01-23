@@ -62,6 +62,7 @@ import {
   faToolbox,
   faLightbulb,
   faUsers,
+  faIcons,
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
   faBars,
@@ -114,7 +115,8 @@ library.add(
   faHandHoldingHeart,
   faToolbox,
   faLightbulb,
-  faUsers
+  faUsers,
+  faIcons
 );
 
 // Vue.component("font-awesome-icon", FontAwesomeIcon);

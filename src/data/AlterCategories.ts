@@ -1,6 +1,4 @@
 import { Alter } from "./Alter";
-import { Gender } from "./Gender";
-import { Sectors } from "./Sectors";
 
 type inCategoryType = (catIndex: number, a: Alter) => boolean;
 
@@ -15,19 +13,19 @@ export const CATEGORY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: "Sektor",
     en: "Sector",
   },
-  "Kreis 3": {
-    de: "Kreis 3",
-    en: "Circle 3",
-  },
-  "Kreis 3 + 2": {
-    de: "Kreis 3 + 2",
-    en: "Circle 3 + 2",
-  },
-  "Kreis 3 + 2 + 1": {
-    de: "Kreis 3 + 2 + 1",
-    en: "Circle 3 + 2 + 1",
-  },
-  "prof. Hilfe": {
+  // "Kreis 3": {
+  //   de: "Kreis 3",
+  //   en: "Circle 3",
+  // },
+  // "Kreis 3 + 2": {
+  //   de: "Kreis 3 + 2",
+  //   en: "Circle 3 + 2",
+  // },
+  // "Kreis 3 + 2 + 1": {
+  //   de: "Kreis 3 + 2 + 1",
+  //   en: "Circle 3 + 2 + 1",
+  // },
+  "Prof. Hilfe": {
     de: "Prof. Hilfe",
     en: "Professional Help",
   },
@@ -35,26 +33,26 @@ export const CATEGORY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: "Netzwerk ohne prof. Hilfe",
     en: "Network without Professional Help",
   },
-  "gesamtes Netzwerk": {
-    de: "gesamtes Netzwerk",
+  "Gesamtes Netzwerk": {
+    de: "Gesamtes Netzwerk",
     en: "Entire Network",
   },
-  Geschlecht: {
-    de: "Geschlecht",
-    en: "Gender",
-  },
+  // Geschlecht: {
+  //   de: "Geschlecht",
+  //   en: "Gender",
+  // },
   Überblick: {
     de: "Überblick",
     en: "Overview",
   },
-  "Horizont (kumulativ)": {
-    de: "Horizont (kumulativ)",
-    en: "Cumulative Horizon",
-  },
-  Horizont: {
-    de: "Horizont",
-    en: "Horizon",
-  },
+  // "Horizont (kumulativ)": {
+  //   de: "Horizont (kumulativ)",
+  //   en: "Cumulative Horizon",
+  // },
+  // Horizont: {
+  //   de: "Horizont",
+  //   en: "Horizon",
+  // },
   Familie: {
     de: "Familie",
     en: "Family",
@@ -71,22 +69,22 @@ export const CATEGORY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: "prof. Helfer*innen",
     en: "Professional Helpers",
   },
-  weiblich: {
-    de: "weiblich",
-    en: "Female",
-  },
-  männlich: {
-    de: "männlich",
-    en: "Male",
-  },
-  divers: {
-    de: "divers",
-    en: "Diverse",
-  },
-  "nicht festgelegt": {
-    de: "nicht festgelegt",
-    en: "Not Specified",
-  },
+  // weiblich: {
+  //   de: "weiblich",
+  //   en: "Female",
+  // },
+  // männlich: {
+  //   de: "männlich",
+  //   en: "Male",
+  // },
+  // divers: {
+  //   de: "divers",
+  //   en: "Diverse",
+  // },
+  // "nicht festgelegt": {
+  //   de: "nicht festgelegt",
+  //   en: "Not Specified",
+  // },
 };
 
 export function sectorIndex(alter: Alter): number | null {
@@ -103,13 +101,13 @@ export function sectorIndex(alter: Alter): number | null {
   }
 }
 
-function horizonIndex(alter: Alter): number {
-  if (alter.distance <= 0) return 100;
-  else if (alter.distance < 33.33) return 0;
-  else if (alter.distance < 66.67) return 1;
-  else if (alter.distance < 100) return 2;
-  else return 100;
-}
+// function horizonIndex(alter: Alter): number {
+//   if (alter.distance <= 0) return 100;
+//   else if (alter.distance < 33.33) return 0;
+//   else if (alter.distance < 66.67) return 1;
+//   else if (alter.distance < 100) return 2;
+//   else return 100;
+// }
 
 const SECTOR: AlterCategorization = {
   label: "Sektor",
@@ -129,9 +127,22 @@ const PROFI: AlterCategorization = {
     (catIndex === 0 && sectorIndex(a) === 3) ||
     (catIndex === 1 && sectorIndex(a) != 3) ||
     catIndex === 2,
-  categories: ["prof. Hilfe", "Netzwerk ohne prof. Hilfe", "gesamtes Netzwerk"],
+  categories: ["Prof. Hilfe", "Netzwerk ohne prof. Hilfe", "Gesamtes Netzwerk"],
 };
 
+const CLIQUE: AlterCategorization = {
+  label: "Clique",
+  inCategory: (catIndex: number, a: Alter): boolean =>
+    sectorIndex(a) === catIndex,
+  categories: [
+    "Familie",
+    "Freund*innen / Bekannte",
+    "Kolleg*innen",
+    "prof. Helfer*innen",
+  ],
+};
+
+/* obsolete categorizations (since Jun 2024)
 const HORIZON_CUM: AlterCategorization = {
   label: "Horizont (kumulativ)",
   inCategory: (catIndex: number, a: Alter): boolean =>
@@ -152,6 +163,7 @@ const GENDER: AlterCategorization = {
     a.currentGender === Gender[catIndex],
   categories: ["weiblich", "männlich", "divers", "nicht festgelegt,"],
 };
+*/
 
 // const AGE: AlterCategorization = {
 //   label: "Alter",
@@ -177,13 +189,15 @@ export function getAlterCategorization(key = ""): AlterCategorization {
     ? SECTOR
     : key === "profi"
     ? PROFI
-    : key === "horizon"
-    ? HORIZON
-    : key === "horizon_cum"
-    ? HORIZON_CUM
-    : key === "gender"
-    ? GENDER
+    : key === "clique"
+    ? CLIQUE
     : ALL;
+  // : key === "horizon"
+  // ? HORIZON
+  // : key === "horizon_cum"
+  // ? HORIZON_CUM
+  // : key === "gender"
+  // ? GENDER
   // : key === "age"
   // ? AGE
 }
@@ -192,8 +206,9 @@ export const allAlterCategorizationKeys = [
   "",
   "sector",
   "profi",
-  "horizon",
-  "horizon_cum",
-  "gender",
+  "clique",
+  // "horizon",
+  // "horizon_cum",
+  // "gender",
   // "age",
 ];

@@ -157,11 +157,7 @@ export default defineComponent({
         " " +
         visibleNWKVersion.value?.title +
         " " +
-        visibleNWKVersion.value?.date?.substring(8, 10) +
-        "." +
-        visibleNWKVersion.value?.date?.substring(5, 7) +
-        "." +
-        visibleNWKVersion.value?.date?.substring(0, 4) +
+        new Date(visibleNWKVersion.value!.date).toLocaleDateString("en-CA") +
         ".pdf"),
         window.print();
     };

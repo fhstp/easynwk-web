@@ -2,7 +2,7 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: easyNWK
+title: easyNWK - egocentered network map for social work
 message: >-
   "If you use this software, please cite it as
   below."
@@ -11,9 +11,15 @@ authors:
   - given-names: Alexander
     family-names: Rind
     orcid: 'https://orcid.org/0000-0001-8788-4600'
-    affiliation: >-
-      St. Pölten University of Applied Sciences,
-      Austria
+    affiliation: 'St. Pölten University of Applied Sciences, Austria'
+  - given-names: Julia
+    family-names: Böck
+    orcid: 'https://orcid.org/0009-0009-3991-6407'
+    affiliation: 'St. Pölten University of Applied Sciences, Austria'
+  - name: 'easyNWK contributors'
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.14474951
 repository-code: 'https://github.com/fhstp/easynwk-web'
 url: 'https://www.easynwk.com/'
 license: MIT

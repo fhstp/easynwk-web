@@ -42,7 +42,7 @@
             <input
               type="range"
               id="text-size"
-              min="2"
+              min="3"
               max="13"
               v-model="textSize"
               :disabled="!alteriNames"
@@ -58,14 +58,35 @@
           </div>
           <div class="control">
             <label class="checkbox">
+              <input type="checkbox" v-model="connectionsEgo" />
+              <span>{{ t("connectionsego") }}</span>
+            </label>
+          </div>
+          <div class="control">
+            <label class="checkbox">
               <input type="checkbox" v-model="connections" />
               <span>{{ t("connectionson") }}</span>
             </label>
           </div>
+          <div class="control">
+            <label for="text-size">{{ t("changesizeEmoji") }}</label>
+            &nbsp;
+            <input
+              type="range"
+              id="icon-size"
+              min="3"
+              max="8"
+              v-model="iconSize"
+            />
+          </div>
         </div>
         <div>
           <div class="control">
-            <button class="button" @click.stop="togglePseudonyms">
+            <button
+              class="button"
+              @click.stop="togglePseudonyms"
+              style="margin-right: 1vw"
+            >
               <span class="icon">
                 <font-awesome-icon icon="user-secret" />
               </span>
@@ -82,6 +103,13 @@
               </span>
               <span v-if="showQuality">{{ t("qualitiesoff") }}</span>
               <span v-else>{{ t("qualitieson") }}</span>
+            </button>
+            <button class="button" @click.stop="toggleEmoji">
+              <span class="icon">
+                <font-awesome-icon icon="icons" />
+              </span>
+              <span v-if="emoji">{{ t("emojioff") }}</span>
+              <span v-else>{{ t("emojion") }}</span>
             </button>
           </div>
         </div>
@@ -131,6 +159,15 @@ export default defineComponent({
       },
     });
 
+    const iconSize = computed({
+      get(): number {
+        return store.state.view.iconSizeInNwk;
+      },
+      set(value: number) {
+        store.commit("view/setIconSizeInNwk", value);
+      },
+    });
+
     // getter & setter for checkboxes
     function accessFlag(flag: keyof ViewOptionsFlags) {
       return computed({
@@ -150,13 +187,21 @@ export default defineComponent({
       showQuality: computed(() => store.state.session.qualityRelationship),
       toggleQuality: () =>
         store.commit("session/toggle", "qualityRelationship"),
+      toggleEmoji: () =>
+        store.commit("view/updateFlag", {
+          flag: "emoji",
+          value: !store.state.view.emoji,
+        }),
       horizons: accessFlag("horizons"),
       connections: accessFlag("connections"),
+      connectionsEgo: accessFlag("connectionsEgo"),
+      emoji: accessFlag("emoji"),
       alteriNames: accessFlag("alteriNames"),
       isOpen,
       showAge: accessFlag("ageInNwk"),
       showRole: accessFlag("roleInNwk"),
       textSize,
+      iconSize,
       //markSize,
       //changeMarkSize,
     };

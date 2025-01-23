@@ -2,7 +2,7 @@
   <svg
     id="nwkmap"
     :viewBox="
-      showComparisonSlider && !isEditMode
+      showVersionSlider && !isEditMode
         ? '-110 -117 220 220'
         : '-106 -106 212 212'
     "
@@ -36,8 +36,8 @@
         />
       </symbol>
       <radialGradient id="selected-gradient">
-        <stop offset="60%" stop-color="rgb(0, 80, 150)" stop-opacity="0.25" />
-        <stop offset="100%" stop-color="rgb(0, 80, 150)" stop-opacity="0" />
+        <stop offset="60%" stop-color="rgb(28, 135, 230)" stop-opacity="0.25" />
+        <stop offset="100%" stop-color="rgb(28, 135, 230)" stop-opacity="0" />
       </radialGradient>
       <filter id="dilate-and-xor">
         <!-- h/t https://stackoverflow.com/a/63287731/1140589 -->
@@ -69,7 +69,7 @@
           v-if="mark.selected"
           :cx="mark.x"
           :cy="mark.y"
-          r="4"
+          :r="iconSize * 1.5"
           fill="url('#selected-gradient')"
         />
       </g>
@@ -102,7 +102,7 @@
         :key="mark.d.id"
       >
         <line
-          v-if="connections && mark.d.edgeType >= 1"
+          v-if="connectionsEgo && mark.d.edgeType >= 1"
           :class="{ select: mark.selected }"
           :x1="egoCoords[0]"
           :y1="egoCoords[1]"
@@ -193,7 +193,7 @@
           :x="mark.x"
           :y="mark.y"
           :text-anchor="mark.x < 0 ? 'end' : 'start'"
-          :dx="mark.x < 0 ? -3 : 3"
+          :dx="mark.x < 0 ? -0.7 * iconSize : 0.7 * iconSize"
           :dy="mark.y < 0 ? -1 : 4"
         >
           {{ mark.label }}
@@ -206,7 +206,7 @@
           :x="mark.x"
           :y="mark.y"
           :text-anchor="mark.x < 0 ? 'end' : 'start'"
-          :dx="mark.x < 0 ? -3 : 3"
+          :dx="mark.x < 0 ? -0.7 * iconSize : 0.7 * iconSize"
           :dy="mark.y < 0 ? -1 : 4"
         >
           {{ mark.label }}
@@ -289,15 +289,25 @@
         :x="egoCoords[0]"
         :y="egoCoords[1]"
         class="mark"
-        width="4"
-        height="4"
-        transform="translate(-2,-2)"
+        :width="iconSize"
+        :height="iconSize"
+        :transform="iconTranslate"
+        v-if="!emoji || !egoEmoji"
       />
+      <text
+        v-if="emoji && egoEmoji"
+        :x="egoCoords[0]"
+        :y="egoCoords[1] + iconSize / 4"
+        class="mark"
+        style="cursor: pointer"
+        :style="{ 'font-size': iconSize + 'px' }"
+      >
+        {{ egoEmoji }}
+      </text>
     </g>
     <g class="brushParent"></g>
     <g class="marksForegroundLayer">
-      <use
-        v-for="mark in alteriMarks.filter(
+      <template v-for="mark in alteriMarks.filter(
           (mark) =>
             (emotional && mark.d.supportEmotional >= 1) ||
             (cognitive && mark.d.supportCognitive >= 1) ||
@@ -305,17 +315,33 @@
             (material && mark.d.supportMaterial >= 1) ||
             (practical && mark.d.supportPractical >= 1) ||
             (!emotional && !cognitive && !social && !material && !practical)
-        )"
-        :key="mark.d.id"
-        :href="'#' + mark.shape"
-        :x="mark.x"
-        :y="mark.y"
-        class="mark clickAble"
-        width="4"
-        height="4"
-        transform="translate(-2,-2)"
-        @click.stop="clickAlter(mark.d)"
-      />
+        )">
+        <template v-if="mark.d.emoji && emoji">
+          <text
+            :key="mark.d.id"
+            :x="mark.x"
+            :y="mark.y + iconSize / 4"
+            class="mark clickAble"
+            @click.stop="clickAlter(mark.d)"
+            :style="{ 'font-size': iconSize + 'px' }"
+          >
+            {{ mark.d.emoji }}
+          </text>
+        </template>
+        <template v-else>
+          <use
+            :key="mark.d.id"
+            :href="'#' + mark.shape"
+            :x="mark.x"
+            :y="mark.y"
+            class="mark clickAble"
+            :width="iconSize"
+            :height="iconSize"
+            :transform="iconTranslate"
+            @click.stop="clickAlter(mark.d)"
+          />
+        </template>
+      </template>
     </g>
 
     <NetworkMapSectors :transform="transform" @zoom-sector="zoomSector" />
@@ -333,7 +359,7 @@
     <text :x="0" y="-102" text-anchor="middle" class="ego">
       {{ egoLabel }}
     </text>
-    <ComparisonSlider v-if="showComparisonSlider && !isEditMode" />
+    <ComparisonSlider v-if="showVersionSlider && !isEditMode" />
   </svg>
   <div id="zoomBtns">
     <button
@@ -828,6 +854,7 @@ export default defineComponent({
           clearTimeout(clickTimeoutId);
           clickTimeoutId = null;
           console.log(alter.name + " dblclick");
+          console.log("Text here");
 
           // open form
           store.commit("openAlterFormById", { alterId: alter.id });
@@ -913,6 +940,7 @@ export default defineComponent({
       social: computed(() => store.state.session.social),
       material: computed(() => store.state.session.material),
       practical: computed(() => store.state.session.practical),
+      egoEmoji: computed(() => store.state.nwk.ego.emoji),
       isEditMode,
       isConnectMode,
       clickAlter,
@@ -921,11 +949,20 @@ export default defineComponent({
       alteriMarks,
       connectionMarks,
       labelSize: computed(() => store.state.view.labelSizeInNwk),
+      iconSize: computed(() => store.state.view.iconSizeInNwk),
+      iconTranslate: computed(
+        () =>
+          `translate(${store.state.view.iconSizeInNwk / -2},${
+            store.state.view.iconSizeInNwk / -2
+          })`
+      ),
       showAge: computed(() => store.state.view.ageInNwk),
       showRole: computed(() => store.state.view.roleInNwk),
       getRoleShort,
       alteriNames: computed(() => store.state.view.alteriNames),
       connections: computed(() => store.state.view.connections),
+      connectionsEgo: computed(() => store.state.view.connectionsEgo),
+      emoji: computed(() => store.state.view.emoji),
       brushBtns,
       isClusterConnectPossible,
       isClusterFullyConnected,
@@ -945,10 +982,8 @@ export default defineComponent({
             /Apple Computer/.test(navigator.vendor)
           )
       ),
-      showComparisonSlider: computed(
-        () => store.state.session.nwkchange || store.state.session.nwkcomparison
-      ),
       showQuality: computed(() => store.state.session.qualityRelationship),
+      showVersionSlider: computed(() => store.state.record.versions.length > 1),
     };
   },
 });
@@ -988,7 +1023,9 @@ line {
 line.select {
   // stroke: rgb(136, 159, 213);
   // stroke: rgb($fhstpblue, 0.6);
-  stroke: rgb(102, 150, 192);
+  stroke: rgb(28, 135, 230);
+  stroke-dasharray: 5, 1;
+  //altes blau rgb(102, 150, 192);
 }
 
 #position {
@@ -1001,10 +1038,14 @@ line.select {
   fill: $color-primary-0;
 }
 
-.mark {
+use.mark {
   fill: rgb(54, 54, 54);
   stroke: white;
   stroke-width: 0.2;
+}
+
+text.mark {
+  text-anchor: middle;
 }
 
 .edithint {

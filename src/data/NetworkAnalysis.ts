@@ -1,21 +1,26 @@
-import { Alter, isConnectable, naehenScore } from "./Alter";
-import { AlterCategorization, sectorIndex } from "./AlterCategories";
-import { Connection } from "./Connection";
-import { NWK } from "./NWK";
+import { type Alter, isConnectable } from "./Alter";
+import { HORIZON_KEYS, horizonKey, naehenScore } from "./Horizon";
+import { type AlterCategorization, sectorIndex } from "./AlterCategories";
+import { Gender } from "./Gender";
+import type { NWK } from "./NWK";
 
 export interface NetworkAnalysis {
   alterConnected: number;
   alterConnectable: number;
   intConnCount: number;
-  extConnCount: number;
-  naehenSum: number;
+  degreeAvg: number;
+  degreeDev: number;
+  naehenAvg: number;
+  naehenDev: number;
 
   stars: Array<Alter>;
   maxDegree: number;
   isolated: Array<Alter>;
-  bridgePersons: Array<Alter>;
-  bridges: Array<Connection>;
   alterZeroEdge: Array<Alter>;
+  genderConnected: Array<number>;
+  genderConnectable: Array<number>;
+  horizonConnected: Array<number>;
+  horizonConnectable: Array<number>;
 }
 
 function initNetworkAnalysis(): NetworkAnalysis {
@@ -23,15 +28,19 @@ function initNetworkAnalysis(): NetworkAnalysis {
     alterConnected: 0,
     alterConnectable: 0,
     intConnCount: 0,
-    extConnCount: 0,
-    naehenSum: 0,
+    degreeAvg: 0,
+    degreeDev: 0,
+    naehenAvg: 0,
+    naehenDev: 0,
 
     stars: [],
     maxDegree: 0,
     isolated: [],
-    bridgePersons: [],
-    bridges: [],
     alterZeroEdge: [],
+    genderConnected: [],
+    genderConnectable: [],
+    horizonConnected: [],
+    horizonConnectable: [],
   };
 }
 
@@ -50,8 +59,9 @@ export function getOrInit(
 interface AlterMetrics {
   alter: Alter;
   degree: number;
-  sector: number;
-  bridgePerson: boolean;
+  // sector: number;
+  naehe: number;
+  isolated: boolean;
 }
 
 /**
@@ -72,43 +82,46 @@ export function analyseNWKbyCategory(
       alterMetrics.set(alter.id, {
         alter,
         degree: 0,
-        sector: sec,
-        bridgePerson: false,
+        naehe: naehenScore(alter),
+        // sector: sec,
+        isolated: true,
       });
   }
 
   const result = new Map<string, NetworkAnalysis>();
 
-  for (const conn of nwk.connections) {
-    const a1 = alterMetrics.get(conn.id1);
-    const a2 = alterMetrics.get(conn.id2);
-    if (!(a1 && a2)) continue;
-
-    // (2) increase degree of each node
-    a1.degree++;
-    a2.degree++;
-
-    // (3) mark bridge persons
-    if (a1.sector !== a2.sector) {
-      a1.bridgePerson = true;
-      a2.bridgePerson = true;
-    }
-  }
-
   for (let i = 0; i < categories.categories.length; i++) {
     const analysis = getOrInit(result, categories.categories[i]);
 
-    // count alterZeroEdgeCount in this category
-    for (const alter of nwk.alteri) {
+    for (const conn of nwk.connections) {
+      const a1 = alterMetrics.get(conn.id1);
+      const a2 = alterMetrics.get(conn.id2);
+      if (!(a1 && a2)) continue;
+
+      // they are not isolated (category irrelevant)
+      a1.isolated = false;
+      a2.isolated = false;
+
+      // (9) count connections for density
       if (
-        alter.edgeType == 0 &&
-        categories.inCategory(i, alter) &&
-        isConnectable(alter)
+        categories.inCategory(i, a1.alter) &&
+        categories.inCategory(i, a2.alter)
       ) {
-        analysis.alterZeroEdge.push(alter);
+        // both sides of connection are in category
+        analysis.intConnCount++;
+
+        // (2) increase degree of each node (only if both alters in same sector/category)
+        a1.degree++;
+        a2.degree++;
       }
     }
-    // TODO reconsider whether a zero edge alter can be star or bridgeperson
+
+    let degreeSum = 0;
+    let naehenSum = 0;
+    const genderConnected = new Map();
+    const genderConnectable = new Map();
+    const horizonConnected = new Map();
+    const horizonConnectable = new Map();
 
     for (const [, am] of alterMetrics) {
       if (categories.inCategory(i, am.alter)) {
@@ -124,55 +137,71 @@ export function analyseNWKbyCategory(
           analysis.stars.push(am.alter);
         }
 
+        // count alterZeroEdgeCount in this category
+        if (am.alter.edgeType == 0) {
+          analysis.alterZeroEdge.push(am.alter);
+        }
+
         // (6) collect isolated (must have edge to ego!)
-        if (am.degree == 0 && am.alter.edgeType >= 1) {
+        // degree cannot be used because it is only within category
+        if (am.isolated && am.alter.edgeType >= 1) {
           analysis.isolated.push(am.alter);
         }
 
-        // (7) collect bridge persons
-        // to exclude connectable alteri #46 --> && am.alter.edgeType >= 1
-        if (am.bridgePerson) {
-          analysis.bridgePersons.push(am.alter);
-        }
-
-        // (8) increase networkSize & naehenSum
+        // (8) increase networkSize & naehenSum & size-by-arrays
         analysis.alterConnectable++;
+        degreeSum += am.degree;
+        countByKey(genderConnectable, am.alter.currentGender);
+        countByKey(horizonConnectable, horizonKey(am.alter));
         if (am.alter.edgeType >= 1) {
           analysis.alterConnected++;
-          analysis.naehenSum += naehenScore(am.alter);
+          countByKey(genderConnected, am.alter.currentGender);
+          countByKey(horizonConnected, horizonKey(am.alter));
+          naehenSum += am.naehe;
         }
       }
     }
 
-    for (const conn of nwk.connections) {
-      const a1 = alterMetrics.get(conn.id1);
-      const a2 = alterMetrics.get(conn.id2);
-      if (!(a1 && a2)) continue;
+    analysis.degreeAvg = degreeSum / analysis.alterConnectable;
+    analysis.naehenAvg = naehenSum / analysis.alterConnected;
+    analysis.genderConnected = mapToArray(genderConnected, Gender);
+    analysis.genderConnectable = mapToArray(genderConnectable, Gender);
+    analysis.horizonConnected = mapToArray(horizonConnected, HORIZON_KEYS);
+    analysis.horizonConnectable = mapToArray(horizonConnectable, HORIZON_KEYS);
 
-      // (9) count connections for density
-      if (
-        categories.inCategory(i, a1.alter) &&
-        categories.inCategory(i, a2.alter)
-      ) {
-        // both sides of connection are in category
-        analysis.intConnCount++;
+    // another iteration to calculate standard deviation
+    degreeSum = 0;
+    naehenSum = 0;
 
-        // (3b) bridges count only if both sides are in the same category
-        // to exclude connectable alteri #46 --> && a1.edgeType >= 1 && a2.edgeType >= 1
-        if (a1.sector !== a2.sector) {
-          analysis.bridges.push(conn);
+    for (const [, am] of alterMetrics) {
+      if (categories.inCategory(i, am.alter)) {
+        degreeSum += (am.degree - analysis.degreeAvg) ** 2;
+        if (am.alter.edgeType >= 1) {
+          naehenSum += (am.naehe - analysis.naehenAvg) ** 2;
         }
-      } else if (
-        categories.inCategory(i, a1.alter) ||
-        categories.inCategory(i, a2.alter)
-      ) {
-        // exactly one side of connection is in category
-        analysis.extConnCount++;
       }
     }
+    analysis.degreeDev = Math.sqrt(degreeSum / analysis.alterConnectable);
+    analysis.naehenDev = Math.sqrt(naehenSum / analysis.alterConnected);
   }
 
   return result;
+}
+
+function countByKey(map: Map<string, number>, key: string) {
+  const prev = map.get(key);
+  if (prev) {
+    map.set(key, prev + 1);
+  } else {
+    map.set(key, 1);
+  }
+}
+
+function mapToArray(map: Map<string, number>, keys: string[]) {
+  return keys.map((k) => {
+    const value = map.get(k);
+    return value ? value : 0;
+  });
 }
 
 /**

@@ -18,22 +18,48 @@
           <td>{{ networkSize }}</td>
         </tr>
         <tr>
-          <th :title="t('relationshipmsg')">
-            {{ t("relationshipweight") }}
+          <th class="sizeby">
+            {{ t("sizebygender") }}
+            <em>{{ t("female") }}</em>
+            <em>{{ t("male") }}</em>
+            <em>{{ t("diverse") }}</em>
+            <em>{{ t("notspecified") }}</em>
           </th>
-          <td>{{ naehenSum }}</td>
+          <td>
+            <p>&nbsp;</p>
+            <p v-for="(gSize, i) in sizeByGender" :key="'g' + i">{{ gSize }}</p>
+          </td>
+        </tr>
+        <tr>
+          <th class="sizeby">
+            {{ t("sizebyhorizon") }}
+            <em v-for="(ho, i) in HORIZON_KEYS" :key="'hl' + i">{{ t(ho) }}</em>
+          </th>
+          <td>
+            <p>&nbsp;</p>
+            <p v-for="(hSz, i) in sizeByHorizon" :key="'h' + i">{{ hSz }}</p>
+          </td>
+        </tr>
+        <tr>
+          <th :title="t('closenessmsg')">
+            {{ t("closeness") }}
+          </th>
+          <td>{{ naehen }}</td>
         </tr>
         <tr>
           <th :title="t('densitymsg')">
             {{ t("totaldensity") }}
           </th>
           <td>
-            {{
-              density.toLocaleString(undefined, {
-                minimumFractionDigits: 3,
-                maximumFractionDigits: 3,
-              })
-            }}
+            {{ density.toFixed(3) }}
+          </td>
+        </tr>
+        <tr>
+          <th :title="t('degreemsg')">
+            {{ t("degree") }}
+          </th>
+          <td>
+            {{ degree }}
           </td>
         </tr>
         <tr>
@@ -42,23 +68,6 @@
           </th>
           <td @click="clickCell('stars')" :class="{ clickAble: stars != '-' }">
             {{ stars }}
-          </td>
-        </tr>
-        <tr>
-          <th :title="t('bridgemsg')">
-            {{ t("bridges") }}
-          </th>
-          <td>{{ bridgesCount }}</td>
-        </tr>
-        <tr>
-          <th :title="t('bridgesmsg2')">
-            {{ t("bridgepersons") }}
-          </th>
-          <td
-            @click="clickCell('bridgePersons')"
-            :class="{ clickAble: bridgePersons != '0' }"
-          >
-            {{ bridgePersons }}
           </td>
         </tr>
         <tr>
@@ -100,6 +109,7 @@ import {
 import { getAlterCategorization } from "@/data/AlterCategories";
 import de from "@/de";
 import en from "@/en";
+import { HORIZON_KEYS } from "@/data/Horizon";
 
 export default defineComponent({
   mixins: [de, en],
@@ -140,7 +150,7 @@ export default defineComponent({
     });
 
     function makeComputedAlterGroup(
-      group: "stars" | "isolated" | "bridgePersons" | "alterZeroEdge"
+      group: "stars" | "isolated" | "alterZeroEdge"
     ) {
       return computed(() => {
         const alteri = networkAnalysis.value[group];
@@ -157,9 +167,7 @@ export default defineComponent({
       });
     }
 
-    const clickCell = (
-      group: "stars" | "isolated" | "bridgePersons" | "alterZeroEdge"
-    ) => {
+    const clickCell = (group: "stars" | "isolated" | "alterZeroEdge") => {
       const alteri = networkAnalysis.value[group];
       if (alteri.length > 0) {
         store.commit(
@@ -170,14 +178,42 @@ export default defineComponent({
     };
 
     return {
-      networkSize: computed(() => networkAnalysis.value.alterConnected),
-      naehenSum: computed(() => networkAnalysis.value.naehenSum),
+      networkSize: computed(
+        () =>
+          networkAnalysis.value.alterConnected +
+          " (" +
+          networkAnalysis.value.alterConnectable +
+          ")"
+      ),
+      sizeByGender: computed(() =>
+        networkAnalysis.value.genderConnected.map(
+          (g, i) => g + " (" + networkAnalysis.value.genderConnectable[i] + ")"
+        )
+      ),
+      HORIZON_KEYS,
+      sizeByHorizon: computed(() =>
+        networkAnalysis.value.horizonConnected.map(
+          (g, i) => g + " (" + networkAnalysis.value.horizonConnectable[i] + ")"
+        )
+      ),
+      naehen: computed(
+        () =>
+          networkAnalysis.value.naehenAvg.toFixed(1) +
+          " (" +
+          networkAnalysis.value.naehenDev.toFixed(1) +
+          ")"
+      ),
       density,
+      degree: computed(
+        () =>
+          networkAnalysis.value.degreeAvg.toFixed(1) +
+          " (" +
+          networkAnalysis.value.degreeDev.toFixed(1) +
+          ")"
+      ),
       stars,
       isolated: makeComputedAlterGroup("isolated"),
       alterZeroEdge: makeComputedAlterGroup("alterZeroEdge"),
-      bridgePersons: makeComputedAlterGroup("bridgePersons"),
-      bridgesCount: computed(() => networkAnalysis.value.bridges.length),
       clickCell,
     };
   },
@@ -187,5 +223,11 @@ export default defineComponent({
 <style scoped lang="scss">
 td:not([align]) {
   text-align: right;
+}
+
+th.sizeby > em {
+  display: block;
+  font-style: normal;
+  margin-left: 3em;
 }
 </style>

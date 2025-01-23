@@ -62,6 +62,66 @@
       </div>
     </div>
 
+    <div class="field is-horizontal" v-if="emoji">
+      <div class="field-label is-normal">
+        <label class="label">Emoji</label>
+      </div>
+      <br />
+      <div class="field-body">
+        <div>
+          <div style="display: flex; align-items: center; margin-top: 10px">
+            <div>
+              {{
+                selectedEmoji == null || selectedEmoji.length < 1
+                  ? t("noemoji")
+                  : selectedEmoji
+              }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field is-horizontal" v-if="emoji">
+      <div class="field-label is-normal">
+        <label class="label">{{ t("selectEmoji") }}</label>
+      </div>
+      <div class="field-body">
+        <div class="dropdown" :class="{ 'is-active': showEmojiPicker }">
+          <div>
+            <button
+              type="button"
+              class="button is-small"
+              @click="toggleEmojiPicker"
+            >
+              <span>{{ t("selectemoji") }}</span>
+            </button>
+            <button
+              v-if="selectedEmoji != null && selectedEmoji.length > 0"
+              @click="removeEmoji"
+              type="button"
+              class="button is-small"
+              style="margin-left: 10px"
+            >
+              <span>{{ t("removeemoji") }}</span>
+            </button>
+          </div>
+          <div class="dropdown-menu">
+            <div>
+              <div>
+                <EmojiPicker
+                  v-model="selectedEmoji"
+                  :native="true"
+                  :disableSkinTones="true"
+                  @select="onSelectEmoji"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="field is-horizontal">
       <div class="field-label">
         <label class="label checkbox" for="chk-human">{{ t("human") }}</label>
@@ -272,6 +332,8 @@ import { SYMBOL_DECEASED } from "@/assets/utils";
 import { TAB_BASE } from "@/store/sessionModule";
 import de from "@/de";
 import en from "@/en";
+import EmojiPicker from "vue3-emoji-picker";
+import "vue3-emoji-picker/css";
 
 type InputType = HTMLInputElement | HTMLTextAreaElement;
 
@@ -301,12 +363,17 @@ export default defineComponent({
     // toogled after each click on the map (resets keyboard cursor)
     mapclicked: Boolean,
   },
+  components: {
+    EmojiPicker,
+  },
+
   setup(props) {
     const store = useStore();
 
     const addingNewAlter = ref(!(props.alter?.name.length > 0));
 
-    const selectedRoleLabel = ref(props.alter?.role);
+
+    const showEmojiPicker = ref(false);
 
     const newCheckboxModel = ref(false);
 
@@ -342,6 +409,32 @@ export default defineComponent({
     const invalidPosition = computed(() => {
       return props.alter?.distance <= 0;
     });
+
+    const selectedEmoji = ref(props.alter?.emoji || "");
+
+
+    function onSelectEmoji(emoji: any) {
+      selectedEmoji.value = emoji.i;
+      showEmojiPicker.value = false;
+      commitEditEmoji(emoji.i);
+    }
+
+    const commitEditEmoji = (emoji: string) => {
+      const payload = {
+        index: store.state.session.editIndex,
+        changes: { emoji: emoji },
+      };
+      store.commit("editAlter", payload);
+    };
+
+    function removeEmoji() {
+      selectedEmoji.value = "";
+      commitEditEmoji("");
+    }
+
+    function toggleEmojiPicker() {
+      showEmojiPicker.value = !showEmojiPicker.value;
+    }
 
     // getter & setter for select dropdown
     function accessor<type>(field: keyof Alter) {
@@ -501,14 +594,20 @@ export default defineComponent({
       alterEdgeType: accessor<number>("edgeType"),
       isConnectable: computed(() => isConnectable(props.alter as Alter)),
       showQuality: computed(() => store.state.session.qualityRelationship),
+      emoji: computed(() => store.state.view.emoji),
       commitEdit,
       focusRole,
+      onSelectEmoji,
+      removeEmoji,
+      toggleEmojiPicker,
       blurRole,
       genderOptions,
       roleOptions,
       engRoleOptions,
       editAlterFinished,
       cancelAddAlter,
+      selectedEmoji,
+      showEmojiPicker,
       altername,
       domButton,
       SYMBOL_DECEASED,
@@ -541,7 +640,7 @@ input::-webkit-calendar-picker-indicator {
 
 @import "~bulma/sass/base/_all.sass";
 .autovalue {
-  color: $grey-light;
+  color: #656565;
 }
 
 .autovalue:focus {
@@ -550,5 +649,16 @@ input::-webkit-calendar-picker-indicator {
 
 select > option {
   color: $text-strong;
+}
+
+.dropdown-menu {
+  display: none;
+  position: sticky;
+  z-index: 10;
+  width: 20em;
+}
+
+.dropdown.is-active .dropdown-menu {
+  display: block;
 }
 </style>

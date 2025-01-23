@@ -25,7 +25,7 @@ export default {
         keyfigures: "Key figures",
         abouteasyNWK: "About the easyNWK",
         sourcecode: "Source code ",
-        imprint: "Imprint",
+        imprint: "Legal information",
         //},
         //statisticPanel: {
         overview: "Overview",
@@ -35,9 +35,16 @@ export default {
         horizoncumulative: "Horizon (cumulative)",
         gender: "Gender",
         networksize: "Network size",
+        sizebygender: "by Gender",
+        sizebyhorizon: "by Horizont",
+        horizon_close: "close",
+        horizon_middle: "middle",
+        horizon_far: "distant",
+        closeness: "Avg. Closeness (SD)",
         relationshipweight: "Relationship weight",
         totaldensity: "Total density",
         categorydensity: "Category density",
+        degree: "Avg. Degree (SD)",
         categorystar: "Star (per category)",
         stars: "Star(s)",
         bridges: "Bridges",
@@ -46,10 +53,14 @@ export default {
         personswithoutedgetotheego: "Person(s) without edge to the ego",
         networkmsg:
           "Number of contacts in the network without ego and without contacts that do not have an edge to the ego",
+        closenessmsg:
+          "arithmetic average of closeness of contacts to the ego in 9 contric rings (9=close … 1=distant)",
         relationshipmsg:
           "Summed proximity or distance of the contacts to the ego. The higher the indicator, the closer the contacts are to the ego.",
         densitymsg:
           "Ratio of the actually existing connections to the theoretically possible connections (excluding connections between ego and contacts, including contacts without edge to ego). Optional: Measurement is between 0 (isolated contacts only) and 1 (every person in the network is connected to everyone else).",
+        degreemsg:
+          "arithmetic average of connections of contact persons (eckluding connections to the ego, inclusive persons without edge to the ego)",
         starsmsg:
           "Contact(s) with most connections in the network (besides the ego)",
         bridgesmsg2: "Contact(s) connecting individual sectors in the network",
@@ -65,7 +76,10 @@ export default {
         changesize: "Text size:",
         anonymiseon: "Anonymise",
         horizonson: "Horizons",
-        connectionson: "Connections",
+        connectionson: "Connections between contacts",
+        connectionsego: "Connections to ego",
+        emojion: "Show emojis",
+        emojioff: "Hide emojis",
         namesofcontactson: "Labels for contacts",
         ageofcontactson: "Age of contacts",
         roleofcontactson: "Role of contacts",
@@ -123,6 +137,7 @@ export default {
         role: "Role",
         human: "Human",
         humanno: "Human: No",
+        selectedEmoji: "Chosen emoji: ",
         agetitle: "Optional, social age of the contact",
         deceased: "deceased",
         deceasedyes: "Deceased: Yes",
@@ -195,6 +210,8 @@ export default {
         network_without_professional_help: "Network without Professional Help",
         entire_network: "Entire Network",
         lang: "en",
+        formaterror: "The selected file does not match the JSON or NWK format.",
+        checkformat: "Please check the file and try again.",
         //Karten und Verläufe:
         versiontitle: "Maps and versions",
         currentversion: "Current map:  ",
@@ -206,6 +223,11 @@ export default {
         date: "Date",
         deleteversion: "Delete map",
         titleplaceholder: "Title of the current version",
+        noemoji: "No emoji chosen yet",
+        selectemoji: "Select emoji",
+        removeemoji: "Remove emoji",
+        amountClique: "Number of Cliques",
+        changesizeEmoji: "Icon size: ",
       },
     };
   },

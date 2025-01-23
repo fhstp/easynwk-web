@@ -203,8 +203,7 @@ export default defineComponent({
   padding: 3px 0px;
 }
 
-@import "~bulma/sass/base/_all.sass";
 .autovalue {
-  color: $grey-light;
+  color: #656565;
 }
 </style>

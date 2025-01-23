@@ -23,6 +23,7 @@ export interface Alter {
 
   /** distance from center normalized to 100 for the outer horizont.  */
   distance: number;
+  emoji: string;
   conflict: boolean;
   supportEmotional: number;
   supportCognitive: number;
@@ -47,6 +48,7 @@ export function initAlter(): Alter {
     edgeTypeByUser: -1,
     angle: 0,
     distance: 0,
+    emoji: "",
     conflict: false,
     supportEmotional: 0,
     supportCognitive: 0,
@@ -68,17 +70,6 @@ export function hasOptionalChanges(alter: Alter) {
     alter.deceased ||
     alter.edgeTypeByUser != -1
   );
-}
-
-/**
- * get the "closeness" of an alter in 9 concentric rings around the ego.
- * 9 = very close, ..., 0 = on or beyond the outer horizon.
- * Based on Java class Position by Nikolaus Kelis (v. 1.4.2)
- * @param alter
- * @returns integer between 9 (close) and 0 (distant)
- */
-export function naehenScore(alter: Alter): number {
-  return Math.max(9 - Math.floor((alter.distance * 9) / 100), 0);
 }
 
 /**

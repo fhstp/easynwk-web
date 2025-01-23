@@ -1,5 +1,28 @@
 # easyNWK Version History
 
+## version 2.6.0, released 14 Dec 2024
+
+* (feature) clique detection using Bron-Kerbosch algorithm
+* (feature) size of alteri icons or emoji can be changed
+* (feature) connection lines between alteri can be hidden indepently from lines to ego
+* (accessibility) improve color contrast for highlighted marks and dashed connection lines based on user testing
+* (accessibility) increase contrast around input fields
+* (security) various updates of libraries (path-to-regexp, nanoid)
+
+## version 2.5.0, released 30 Aug 2024
+
+* (feature) optionally set emoji for ego and each alter
+* (usability) version slider always on as soon as more than 1 version
+* (usability) filename of PDF with date in YYYY-MM-dd
+
+## version 2.4.0, released 28 Aug 2024
+
+* (feature) opening and importing .nwk files created with easyNWK 1.5
+* (feature) revised simple statistics for practicioneers (incl. Nähe, stdev, counts by gender and horizon)
+* (feature) revised statistics export (one line per versions and column of the statistics panel)
+* (usability) better feedback on opening unsuitable files
+* (security) various updates of libraries
+
 ## version 2.3.0, released 8 Jul 2024
 
 * (feature) font-size of alteri labels can be changed

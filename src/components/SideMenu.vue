@@ -1,5 +1,9 @@
 <template>
   <div id="menu">
+    <ErrorPopup
+      :visible="showErrorPopup"
+      @close="closeErrorPopup"
+    />
     <button
       data-behavior="menu-open"
       class="button is-burger"
@@ -100,15 +104,6 @@
           </span>
           <span>{{ t("createPDF") }}</span>
         </a>
-
-        <p><br /></p>
-
-        <button class="button" @click="showStatistics">
-          <span class="icon">
-            <font-awesome-icon icon="chart-bar" />
-          </span>
-          <span>{{ t("keyfigures") }}</span>
-        </button>
       </div>
 
       <div class="links">
@@ -118,7 +113,9 @@
         <a href="https://github.com/fhstp/easynwk-web" target="_blank"
           >{{ t("sourcecode") }} (Version {{ appVersion }})</a
         >
-        <a href="http://www.easynwk.com/impressum/">{{ t("imprint") }}</a>
+        <a href="https://easynwk.fhstp.ac.at/impressum-datenschutz">
+          {{ t("imprint") }}
+        </a>
         <img src="fhstp_sw_pos.png" width="80" height="80" />
       </div>
     </div>
@@ -131,11 +128,13 @@ import { computed, defineComponent, ref } from "vue";
 import { useStore } from "@/store";
 import { downloadSVGasPNG, downloadText } from "@/assets/utils";
 import { statisticsCSV } from "@/data/statisticsCSV";
-import { NWK } from "@/data/NWK";
+import ErrorPopup from "@/components/ErrorPopup.vue"
+// import { NWK } from "@/data/NWK";
 import de from "@/de";
 import en from "@/en";
 
 export default defineComponent({
+  components: { ErrorPopup },
   mixins: [de, en],
   methods: {
     t(prop: string) {
@@ -144,12 +143,17 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const menuOpen = ref(false);
+    const showErrorPopup = ref(false)
 
     const store = useStore();
 
     const newNWK = () => {
       store.commit("newNWK");
       emit("new-nwk");
+    };
+
+    const closeErrorPopup = () => {
+      showErrorPopup.value = false;
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -164,12 +168,27 @@ export default defineComponent({
       const fr = new FileReader();
       // eslint-disable-next-line
       fr.onload = (e: any) => {
-        const nwkText = e.target.result;
+        let nwkText = e.target.result;
         // TODO format checks & error messages
         // if (savedNWK.alteri && savedNWK.alteri instanceof Array) {
         // if (savedNWK.ego && isEgo(savedNWK.ego)) {
-        store.commit("loadJSON", nwkText);
-        emit("open-nwk");
+        try {
+          JSON.parse(nwkText);
+          store.commit("loadJSON", nwkText);
+          emit("open-nwk");
+        } catch (error) {
+          // eslint-disable-next-line
+            fr.onload = (e: any) => {
+              nwkText = e.target.result;
+              try {
+              store.commit("loadJSON", nwkText);
+              emit("open-nwk");
+            } catch (error) {
+              showErrorPopup.value = true;
+            }
+          };
+          fr.readAsText(files.item(0), "windows-1252")
+        }
       };
       fr.readAsText(files.item(0));
     };
@@ -236,6 +255,8 @@ export default defineComponent({
       menuOpen,
       newNWK,
       open,
+      showErrorPopup,
+      closeErrorPopup,
       save,
       openDemoData,
       appVersion: computed(() => process.env.VUE_APP_VERSION),
@@ -255,22 +276,16 @@ export default defineComponent({
         );
       },
       exportCSV: () => {
+        const today = new Date();
         downloadText(
           store.state.nwk.ego.name +
             " " +
-            visibleNWKVersion.value?.title +
-            " " +
-            visibleNWKVersion.value?.date?.substring(8, 10) +
-            "." +
-            visibleNWKVersion.value?.date?.substring(5, 7) +
-            "." +
-            visibleNWKVersion.value?.date?.substring(0, 4) +
+            today.toLocaleDateString("en-CA") +
             ".csv",
-          statisticsCSV(store.state.nwk, store.getters["displayName"])
+          statisticsCSV(store.state.record.versions)
         );
       },
 
-      showStatistics: () => store.commit("session/enable", "statistics"),
       pseudonyms: computed(() => store.state.pseudonym.active),
       togglePseudonyms: () => store.commit("pseudonym/toggle"),
       horizons: computed(() => store.state.view.horizons),
