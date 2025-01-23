@@ -3,7 +3,6 @@ export const TAB_CONNECTIONS = "connections";
 
 export interface SessionFlags {
   // statistics: boolean;
-  qualityRelationship: boolean;
   // nwkcomparison: boolean;
   // nwkchange: boolean;
   emotional: boolean;
@@ -22,7 +21,6 @@ export interface SessionState extends SessionFlags {
 export function initSessionState(): SessionState {
   return {
     // statistics: false,
-    qualityRelationship: false,
     // nwkcomparison: false,
     // nwkchange: false,
     emotional: false,

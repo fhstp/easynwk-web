@@ -184,9 +184,8 @@ export default defineComponent({
     return {
       pseudonyms: computed(() => store.state.pseudonym.active),
       togglePseudonyms: () => store.commit("pseudonym/toggle"),
-      showQuality: computed(() => store.state.session.qualityRelationship),
-      toggleQuality: () =>
-        store.commit("session/toggle", "qualityRelationship"),
+      showQuality: computed(() => store.state.view.qualityRelationship),
+      toggleQuality: () => store.commit("view/toggle", "qualityRelationship"),
       toggleEmoji: () =>
         store.commit("view/updateFlag", {
           flag: "emoji",

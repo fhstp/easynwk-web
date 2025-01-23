@@ -131,7 +131,7 @@ export default defineComponent({
       egoEditMode,
       editEgoFinished,
       mapclick,
-      showQuality: computed(() => store.state.session.qualityRelationship),
+      showQuality: computed(() => store.state.view.qualityRelationship),
     };
   },
 });

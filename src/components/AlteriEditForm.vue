@@ -593,7 +593,7 @@ export default defineComponent({
       alterConflict: accessor<boolean>("conflict"),
       alterEdgeType: accessor<number>("edgeType"),
       isConnectable: computed(() => isConnectable(props.alter as Alter)),
-      showQuality: computed(() => store.state.session.qualityRelationship),
+      showQuality: computed(() => store.state.view.qualityRelationship),
       emoji: computed(() => store.state.view.emoji),
       commitEdit,
       focusRole,

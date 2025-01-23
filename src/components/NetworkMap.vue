@@ -982,7 +982,7 @@ export default defineComponent({
             /Apple Computer/.test(navigator.vendor)
           )
       ),
-      showQuality: computed(() => store.state.session.qualityRelationship),
+      showQuality: computed(() => store.state.view.qualityRelationship),
       showVersionSlider: computed(() => store.state.record.versions.length > 1),
     };
   },
