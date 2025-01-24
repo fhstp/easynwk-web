@@ -100,7 +100,10 @@ export default defineComponent({
     function listAlteriBySupport(field: keyof SupportFields) {
       return computed(() =>
         store.state.nwk.alteri
-          .filter((alter) => alter[field] >= 1 && alter[field] <= 3)
+          .filter(
+            (alter) =>
+              alter[field] >= 1 && alter[field] <= 3 && alter.edgeType >= 1
+          )
           .map((alter) => alter.name)
           .join(", ")
       );
