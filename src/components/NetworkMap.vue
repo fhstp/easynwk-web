@@ -1038,7 +1038,4 @@ text.mark {
   right: 2px;
   bottom: 1.5rem;
 }
-.fa {
-  display: flex;
-}
 </style>

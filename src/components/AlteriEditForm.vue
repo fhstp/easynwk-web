@@ -375,6 +375,7 @@ export default defineComponent({
 
     const showEmojiPicker = ref(false);
 
+    // TODO ref() or constants?
     const supportOptions = ref({
       emotional: "emotional",
       instrumental: "instrumental",
@@ -383,6 +384,7 @@ export default defineComponent({
       linking: "linking",
     });
 
+    // TODO does the object need to be a ref() or can it be an array of accessor's?
     const supportValues = ref({
       emotional: accessor<number>("supportEmotional"),
       instrumental: accessor<number>("supportInstrumental"),
