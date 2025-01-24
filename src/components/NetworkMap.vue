@@ -114,6 +114,45 @@
         />
       </g>
 
+      <g v-for="smark in alteriSupportMarks" :key="smark.m.d.id">
+        <template v-for="(ico, i) in smark.icons" :key="smark.m.d.id + '-' + i">
+          <font-awesome-icon
+            :icon="ico"
+            height="3"
+            width="3"
+            style="color: #afafaf"
+            :x="
+              smark.m.x < 0
+                ? smark.m.x - 0.7 * iconSize - 4 * (smark.icons.length - i) + 1
+                : smark.m.x + 0.7 * iconSize + 4 * i
+            "
+            :y="smark.m.y < 0 ? smark.m.y : smark.m.y + 5"
+          />
+        </template>
+        <line
+          v-if="connectionsEgo && smark.arrowAlter"
+          :class="{ select: smark.m.selected }"
+          :x1="egoCoords[0]"
+          :y1="egoCoords[1]"
+          :x2="smark.m.x"
+          :y2="smark.m.y"
+          :filter="smark.m.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          :style="smark.m.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
+          marker-end="url(#arrowheadAlter)"
+        />
+        <line
+          v-if="connectionsEgo && smark.arrowMe"
+          :class="{ select: smark.m.selected }"
+          :x1="egoCoords[0]"
+          :y1="egoCoords[1]"
+          :x2="smark.m.x"
+          :y2="smark.m.y"
+          :filter="smark.m.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          :style="smark.m.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
+          marker-end="url(#arrowheadMe)"
+        />
+      </g>
+
       <g v-for="mark in filteredAlteriMarks" :key="mark.d.id">
         <line
           v-if="connectionsEgo && mark.d.edgeType >= 1"
@@ -126,56 +165,6 @@
           :style="
             mark.d.conflict && showQuality ? 'stroke: red' : 'stroke: #afafaf'
           "
-        />
-        <line
-          v-if="
-            connectionsEgo &&
-            mark.d.edgeType >= 1 &&
-            (mark.d.supportLinking == 2 ||
-              mark.d.supportLinking == 3 ||
-              mark.d.supportSocial == 2 ||
-              mark.d.supportSocial == 3 ||
-              mark.d.supportInstrumental == 2 ||
-              mark.d.supportInstrumental == 3 ||
-              mark.d.supportEmotional == 2 ||
-              mark.d.supportEmotional == 3 ||
-              mark.d.supportInformational == 2 ||
-              mark.d.supportInformational == 3)
-          "
-          :class="{ select: mark.selected }"
-          :x1="egoCoords[0]"
-          :y1="egoCoords[1]"
-          :x2="mark.x"
-          :y2="mark.y"
-          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
-          :style="
-            mark.d.conflict && showQuality ? 'stroke: red' : 'stroke: #afafaf'
-          "
-          marker-end="url(#arrowheadAlter)"
-        />
-        <line
-          v-if="
-            connectionsEgo &&
-            mark.d.edgeType >= 1 &&
-            (mark.d.supportLinking == 1 ||
-              mark.d.supportLinking == 3 ||
-              mark.d.supportSocial == 1 ||
-              mark.d.supportSocial == 3 ||
-              mark.d.supportInstrumental == 1 ||
-              mark.d.supportInstrumental == 3 ||
-              mark.d.supportEmotional == 1 ||
-              mark.d.supportEmotional == 3 ||
-              mark.d.supportInformational == 1 ||
-              mark.d.supportInformational == 3)
-          "
-          :class="{ select: mark.selected }"
-          :x1="egoCoords[0]"
-          :y1="egoCoords[1]"
-          :x2="mark.x"
-          :y2="mark.y"
-          :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
-          :style="mark.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
-          marker-end="url(#arrowheadMe)"
         />
         <text
           v-if="alteriNames && useTextBG"
@@ -205,63 +194,6 @@
           {{ showAge && mark.d.age.length >= 1 ? "/ " + mark.d.age : "" }}
           {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
-      </g>
-      <g v-for="mark in filteredAlteriMarks" :key="mark.d.id">
-        <!-- Hier werden die Icons für jedes Alter platziert -->
-        <template
-          v-if="
-            mark.d.supportEmotional >= 1 && showQuality && mark.d.edgeType >= 1
-          "
-        >
-          <font-awesome-icon
-            icon="heart"
-            height="3"
-            width="3"
-            style="color: #afafaf"
-            :x="mark.x < 0 ? mark.x - 20 : mark.x + 2"
-            :y="mark.y < 0 ? mark.y : mark.y + 5"
-          />
-        </template>
-        <template v-if="mark.d.supportInstrumental >= 1 && showQuality">
-          <font-awesome-icon
-            icon="toolbox"
-            height="3"
-            width="3"
-            style="color: #afafaf"
-            :x="mark.x < 0 ? mark.x - 16 : mark.x + 6"
-            :y="mark.y < 0 ? mark.y : mark.y + 5"
-          />
-        </template>
-        <template v-if="mark.d.supportInformational >= 1 && showQuality">
-          <font-awesome-icon
-            icon="lightbulb"
-            height="3"
-            width="3"
-            style="color: #afafaf"
-            :x="mark.x < 0 ? mark.x - 12 : mark.x + 10"
-            :y="mark.y < 0 ? mark.y : mark.y + 5"
-          />
-        </template>
-        <template v-if="mark.d.supportSocial >= 1 && showQuality">
-          <font-awesome-icon
-            icon="users"
-            height="3"
-            width="3"
-            style="color: #afafaf"
-            :x="mark.x < 0 ? mark.x - 8 : mark.x + 14"
-            :y="mark.y < 0 ? mark.y : mark.y + 5"
-          />
-        </template>
-        <template v-if="mark.d.supportLinking >= 1 && showQuality">
-          <font-awesome-icon
-            icon="link"
-            height="3"
-            width="3"
-            style="color: #afafaf"
-            :x="mark.x < 0 ? mark.x - 4 : mark.x + 18"
-            :y="mark.y < 0 ? mark.y : mark.y + 5"
-          />
-        </template>
       </g>
 
       <use
@@ -922,6 +854,43 @@ export default defineComponent({
       )
     );
 
+    const alteriSupportMarks = computed(() => {
+      if (store.state.view.qualityRelationship) {
+        return filteredAlteriMarks.value
+          .filter((mark) => mark.d.edgeType >= 1)
+          .map((mark) => {
+            const arrowMe =
+              mark.d.supportLinking == 1 ||
+              mark.d.supportLinking == 3 ||
+              mark.d.supportSocial == 1 ||
+              mark.d.supportSocial == 3 ||
+              mark.d.supportInstrumental == 1 ||
+              mark.d.supportInstrumental == 3 ||
+              mark.d.supportEmotional == 1 ||
+              mark.d.supportEmotional == 3 ||
+              mark.d.supportInformational == 1 ||
+              mark.d.supportInformational == 3;
+            const arrowAlter =
+              mark.d.supportLinking >= 2 ||
+              mark.d.supportSocial >= 2 ||
+              mark.d.supportInstrumental >= 2 ||
+              mark.d.supportEmotional >= 2 ||
+              mark.d.supportInformational >= 2;
+
+            const icons = [];
+            if (mark.d.supportEmotional >= 1) icons.push("heart");
+            if (mark.d.supportInstrumental >= 1) icons.push("toolbox");
+            if (mark.d.supportInformational >= 1) icons.push("lightbulb");
+            if (mark.d.supportSocial >= 1) icons.push("users");
+            if (mark.d.supportLinking >= 1) icons.push("link");
+
+            return { m: mark, arrowMe, arrowAlter, icons };
+          });
+      } else {
+        return [];
+      }
+    });
+
     return {
       egoLabel: computed(
         () =>
@@ -942,6 +911,7 @@ export default defineComponent({
       egoCoords,
       alteriMarks,
       filteredAlteriMarks,
+      alteriSupportMarks,
       connectionMarks,
       labelSize: computed(() => store.state.view.labelSizeInNwk),
       iconSize: computed(() => store.state.view.iconSizeInNwk),
