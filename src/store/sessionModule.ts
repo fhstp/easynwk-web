@@ -2,9 +2,6 @@ export const TAB_BASE = "base";
 export const TAB_CONNECTIONS = "connections";
 
 export interface SessionFlags {
-  // statistics: boolean;
-  // nwkcomparison: boolean;
-  // nwkchange: boolean;
   filterEmotional: boolean;
   filterInstrumental: boolean;
   filterInformational: boolean;
@@ -20,16 +17,12 @@ export interface SessionState extends SessionFlags {
 
 export function initSessionState(): SessionState {
   return {
-    // statistics: false,
-    // nwkcomparison: false,
-    // nwkchange: false,
     filterEmotional: false,
     filterInstrumental: false,
     filterInformational: false,
     filterSocial: false,
     filterLinking: false,
 
-    // versionComparison: false,
     selected: new Set<number>(),
     editIndex: null,
     editTab: "",

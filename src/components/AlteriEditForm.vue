@@ -375,8 +375,6 @@ export default defineComponent({
 
     const showEmojiPicker = ref(false);
 
-    const newCheckboxModel = ref(false);
-
     const supportOptions = ref({
       emotional: "emotional",
       instrumental: "instrumental",
@@ -583,7 +581,6 @@ export default defineComponent({
       addingNewAlter,
       alterNameInUI,
       alterRole,
-      newCheckboxModel,
       localizedRole,
       invalidName,
       invalidPosition,

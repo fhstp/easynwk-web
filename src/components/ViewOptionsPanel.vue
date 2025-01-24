@@ -81,23 +81,15 @@
           </div>
         </div>
         <div>
-          <div class="control">
-            <button
-              class="button"
-              @click.stop="togglePseudonyms"
-              style="margin-right: 1vw"
-            >
+          <div class="buttons">
+            <button class="button" @click.stop="togglePseudonyms">
               <span class="icon">
                 <font-awesome-icon icon="user-secret" />
               </span>
               <span v-if="pseudonyms">{{ t("anonymiseoff") }}</span>
               <span v-else>{{ t("anonymiseon") }}</span>
             </button>
-            <button
-              class="button"
-              @click.stop="toggleQuality"
-              style="margin-left: 0.5em"
-            >
+            <button class="button" @click.stop="toggleQuality">
               <span class="icon">
                 <font-awesome-icon icon="hand-holding-heart" />
               </span>
@@ -114,18 +106,6 @@
           </div>
         </div>
       </div>
-      <!--<div class="control">
-              <label for="text-size">Knotengröße ändern:</label>
-              <input
-                type="range"
-                id="text-size"
-                placeholder="1"
-                min="1"
-                max="10"
-                v-model="MarkSize"
-                @input="changeMarkSize"
-              />
-            </div> -->
     </div>
   </div>
 </template>

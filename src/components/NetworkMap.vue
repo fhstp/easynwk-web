@@ -54,6 +54,34 @@
           operator="xor"
         />
       </filter>
+      <marker
+        id="arrowheadMe"
+        markerWidth="10"
+        markerHeight="7"
+        refX="12"
+        refY="3.5"
+        orient="auto"
+      >
+        <polygon
+          points="0 0, 10 3.5, 0 7"
+          stroke="context-stroke"
+          fill="none"
+        />
+      </marker>
+      <marker
+        id="arrowheadAlter"
+        markerWidth="10"
+        markerHeight="7"
+        refX="25"
+        refY="3.5"
+        orient="auto"
+      >
+        <polygon
+          points="10 0, 0 3.5, 10 7"
+          stroke="context-stroke"
+          fill="none"
+        />
+      </marker>
     </defs>
 
     <NetworkMapCoordinates :transform="transform" />
@@ -99,31 +127,9 @@
             mark.d.conflict && showQuality ? 'stroke: red' : 'stroke: #afafaf'
           "
         />
-        <marker
-          id="arrowheadMe"
-          v-if="showQuality"
-          markerWidth="10"
-          markerHeight="7"
-          refX="12"
-          refY="3.5"
-          orient="auto"
-        >
-          <polygon points="0 0, 10 3.5, 0 7" stroke="#afafaf" fill="none" />
-        </marker>
-        <marker
-          id="arrowheadAlter"
-          v-if="showQuality"
-          markerWidth="10"
-          markerHeight="7"
-          refX="25"
-          refY="3.5"
-          orient="auto"
-        >
-          <polygon points="10 0, 0 3.5, 10 7" stroke="#afafaf" fill="none" />
-        </marker>
         <line
           v-if="
-            connections &&
+            connectionsEgo &&
             mark.d.edgeType >= 1 &&
             (mark.d.supportLinking == 2 ||
               mark.d.supportLinking == 3 ||
@@ -149,7 +155,7 @@
         />
         <line
           v-if="
-            connections &&
+            connectionsEgo &&
             mark.d.edgeType >= 1 &&
             (mark.d.supportLinking == 1 ||
               mark.d.supportLinking == 3 ||
