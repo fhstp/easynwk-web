@@ -18,119 +18,55 @@
 
               <div>
                 <div
-                  class="clickAble"
-                  :style="{
-                    margin: '1em',
-                    fontWeight: heartClicked ? 'bold' : 'unset',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                  }"
-                  @click="toggleHeartIcon"
+                  class="support clickAble"
+                  :class="{ active: filterEmotional }"
                   @click.stop="toggleEmotional"
                 >
-                  <font-awesome-icon
-                    icon="heart"
-                    :style="{
-                      color: heartClicked ? 'orange' : '#afafaf',
-                      marginRight: '0.5em',
-                    }"
-                  />
+                  <font-awesome-icon class="ico" icon="heart" />
                   {{ t("emotional") }}: {{ alteriEmotional }}
                 </div>
               </div>
 
               <div>
                 <div
-                  class="clickAble"
-                  :style="{
-                    margin: '1em',
-                    fontWeight: moneyClicked ? 'bold' : 'unset',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                  }"
-                  @click="toggleMoneyIcon"
+                  class="support clickAble"
+                  :class="{ active: filterInstrumental }"
                   @click.stop="toggleInstrumental"
                 >
-                  <font-awesome-icon
-                    icon="toolbox"
-                    :style="{
-                      color: moneyClicked ? 'orange' : '#afafaf',
-                      marginRight: '0.5em',
-                    }"
-                    class="clickAble"
-                  />
+                  <font-awesome-icon class="ico" icon="toolbox" />
                   {{ t("instrumental") }}: {{ alteriMaterial }}
                 </div>
               </div>
 
               <div>
                 <div
-                  class="clickAble"
-                  :style="{
-                    margin: '1em',
-                    fontWeight: brainClicked ? 'bold' : 'unset',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                  }"
-                  @click="toggleBrainIcon"
+                  class="support clickAble"
+                  :class="{ active: filterInformational }"
                   @click.stop="toggleInformational"
                 >
-                  <font-awesome-icon
-                    icon="lightbulb"
-                    :style="{
-                      color: brainClicked ? 'orange' : '#afafaf',
-                      marginRight: '0.5em',
-                    }"
-                    class="clickAble"
-                  />
+                  <font-awesome-icon class="ico" icon="lightbulb" />
                   {{ t("informational") }}: {{ alteriCognitive }}
                 </div>
               </div>
 
               <div>
                 <div
-                  class="clickAble"
-                  :style="{
-                    margin: '1em',
-                    fontWeight: speakClicked ? 'bold' : 'unset',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                  }"
-                  @click="toggleSpeakIcon"
+                  class="support clickAble"
+                  :class="{ active: filterSocial }"
                   @click.stop="toggleSocial"
                 >
-                  <font-awesome-icon
-                    icon="users"
-                    :style="{
-                      color: speakClicked ? 'orange' : '#afafaf',
-                      marginRight: '0.5em',
-                    }"
-                    class="clickAble"
-                  />
+                  <font-awesome-icon class="ico" icon="users" />
                   {{ t("social") }}: {{ alteriSocial }}
                 </div>
               </div>
 
               <div>
                 <div
-                  class="clickAble"
-                  :style="{
-                    margin: '1em',
-                    fontWeight: helmetClicked ? 'bold' : 'unset',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                  }"
-                  @click="toggleHelmetIcon"
+                  class="support clickAble"
+                  :class="{ active: filterLinking }"
                   @click.stop="toggleLinking"
                 >
-                  <font-awesome-icon
-                    icon="link"
-                    :style="{
-                      color: helmetClicked ? 'orange' : '#afafaf',
-                      marginRight: '0.5em',
-                    }"
-                    class="clickAble"
-                  />
+                  <font-awesome-icon class="ico" icon="link" />
                   {{ t("linking") }}: {{ alteriLinking }}
                 </div>
               </div>
@@ -149,13 +85,6 @@ import de from "@/de";
 import en from "@/en";
 import { SupportFields } from "@/data/Alter";
 
-type TranslationKeys = keyof typeof de;
-
-const translations = {
-  de,
-  en,
-};
-
 export default defineComponent({
   mixins: [de, en],
   methods: {
@@ -167,27 +96,6 @@ export default defineComponent({
     const store = useStore();
 
     const isOpen = ref(false);
-    const heartClicked = ref(false);
-    const speakClicked = ref(false);
-    const moneyClicked = ref(false);
-    const helmetClicked = ref(false);
-    const brainClicked = ref(false);
-
-    const toggleHeartIcon = () => {
-      heartClicked.value = !heartClicked.value;
-    };
-    const toggleBrainIcon = () => {
-      brainClicked.value = !brainClicked.value;
-    };
-    const toggleSpeakIcon = () => {
-      speakClicked.value = !speakClicked.value;
-    };
-    const toggleMoneyIcon = () => {
-      moneyClicked.value = !moneyClicked.value;
-    };
-    const toggleHelmetIcon = () => {
-      helmetClicked.value = !helmetClicked.value;
-    };
 
     function listAlteriBySupport(field: keyof SupportFields) {
       return computed(() =>
@@ -200,21 +108,23 @@ export default defineComponent({
 
     return {
       isOpen: isOpen,
-      heartClicked: heartClicked,
-      brainClicked: brainClicked,
-      moneyClicked: moneyClicked,
-      speakClicked: speakClicked,
-      helmetClicked: helmetClicked,
-      toggleHeartIcon,
-      toggleBrainIcon,
-      toggleSpeakIcon,
-      toggleMoneyIcon,
-      toggleHelmetIcon,
+
+      filterEmotional: computed(() => store.state.session.filterEmotional),
+      filterInstrumental: computed(
+        () => store.state.session.filterInstrumental
+      ),
+      filterInformational: computed(
+        () => store.state.session.filterInformational
+      ),
+      filterSocial: computed(() => store.state.session.filterSocial),
+      filterLinking: computed(() => store.state.session.filterLinking),
+
       alteriEmotional: listAlteriBySupport("supportEmotional"),
       alteriMaterial: listAlteriBySupport("supportInstrumental"),
       alteriCognitive: listAlteriBySupport("supportInformational"),
       alteriSocial: listAlteriBySupport("supportSocial"),
       alteriLinking: listAlteriBySupport("supportLinking"),
+
       toggleEmotional: () => store.commit("session/toggle", "filterEmotional"),
       toggleInformational: () =>
         store.commit("session/toggle", "filterInformational"),
@@ -232,7 +142,22 @@ export default defineComponent({
   float: right;
 }
 
-.clicked {
-  color: lightsalmon; // Change to your desired color
+.support {
+  margin: 1em;
+  display: inline-flex;
+  align-items: center;
+}
+
+.ico {
+  color: #afafaf;
+  margin-right: 0.5em;
+}
+
+.support.active {
+  font-weight: bold;
+}
+
+.active .ico {
+  color: $nwkorange;
 }
 </style>
