@@ -64,7 +64,7 @@
     </text>
 
     <g id="marksBackgroundLayer">
-      <g v-for="mark in alteriMarks" :key="'shadow' + mark.d.id">
+      <g v-for="mark in filteredAlteriMarks" :key="'shadow' + mark.d.id">
         <circle
           v-if="mark.selected"
           :cx="mark.x"
@@ -74,12 +74,9 @@
         />
       </g>
 
-      <g v-if="connections">
+      <g v-if="connections && noQualityFilter">
         <line
-          v-for="(mark, index) in connectionMarks.filter(
-            (mark) =>
-              !emotional && !cognitive && !social && !material && !practical
-          )"
+          v-for="(mark, index) in connectionMarks"
           :key="'conn' + index"
           :x1="mark.x1"
           :y1="mark.y1"
@@ -89,18 +86,7 @@
         />
       </g>
 
-      <g
-        v-for="mark in alteriMarks.filter(
-          (mark) =>
-            (emotional && mark.d.supportEmotional >= 1) ||
-            (cognitive && mark.d.supportCognitive >= 1) ||
-            (social && mark.d.supportSocial >= 1) ||
-            (material && mark.d.supportMaterial >= 1) ||
-            (practical && mark.d.supportPractical >= 1) ||
-            (!emotional && !cognitive && !social && !material && !practical)
-        )"
-        :key="mark.d.id"
-      >
+      <g v-for="mark in filteredAlteriMarks" :key="mark.d.id">
         <line
           v-if="connectionsEgo && mark.d.edgeType >= 1"
           :class="{ select: mark.selected }"
@@ -139,16 +125,16 @@
           v-if="
             connections &&
             mark.d.edgeType >= 1 &&
-            (mark.d.supportPractical == 2 ||
-              mark.d.supportPractical == 3 ||
+            (mark.d.supportLinking == 2 ||
+              mark.d.supportLinking == 3 ||
               mark.d.supportSocial == 2 ||
               mark.d.supportSocial == 3 ||
-              mark.d.supportMaterial == 2 ||
-              mark.d.supportMaterial == 3 ||
+              mark.d.supportInstrumental == 2 ||
+              mark.d.supportInstrumental == 3 ||
               mark.d.supportEmotional == 2 ||
               mark.d.supportEmotional == 3 ||
-              mark.d.supportCognitive == 2 ||
-              mark.d.supportCognitive == 3)
+              mark.d.supportInformational == 2 ||
+              mark.d.supportInformational == 3)
           "
           :class="{ select: mark.selected }"
           :x1="egoCoords[0]"
@@ -165,16 +151,16 @@
           v-if="
             connections &&
             mark.d.edgeType >= 1 &&
-            (mark.d.supportPractical == 1 ||
-              mark.d.supportPractical == 3 ||
+            (mark.d.supportLinking == 1 ||
+              mark.d.supportLinking == 3 ||
               mark.d.supportSocial == 1 ||
               mark.d.supportSocial == 3 ||
-              mark.d.supportMaterial == 1 ||
-              mark.d.supportMaterial == 3 ||
+              mark.d.supportInstrumental == 1 ||
+              mark.d.supportInstrumental == 3 ||
               mark.d.supportEmotional == 1 ||
               mark.d.supportEmotional == 3 ||
-              mark.d.supportCognitive == 1 ||
-              mark.d.supportCognitive == 3)
+              mark.d.supportInformational == 1 ||
+              mark.d.supportInformational == 3)
           "
           :class="{ select: mark.selected }"
           :x1="egoCoords[0]"
@@ -214,18 +200,7 @@
           {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
       </g>
-      <g
-        v-for="mark in alteriMarks.filter(
-          (mark) =>
-            (emotional && mark.d.supportEmotional >= 1) ||
-            (cognitive && mark.d.supportCognitive >= 1) ||
-            (social && mark.d.supportSocial >= 1) ||
-            (material && mark.d.supportMaterial >= 1) ||
-            (practical && mark.d.supportPractical >= 1) ||
-            (!emotional && !cognitive && !social && !material && !practical)
-        )"
-        :key="mark.d.id"
-      >
+      <g v-for="mark in filteredAlteriMarks" :key="mark.d.id">
         <!-- Hier werden die Icons für jedes Alter platziert -->
         <template
           v-if="
@@ -241,7 +216,7 @@
             :y="mark.y < 0 ? mark.y : mark.y + 5"
           />
         </template>
-        <template v-if="mark.d.supportMaterial >= 1 && showQuality">
+        <template v-if="mark.d.supportInstrumental >= 1 && showQuality">
           <font-awesome-icon
             icon="toolbox"
             height="3"
@@ -251,7 +226,7 @@
             :y="mark.y < 0 ? mark.y : mark.y + 5"
           />
         </template>
-        <template v-if="mark.d.supportCognitive >= 1 && showQuality">
+        <template v-if="mark.d.supportInformational >= 1 && showQuality">
           <font-awesome-icon
             icon="lightbulb"
             height="3"
@@ -271,7 +246,7 @@
             :y="mark.y < 0 ? mark.y : mark.y + 5"
           />
         </template>
-        <template v-if="mark.d.supportPractical >= 1 && showQuality">
+        <template v-if="mark.d.supportLinking >= 1 && showQuality">
           <font-awesome-icon
             icon="link"
             height="3"
@@ -307,15 +282,7 @@
     </g>
     <g class="brushParent"></g>
     <g class="marksForegroundLayer">
-      <template v-for="mark in alteriMarks.filter(
-          (mark) =>
-            (emotional && mark.d.supportEmotional >= 1) ||
-            (cognitive && mark.d.supportCognitive >= 1) ||
-            (social && mark.d.supportSocial >= 1) ||
-            (material && mark.d.supportMaterial >= 1) ||
-            (practical && mark.d.supportPractical >= 1) ||
-            (!emotional && !cognitive && !social && !material && !practical)
-        )">
+      <template v-for="mark in filteredAlteriMarks">
         <template v-if="mark.d.emoji && emoji">
           <text
             :key="mark.d.id"
@@ -725,7 +692,7 @@ export default defineComponent({
             transform.value.invert(extent[1]),
           ];
 
-          const marksInExtent = alteriMarks.value.filter((am) =>
+          const marksInExtent = filteredAlteriMarks.value.filter((am) =>
             isInBrushExtent(am, extent)
           );
           markIdsInExtent = marksInExtent.map((am) => am.d.id);
@@ -924,6 +891,31 @@ export default defineComponent({
       });
     });
 
+    const noQualityFilter = computed(
+      () =>
+        !store.state.view.qualityRelationship ||
+        (!store.state.session.filterEmotional &&
+          !store.state.session.filterInstrumental &&
+          !store.state.session.filterInformational &&
+          !store.state.session.filterSocial &&
+          !store.state.session.filterLinking)
+    );
+
+    const filteredAlteriMarks = computed(() =>
+      alteriMarks.value.filter(
+        (mark) =>
+          noQualityFilter.value ||
+          (store.state.session.filterEmotional &&
+            mark.d.supportEmotional >= 1) ||
+          (store.state.session.filterInstrumental &&
+            mark.d.supportInstrumental >= 1) ||
+          (store.state.session.filterInformational &&
+            mark.d.supportInformational >= 1) ||
+          (store.state.session.filterSocial && mark.d.supportSocial >= 1) ||
+          (store.state.session.filterLinking && mark.d.supportLinking >= 1)
+      )
+    );
+
     return {
       egoLabel: computed(
         () =>
@@ -935,11 +927,7 @@ export default defineComponent({
       egoShape: computed(() =>
         shapeByGender(true, store.state.nwk.ego.currentGender)
       ),
-      emotional: computed(() => store.state.session.emotional),
-      cognitive: computed(() => store.state.session.cognitive),
-      social: computed(() => store.state.session.social),
-      material: computed(() => store.state.session.material),
-      practical: computed(() => store.state.session.practical),
+      noQualityFilter,
       egoEmoji: computed(() => store.state.nwk.ego.emoji),
       isEditMode,
       isConnectMode,
@@ -947,6 +935,7 @@ export default defineComponent({
       transform,
       egoCoords,
       alteriMarks,
+      filteredAlteriMarks,
       connectionMarks,
       labelSize: computed(() => store.state.view.labelSizeInNwk),
       iconSize: computed(() => store.state.view.iconSizeInNwk),

@@ -387,10 +387,10 @@ export default defineComponent({
 
     const supportValues = ref({
       emotional: accessor<number>("supportEmotional"),
-      instrumental: accessor<number>("supportMaterial"),
-      informational: accessor<number>("supportCognitive"),
+      instrumental: accessor<number>("supportInstrumental"),
+      informational: accessor<number>("supportInformational"),
       social: accessor<number>("supportSocial"),
-      linking: accessor<number>("supportPractical"),
+      linking: accessor<number>("supportLinking"),
     });
 
     // name field is special because it must not be empty

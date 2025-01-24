@@ -49,7 +49,7 @@
                     alignItems: 'center',
                   }"
                   @click="toggleMoneyIcon"
-                  @click.stop="toggleMaterial"
+                  @click.stop="toggleInstrumental"
                 >
                   <font-awesome-icon
                     icon="toolbox"
@@ -73,7 +73,7 @@
                     alignItems: 'center',
                   }"
                   @click="toggleBrainIcon"
-                  @click.stop="toggleCognitive"
+                  @click.stop="toggleInformational"
                 >
                   <font-awesome-icon
                     icon="lightbulb"
@@ -121,7 +121,7 @@
                     alignItems: 'center',
                   }"
                   @click="toggleHelmetIcon"
-                  @click.stop="togglePractical"
+                  @click.stop="toggleLinking"
                 >
                   <font-awesome-icon
                     icon="link"
@@ -131,7 +131,7 @@
                     }"
                     class="clickAble"
                   />
-                  {{ t("linking") }}: {{ alteriPractical }}
+                  {{ t("linking") }}: {{ alteriLinking }}
                 </div>
               </div>
             </div>
@@ -147,6 +147,7 @@ import { defineComponent, ref, computed } from "vue";
 import { useStore } from "@/store";
 import de from "@/de";
 import en from "@/en";
+import { SupportFields } from "@/data/Alter";
 
 type TranslationKeys = keyof typeof de;
 
@@ -188,42 +189,14 @@ export default defineComponent({
       helmetClicked.value = !helmetClicked.value;
     };
 
-    const alteri = computed(() => store.state.nwk.alteri);
-
-    const alteriEmotional = computed(() => {
-      const emotionalAlteri = store.state.nwk.alteri.filter(
-        (alter) => alter.supportEmotional >= 1 && alter.supportEmotional <= 3
+    function listAlteriBySupport(field: keyof SupportFields) {
+      return computed(() =>
+        store.state.nwk.alteri
+          .filter((alter) => alter[field] >= 1 && alter[field] <= 3)
+          .map((alter) => alter.name)
+          .join(", ")
       );
-      return emotionalAlteri.map((alter) => alter.name).join(", ");
-    });
-
-    const alteriMaterial = computed(() => {
-      const emotionalAlteri = store.state.nwk.alteri.filter(
-        (alter) => alter.supportMaterial >= 1 && alter.supportMaterial <= 3
-      );
-      return emotionalAlteri.map((alter) => alter.name).join(", ");
-    });
-
-    const alteriCognitive = computed(() => {
-      const emotionalAlteri = store.state.nwk.alteri.filter(
-        (alter) => alter.supportCognitive >= 1 && alter.supportCognitive <= 3
-      );
-      return emotionalAlteri.map((alter) => alter.name).join(", ");
-    });
-
-    const alteriPractical = computed(() => {
-      const emotionalAlteri = store.state.nwk.alteri.filter(
-        (alter) => alter.supportPractical >= 1 && alter.supportPractical <= 3
-      );
-      return emotionalAlteri.map((alter) => alter.name).join(", ");
-    });
-
-    const alteriSocial = computed(() => {
-      const emotionalAlteri = store.state.nwk.alteri.filter(
-        (alter) => alter.supportSocial >= 1 && alter.supportSocial <= 3
-      );
-      return emotionalAlteri.map((alter) => alter.name).join(", ");
-    });
+    }
 
     return {
       isOpen: isOpen,
@@ -237,17 +210,18 @@ export default defineComponent({
       toggleSpeakIcon,
       toggleMoneyIcon,
       toggleHelmetIcon,
-      alteri: alteri,
-      alteriEmotional: alteriEmotional,
-      alteriCognitive: alteriCognitive,
-      alteriSocial: alteriSocial,
-      alteriMaterial: alteriMaterial,
-      alteriPractical: alteriPractical,
-      toggleEmotional: () => store.commit("session/toggle", "emotional"),
-      toggleCognitive: () => store.commit("session/toggle", "cognitive"),
-      toggleSocial: () => store.commit("session/toggle", "social"),
-      toggleMaterial: () => store.commit("session/toggle", "material"),
-      togglePractical: () => store.commit("session/toggle", "practical"),
+      alteriEmotional: listAlteriBySupport("supportEmotional"),
+      alteriMaterial: listAlteriBySupport("supportInstrumental"),
+      alteriCognitive: listAlteriBySupport("supportInformational"),
+      alteriSocial: listAlteriBySupport("supportSocial"),
+      alteriLinking: listAlteriBySupport("supportLinking"),
+      toggleEmotional: () => store.commit("session/toggle", "filterEmotional"),
+      toggleInformational: () =>
+        store.commit("session/toggle", "filterInformational"),
+      toggleSocial: () => store.commit("session/toggle", "filterSocial"),
+      toggleInstrumental: () =>
+        store.commit("session/toggle", "filterInstrumental"),
+      toggleLinking: () => store.commit("session/toggle", "filterLinking"),
     };
   },
 });

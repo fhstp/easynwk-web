@@ -5,11 +5,11 @@ export interface SessionFlags {
   // statistics: boolean;
   // nwkcomparison: boolean;
   // nwkchange: boolean;
-  emotional: boolean;
-  cognitive: boolean;
-  social: boolean;
-  material: boolean;
-  practical: boolean;
+  filterEmotional: boolean;
+  filterInstrumental: boolean;
+  filterInformational: boolean;
+  filterSocial: boolean;
+  filterLinking: boolean;
 }
 
 export interface SessionState extends SessionFlags {
@@ -23,11 +23,11 @@ export function initSessionState(): SessionState {
     // statistics: false,
     // nwkcomparison: false,
     // nwkchange: false,
-    emotional: false,
-    cognitive: false,
-    social: false,
-    material: false,
-    practical: false,
+    filterEmotional: false,
+    filterInstrumental: false,
+    filterInformational: false,
+    filterSocial: false,
+    filterLinking: false,
 
     // versionComparison: false,
     selected: new Set<number>(),
@@ -59,11 +59,11 @@ const mutations = {
 
   disable(state: SessionState, flag: keyof SessionFlags): void {
     state[flag] = false;
-  },
+  }, */
 
   toggle(state: SessionState, flag: keyof SessionFlags): void {
     state[flag] = !state[flag];
-  }, */
+  },
 
   toggleAlterSelected(state: SessionState, alterId: number): void {
     if (state.selected.has(alterId)) {
