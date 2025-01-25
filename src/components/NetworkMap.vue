@@ -120,7 +120,7 @@
             :icon="ico"
             height="3"
             width="3"
-            style="color: #afafaf"
+            :style="{ color: smark.m.selected ? '#1c87e6' : '#afafaf' }"
             :x="
               smark.m.x < 0
                 ? smark.m.x - 0.7 * iconSize - 4 * (smark.icons.length - i) + 1
@@ -988,7 +988,7 @@ line {
 line.select {
   // stroke: rgb(136, 159, 213);
   // stroke: rgb($fhstpblue, 0.6);
-  stroke: rgb(28, 135, 230);
+  stroke: #1c87e6; // rgb(28, 135, 230);
   stroke-dasharray: 5, 1;
   //altes blau rgb(102, 150, 192);
 }
