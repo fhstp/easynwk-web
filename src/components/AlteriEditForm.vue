@@ -227,6 +227,49 @@
       </div>
     </div>
 
+    <div v-if="showQuality && alterEdgeType >= 1" class="field is-horizontal">
+      <div class="field-label">
+        <label class="label" for="chk-new-checkbox">{{
+          t("conflictual")
+        }}</label>
+      </div>
+      <div class="field-body">
+        <label>
+          <input
+            id="chk-new-checkbox"
+            type="checkbox"
+            v-model="alterConflict"
+          />
+        </label>
+      </div>
+    </div>
+
+    <div v-if="showQuality && alterEdgeType >= 1" style="margin-bottom: 1.5em">
+      <div
+        class="field is-horizontal"
+        v-for="(label, key) in supportOptions"
+        :key="key"
+      >
+        <div class="field-label is-normal">
+          <label class="label" style="width: 100px">{{ t(label) }}</label>
+        </div>
+        <div class="field-body">
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select v-model="supportValues[key]">
+                <option value="0">{{ t("nosupport") }}</option>
+                <option value="1">{{ t("isupport") }} {{ alter.name }}</option>
+                <option value="2">
+                  {{ alter.name }} {{ t("supportsme") }}
+                </option>
+                <option value="3">{{ t("supporteachother") }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="field">
       <div class="control">
         <textarea
@@ -331,6 +374,24 @@ export default defineComponent({
 
 
     const showEmojiPicker = ref(false);
+
+    // TODO ref() or constants?
+    const supportOptions = ref({
+      emotional: "emotional",
+      instrumental: "instrumental",
+      informational: "informational",
+      social: "social",
+      linking: "linking",
+    });
+
+    // TODO does the object need to be a ref() or can it be an array of accessor's?
+    const supportValues = ref({
+      emotional: accessor<number>("supportEmotional"),
+      instrumental: accessor<number>("supportInstrumental"),
+      informational: accessor<number>("supportInformational"),
+      social: accessor<number>("supportSocial"),
+      linking: accessor<number>("supportLinking"),
+    });
 
     // name field is special because it must not be empty
     // the data item is only used for validity check & never stored
@@ -528,8 +589,10 @@ export default defineComponent({
       alterHuman: accessor<boolean>("human"),
       alterGender: accessor<string>("currentGender"),
       alterDeceased: accessor<boolean>("deceased"),
+      alterConflict: accessor<boolean>("conflict"),
       alterEdgeType: accessor<number>("edgeType"),
       isConnectable: computed(() => isConnectable(props.alter as Alter)),
+      showQuality: computed(() => store.state.view.qualityRelationship),
       emoji: computed(() => store.state.view.emoji),
       commitEdit,
       focusRole,
@@ -547,6 +610,8 @@ export default defineComponent({
       altername,
       domButton,
       SYMBOL_DECEASED,
+      supportOptions,
+      supportValues,
     };
   },
 });

@@ -19,7 +19,7 @@ authors:
   - name: 'easyNWK contributors'
 identifiers:
   - type: doi
-    value: 10.5281/zenodo.14474951
+    value: 10.5281/zenodo.14474950
 repository-code: 'https://github.com/fhstp/easynwk-web'
 url: 'https://www.easynwk.com/'
 license: MIT

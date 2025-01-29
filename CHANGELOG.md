@@ -1,5 +1,12 @@
 # easyNWK Version History
 
+## version 2.7.0, released 2x Jan 2025
+
+* (feature) optionally set qualities of relationships between ego and altei
+* (feature) mark relationships conflicting
+* (feature) document support in 5 categories and 3 possible directions
+* (feature) panel for overview of support and for filtering by support
+
 ## version 2.6.0, released 14 Dec 2024
 
 * (feature) clique detection using Bron-Kerbosch algorithm

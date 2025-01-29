@@ -1,6 +1,14 @@
 import { defaultGender } from "@/data/Gender";
 
-export interface Alter {
+export interface SupportFields {
+  supportEmotional: number;
+  supportInstrumental: number;
+  supportInformational: number;
+  supportSocial: number;
+  supportLinking: number;
+}
+
+export interface Alter extends SupportFields {
   id: number;
   name: string;
   role: string;
@@ -24,6 +32,7 @@ export interface Alter {
   /** distance from center normalized to 100 for the outer horizont.  */
   distance: number;
   emoji: string;
+  conflict: boolean;
 }
 
 export function initAlter(): Alter {
@@ -43,6 +52,12 @@ export function initAlter(): Alter {
     angle: 0,
     distance: 0,
     emoji: "",
+    conflict: false,
+    supportEmotional: 0,
+    supportInstrumental: 0,
+    supportInformational: 0,
+    supportSocial: 0,
+    supportLinking: 0,
   };
 }
 

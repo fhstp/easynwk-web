@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14474951.svg)](https://doi.org/10.5281/zenodo.14474951)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14474950.svg)](https://doi.org/10.5281/zenodo.14474950)
 
 # easyNWK Web
 

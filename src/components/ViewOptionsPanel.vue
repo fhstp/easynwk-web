@@ -81,17 +81,20 @@
           </div>
         </div>
         <div>
-          <div class="control">
-            <button
-              class="button"
-              @click.stop="togglePseudonyms"
-              style="margin-right: 1vw"
-            >
+          <div class="buttons">
+            <button class="button" @click.stop="togglePseudonyms">
               <span class="icon">
                 <font-awesome-icon icon="user-secret" />
               </span>
               <span v-if="pseudonyms">{{ t("anonymiseoff") }}</span>
               <span v-else>{{ t("anonymiseon") }}</span>
+            </button>
+            <button class="button" @click.stop="toggleQuality">
+              <span class="icon">
+                <font-awesome-icon icon="hand-holding-heart" />
+              </span>
+              <span v-if="showQuality">{{ t("qualitiesoff") }}</span>
+              <span v-else>{{ t("qualitieson") }}</span>
             </button>
             <button class="button" @click.stop="toggleEmoji">
               <span class="icon">
@@ -103,18 +106,6 @@
           </div>
         </div>
       </div>
-      <!--<div class="control">
-              <label for="text-size">Knotengröße ändern:</label>
-              <input
-                type="range"
-                id="text-size"
-                placeholder="1"
-                min="1"
-                max="10"
-                v-model="MarkSize"
-                @input="changeMarkSize"
-              />
-            </div> -->
     </div>
   </div>
 </template>
@@ -173,6 +164,8 @@ export default defineComponent({
     return {
       pseudonyms: computed(() => store.state.pseudonym.active),
       togglePseudonyms: () => store.commit("pseudonym/toggle"),
+      showQuality: computed(() => store.state.view.qualityRelationship),
+      toggleQuality: () => store.commit("view/toggle", "qualityRelationship"),
       toggleEmoji: () =>
         store.commit("view/updateFlag", {
           flag: "emoji",

@@ -54,6 +54,34 @@
           operator="xor"
         />
       </filter>
+      <marker
+        id="arrowheadMe"
+        markerWidth="10"
+        markerHeight="7"
+        refX="12"
+        refY="3.5"
+        orient="auto"
+      >
+        <polygon
+          points="0 0, 10 3.5, 0 7"
+          stroke="context-stroke"
+          fill="none"
+        />
+      </marker>
+      <marker
+        id="arrowheadAlter"
+        markerWidth="10"
+        markerHeight="7"
+        refX="25"
+        refY="3.5"
+        orient="auto"
+      >
+        <polygon
+          points="10 0, 0 3.5, 10 7"
+          stroke="context-stroke"
+          fill="none"
+        />
+      </marker>
     </defs>
 
     <NetworkMapCoordinates :transform="transform" />
@@ -64,7 +92,7 @@
     </text>
 
     <g id="marksBackgroundLayer">
-      <g v-for="mark in alteriMarks" :key="'shadow' + mark.d.id">
+      <g v-for="mark in filteredAlteriMarks" :key="'shadow' + mark.d.id">
         <circle
           v-if="mark.selected"
           :cx="mark.x"
@@ -74,7 +102,7 @@
         />
       </g>
 
-      <g v-if="connections">
+      <g v-if="connections && noQualityFilter">
         <line
           v-for="(mark, index) in connectionMarks"
           :key="'conn' + index"
@@ -86,7 +114,46 @@
         />
       </g>
 
-      <g v-for="mark in alteriMarks" :key="mark.d.id">
+      <g v-for="smark in alteriSupportMarks" :key="smark.m.d.id">
+        <template v-for="(ico, i) in smark.icons" :key="smark.m.d.id + '-' + i">
+          <font-awesome-icon
+            :icon="ico"
+            height="3"
+            width="3"
+            :style="{ color: smark.m.selected ? '#1c87e6' : '#afafaf' }"
+            :x="
+              smark.m.x < 0
+                ? smark.m.x - 0.7 * iconSize - 4 * (smark.icons.length - i) + 1
+                : smark.m.x + 0.7 * iconSize + 4 * i
+            "
+            :y="smark.m.y < 0 ? smark.m.y : smark.m.y + 5"
+          />
+        </template>
+        <line
+          v-if="connectionsEgo && smark.arrowAlter"
+          :class="{ select: smark.m.selected }"
+          :x1="egoCoords[0]"
+          :y1="egoCoords[1]"
+          :x2="smark.m.x"
+          :y2="smark.m.y"
+          :filter="smark.m.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          :style="smark.m.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
+          marker-end="url(#arrowheadAlter)"
+        />
+        <line
+          v-if="connectionsEgo && smark.arrowMe"
+          :class="{ select: smark.m.selected }"
+          :x1="egoCoords[0]"
+          :y1="egoCoords[1]"
+          :x2="smark.m.x"
+          :y2="smark.m.y"
+          :filter="smark.m.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          :style="smark.m.d.conflict ? 'stroke: red' : 'stroke: #afafaf'"
+          marker-end="url(#arrowheadMe)"
+        />
+      </g>
+
+      <g v-for="mark in filteredAlteriMarks" :key="mark.d.id">
         <line
           v-if="connectionsEgo && mark.d.edgeType >= 1"
           :class="{ select: mark.selected }"
@@ -95,6 +162,9 @@
           :x2="mark.x"
           :y2="mark.y"
           :filter="mark.d.edgeType == 2 ? 'url(#dilate-and-xor)' : undefined"
+          :style="
+            mark.d.conflict && showQuality ? 'stroke: red' : 'stroke: #afafaf'
+          "
         />
         <text
           v-if="alteriNames && useTextBG"
@@ -125,6 +195,7 @@
           {{ showRole ? " / " + getRoleShort(mark.d.role) : "" }}
         </text>
       </g>
+
       <use
         id="ego"
         :href="'#' + egoShape"
@@ -149,7 +220,7 @@
     </g>
     <g class="brushParent"></g>
     <g class="marksForegroundLayer">
-      <template v-for="mark in alteriMarks">
+      <template v-for="mark in filteredAlteriMarks">
         <template v-if="mark.d.emoji && emoji">
           <text
             :key="mark.d.id"
@@ -559,7 +630,7 @@ export default defineComponent({
             transform.value.invert(extent[1]),
           ];
 
-          const marksInExtent = alteriMarks.value.filter((am) =>
+          const marksInExtent = filteredAlteriMarks.value.filter((am) =>
             isInBrushExtent(am, extent)
           );
           markIdsInExtent = marksInExtent.map((am) => am.d.id);
@@ -758,6 +829,68 @@ export default defineComponent({
       });
     });
 
+    const noQualityFilter = computed(
+      () =>
+        !store.state.view.qualityRelationship ||
+        (!store.state.session.filterEmotional &&
+          !store.state.session.filterInstrumental &&
+          !store.state.session.filterInformational &&
+          !store.state.session.filterSocial &&
+          !store.state.session.filterLinking)
+    );
+
+    const filteredAlteriMarks = computed(() =>
+      alteriMarks.value.filter(
+        (mark) =>
+          noQualityFilter.value ||
+          (store.state.session.filterEmotional &&
+            mark.d.supportEmotional >= 1) ||
+          (store.state.session.filterInstrumental &&
+            mark.d.supportInstrumental >= 1) ||
+          (store.state.session.filterInformational &&
+            mark.d.supportInformational >= 1) ||
+          (store.state.session.filterSocial && mark.d.supportSocial >= 1) ||
+          (store.state.session.filterLinking && mark.d.supportLinking >= 1)
+      )
+    );
+
+    const alteriSupportMarks = computed(() => {
+      if (store.state.view.qualityRelationship) {
+        return filteredAlteriMarks.value
+          .filter((mark) => mark.d.edgeType >= 1)
+          .map((mark) => {
+            const arrowMe =
+              mark.d.supportLinking == 1 ||
+              mark.d.supportLinking == 3 ||
+              mark.d.supportSocial == 1 ||
+              mark.d.supportSocial == 3 ||
+              mark.d.supportInstrumental == 1 ||
+              mark.d.supportInstrumental == 3 ||
+              mark.d.supportEmotional == 1 ||
+              mark.d.supportEmotional == 3 ||
+              mark.d.supportInformational == 1 ||
+              mark.d.supportInformational == 3;
+            const arrowAlter =
+              mark.d.supportLinking >= 2 ||
+              mark.d.supportSocial >= 2 ||
+              mark.d.supportInstrumental >= 2 ||
+              mark.d.supportEmotional >= 2 ||
+              mark.d.supportInformational >= 2;
+
+            const icons = [];
+            if (mark.d.supportEmotional >= 1) icons.push("heart");
+            if (mark.d.supportInstrumental >= 1) icons.push("toolbox");
+            if (mark.d.supportInformational >= 1) icons.push("lightbulb");
+            if (mark.d.supportSocial >= 1) icons.push("users");
+            if (mark.d.supportLinking >= 1) icons.push("link");
+
+            return { m: mark, arrowMe, arrowAlter, icons };
+          });
+      } else {
+        return [];
+      }
+    });
+
     return {
       egoLabel: computed(
         () =>
@@ -769,6 +902,7 @@ export default defineComponent({
       egoShape: computed(() =>
         shapeByGender(true, store.state.nwk.ego.currentGender)
       ),
+      noQualityFilter,
       egoEmoji: computed(() => store.state.nwk.ego.emoji),
       isEditMode,
       isConnectMode,
@@ -776,6 +910,8 @@ export default defineComponent({
       transform,
       egoCoords,
       alteriMarks,
+      filteredAlteriMarks,
+      alteriSupportMarks,
       connectionMarks,
       labelSize: computed(() => store.state.view.labelSizeInNwk),
       iconSize: computed(() => store.state.view.iconSizeInNwk),
@@ -811,6 +947,7 @@ export default defineComponent({
             /Apple Computer/.test(navigator.vendor)
           )
       ),
+      showQuality: computed(() => store.state.view.qualityRelationship),
       showVersionSlider: computed(() => store.state.record.versions.length > 1),
     };
   },
@@ -851,7 +988,7 @@ line {
 line.select {
   // stroke: rgb(136, 159, 213);
   // stroke: rgb($fhstpblue, 0.6);
-  stroke: rgb(28, 135, 230);
+  stroke: #1c87e6; // rgb(28, 135, 230);
   stroke-dasharray: 5, 1;
   //altes blau rgb(102, 150, 192);
 }

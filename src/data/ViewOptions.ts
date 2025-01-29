@@ -3,6 +3,7 @@ export interface ViewOptionsFlags {
   connections: boolean;
   connectionsEgo: boolean;
   emoji: boolean;
+  qualityRelationship: boolean;
   alteriNames: boolean;
   ageInNwk: boolean;
   roleInNwk: boolean;
@@ -20,6 +21,7 @@ export function initDefaultViewOptions(): ViewOptions {
     connections: true,
     connectionsEgo: true,
     emoji: false,
+    qualityRelationship: false,
     alteriNames: true,
     ageInNwk: false,
     roleInNwk: false,

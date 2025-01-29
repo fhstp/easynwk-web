@@ -53,6 +53,11 @@ import {
   faUnlink,
   faArrowsAlt,
   faCopy,
+  faHeart,
+  faHandHoldingHeart,
+  faToolbox,
+  faLightbulb,
+  faUsers,
   faIcons,
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
@@ -98,6 +103,11 @@ library.add(
   faLink,
   faUnlink,
   faArrowsAlt,
+  faHeart,
+  faHandHoldingHeart,
+  faToolbox,
+  faLightbulb,
+  faUsers,
   faIcons
 );
 
