@@ -1,8 +1,8 @@
 # easyNWK Version History
 
-## version 2.7.0, released 2x Jan 2025
+## version 2.7.0, released 29 Jan 2025
 
-* (feature) optionally set qualities of relationships between ego and altei
+* (feature) optionally set qualities of relationships between ego and alteri
 * (feature) mark relationships conflicting
 * (feature) document support in 5 categories and 3 possible directions
 * (feature) panel for overview of support and for filtering by support
