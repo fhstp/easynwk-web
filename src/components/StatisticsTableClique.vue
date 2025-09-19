@@ -38,8 +38,12 @@ import en from "@/en";
 import { Alter } from "@/data/Alter";
 import { Sectors, SectorsEng } from "@/data/Sectors";
 
+interface AnonymizedAlter {
+  id: number;
+  name: string;
+}
 interface CliqueItem {
-  alters: Alter[];
+  alters: AnonymizedAlter[];
   description: string;
 }
 
@@ -72,15 +76,21 @@ export default defineComponent({
           .map((d) => sectorLabels[d!])
           .join(", ");
 
+        // pseudonymize alteri
+        const alters = clique.map((d) => ({
+          id: d.id,
+          name: store.getters["displayName"](d) as string,
+        }));
+
         return {
           // cliqueNumber: `Clique ${idx + 1}`,
-          alters: clique,
+          alters,
           description: clique.length + " (" + sectLabels + ")",
         };
       });
     });
 
-    const clickClique = (alteri: Alter[]) => {
+    const clickClique = (alteri: AnonymizedAlter[]) => {
       if (alteri.length > 0) {
         store.commit(
           "session/selectAlters",

@@ -19,7 +19,7 @@ export const pseudonymPlugin = (store: Store<IStoreState>): void => {
     namespaced: true,
     state: initPseudonymState(),
     getters: {
-      pseudonize: () => (alterId: number) => pseudonyms.get(alterId),
+      pseudonize: () => (alterId: number) => pseudonyms.get(alterId) ?? "",
     },
     mutations: {
       toggle(state: PseudonymState): void {
