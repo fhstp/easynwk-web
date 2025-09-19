@@ -141,7 +141,7 @@ export default {
         selectedEmoji: "Gewähltes Emoji: ",
         agetitle: "Optional,soziales Alter der Kontaktperson",
         deceased: "verstorben",
-        deceasedyes: "Verstroben: Ja",
+        deceasedyes: "Verstorben: Ja",
         deceasedcheck: "Häkchen, falls Kontaktperson verstorben",
         relationship: "Beziehung",
         relationtitle: "Aktualisierung der Verbindung",

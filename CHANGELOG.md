@@ -1,5 +1,11 @@
 # easyNWK Version History
 
+## version 2.7.1, released 19 Sep 2025
+
+* (bugfix) typo "Verstroben" in PdfView
+* (bugfix) pseudo-anonymize alteri in clique statistics
+* (security) various updates of libraries
+
 ## version 2.7.0, released 29 Jan 2025
 
 * (feature) optionally set qualities of relationships between ego and alteri
